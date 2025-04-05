@@ -35,9 +35,9 @@
 </script>
 
 <div 
-  class="bg-white p-5 rounded-2xl shadow-sm squircle-sm card-hover h-full cursor-pointer"
+  class="bg-gray-700 border border-orange-500 p-5 rounded-2xl shadow-sm squircle-sm card-hover h-full cursor-pointer"
   on:click={handleClick}
-  on:keydown={e => e.key === 'Enter' && handleClick(e)}
+  on:keydown={e => e.key === 'Enter' && handleClick()}
   role="button"
   tabindex="0"
 >
@@ -47,15 +47,15 @@
   >
     <i class="fas {course.icon} text-white text-4xl"></i>
   </div>
-  <h3 class="font-semibold text-gray-800 mb-2">{course.title}</h3>
-  <p class="text-gray-500 text-sm mb-4 line-clamp-2">{course.description}</p>
+  <h3 class="font-semibold text-gray-100 mb-2">{course.title}</h3>
+  <p class="text-gray-300 text-sm mb-4 line-clamp-2">{course.description}</p>
   <div class="flex items-center justify-between">
-    <div class="w-full bg-gray-200 rounded-full h-2">
+    <div class="w-full bg-gray-600 rounded-full h-2">
       <div 
         class="h-2 rounded-full" 
         style="width: {course.progress}%; background-color: {progressColor};"
       ></div>
     </div>
-    <span class="text-xs text-gray-500 ml-2">{course.progress}%</span>
+    <span class="text-xs text-gray-300 ml-2">{course.progress}%</span>
   </div>
 </div>

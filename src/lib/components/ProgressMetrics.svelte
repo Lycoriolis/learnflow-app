@@ -23,14 +23,14 @@
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
   {#each metrics as metric}
-    <div class="bg-white p-6 rounded-2xl shadow-sm squircle-sm card-hover">
+    <div class="bg-gray-700 border border-orange-500 p-6 rounded-2xl shadow-sm squircle-sm card-hover">
       <div class="flex justify-between items-start">
         <div>
-          <h3 class="text-gray-500 text-sm font-medium">{metric.title}</h3>
-          <p class="text-2xl font-bold mt-1">{metric.value}</p>
+          <h3 class="text-gray-400 text-sm font-medium">{metric.title}</h3>
+          <p class="text-2xl font-bold text-gray-100 mt-1">{metric.value}</p>
         </div>
-        <div class="w-12 h-12 bg-{metric.color}-50 rounded-full flex items-center justify-center">
-          <i class="fas {metric.icon} text-{metric.color}-600"></i>
+        <div class="w-12 h-12 bg-indigo-900 rounded-full flex items-center justify-center">
+          <i class="fas {metric.icon} text-indigo-300"></i>
         </div>
       </div>
     </div>

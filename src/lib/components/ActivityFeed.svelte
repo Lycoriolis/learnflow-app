@@ -34,9 +34,9 @@
 </script>
 
 <div>
-  <h2 class="text-lg font-semibold text-gray-800 mb-4">Recent Activity</h2>
+  <h2 class="text-lg font-semibold text-gray-100 mb-4">Recent Activity</h2>
   
-  <div class="bg-white p-6 rounded-2xl shadow-sm squircle-sm">
+  <div class="bg-gray-700 border border-orange-500 p-6 rounded-2xl shadow-sm squircle-sm">
     <div class="space-y-4">
       {#each activities as activity (activity.id)}
         <ActivityItem {activity} />

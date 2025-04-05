@@ -78,9 +78,13 @@ The balance should be private and only accessible through these methods.
     courseModalOpen.set(false);
   }
   
+  async function renderMarkdown() {
+    // Use marked directly and await its result
+    renderedContent = await marked.parse(markdownContent);
+  }
+  
   onMount(() => {
-    // Use marked directly
-    renderedContent = marked.parse(markdownContent);
+    renderMarkdown();
   });
 </script>
 
@@ -103,15 +107,15 @@ The balance should be private and only accessible through these methods.
       <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">​</span>
       
       <!-- Modal panel -->
-      <div class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full squircle">
-        <div class="bg-white px-6 py-4">
-          <div class="flex justify-between items-center border-b pb-4">
-            <h3 class="text-lg font-medium text-gray-900">
+      <div class="inline-block align-bottom bg-gray-800 text-gray-100 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full squircle border border-orange-500">
+        <div class="bg-gray-800 px-6 py-4">
+          <div class="flex justify-between items-center border-b border-gray-700 pb-4">
+            <h3 class="text-lg font-medium text-gray-100">
               {$currentCourse?.title || 'Course Content'}
             </h3>
             <button 
               on:click={closeModal} 
-              class="text-gray-400 hover:text-gray-500"
+              class="text-gray-400 hover:text-gray-200"
               aria-label="Close modal"
             >
               <i class="fas fa-times"></i>
@@ -122,8 +126,8 @@ The balance should be private and only accessible through these methods.
             {@html renderedContent}
           </div>
           
-          <div class="border-t pt-4 flex justify-between">
-            <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+          <div class="border-t border-gray-700 pt-4 flex justify-between">
+            <button class="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600">
               Previous
             </button>
             <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">

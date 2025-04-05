@@ -7,11 +7,17 @@
   import PipWidget from '$lib/components/PipWidget.svelte';
   import CourseModal from '$lib/components/CourseModal.svelte';
   import Footer from '$lib/components/Footer.svelte';
-  import { pipVisible } from '$lib/stores/pipStores';
+  import { pipVisible } from '$lib/stores/pipStores.js';
+  import { handleRedirectCallback } from '$lib/authService.js'; // Import Auth0 handler
+
+  // Initialize Auth0
+  onMount(async () => {
+    await handleRedirectCallback();
+  });
 
   // Toggle PIP widget visibility
   const togglePip = () => {
-    pipVisible.update(v => !v);
+    pipVisible.update((v: boolean) => !v);
   };
 </script>
 
@@ -23,7 +29,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </svelte:head>
 
-<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen">
   <Sidebar />
   
   <div class="lg:ml-64">
