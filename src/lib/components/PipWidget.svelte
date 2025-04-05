@@ -4,12 +4,12 @@
   import { pipVisible, activeTool } from '$lib/stores/pipStores';
   import { onMount } from 'svelte';
   
-  // Tools configuration
+  // Tools configuration - Updated for Dark Theme
   const tools = [
-    { id: 'timer', name: 'Timer', icon: 'fa-stopwatch', bgClass: 'bg-indigo-50', textClass: 'text-indigo-600', hoverClass: 'hover:bg-indigo-100' },
-    { id: 'todo', name: 'Todo', icon: 'fa-tasks', bgClass: 'bg-green-50', textClass: 'text-green-600', hoverClass: 'hover:bg-green-100' },
-    { id: 'notes', name: 'Notes', icon: 'fa-sticky-note', bgClass: 'bg-blue-50', textClass: 'text-blue-600', hoverClass: 'hover:bg-blue-100' },
-    { id: 'calculator', name: 'Calculator', icon: 'fa-calculator', bgClass: 'bg-purple-50', textClass: 'text-purple-600', hoverClass: 'hover:bg-purple-100' }
+    { id: 'timer', name: 'Timer', icon: 'fa-stopwatch', bgClass: 'bg-indigo-800', textClass: 'text-indigo-100', hoverClass: 'hover:bg-indigo-700' },
+    { id: 'todo', name: 'Todo', icon: 'fa-tasks', bgClass: 'bg-green-800', textClass: 'text-green-100', hoverClass: 'hover:bg-green-700' },
+    { id: 'notes', name: 'Notes', icon: 'fa-sticky-note', bgClass: 'bg-blue-800', textClass: 'text-blue-100', hoverClass: 'hover:bg-blue-700' },
+    { id: 'calculator', name: 'Calculator', icon: 'fa-calculator', bgClass: 'bg-purple-800', textClass: 'text-purple-100', hoverClass: 'hover:bg-purple-700' }
   ];
   
   let minimized = false;
@@ -74,7 +74,7 @@
   <div
     bind:this={widgetElement}
     on:mousedown={handleMouseDown}
-    class="pip-widget {minimized ? 'minimized' : ''} bg-white rounded-2xl overflow-hidden squircle"
+    class="pip-widget {minimized ? 'minimized' : ''} bg-gray-800 text-gray-100 rounded-2xl overflow-hidden squircle"
     transition:fly={{ y: 20, duration: 300, easing: quintOut }}
   >
     <div class="bg-indigo-600 text-white p-3 flex justify-between items-center">
@@ -114,42 +114,42 @@
         </div>
         
         {#if $activeTool === 'notes'}
-          <div class="bg-gray-50 p-3 rounded-lg">
-            <h4 class="text-xs font-medium text-gray-500 mb-2">Quick Note</h4>
-            <textarea class="w-full text-sm border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-indigo-500" rows="2" placeholder="Take a quick note..."></textarea>
+          <div class="bg-gray-700 p-3 rounded-lg">
+            <h4 class="text-xs font-medium text-gray-400 mb-2">Quick Note</h4>
+            <textarea class="w-full text-sm bg-gray-600 text-gray-100 border border-gray-500 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-indigo-500" rows="2" placeholder="Take a quick note..."></textarea>
             <button class="mt-2 text-xs bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">Save</button>
           </div>
         {:else if $activeTool === 'timer'}
           <div class="text-center p-3">
-            <div class="text-2xl font-bold mb-2">25:00</div>
+            <div class="text-2xl font-bold mb-2 text-gray-100">25:00</div>
             <div class="flex justify-center space-x-2">
               <button class="px-3 py-1 bg-indigo-600 text-white rounded text-sm">Start</button>
-              <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm">Reset</button>
+              <button class="px-3 py-1 bg-gray-600 text-gray-200 hover:bg-gray-500 rounded text-sm">Reset</button>
             </div>
           </div>
         {:else if $activeTool === 'todo'}
           <div class="p-1">
             <div class="flex mb-2">
-              <input type="text" class="flex-1 text-sm border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 mr-2" placeholder="New task...">
+              <input type="text" class="flex-1 text-sm bg-gray-600 text-gray-100 border border-gray-500 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 mr-2" placeholder="New task...">
               <button class="px-3 py-1 bg-indigo-600 text-white rounded text-sm">Add</button>
             </div>
             <ul class="space-y-1 max-h-32 overflow-y-auto">
-              <li class="flex items-center text-sm p-1">
-                <input type="checkbox" class="mr-2">
+              <li class="flex items-center text-sm p-1 text-gray-200">
+                <input type="checkbox" class="mr-2 form-checkbox bg-gray-600 border-gray-500 text-indigo-500 focus:ring-indigo-400">
                 <span>Complete JavaScript exercise</span>
               </li>
-              <li class="flex items-center text-sm p-1">
-                <input type="checkbox" class="mr-2">
+              <li class="flex items-center text-sm p-1 text-gray-200">
+                <input type="checkbox" class="mr-2 form-checkbox bg-gray-600 border-gray-500 text-indigo-500 focus:ring-indigo-400">
                 <span>Review lecture notes</span>
               </li>
             </ul>
           </div>
         {:else if $activeTool === 'calculator'}
           <div class="text-center p-2">
-            <input type="text" class="w-full text-right mb-2 border-0 focus:ring-0 text-lg font-medium" value="0" readonly>
+            <input type="text" class="w-full text-right mb-2 border-0 focus:ring-0 text-lg font-medium bg-gray-800 text-gray-100" value="0" readonly>
             <div class="grid grid-cols-4 gap-1">
               {#each ['7', '8', '9', '÷', '4', '5', '6', '×', '1', '2', '3', '-', '0', '.', '=', '+'] as key}
-                <button class="p-2 bg-gray-100 rounded text-sm font-medium hover:bg-gray-200">{key}</button>
+                <button class="p-2 bg-gray-700 rounded text-sm font-medium text-gray-200 hover:bg-gray-600">{key}</button>
               {/each}
             </div>
           </div>
@@ -197,7 +197,7 @@
   .border-purple-100 { --tw-border-opacity: 1; border-color: rgb(243 232 255 / var(--tw-border-opacity)); }
   .hover\:border-purple-200:hover { --tw-border-opacity: 1; border-color: rgb(233 213 255 / var(--tw-border-opacity)); }
 
-  /* Custom scrollbar for the content area */
+  /* Custom scrollbar for the content area - Dark Theme */
   .overflow-y-auto::-webkit-scrollbar {
       width: 6px;
   }
@@ -205,12 +205,12 @@
       background: transparent;
   }
   .overflow-y-auto::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.2);
+      background-color: rgba(255, 255, 255, 0.2);
       border-radius: 3px;
       border: 1px solid transparent;
   }
   .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-      background-color: rgba(0, 0, 0, 0.3);
+      background-color: rgba(255, 255, 255, 0.3);
   }
 
 </style>

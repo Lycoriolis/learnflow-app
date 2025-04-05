@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let username = "Alex";
+  export let username = "Hakim";
 </script>
 
 <div class="bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-2xl p-6 mb-8 text-white squircle">
@@ -10,7 +10,7 @@
     </div>
     <a 
       href="/courses" 
-      class="bg-white text-indigo-600 px-4 py-2 rounded-lg font-medium hover:bg-opacity-90 transition"
+      class="bg-indigo-100 text-indigo-800 px-4 py-2 rounded-lg font-medium hover:bg-indigo-200 transition"
     >
       Explore Courses
     </a>

@@ -22,12 +22,12 @@
 </script>
 
 <div class="flex items-start">
-  <div class="w-10 h-10 bg-{color}-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-    <i class="fas {icon} text-{color}-600"></i>
+  <div class="w-10 h-10 bg-indigo-900 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+    <i class="fas {icon} text-indigo-300"></i>
   </div>
   <div>
-    <h3 class="font-medium text-gray-800">{activity.title}</h3>
-    <p class="text-gray-500 text-sm">{activity.description}</p>
+    <h3 class="font-medium text-gray-100">{activity.title}</h3>
+    <p class="text-gray-300 text-sm">{activity.description}</p>
     <p class="text-gray-400 text-xs mt-1">{activity.timestamp}</p>
   </div>
 </div> 

@@ -8,6 +8,11 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+
+    // Add Splide to the Window interface
+    interface Window {
+        Splide: any; // Use 'any' for simplicity, or install @splidejs/splide types
+    }
 }
 
 export {};

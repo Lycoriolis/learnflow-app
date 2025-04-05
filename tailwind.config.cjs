@@ -1,7 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.{html,js,svelte,ts}'],
-  darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
       colors: {
@@ -59,8 +58,6 @@ module.exports = {
     'squircle-sm',
     'squircle-lg',
     'enhanced-card',
-    'glass-effect',
-    'dark',
-    'light'
+    'glass-effect'
   ]
 };
