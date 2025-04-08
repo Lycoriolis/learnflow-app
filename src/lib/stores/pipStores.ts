@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { persistentStore } from './persistentStore';
+import { persistentStore } from './persistentStore.js';
 
 // State for the PiP widget itself
 export const pipVisible = writable(false);
@@ -60,6 +60,15 @@ export interface NoteItem {
 	updatedAt: number;
 }
 export const notes = persistentStore<NoteItem[]>('learnflow-notes', []);
+
+// --- Focus Session Store ---
+export interface FocusSession {
+	timestamp: number; // When the session ended (Date.now())
+	duration: number;  // Duration in seconds
+}
+
+// Store an array of completed focus sessions (persistent)
+export const focusSessions = persistentStore<FocusSession[]>('learnflow-focus-sessions', []);
 
 // --- Calculator Store --- (Transient state)
 export const calcDisplay = writable('0');

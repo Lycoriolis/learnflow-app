@@ -1,8 +1,14 @@
 <script lang="ts">
   import { fly } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
-  import { pipVisible, activeTool } from '$lib/stores/pipStores';
+  import { pipVisible, activeTool } from '$lib/stores/pipStores.js';
   import { onMount } from 'svelte';
+  
+  // Import the tool components
+  import PipTimer from './pip/PipTimer.svelte';
+  import PipTodo from './pip/PipTodo.svelte';
+  import PipNotes from './pip/PipNotes.svelte';
+  import PipCalculator from './pip/PipCalculator.svelte';
   
   // Tools configuration - Updated for Dark Theme
   const tools = [
@@ -15,8 +21,10 @@
   let minimized = false;
   let widgetElement: HTMLElement;
   let isDragging = false;
-  let offsetX = 0;
-  let offsetY = 0;
+  let startX = 0;
+  let startY = 0;
+  let initialLeft = 0;
+  let initialTop = 0;
   
   function closePip() {
     pipVisible.set(false);
@@ -34,38 +42,59 @@
   
   // Draggable functionality
   function handleMouseDown(e: MouseEvent) {
-    if (e.target instanceof Element && e.target.closest('button')) return;
-    
+    // Only drag via the header (check if the event target is within the header)
+    const header = widgetElement.querySelector('.pip-header');
+    if (!header || !header.contains(e.target as Node)) return;
+
+    // Prevent dragging if clicking on buttons inside the header
+    if (e.target instanceof Element && e.target.closest('button')) return; 
+
     isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
     const rect = widgetElement.getBoundingClientRect();
-    offsetX = e.clientX - rect.left;
-    offsetY = e.clientY - rect.top;
+    initialLeft = rect.left;
+    initialTop = rect.top;
+
+    // Style changes for dragging state
     widgetElement.style.cursor = 'grabbing';
+    document.body.style.userSelect = 'none'; // Prevent text selection
+    widgetElement.style.bottom = 'auto'; // Ensure absolute positioning takes over
+    widgetElement.style.right = 'auto';
   }
   
   function handleMouseMove(e: MouseEvent) {
     if (!isDragging) return;
-    
-    widgetElement.style.left = `${e.clientX - offsetX}px`;
-    widgetElement.style.top = `${e.clientY - offsetY}px`;
-    widgetElement.style.bottom = 'auto';
-    widgetElement.style.right = 'auto';
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    widgetElement.style.left = `${initialLeft + dx}px`;
+    widgetElement.style.top = `${initialTop + dy}px`;
   }
   
   function handleMouseUp() {
-    isDragging = false;
-    if (widgetElement) widgetElement.style.cursor = 'grab';
+    if (isDragging) {
+      isDragging = false;
+      widgetElement.style.cursor = 'grab';
+      document.body.style.userSelect = ''; // Re-enable text selection
+    }
   }
   
   onMount(() => {
-    // Add event listeners
+    // Add event listeners to document for reliable drag tracking
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
     
+    // Initial cursor style
+    if (widgetElement) widgetElement.style.cursor = 'grab';
+
     // Clean up
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
+      // Reset body style if component is destroyed mid-drag
+      if (isDragging) {
+         document.body.style.userSelect = '';
+      }
     };
   });
 </script>
@@ -73,86 +102,56 @@
 {#if $pipVisible}
   <div
     bind:this={widgetElement}
-    on:mousedown={handleMouseDown}
-    class="pip-widget {minimized ? 'minimized' : ''} bg-gray-800 text-gray-100 rounded-2xl overflow-hidden squircle"
+    class="pip-widget {minimized ? 'minimized' : ''} bg-gray-800 text-gray-100 rounded-2xl overflow-hidden shadow-lg fixed bottom-4 right-4 z-50 squircle"
+    style="position: fixed; bottom: 1rem; right: 1rem; cursor: grab;"
+    role="region" 
+    aria-label="Quick Tools Widget"
     transition:fly={{ y: 20, duration: 300, easing: quintOut }}
   >
-    <div class="bg-indigo-600 text-white p-3 flex justify-between items-center">
-      <h3 class="font-medium">Quick Tools</h3>
+    <div class="pip-header bg-indigo-600 text-white p-2 flex justify-between items-center cursor-grab" on:mousedown={handleMouseDown}>
+      <h3 class="font-medium text-sm pl-2">Quick Tools</h3>
       <div>
         <button 
           on:click={minimizePip} 
-          class="p-1 text-white hover:bg-indigo-500 rounded-full"
-          aria-label="Minimize widget"
+          class="p-1 text-indigo-100 hover:bg-indigo-500 rounded-full focus:outline-none focus:ring-2 focus:ring-white"
+          aria-label={minimized ? 'Expand widget' : 'Minimize widget'}
         >
-          <i class="fas {minimized ? 'fa-expand' : 'fa-window-minimize'}"></i>
+          <i class="fas {minimized ? 'fa-expand' : 'fa-window-minimize'} w-3 h-3"></i>
         </button>
         <button 
           on:click={closePip} 
-          class="p-1 text-white hover:bg-indigo-500 rounded-full ml-1"
+          class="p-1 text-indigo-100 hover:bg-indigo-500 rounded-full ml-1 focus:outline-none focus:ring-2 focus:ring-white"
           aria-label="Close widget"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times w-3 h-3"></i>
         </button>
       </div>
     </div>
     
     {#if !minimized}
-      <div class="p-4">
-        <div class="grid grid-cols-2 gap-3 mb-4">
+      <div class="p-3 border-b border-gray-700">
+        <div class="grid grid-cols-4 gap-2">
           {#each tools as tool}
             <button
               on:click={() => setTool(tool.id)}
-              class="p-3 {tool.bgClass} rounded-lg {tool.textClass} {tool.hoverClass} flex flex-col items-center"
-              class:ring-2={$activeTool === tool.id}
-              class:ring-indigo-400={$activeTool === tool.id}
+              class="p-2 {tool.bgClass} rounded-lg {tool.textClass} {tool.hoverClass} flex flex-col items-center text-center transition duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 { $activeTool === tool.id ? 'ring-2 ring-white' : 'ring-0' }"
             >
-              <i class="fas {tool.icon} text-lg mb-1"></i>
-              <span class="text-xs">{tool.name}</span>
+              <i class="fas {tool.icon} text-base mb-1"></i>
+              <span class="text-xs font-medium">{tool.name}</span>
             </button>
           {/each}
         </div>
-        
-        {#if $activeTool === 'notes'}
-          <div class="bg-gray-700 p-3 rounded-lg">
-            <h4 class="text-xs font-medium text-gray-400 mb-2">Quick Note</h4>
-            <textarea class="w-full text-sm bg-gray-600 text-gray-100 border border-gray-500 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-indigo-500" rows="2" placeholder="Take a quick note..."></textarea>
-            <button class="mt-2 text-xs bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">Save</button>
-          </div>
-        {:else if $activeTool === 'timer'}
-          <div class="text-center p-3">
-            <div class="text-2xl font-bold mb-2 text-gray-100">25:00</div>
-            <div class="flex justify-center space-x-2">
-              <button class="px-3 py-1 bg-indigo-600 text-white rounded text-sm">Start</button>
-              <button class="px-3 py-1 bg-gray-600 text-gray-200 hover:bg-gray-500 rounded text-sm">Reset</button>
-            </div>
-          </div>
+      </div>
+      
+      <div class="p-2 tool-content-area">
+        {#if $activeTool === 'timer'}
+          <PipTimer />
         {:else if $activeTool === 'todo'}
-          <div class="p-1">
-            <div class="flex mb-2">
-              <input type="text" class="flex-1 text-sm bg-gray-600 text-gray-100 border border-gray-500 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 mr-2" placeholder="New task...">
-              <button class="px-3 py-1 bg-indigo-600 text-white rounded text-sm">Add</button>
-            </div>
-            <ul class="space-y-1 max-h-32 overflow-y-auto">
-              <li class="flex items-center text-sm p-1 text-gray-200">
-                <input type="checkbox" class="mr-2 form-checkbox bg-gray-600 border-gray-500 text-indigo-500 focus:ring-indigo-400">
-                <span>Complete JavaScript exercise</span>
-              </li>
-              <li class="flex items-center text-sm p-1 text-gray-200">
-                <input type="checkbox" class="mr-2 form-checkbox bg-gray-600 border-gray-500 text-indigo-500 focus:ring-indigo-400">
-                <span>Review lecture notes</span>
-              </li>
-            </ul>
-          </div>
+          <PipTodo />
+        {:else if $activeTool === 'notes'}
+          <PipNotes />
         {:else if $activeTool === 'calculator'}
-          <div class="text-center p-2">
-            <input type="text" class="w-full text-right mb-2 border-0 focus:ring-0 text-lg font-medium bg-gray-800 text-gray-100" value="0" readonly>
-            <div class="grid grid-cols-4 gap-1">
-              {#each ['7', '8', '9', '÷', '4', '5', '6', '×', '1', '2', '3', '-', '0', '.', '=', '+'] as key}
-                <button class="p-2 bg-gray-700 rounded text-sm font-medium text-gray-200 hover:bg-gray-600">{key}</button>
-              {/each}
-            </div>
-          </div>
+          <PipCalculator />
         {/if}
       </div>
     {/if}
@@ -161,11 +160,34 @@
 
 <style lang="postcss">
   .pip-widget {
-    /* Ensure transform is used for positioning */
+    width: 280px; /* Adjust width as needed */
     will-change: transform;
+    transition: width 0.2s ease-out, height 0.2s ease-out;
   }
   .pip-widget.minimized {
-     transition: width 0.3s ease-out, height 0.3s ease-out, border-radius 0.3s ease-out;
+     height: 44px; /* Adjust to match header height */
+     width: auto; /* Or a fixed minimized width */
+     overflow: hidden;
+  }
+  .tool-content-area {
+      min-height: 150px; /* Give it some default height */
+  }
+
+  /* Custom scrollbar for the content area - Dark Theme */
+  .tool-content-area ::-webkit-scrollbar {
+      width: 6px;
+  }
+  .tool-content-area ::-webkit-scrollbar-track {
+      background: transparent;
+  }
+  .tool-content-area ::-webkit-scrollbar-thumb {
+      background-color: rgba(156, 163, 175, 0.4); /* gray-400 with opacity */
+      border-radius: 3px;
+      border: 1px solid transparent;
+      background-clip: content-box;
+  }
+  .tool-content-area ::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(156, 163, 175, 0.6);
   }
 
   /* Add explicit Tailwind color classes for purging */
@@ -196,21 +218,4 @@
   .focus\:ring-purple-400:focus { --tw-ring-color: rgb(192 132 252 / var(--tw-ring-opacity)); }
   .border-purple-100 { --tw-border-opacity: 1; border-color: rgb(243 232 255 / var(--tw-border-opacity)); }
   .hover\:border-purple-200:hover { --tw-border-opacity: 1; border-color: rgb(233 213 255 / var(--tw-border-opacity)); }
-
-  /* Custom scrollbar for the content area - Dark Theme */
-  .overflow-y-auto::-webkit-scrollbar {
-      width: 6px;
-  }
-  .overflow-y-auto::-webkit-scrollbar-track {
-      background: transparent;
-  }
-  .overflow-y-auto::-webkit-scrollbar-thumb {
-      background-color: rgba(255, 255, 255, 0.2);
-      border-radius: 3px;
-      border: 1px solid transparent;
-  }
-  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-      background-color: rgba(255, 255, 255, 0.3);
-  }
-
 </style>

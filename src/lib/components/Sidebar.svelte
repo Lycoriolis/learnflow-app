@@ -24,7 +24,8 @@
         { name: 'Home', href: '/', icon: 'fa-home', authRequired: false },
         { name: 'My Courses', href: '/courses', icon: 'fa-book-open', authRequired: true },
         { name: 'Exercises', href: '/exercises', icon: 'fa-tasks', authRequired: true },
-        { name: 'Progress', href: '/progress', icon: 'fa-chart-line', authRequired: true }
+        { name: 'Progress', href: '/progress', icon: 'fa-chart-line', authRequired: true },
+        { name: 'Statistics', href: '/statistics', icon: 'fa-chart-pie', authRequired: true }
       ]
     },
     {
