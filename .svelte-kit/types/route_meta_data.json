@@ -1,5 +1,14 @@
 {
 	"/": [],
+	"/category/[slug]": [
+		"src/routes/category/[slug]/+page.ts"
+	],
 	"/courses": [],
-	"/settings": []
+	"/courses/[courseId]": [
+		"src/routes/courses/[courseId]/+page.ts"
+	],
+	"/exercises": [],
+	"/progress": [],
+	"/settings": [],
+	"/statistics": []
 }

@@ -15,8 +15,8 @@
 
 <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
   {#if $loading}
-    <div class="flex justify-center items-center min-h-[calc(100vh-200px)]">
-      <p class="text-gray-500">Loading...</p>
+    <div class="flex justify-center items-center min-h-[calc(100vh-200px)] text-4xl text-indigo-500">
+      <i class="fas fa-spinner fa-spin"></i>
     </div>
   {:else if $isAuthenticated && $user}
     <WelcomeBanner username={$user.given_name ?? $user.nickname ?? 'Learner'} />

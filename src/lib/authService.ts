@@ -12,8 +12,8 @@ async function getClient(): Promise<Auth0Client> {
 		clientId: PUBLIC_AUTH0_CLIENT_ID,
 		authorizationParams: {
 			redirect_uri: window.location.origin
-		}
-		// cacheLocation: 'localstorage' // Optional: Consider using local storage for better persistence
+		},
+		cacheLocation: 'localstorage' // Optional: Consider using local storage for better persistence
 	});
 
 	return client;
