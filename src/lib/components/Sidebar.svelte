@@ -26,7 +26,9 @@
         { name: 'Exercises', href: '/exercises', icon: 'fa-tasks', authRequired: true },
         { name: 'Progress', href: '/progress', icon: 'fa-chart-line', authRequired: true },
         { name: 'Statistics', href: '/statistics', icon: 'fa-chart-pie', authRequired: true },
-        { name: 'Chat Assistant', href: '/chat', icon: 'fa-robot', authRequired: false }
+        { name: 'Chat Assistant', href: '/chat', icon: 'fa-robot', authRequired: false },
+        { name: 'Useful Links', href: '/links', icon: 'fa-link', authRequired: false },
+        { name: 'Zen Space', href: '/zen', icon: 'fa-spa', authRequired: false }
       ]
     },
     {

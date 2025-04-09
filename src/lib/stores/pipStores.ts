@@ -76,6 +76,7 @@ export const calcCurrentInput = writable('');
 export const calcOperator = writable<string | null>(null);
 export const calcPreviousValue = writable<number | null>(null);
 export const calcWaitingForSecondOperand = writable(false);
+export const calculatorMode = writable<'basic' | 'scientific'>('basic'); // Added mode state
 
 // --- Chat Store ---
 export interface ChatMessage {
