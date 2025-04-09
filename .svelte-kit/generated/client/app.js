@@ -10,20 +10,33 @@ export const nodes = [
 	() => import('./nodes/6'),
 	() => import('./nodes/7'),
 	() => import('./nodes/8'),
-	() => import('./nodes/9')
+	() => import('./nodes/9'),
+	() => import('./nodes/10'),
+	() => import('./nodes/11'),
+	() => import('./nodes/12'),
+	() => import('./nodes/13'),
+	() => import('./nodes/14'),
+	() => import('./nodes/15'),
+	() => import('./nodes/16')
 ];
 
 export const server_loads = [];
 
 export const dictionary = {
-		"/": [2],
-		"/category/[slug]": [3],
-		"/courses": [4],
-		"/courses/[courseId]": [5],
-		"/exercises": [6],
-		"/progress": [7],
-		"/settings": [8],
-		"/statistics": [9]
+		"/": [3],
+		"/admin/courses": [4,[2]],
+		"/admin/courses/new": [6,[2]],
+		"/admin/courses/[courseId]": [5,[2]],
+		"/admin/settings": [7,[2]],
+		"/admin/statistics": [8,[2]],
+		"/admin/users": [9,[2]],
+		"/category/[slug]": [10],
+		"/courses": [11],
+		"/courses/[courseId]": [12],
+		"/exercises": [13],
+		"/progress": [14],
+		"/settings": [15],
+		"/statistics": [16]
 	};
 
 export const hooks = {
