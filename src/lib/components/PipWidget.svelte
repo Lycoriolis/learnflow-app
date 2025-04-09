@@ -9,13 +9,15 @@
   import PipTodo from './pip/PipTodo.svelte';
   import PipNotes from './pip/PipNotes.svelte';
   import PipCalculator from './pip/PipCalculator.svelte';
+  import ChatBot from './ChatBot.svelte'; // Import ChatBot component
   
   // Tools configuration - Updated for Dark Theme
   const tools = [
     { id: 'timer', name: 'Timer', icon: 'fa-stopwatch', bgClass: 'bg-indigo-800', textClass: 'text-indigo-100', hoverClass: 'hover:bg-indigo-700' },
     { id: 'todo', name: 'Todo', icon: 'fa-tasks', bgClass: 'bg-green-800', textClass: 'text-green-100', hoverClass: 'hover:bg-green-700' },
     { id: 'notes', name: 'Notes', icon: 'fa-sticky-note', bgClass: 'bg-blue-800', textClass: 'text-blue-100', hoverClass: 'hover:bg-blue-700' },
-    { id: 'calculator', name: 'Calculator', icon: 'fa-calculator', bgClass: 'bg-purple-800', textClass: 'text-purple-100', hoverClass: 'hover:bg-purple-700' }
+    { id: 'calculator', name: 'Calculator', icon: 'fa-calculator', bgClass: 'bg-purple-800', textClass: 'text-purple-100', hoverClass: 'hover:bg-purple-700' },
+    { id: 'chat', name: 'Chat', icon: 'fa-comments', bgClass: 'bg-teal-800', textClass: 'text-teal-100', hoverClass: 'hover:bg-teal-700' } // Added Chat
   ];
   
   let minimized = false;
@@ -130,7 +132,7 @@
     
     {#if !minimized}
       <div class="p-3 border-b border-gray-700">
-        <div class="grid grid-cols-4 gap-2">
+        <div class="grid grid-cols-5 gap-2">
           {#each tools as tool}
             <button
               on:click={() => setTool(tool.id)}
@@ -143,7 +145,7 @@
         </div>
       </div>
       
-      <div class="p-2 tool-content-area">
+      <div class="p-1 tool-content-area" style="min-height: 200px;">
         {#if $activeTool === 'timer'}
           <PipTimer />
         {:else if $activeTool === 'todo'}
@@ -152,6 +154,10 @@
           <PipNotes />
         {:else if $activeTool === 'calculator'}
           <PipCalculator />
+        {:else if $activeTool === 'chat'}
+          <div class="h-full">
+            <ChatBot /> 
+          </div>
         {/if}
       </div>
     {/if}
@@ -160,7 +166,7 @@
 
 <style lang="postcss">
   .pip-widget {
-    width: 280px; /* Adjust width as needed */
+    width: 320px; /* Adjusted width slightly for 5 icons */
     will-change: transform;
     transition: width 0.2s ease-out, height 0.2s ease-out;
   }

@@ -76,3 +76,14 @@ export const calcCurrentInput = writable('');
 export const calcOperator = writable<string | null>(null);
 export const calcPreviousValue = writable<number | null>(null);
 export const calcWaitingForSecondOperand = writable(false);
+
+// --- Chat Store ---
+export interface ChatMessage {
+	id: string;
+	text: string;
+	sender: 'user' | 'bot';
+	timestamp: number;
+}
+
+// Store an array of chat messages (persistent)
+export const chatMessages = persistentStore<ChatMessage[]>('learnflow-chat-messages', []);
