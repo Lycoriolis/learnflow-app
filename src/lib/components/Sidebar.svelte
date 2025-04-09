@@ -5,6 +5,11 @@
   import { isAuthenticated, user, loading } from '$lib/stores/authStore.js';
   import { login } from '$lib/authService.js'; // Import login function if needed for a button
 
+  // --- Temporary Admin Check (Replace with proper role check) ---
+  const ADMIN_EMAIL = 'admin@example.com'; // <-- !!! REPLACE with your test admin email !!!
+  $: isAdmin = $isAuthenticated && $user?.email === ADMIN_EMAIL;
+  // --------------------------------------------------------------
+
   type NavItem = {
     name: string;
     href: string;
@@ -37,6 +42,19 @@
         { name: 'Science', href: '/category/science', icon: 'fa-flask', authRequired: false }
       ]
     }
+  ];
+  
+  // Add Admin navigation section
+  const adminNavigation: NavCategory[] = [
+      {
+        title: 'Management',
+        items: [
+           { name: 'Manage Courses', href: '/admin/courses', icon: 'fa-chalkboard-teacher', authRequired: true },
+           { name: 'Manage Users', href: '/admin/users', icon: 'fa-users-cog', authRequired: true },
+           { name: 'Site Settings', href: '/admin/settings', icon: 'fa-cog', authRequired: true },
+           { name: 'Site Statistics', href: '/admin/statistics', icon: 'fa-chart-bar', authRequired: true }
+        ]
+      }
   ];
   
   let mobileMenuOpen = false;
@@ -103,6 +121,34 @@
         </ul>
       </div>
     {/each}
+
+    <!-- Conditional Admin Section -->
+    {#if isAdmin}
+        <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+             {#each adminNavigation as category}
+              <div class="mb-6">
+                <div class="flex items-center justify-between mb-2">
+                  <h2 class="text-xs font-semibold text-red-500 dark:text-red-400 uppercase tracking-wider">Admin: {category.title}</h2>
+                </div>
+                <ul>
+                  {#each category.items as item}
+                      <li class="mb-1">
+                        <a 
+                          href={item.href} 
+                          class="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out {path === item.href 
+                            ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200' 
+                            : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100'}"
+                        >
+                          <i class="fas {item.icon} mr-3 w-5 text-center"></i>
+                          <span>{item.name}</span>
+                        </a>
+                      </li>
+                  {/each}
+                </ul>
+              </div>
+            {/each}
+        </div>
+    {/if}
     
     <!-- Bottom Account Section (Conditional) -->
     <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 dark:border-gray-700">
