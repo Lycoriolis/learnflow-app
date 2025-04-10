@@ -7,8 +7,10 @@
   import PipWidget from '$lib/components/PipWidget.svelte';
   import CourseModal from '$lib/components/CourseModal.svelte';
   import Footer from '$lib/components/Footer.svelte';
+  // import PersistentMusicPlayer from '$lib/components/PersistentMusicPlayer.svelte'; // REMOVED
   import { pipVisible } from '$lib/stores/pipStores.js';
   import { handleRedirectCallback } from '$lib/authService.js'; // Import Auth0 handler
+  import '$lib/musicService.js'; // Import service to initialize it
 
   // Initialize Auth0
   onMount(async () => {
@@ -29,13 +31,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </svelte:head>
 
-<div class="min-h-screen">
+<div class="min-h-screen relative">
   <Sidebar />
   
   <div class="lg:ml-64">
     <Header onTogglePip={togglePip} />
     
-    <main>
+    <main class="min-h-[calc(100vh-120px)]">
       <slot />
     </main>
     

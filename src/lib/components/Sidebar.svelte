@@ -4,6 +4,11 @@
   // Import auth state
   import { isAuthenticated, user, loading } from '$lib/stores/authStore.js';
   import { login } from '$lib/authService.js'; // Import login function if needed for a button
+  import PersistentMusicPlayer from '$lib/components/PersistentMusicPlayer.svelte'; // Import player
+  import type { User } from '@auth0/auth0-spa-js'; // Import User type
+
+  // Reactive variable to check if the user is an admin
+  $: isAdmin = $user ? ($user['https://learnflow.com/roles'] as string[])?.includes('admin') : false;
 
   type NavItem = {
     name: string;
@@ -73,42 +78,57 @@
 
 <!-- Sidebar -->
 <div id="sidebar" class="sidebar w-64 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 shadow-lg fixed h-full z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
-  <div class="p-4">
-    <div class="flex items-center mb-6 pt-2 pb-4 border-b border-gray-200 dark:border-gray-700">
+  <!-- Use Flexbox column for vertical layout -->
+  <div class="flex flex-col h-full p-4">
+    <!-- Top Logo/Title (Shrink 0) -->
+    <div class="flex items-center mb-6 pt-2 pb-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
       <div class="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center mr-3">
         <i class="fas fa-graduation-cap text-white"></i>
       </div>
       <h1 class="text-xl font-bold text-gray-800 dark:text-indigo-300">LearnFlow</h1>
     </div>
     
-    {#each navigation as category}
-      <div class="mb-6">
-        <div class="flex items-center justify-between mb-2">
-          <h2 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{category.title}</h2>
+    <!-- Navigation Links (Grow & Scrollable) -->
+    <div class="flex-grow overflow-y-auto mb-4 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
+      {#each navigation as category}
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{category.title}</h2>
+          </div>
+          <ul>
+            {#each category.items as item}
+              <!-- Conditionally render based on authRequired flag -->
+              {#if !item.authRequired || $isAuthenticated}
+                <li class="mb-1">
+                  <a 
+                    href={item.href} 
+                    class="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out {path === item.href 
+                      ? 'bg-indigo-100 dark:bg-indigo-700 text-indigo-700 dark:text-indigo-100' 
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100'}"
+                  >
+                    <i class="fas {item.icon} mr-3 w-5 text-center"></i>
+                    <span>{item.name}</span>
+                  </a>
+                </li>
+              {/if}
+            {/each}
+          </ul>
         </div>
-        <ul>
-          {#each category.items as item}
-            <!-- Conditionally render based on authRequired flag -->
-            {#if !item.authRequired || $isAuthenticated}
-              <li class="mb-1">
-                <a 
-                  href={item.href} 
-                  class="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out {path === item.href 
-                    ? 'bg-indigo-100 dark:bg-indigo-700 text-indigo-700 dark:text-indigo-100' 
-                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100'}"
-                >
-                  <i class="fas {item.icon} mr-3 w-5 text-center"></i>
-                  <span>{item.name}</span>
-                </a>
-              </li>
-            {/if}
-          {/each}
-        </ul>
-      </div>
-    {/each}
+      {/each}
+      
+      <!-- Conditional Admin Section -->
+      {#if isAdmin}
+        <!-- ... admin navigation ... -->
+      {/if}
+    </div> <!-- End Scrollable Area -->
     
-    <!-- Bottom Account Section (Conditional) -->
-    <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 dark:border-gray-700">
+    <!-- Music Player (Shrink 0, placed above account section) -->
+    <div class="mb-4 flex-shrink-0">
+      <PersistentMusicPlayer />
+    </div>
+
+    <!-- Bottom Account Section (Shrink 0) -->
+    <div class="border-t border-gray-200 dark:border-gray-700 pt-4 flex-shrink-0">
       {#if $loading}
         <div class="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg animate-pulse">
           <div class="flex items-center mb-2">
@@ -159,4 +179,10 @@
       transform: translateX(0);
     }
   }
+
+  /* Ensure scrollbar style targets the correct element if needed */
+  .scrollbar-thin::-webkit-scrollbar { width: 5px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background-color: rgba(156, 163, 175, 0.4); border-radius: 10px; border: 1px solid transparent; background-clip: content-box; }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover { background-color: rgba(156, 163, 175, 0.6); }
 </style>
