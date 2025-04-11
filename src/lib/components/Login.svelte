@@ -2,6 +2,9 @@
   import { login, loginWithGoogle } from '$lib/authService.js';
   import { loading, authError } from '$lib/stores/authStore.js';
   
+  // Accept redirect parameter to forward users after login
+  export let redirectTo = '/';
+  
   let email = '';
   let password = '';
   let localError = '';
@@ -16,6 +19,7 @@
     try {
       await login(email, password);
       // Login successful - redirect will be handled by the auth state listener
+      console.log(`Login successful, will redirect to: ${redirectTo}`);
     } catch (err) {
       // Error is already handled and set in the authError store
     }
@@ -25,6 +29,7 @@
     try {
       await loginWithGoogle();
       // Login successful - redirect will be handled by the auth state listener
+      console.log(`Google login successful, will redirect to: ${redirectTo}`);
     } catch (err) {
       // Error is already handled and set in the authError store
     }
@@ -33,6 +38,12 @@
 
 <div class="w-full max-w-md mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
   <h2 class="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white">Log In</h2>
+  
+  {#if redirectTo && redirectTo !== '/'}
+    <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded mb-4" role="alert">
+      <span class="block sm:inline">You'll be redirected to the requested page after login.</span>
+    </div>
+  {/if}
   
   {#if $authError}
     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">

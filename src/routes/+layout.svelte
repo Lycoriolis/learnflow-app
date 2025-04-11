@@ -9,10 +9,30 @@
   import Footer from '$lib/components/Footer.svelte';
   import { pipVisible } from '$lib/stores/pipStores.js';
   import { initAuth } from '$lib/authService.js'; // Import Firebase auth initializer
+  import { isAuthenticated, user } from '$lib/stores/authStore.js';
 
   // Initialize Firebase Authentication
   onMount(() => {
+    console.log('Root layout mounted - initializing Firebase authentication');
     initAuth();
+    
+    // Set up subscription to auth state for debugging
+    const unsubAuth = isAuthenticated.subscribe(value => {
+      console.log('Auth state changed in root layout:', value ? 'Authenticated' : 'Not authenticated');
+    });
+    
+    const unsubUser = user.subscribe(value => {
+      console.log('User state changed in root layout:', value ? 
+        { email: value.email, displayName: value.displayName, uid: value.uid } : 
+        'No user');
+    });
+    
+    return () => {
+      // Cleanup subscriptions
+      unsubAuth();
+      unsubUser();
+      console.log('Root layout unmounted - cleaned up auth subscriptions');
+    };
   });
 
   // Toggle PIP widget visibility
