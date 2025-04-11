@@ -9,10 +9,15 @@ import {
 	signInWithPopup,
 	type User,
 	type UserCredential,
-	type AuthError
+	type AuthError,
+	type Auth
 } from 'firebase/auth';
-import { auth } from './firebase.js';
+import { auth as firebaseAuth } from './firebase.js';
 import { isAuthenticated, user, loading, authError } from './stores/authStore.js';
+
+// Explicitly type the imported firebaseAuth. It's likely 'any' because firebase.ts 
+// might return a mock object on error.
+const auth: Auth = firebaseAuth as Auth;
 
 // Flag to track if auth initialization has completed
 let authInitialized = false;
@@ -172,7 +177,7 @@ function getCurrentUser(): User | null {
 function isUserAdmin(userEmail: string | null | undefined): boolean {
 	if (!userEmail) return false;
 	// In a real app, you would use Firebase custom claims or Firestore
-	return userEmail === 'admin@example.com';
+	return userEmail === 'beeelhaj@gmail.com'; // Set admin email as requested
 }
 
 export {
