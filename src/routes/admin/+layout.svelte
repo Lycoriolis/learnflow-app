@@ -35,7 +35,9 @@
   // Current section title based on route
   $: currentSection = (() => {
     const path = $page.url.pathname;
-    if (path.includes('/admin/courses')) return 'Manage Courses';
+    if (path.startsWith('/admin/courses')) return 'Manage Courses';
+    if (path.startsWith('/admin/users')) return 'Manage Users';
+    if (path.startsWith('/admin/settings')) return 'Settings';
     // Add other sections here if needed later
     return 'Admin Area';
   })();

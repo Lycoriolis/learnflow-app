@@ -17,13 +17,14 @@
   const navItems = [
     //{ icon: 'fa-tachometer-alt', label: 'Dashboard', path: '/admin' },
     { icon: 'fa-book-open', label: 'Manage Courses', path: '/admin/courses' },
-    //{ icon: 'fa-users', label: 'Manage Users', path: '/admin/users' },
+    { icon: 'fa-users', label: 'Manage Users', path: '/admin/users' },
     //{ icon: 'fa-chart-bar', label: 'Analytics', path: '/admin/statistics' },
-    //{ icon: 'fa-cog', label: 'Settings', path: '/admin/settings' },
+    { icon: 'fa-cog', label: 'Settings', path: '/admin/settings' },
   ];
 
   function isCurrent(path: string): boolean {
-    return currentPath === path || (path !== '/admin' && currentPath.startsWith(path));
+    // Highlight parent path if viewing a sub-route, e.g., /admin/courses/edit/some-id
+    return currentPath === path || currentPath.startsWith(path + '/');
   }
 </script>
 
