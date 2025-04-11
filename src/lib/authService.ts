@@ -14,13 +14,21 @@ import {
 import { auth } from './firebase.js';
 import { isAuthenticated, user, loading, authError } from './stores/authStore.js';
 
+// Flag to track if auth initialization has completed
+let authInitialized = false;
+
 // Initialize the auth listener
 function initAuth() {
+	if (authInitialized) {
+		console.log('Auth already initialized, skipping');
+		return;
+	}
+	
 	loading.set(true);
 	console.log('Initializing auth listener');
 	
 	// Set up an observer to watch for auth state changes
-	onAuthStateChanged(auth, 
+	const unsubscribe = onAuthStateChanged(auth, 
 		(userData: User | null) => {
 			if (userData) {
 				console.log('Auth state changed: User authenticated', {
@@ -36,13 +44,18 @@ function initAuth() {
 				user.set(null);
 			}
 			loading.set(false);
+			authInitialized = true;
 		}, 
 		(error: Error) => {
 			console.error('Auth state change error:', error);
 			authError.set(error.message);
 			loading.set(false);
+			authInitialized = true;
 		}
 	);
+	
+	// Return unsubscribe function in case we need to detach the listener
+	return unsubscribe;
 }
 
 // Register a new user with email and password
@@ -155,6 +168,13 @@ function getCurrentUser(): User | null {
 	return currentUser;
 }
 
+// Check if a user is admin
+function isUserAdmin(userEmail: string | null | undefined): boolean {
+	if (!userEmail) return false;
+	// In a real app, you would use Firebase custom claims or Firestore
+	return userEmail === 'admin@example.com';
+}
+
 export {
 	initAuth,
 	register,
@@ -162,5 +182,6 @@ export {
 	loginWithGoogle,
 	logout,
 	resetPassword,
-	getCurrentUser
+	getCurrentUser,
+	isUserAdmin
 }; 

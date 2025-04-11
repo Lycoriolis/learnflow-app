@@ -41,7 +41,7 @@
   
   {#if redirectTo && redirectTo !== '/'}
     <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded mb-4" role="alert">
-      <span class="block sm:inline">You'll be redirected to the requested page after login.</span>
+      <span class="block sm:inline">You'll be redirected to <span class="font-semibold">{redirectTo}</span> after login.</span>
     </div>
   {/if}
   

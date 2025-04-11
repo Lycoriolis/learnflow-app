@@ -10,21 +10,24 @@
   import { pipVisible } from '$lib/stores/pipStores.js';
   import { initAuth } from '$lib/authService.js'; // Import Firebase auth initializer
   import { isAuthenticated, user } from '$lib/stores/authStore.js';
+  import { page } from '$app/stores';
 
   // Initialize Firebase Authentication
   onMount(() => {
     console.log('Root layout mounted - initializing Firebase authentication');
     initAuth();
     
-    // Set up subscription to auth state for debugging
+    // Set up subscription to auth state for debugging only, no redirects here
     const unsubAuth = isAuthenticated.subscribe(value => {
       console.log('Auth state changed in root layout:', value ? 'Authenticated' : 'Not authenticated');
+      // Do not redirect here - let the specific pages handle their own redirects
     });
     
     const unsubUser = user.subscribe(value => {
       console.log('User state changed in root layout:', value ? 
         { email: value.email, displayName: value.displayName, uid: value.uid } : 
         'No user');
+      // Do not trigger navigations from the root layout subscription
     });
     
     return () => {
