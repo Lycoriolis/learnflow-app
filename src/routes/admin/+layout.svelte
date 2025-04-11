@@ -13,12 +13,40 @@
   $: isAdmin = $isAuthenticated && $user?.email === ADMIN_EMAIL;
   
   let checked = false;
+  let authError = '';
+  
+  // Verify admin access on mount
+  onMount(() => {
+    console.log('Admin layout mounted');
+    console.log('Auth state:', { 
+      isAuthenticated: $isAuthenticated, 
+      user: $user ? { email: $user.email, displayName: $user.displayName } : 'No user',
+      loading: $loading,
+      isAdmin
+    });
+
+    return () => {
+      // Reset on unmount
+      checked = false;
+    };
+  });
   
   // Check if user has admin access
   $: if (!$loading && !checked) {
     checked = true;
-    if (!isAdmin) {
+    console.log('Admin access check:', { 
+      isAuthenticated: $isAuthenticated, 
+      user: $user ? { email: $user.email } : 'No user',
+      isAdmin 
+    });
+    
+    if (!$isAuthenticated) {
+      console.warn('User not authenticated, redirecting to login');
+      authError = 'Please log in to access admin area';
+      goto('/login?redirect=' + encodeURIComponent($page.url.pathname));
+    } else if (!isAdmin) {
       console.warn('Non-admin user attempting to access admin area.');
+      authError = 'You do not have admin privileges';
       goto('/');
     }
   }
@@ -89,7 +117,9 @@
         <i class="fas fa-lock text-red-600 dark:text-red-400 text-2xl"></i>
       </div>
       <h1 class="text-2xl font-bold text-red-600 dark:text-red-400 mb-2">Access Denied</h1>
-      <p class="text-gray-600 dark:text-gray-400 mb-6">You don't have permission to access the admin area.</p>
+      <p class="text-gray-600 dark:text-gray-400 mb-6">
+        {authError || "You don't have permission to access the admin area."}
+      </p>
       <a href="/" class="inline-block px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-md transition duration-150">
         Return to Homepage
       </a>

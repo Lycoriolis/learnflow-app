@@ -3,13 +3,22 @@
   import { isAuthenticated, loading } from '$lib/stores/authStore.js';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
+  import { page } from '$app/stores';
+
+  // Get the redirect parameter if present
+  $: redirectTo = $page.url.searchParams.get('redirect') || '/';
 
   onMount(() => {
-    // Redirect to home if already authenticated
+    // Redirect to home or specified redirect path if already authenticated
     if ($isAuthenticated) {
-      goto('/');
+      goto(redirectTo);
     }
   });
+
+  // Watch for authentication status changes
+  $: if (!$loading && $isAuthenticated) {
+    goto(redirectTo);
+  }
 </script>
 
 <svelte:head>
@@ -23,6 +32,6 @@
       <p class="mt-4 text-gray-600 dark:text-gray-400">Loading...</p>
     </div>
   {:else}
-    <Login />
+    <Login {redirectTo} />
   {/if}
 </div> 
