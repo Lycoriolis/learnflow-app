@@ -15,7 +15,10 @@
 		"src/routes/courses/[courseId]/+page.ts"
 	],
 	"/exercises": [],
+	"/login": [],
 	"/progress": [],
+	"/register": [],
+	"/reset-password": [],
 	"/settings": [],
 	"/statistics": []
 }

@@ -17,7 +17,10 @@ export const nodes = [
 	() => import('./nodes/13'),
 	() => import('./nodes/14'),
 	() => import('./nodes/15'),
-	() => import('./nodes/16')
+	() => import('./nodes/16'),
+	() => import('./nodes/17'),
+	() => import('./nodes/18'),
+	() => import('./nodes/19')
 ];
 
 export const server_loads = [];
@@ -34,9 +37,12 @@ export const dictionary = {
 		"/courses": [11],
 		"/courses/[courseId]": [12],
 		"/exercises": [13],
-		"/progress": [14],
-		"/settings": [15],
-		"/statistics": [16]
+		"/login": [14],
+		"/progress": [15],
+		"/register": [16],
+		"/reset-password": [17],
+		"/settings": [18],
+		"/statistics": [19]
 	};
 
 export const hooks = {

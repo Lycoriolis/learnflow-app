@@ -4,6 +4,7 @@
   // Import auth state
   import { isAuthenticated, user, loading } from '$lib/stores/authStore.js';
   import { login } from '$lib/authService.js'; // Import login function if needed for a button
+  import { goto } from '$app/navigation';
 
   // --- Temporary Admin Check (Replace with proper role check) ---
   const ADMIN_EMAIL = 'admin@example.com'; // <-- !!! REPLACE with your test admin email !!!
@@ -68,6 +69,10 @@
   }
   
   $: path = $page.url.pathname;
+  
+  function navigateToLogin() {
+    goto('/login');
+  }
   
   onMount(() => {
     sidebarElement = document.getElementById('sidebar') as HTMLElement;
@@ -163,14 +168,10 @@
       {:else if $isAuthenticated && $user}
         <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
           <div class="flex items-center mb-3">
-            {#if $user.picture}
-              <img src={$user.picture} alt="{$user.name ?? 'User'}'s profile" class="w-8 h-8 rounded-full mr-2 object-cover"/>
-            {:else}
-              <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center mr-2 text-white text-sm font-medium">
-                {$user.name?.charAt(0).toUpperCase() ?? 'U'}
-              </div>
-            {/if}
-            <span class="font-medium text-sm text-gray-800 dark:text-gray-100 truncate">{$user.nickname ?? $user.name ?? 'User'}</span>
+            <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center mr-2 text-white text-sm font-medium">
+              {$user.displayName?.charAt(0).toUpperCase() ?? $user.email?.charAt(0).toUpperCase() ?? 'U'}
+            </div>
+            <span class="font-medium text-sm text-gray-800 dark:text-gray-100 truncate">{$user.displayName ?? $user.email ?? 'User'}</span>
           </div>
           <a href="/settings" class="w-full py-2 px-3 bg-gray-200 dark:bg-gray-700 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 block text-center transition duration-150">
             Account Settings
@@ -182,7 +183,7 @@
            <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">Log in to track your progress and access personalized features.</p>
            <button 
              class="w-full py-2 px-3 bg-indigo-600 hover:bg-indigo-700 rounded-md text-sm font-medium text-white transition duration-150"
-             on:click={login}
+             on:click={navigateToLogin}
             >
              Log In / Sign Up
            </button>

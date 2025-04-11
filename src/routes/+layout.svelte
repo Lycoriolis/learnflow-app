@@ -8,11 +8,11 @@
   import CourseModal from '$lib/components/CourseModal.svelte';
   import Footer from '$lib/components/Footer.svelte';
   import { pipVisible } from '$lib/stores/pipStores.js';
-  import { handleRedirectCallback } from '$lib/authService.js'; // Import Auth0 handler
+  import { initAuth } from '$lib/authService.js'; // Import Firebase auth initializer
 
-  // Initialize Auth0
-  onMount(async () => {
-    await handleRedirectCallback();
+  // Initialize Firebase Authentication
+  onMount(() => {
+    initAuth();
   });
 
   // Toggle PIP widget visibility
