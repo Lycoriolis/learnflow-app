@@ -43,6 +43,7 @@ async function checkAuth(): Promise<void> {
 async function login(): Promise<void> {
 	const authClient = await getClient();
 	try {
+		console.log('Login initiating with redirect_uri:', window.location.origin);
 		await authClient.loginWithRedirect();
 	} catch (err) {
 		console.error('Login error:', err);
@@ -69,6 +70,7 @@ async function handleRedirectCallback(): Promise<void> {
 	loading.set(true);
 	try {
 		const authClient = await getClient();
+		console.log('Handling redirect callback from origin:', window.location.origin);
 		// Check if the URL contains auth parameters
 		const params = new URLSearchParams(window.location.search);
 		if (params.has('code') && params.has('state')) {
