@@ -5,9 +5,6 @@
 	"/admin/courses": [],
 	"/admin/courses/new": [],
 	"/admin/courses/[courseId]": [],
-	"/admin/settings": [],
-	"/admin/statistics": [],
-	"/admin/users": [],
 	"/admin/users/new": [],
 	"/category/[slug]": [
 		"src/routes/category/[slug]/+page.ts"
