@@ -7,7 +7,7 @@
   import { goto } from '$app/navigation';
 
   // --- Temporary Admin Check (Replace with proper role check) ---
-  const ADMIN_EMAIL = 'admin@example.com'; // <-- !!! REPLACE with your test admin email !!!
+  const ADMIN_EMAIL = 'beeelhaj@gmail.com'; // <-- !!! REPLACE with your test admin email !!!
   $: isAdmin = $isAuthenticated && $user?.email === ADMIN_EMAIL;
   // --------------------------------------------------------------
 
