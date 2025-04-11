@@ -1,10 +1,15 @@
 <script lang="ts">
   import { pipVisible } from '$lib/stores/pipStores.js';
   import { isAuthenticated, user, loading } from '$lib/stores/authStore.js';
-  import { login, logout } from '$lib/authService.js';
+  import { logout } from '$lib/authService.js';
   import { slide } from 'svelte/transition';
+  import { goto } from '$app/navigation';
 
   export let onTogglePip = () => pipVisible.update((v: boolean) => !v);
+  
+  function navigateToLogin() {
+    goto('/login');
+  }
 </script>
 
 <header class="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
@@ -43,13 +48,9 @@
         <div class="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
       {:else if $isAuthenticated && $user}
         <div class="flex items-center space-x-3">
-          {#if $user.picture}
-            <img src={$user.picture} alt="{$user.name ?? 'User'}'s profile" class="h-8 w-8 rounded-full object-cover"/>
-          {:else}
-            <div class="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-medium">
-              {$user.name?.charAt(0).toUpperCase() ?? 'U'}
-            </div>
-          {/if}
+          <div class="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-medium">
+            {$user.displayName?.charAt(0).toUpperCase() ?? $user.email?.charAt(0).toUpperCase() ?? 'U'}
+          </div>
           <button 
             class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
             on:click={logout}
@@ -60,7 +61,7 @@
       {:else}
         <button 
           class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
-          on:click={login}
+          on:click={navigateToLogin}
         >
           Log in
         </button>

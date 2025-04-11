@@ -1,0 +1,28 @@
+<script lang="ts">
+  import Register from '$lib/components/Register.svelte';
+  import { isAuthenticated, loading } from '$lib/stores/authStore.js';
+  import { goto } from '$app/navigation';
+  import { onMount } from 'svelte';
+
+  onMount(() => {
+    // Redirect to home if already authenticated
+    if ($isAuthenticated) {
+      goto('/');
+    }
+  });
+</script>
+
+<svelte:head>
+  <title>Sign Up - LearnFlow</title>
+</svelte:head>
+
+<div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+  {#if $loading}
+    <div class="flex flex-col items-center justify-center">
+      <div class="w-16 h-16 border-4 border-t-blue-500 border-blue-200 rounded-full animate-spin"></div>
+      <p class="mt-4 text-gray-600 dark:text-gray-400">Loading...</p>
+    </div>
+  {:else}
+    <Register />
+  {/if}
+</div> 

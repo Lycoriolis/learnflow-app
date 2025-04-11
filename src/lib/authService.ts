@@ -1,96 +1,133 @@
-import { Auth0Client, createAuth0Client } from '@auth0/auth0-spa-js';
-import { isAuthenticated, user, loading } from './stores/authStore.js';
-import { PUBLIC_AUTH0_DOMAIN, PUBLIC_AUTH0_CLIENT_ID } from '$env/static/public';
+import { 
+	createUserWithEmailAndPassword,
+	signInWithEmailAndPassword,
+	signOut as firebaseSignOut,
+	onAuthStateChanged,
+	sendPasswordResetEmail,
+	updateProfile,
+	GoogleAuthProvider,
+	signInWithPopup,
+	type User,
+	type UserCredential,
+	type AuthError
+} from 'firebase/auth';
+import { auth } from './firebase.js';
+import { isAuthenticated, user, loading, authError } from './stores/authStore.js';
 
-let client: Auth0Client;
-
-async function getClient(): Promise<Auth0Client> {
-	if (client) return client;
-
-	client = await createAuth0Client({
-		domain: PUBLIC_AUTH0_DOMAIN,
-		clientId: PUBLIC_AUTH0_CLIENT_ID,
-		authorizationParams: {
-			redirect_uri: window.location.origin
-		},
-		cacheLocation: 'localstorage' // Optional: Consider using local storage for better persistence
-	});
-
-	return client;
-}
-
-async function checkAuth(): Promise<void> {
+// Initialize the auth listener
+function initAuth() {
 	loading.set(true);
-	try {
-		const authClient = await getClient();
-		const authenticated = await authClient.isAuthenticated();
-		isAuthenticated.set(authenticated);
-		if (authenticated) {
-			const userData = await authClient.getUser();
-			user.set(userData ?? null); // Set user data or null if undefined
-		} else {
-			user.set(null); // Clear user data if not authenticated
-		}
-	} catch (err) {
-		console.error('Auth check error:', err);
-		isAuthenticated.set(false);
-		user.set(null);
-	} finally {
-		loading.set(false);
-	}
-}
-
-async function login(): Promise<void> {
-	const authClient = await getClient();
-	try {
-		console.log('Login initiating with redirect_uri:', window.location.origin);
-		await authClient.loginWithRedirect();
-	} catch (err) {
-		console.error('Login error:', err);
-	}
-}
-
-async function logout(): Promise<void> {
-	const authClient = await getClient();
-	try {
-		await authClient.logout({
-			logoutParams: {
-				returnTo: window.location.origin
+	// Set up an observer to watch for auth state changes
+	onAuthStateChanged(auth, 
+		(userData: User | null) => {
+			if (userData) {
+				isAuthenticated.set(true);
+				user.set(userData);
+			} else {
+				isAuthenticated.set(false);
+				user.set(null);
 			}
-		});
-		isAuthenticated.set(false);
-		user.set(null);
-	} catch (err) {
-		console.error('Logout error:', err);
-	}
+			loading.set(false);
+		}, 
+		(error: Error) => {
+			console.error('Auth state change error:', error);
+			authError.set(error.message);
+			loading.set(false);
+		}
+	);
 }
 
-// Function to handle the redirect callback
-async function handleRedirectCallback(): Promise<void> {
+// Register a new user with email and password
+async function register(email: string, password: string, displayName: string): Promise<void> {
 	loading.set(true);
+	authError.set(null);
 	try {
-		const authClient = await getClient();
-		console.log('Handling redirect callback from origin:', window.location.origin);
-		// Check if the URL contains auth parameters
-		const params = new URLSearchParams(window.location.search);
-		if (params.has('code') && params.has('state')) {
-			await authClient.handleRedirectCallback();
-			// Update auth state after handling callback
-			await checkAuth();
-			// Clean the URL
-			window.history.replaceState({}, document.title, window.location.pathname);
-		} else {
-			// If no auth params, just check the current auth state
-			await checkAuth();
+		const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+		// Update the user profile with display name
+		if (userCredential.user) {
+			await updateProfile(userCredential.user, { displayName });
 		}
-	} catch (err) {
-		console.error('Redirect callback error:', err);
-		isAuthenticated.set(false);
-		user.set(null);
+	} catch (error: any) {
+		console.error('Registration error:', error);
+		authError.set(error.message);
+		throw error;
 	} finally {
 		loading.set(false);
 	}
 }
 
+// Login with email and password
+async function login(email: string, password: string): Promise<void> {
+	loading.set(true);
+	authError.set(null);
+	try {
+		await signInWithEmailAndPassword(auth, email, password);
+	} catch (error: any) {
+		console.error('Login error:', error);
+		authError.set(error.message);
+		throw error;
+	} finally {
+		loading.set(false);
+	}
+}
 
-export { getClient, checkAuth, login, logout, handleRedirectCallback }; 
+// Sign in with Google
+async function loginWithGoogle(): Promise<void> {
+	loading.set(true);
+	authError.set(null);
+	try {
+		const provider = new GoogleAuthProvider();
+		await signInWithPopup(auth, provider);
+	} catch (error: any) {
+		console.error('Google sign-in error:', error);
+		authError.set(error.message);
+		throw error;
+	} finally {
+		loading.set(false);
+	}
+}
+
+// Logout the user
+async function logout(): Promise<void> {
+	loading.set(true);
+	authError.set(null);
+	try {
+		await firebaseSignOut(auth);
+	} catch (error: any) {
+		console.error('Logout error:', error);
+		authError.set(error.message);
+		throw error;
+	} finally {
+		loading.set(false);
+	}
+}
+
+// Reset password
+async function resetPassword(email: string): Promise<void> {
+	loading.set(true);
+	authError.set(null);
+	try {
+		await sendPasswordResetEmail(auth, email);
+	} catch (error: any) {
+		console.error('Password reset error:', error);
+		authError.set(error.message);
+		throw error;
+	} finally {
+		loading.set(false);
+	}
+}
+
+// Get current user
+function getCurrentUser(): User | null {
+	return auth.currentUser;
+}
+
+export {
+	initAuth,
+	register,
+	login,
+	loginWithGoogle,
+	logout,
+	resetPassword,
+	getCurrentUser
+}; 
