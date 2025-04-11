@@ -5,76 +5,56 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import AdminSidebar from './AdminSidebar.svelte';
+  import { isUserAdmin } from '$lib/authService.js';
 
-  // Admin check based on Firebase Authentication
-  // In a real app, you would use Firebase custom claims or Firestore
-  // to store and verify admin roles more securely
-  const ADMIN_EMAIL = 'admin@example.com';
-  $: isAdmin = $isAuthenticated && $user?.email === ADMIN_EMAIL;
-  
-  let checked = false;
-  let authError = '';
-  
-  // Verify admin access on mount
-  onMount(() => {
-    console.log('Admin layout mounted');
-    console.log('Auth state:', { 
-      isAuthenticated: $isAuthenticated, 
-      user: $user ? { email: $user.email, displayName: $user.displayName } : 'No user',
-      loading: $loading,
-      isAdmin
-    });
+  let hasChecked = false;
+  let accessGranted = false;
+  let errorMessage = '';
 
-    return () => {
-      // Reset on unmount
-      checked = false;
-    };
-  });
-  
-  // Check if user has admin access
-  $: if (!$loading && !checked) {
-    checked = true;
-    console.log('Admin access check:', { 
-      isAuthenticated: $isAuthenticated, 
-      user: $user ? { email: $user.email } : 'No user',
-      isAdmin 
-    });
+  $: if (!$loading && !hasChecked) {
+    hasChecked = true;
+    console.log('--- Running Admin Layout Auth Check ---');
+    console.log(`Is Authenticated: ${$isAuthenticated}`);
+    console.log(`User Email: ${$user?.email || 'N/A'}`);
     
     if (!$isAuthenticated) {
-      console.warn('User not authenticated, redirecting to login');
-      authError = 'Please log in to access admin area';
-      goto('/login?redirect=' + encodeURIComponent($page.url.pathname));
-    } else if (!isAdmin) {
-      console.warn('Non-admin user attempting to access admin area.');
-      authError = 'You do not have admin privileges';
+      errorMessage = 'Authentication required. Redirecting to login...';
+      console.warn('Not authenticated, redirecting to login.');
+      goto(`/login?redirect=${encodeURIComponent($page.url.pathname)}`);
+    } else if (!isUserAdmin($user?.email)) {
+      errorMessage = 'Admin privileges required. Redirecting to homepage...';
+      console.warn(`Not admin (Email: ${$user?.email}), redirecting to home.`);
       goto('/');
+    } else {
+      console.log('Admin access granted.');
+      accessGranted = true;
     }
+    console.log('--------------------------------------');
   }
 
   // Current section title based on route
   $: currentSection = (() => {
     const path = $page.url.pathname;
-    if (path.includes('/admin/users')) return 'Manage Users';
     if (path.includes('/admin/courses')) return 'Manage Courses';
-    if (path.includes('/admin/statistics')) return 'Analytics';
-    if (path.includes('/admin/settings')) return 'Settings';
-    return 'Admin Dashboard';
+    // Add other sections here if needed later
+    return 'Admin Area';
   })();
 </script>
 
-{#if $loading || !checked}
+{#if $loading || !hasChecked}
   <div in:fade class="fixed inset-0 bg-white dark:bg-gray-900 z-50 flex justify-center items-center">
     <div class="flex flex-col items-center">
       <div class="w-16 h-16 border-4 border-t-indigo-500 border-indigo-200 rounded-full animate-spin"></div>
       <p class="mt-4 text-gray-600 dark:text-gray-400">Verifying admin access...</p>
+      {#if errorMessage}
+        <p class="mt-2 text-sm text-red-600 dark:text-red-400">{errorMessage}</p>
+      {/if}
     </div>
   </div>
-{:else if isAdmin}
+{:else if accessGranted}
   <div class="min-h-screen bg-gray-100 dark:bg-gray-900 flex">
-    <!-- Admin Sidebar -->
     <AdminSidebar />
     
-    <!-- Main Content -->
     <div class="flex-1 flex flex-col">
       <!-- Top Bar -->
       <div class="bg-white dark:bg-gray-800 shadow-sm z-10">
@@ -110,7 +90,7 @@
     </div>
   </div>
 {:else}
-  <!-- Access Denied Fallback -->
+  <!-- Should not be reached if redirects work, but keep as fallback -->
   <div class="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col justify-center items-center p-4">
     <div in:fade class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 max-w-md w-full text-center">
       <div class="w-16 h-16 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -118,7 +98,7 @@
       </div>
       <h1 class="text-2xl font-bold text-red-600 dark:text-red-400 mb-2">Access Denied</h1>
       <p class="text-gray-600 dark:text-gray-400 mb-6">
-        {authError || "You don't have permission to access the admin area."}
+        An unexpected error occurred during access verification.
       </p>
       <a href="/" class="inline-block px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-md transition duration-150">
         Return to Homepage
