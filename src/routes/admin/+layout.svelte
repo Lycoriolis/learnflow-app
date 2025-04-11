@@ -5,15 +5,14 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import AdminSidebar from './AdminSidebar.svelte';
+  import { isUserAdmin } from '$lib/authService.js';
 
-  // Admin check based on Firebase Authentication
-  // In a real app, you would use Firebase custom claims or Firestore
-  // to store and verify admin roles more securely
-  const ADMIN_EMAIL = 'admin@example.com';
-  $: isAdmin = $isAuthenticated && $user?.email === ADMIN_EMAIL;
+  // Check if the current user is an admin
+  $: isAdmin = $isAuthenticated && isUserAdmin($user?.email);
   
   let checked = false;
   let authError = '';
+  let redirectInProgress = false;
   
   // Verify admin access on mount
   onMount(() => {
@@ -22,12 +21,14 @@
       isAuthenticated: $isAuthenticated, 
       user: $user ? { email: $user.email, displayName: $user.displayName } : 'No user',
       loading: $loading,
-      isAdmin
+      isAdmin,
+      path: $page.url.pathname
     });
 
     return () => {
       // Reset on unmount
       checked = false;
+      redirectInProgress = false;
     };
   });
   
@@ -37,17 +38,24 @@
     console.log('Admin access check:', { 
       isAuthenticated: $isAuthenticated, 
       user: $user ? { email: $user.email } : 'No user',
-      isAdmin 
+      isAdmin,
+      path: $page.url.pathname
     });
     
-    if (!$isAuthenticated) {
-      console.warn('User not authenticated, redirecting to login');
-      authError = 'Please log in to access admin area';
-      goto('/login?redirect=' + encodeURIComponent($page.url.pathname));
-    } else if (!isAdmin) {
-      console.warn('Non-admin user attempting to access admin area.');
-      authError = 'You do not have admin privileges';
-      goto('/');
+    if (!redirectInProgress) {
+      if (!$isAuthenticated) {
+        console.warn('User not authenticated, redirecting to login');
+        redirectInProgress = true;
+        authError = 'Please log in to access admin area';
+        goto('/login?redirect=' + encodeURIComponent($page.url.pathname));
+      } else if (!isAdmin) {
+        console.warn('Non-admin user attempting to access admin area.');
+        redirectInProgress = true;
+        authError = 'You do not have admin privileges';
+        goto('/');
+      } else {
+        console.log('Admin access verified, staying on page');
+      }
     }
   }
 

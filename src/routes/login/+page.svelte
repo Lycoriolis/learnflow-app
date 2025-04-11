@@ -7,16 +7,28 @@
 
   // Get the redirect parameter if present
   $: redirectTo = $page.url.searchParams.get('redirect') || '/';
+  
+  // Flag to track if redirection has been handled
+  let redirectHandled = false;
 
   onMount(() => {
+    // Reset the flag when component mounts
+    redirectHandled = false;
+    
+    console.log('Login page mounted, redirect target:', redirectTo);
+    
     // Redirect to home or specified redirect path if already authenticated
     if ($isAuthenticated) {
+      redirectHandled = true;
+      console.log('Already authenticated, redirecting to:', redirectTo);
       goto(redirectTo);
     }
   });
 
   // Watch for authentication status changes
-  $: if (!$loading && $isAuthenticated) {
+  $: if (!$loading && $isAuthenticated && !redirectHandled) {
+    redirectHandled = true;
+    console.log('Authentication successful, redirecting to:', redirectTo);
     goto(redirectTo);
   }
 </script>
