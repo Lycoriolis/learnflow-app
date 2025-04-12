@@ -22,7 +22,7 @@
   };
 
   // Mock Events Data
-  const allEvents: PlatformEvent[] = [
+  let allEvents: PlatformEvent[] = [
     {
       id: 'event-1',
       title: 'Live Q&A: Mastering CSS Grid',
