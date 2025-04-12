@@ -1,3 +1,1 @@
-import * as universal from "../../../../src/routes/admin/+layout.ts";
-export { universal };
-export { default as component } from "../../../../src/routes/admin/+layout.svelte";
+export { default as component } from "../../../../src/routes/+page.svelte";

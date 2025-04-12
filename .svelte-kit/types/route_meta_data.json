@@ -1,44 +1,6 @@
 {
 	"/(protected)": [],
 	"/": [],
-	"/admin": [
-		"src/routes/admin/+layout.ts",
-		"src/routes/admin/+layout.ts"
-	],
-	"/admin/content/exercises": [
-		"src/routes/admin/+layout.ts"
-	],
-	"/admin/content/media": [
-		"src/routes/admin/+layout.ts"
-	],
-	"/admin/courses": [
-		"src/routes/admin/+layout.ts"
-	],
-	"/admin/courses/categories": [
-		"src/routes/admin/+layout.ts"
-	],
-	"/admin/courses/new": [
-		"src/routes/admin/+layout.ts"
-	],
-	"/admin/courses/[courseId]": [
-		"src/routes/admin/+layout.ts"
-	],
-	"/admin/debug": [
-		"src/routes/admin/debug/+page.ts",
-		"src/routes/admin/+layout.ts"
-	],
-	"/admin/settings": [
-		"src/routes/admin/+layout.ts"
-	],
-	"/admin/users": [
-		"src/routes/admin/+layout.ts"
-	],
-	"/admin/users/new": [
-		"src/routes/admin/+layout.ts"
-	],
-	"/api/admin-check": [
-		"src/routes/api/admin-check/+server.ts"
-	],
 	"/category/[slug]": [
 		"src/routes/category/[slug]/+page.ts"
 	],

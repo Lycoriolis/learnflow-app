@@ -154,14 +154,4 @@ function getCurrentUser() {
     } : 'No user');
     return currentUser;
 }
-// Check if a user is admin
-function isUserAdmin(userEmail) {
-    if (!userEmail)
-        return false;
-    // Get admin emails from environment variables for better security and scalability
-    const adminEmails = import.meta.env.VITE_ADMIN_EMAILS?.split(',') || [];
-    // Convert to lowercase for case-insensitive comparison
-    return adminEmails.map(email => email.trim().toLowerCase())
-        .includes(userEmail.toLowerCase());
-}
-export { initAuth, register, login, loginWithGoogle, logout, resetPassword, getCurrentUser, isUserAdmin };
+export { initAuth, register, login, loginWithGoogle, logout, resetPassword, getCurrentUser };
