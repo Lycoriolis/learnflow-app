@@ -6,5 +6,4 @@ declare function loginWithGoogle(): Promise<void>;
 declare function logout(): Promise<void>;
 declare function resetPassword(email: string): Promise<void>;
 declare function getCurrentUser(): User | null;
-declare function isUserAdmin(userEmail: string | null | undefined): boolean;
-export { initAuth, register, login, loginWithGoogle, logout, resetPassword, getCurrentUser, isUserAdmin };
+export { initAuth, register, login, loginWithGoogle, logout, resetPassword, getCurrentUser };

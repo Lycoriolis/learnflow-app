@@ -5,17 +5,14 @@
   import { isAuthenticated, user, loading } from '$lib/stores/authStore.js';
   import { login } from '$lib/authService.js'; // Import login function if needed for a button
   import { goto } from '$app/navigation';
+  import { slide } from 'svelte/transition';
 
-  // --- Temporary Admin Check (Replace with proper role check) ---
-  const ADMIN_EMAIL = 'beeelhaj@gmail.com'; // <-- !!! REPLACE with your test admin email !!!
-  $: isAdmin = $isAuthenticated && $user?.email === ADMIN_EMAIL;
-  // --------------------------------------------------------------
-
+  // Navigation item type definitions
   type NavItem = {
     name: string;
     href: string;
     icon: string;
-    authRequired: boolean; // Add a flag to indicate if auth is required
+    authRequired: boolean;
   };
   
   type NavCategory = {
@@ -23,39 +20,32 @@
     items: NavItem[];
   };
   
+  // Main navigation categories
   const navigation: NavCategory[] = [
     {
-      title: 'Dashboard',
+      title: 'Main',
       items: [
-        { name: 'Home', href: '/', icon: 'fa-home', authRequired: false },
-        { name: 'My Courses', href: '/courses', icon: 'fa-book-open', authRequired: true },
-        { name: 'Exercises', href: '/exercises', icon: 'fa-tasks', authRequired: true },
-        { name: 'Progress', href: '/progress', icon: 'fa-chart-line', authRequired: true },
-        { name: 'Statistics', href: '/statistics', icon: 'fa-chart-pie', authRequired: true }
+        { name: 'Dashboard', href: '/', icon: 'fa-home', authRequired: false },
+        { name: 'Courses', href: '/courses', icon: 'fa-book', authRequired: false },
+        { name: 'My Learning', href: '/my-learning', icon: 'fa-graduation-cap', authRequired: true },
+        { name: 'Calendar', href: '/calendar', icon: 'fa-calendar', authRequired: true }
       ]
     },
     {
-      title: 'Explore', // Renamed from Categories for clarity
+      title: 'Community',
       items: [
-        { name: 'Computer Science', href: '/category/cs', icon: 'fa-laptop-code', authRequired: false },
-        { name: 'Mathematics', href: '/category/math', icon: 'fa-square-root-alt', authRequired: false },
-        { name: 'Languages', href: '/category/languages', icon: 'fa-language', authRequired: false },
-        { name: 'Science', href: '/category/science', icon: 'fa-flask', authRequired: false }
+        { name: 'Discussion Forums', href: '/forums', icon: 'fa-comments', authRequired: false },
+        { name: 'User Groups', href: '/groups', icon: 'fa-users', authRequired: true },
+        { name: 'Events', href: '/events', icon: 'fa-calendar-alt', authRequired: false }
+      ]
+    },
+    {
+      title: 'Resources',
+      items: [
+        { name: 'Help Center', href: '/help', icon: 'fa-question-circle', authRequired: false },
+        { name: 'Contact Support', href: '/support', icon: 'fa-headset', authRequired: false }
       ]
     }
-  ];
-  
-  // Add Admin navigation section
-  const adminNavigation: NavCategory[] = [
-      {
-        title: 'Management',
-        items: [
-           { name: 'Manage Courses', href: '/admin/courses', icon: 'fa-chalkboard-teacher', authRequired: true },
-           { name: 'Manage Users', href: '/admin/users', icon: 'fa-users-cog', authRequired: true },
-           { name: 'Site Settings', href: '/admin/settings', icon: 'fa-cog', authRequired: true },
-           { name: 'Site Statistics', href: '/admin/statistics', icon: 'fa-chart-bar', authRequired: true }
-        ]
-      }
   ];
   
   let mobileMenuOpen = false;
@@ -126,34 +116,6 @@
         </ul>
       </div>
     {/each}
-
-    <!-- Conditional Admin Section -->
-    {#if isAdmin}
-        <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-             {#each adminNavigation as category}
-              <div class="mb-6">
-                <div class="flex items-center justify-between mb-2">
-                  <h2 class="text-xs font-semibold text-red-500 dark:text-red-400 uppercase tracking-wider">Admin: {category.title}</h2>
-                </div>
-                <ul>
-                  {#each category.items as item}
-                      <li class="mb-1">
-                        <a 
-                          href={item.href} 
-                          class="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out {path === item.href 
-                            ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200' 
-                            : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100'}"
-                        >
-                          <i class="fas {item.icon} mr-3 w-5 text-center"></i>
-                          <span>{item.name}</span>
-                        </a>
-                      </li>
-                  {/each}
-                </ul>
-              </div>
-            {/each}
-        </div>
-    {/if}
     
     <!-- Bottom Account Section (Conditional) -->
     <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 dark:border-gray-700">
