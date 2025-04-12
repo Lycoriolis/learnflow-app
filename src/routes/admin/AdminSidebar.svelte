@@ -104,7 +104,7 @@
     if (path === '/admin' && currentPath === '/admin') {
       return true;
     }
-    return path !== '/admin' && currentPath.startsWith(path);
+    return path !== '/admin' && currentPath.startsWith(path + '/') || currentPath === path;
   }
   
   // Determine if any item in a category is active

@@ -170,7 +170,7 @@
         { 
           id: 'categories', 
           label: 'Categories', 
-          path: '/admin/categories', 
+          path: '/admin/courses/categories', 
           icon: 'fa-folder' 
         }
       ]
@@ -208,13 +208,13 @@
         { 
           id: 'all-exercises', 
           label: 'Exercises', 
-          path: '/admin/exercises', 
+          path: '/admin/content/exercises', 
           icon: 'fa-tasks' 
         },
         { 
           id: 'media-library', 
           label: 'Media Library', 
-          path: '/admin/media', 
+          path: '/admin/content/media', 
           icon: 'fa-images' 
         }
       ]
