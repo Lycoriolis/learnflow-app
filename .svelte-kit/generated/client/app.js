@@ -21,29 +21,35 @@ export const nodes = [
 	() => import('./nodes/17'),
 	() => import('./nodes/18'),
 	() => import('./nodes/19'),
-	() => import('./nodes/20')
+	() => import('./nodes/20'),
+	() => import('./nodes/21'),
+	() => import('./nodes/22'),
+	() => import('./nodes/23')
 ];
 
 export const server_loads = [];
 
 export const dictionary = {
 		"/": [4],
-		"/admin/courses": [5,[3]],
-		"/admin/courses/new": [7,[3]],
-		"/admin/courses/[courseId]": [6,[3]],
-		"/admin/settings": [8,[3]],
-		"/admin/users": [9,[3]],
-		"/admin/users/new": [10,[3]],
-		"/category/[slug]": [11],
-		"/courses": [12],
-		"/courses/[courseId]": [13],
-		"/exercises": [14],
-		"/login": [15],
-		"/progress": [16],
-		"/register": [17],
-		"/reset-password": [18],
-		"/settings": [19],
-		"/statistics": [20]
+		"/admin": [5,[3]],
+		"/admin/courses": [6,[3]],
+		"/admin/courses/new": [8,[3]],
+		"/admin/courses/[courseId]": [7,[3]],
+		"/admin/settings": [9,[3]],
+		"/admin/users": [10,[3]],
+		"/admin/users/new": [11,[3]],
+		"/category/[slug]": [12],
+		"/courses": [13],
+		"/courses/[courseId]": [14],
+		"/courses/[courseId]/lesson/[lessonId]": [15],
+		"/exercises": [16],
+		"/exercises/[id]": [17],
+		"/login": [18],
+		"/progress": [19],
+		"/register": [20],
+		"/reset-password": [21],
+		"/settings": [22],
+		"/statistics": [23]
 	};
 
 export const hooks = {

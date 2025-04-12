@@ -15,7 +15,9 @@
 	"/courses/[courseId]": [
 		"src/routes/courses/[courseId]/+page.ts"
 	],
+	"/courses/[courseId]/lesson/[lessonId]": [],
 	"/exercises": [],
+	"/exercises/[id]": [],
 	"/login": [],
 	"/progress": [],
 	"/register": [],
