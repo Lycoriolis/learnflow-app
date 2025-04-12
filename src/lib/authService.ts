@@ -179,6 +179,12 @@ function isUserAdmin(userEmail: string | null | undefined): boolean {
 	// Get admin emails from environment variables for better security and scalability
 	const adminEmails = import.meta.env.VITE_ADMIN_EMAILS?.split(',') || [];
 	
+	console.log('--- Admin Check Debug ---');
+	console.log('User Email:', userEmail);
+	console.log('VITE_ADMIN_EMAILS env value:', import.meta.env.VITE_ADMIN_EMAILS);
+	console.log('Parsed Admin Emails:', adminEmails);
+	console.log('------------------------');
+	
 	// Convert to lowercase for case-insensitive comparison
 	return adminEmails.map(email => email.trim().toLowerCase())
 		.includes(userEmail.toLowerCase());

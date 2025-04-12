@@ -109,7 +109,25 @@
     console.log(`Is Authenticated: ${$isAuthenticated}`);
     console.log(`User Email: ${$user?.email || 'N/A'}`);
     
-    if (!$isAuthenticated) {
+    // Direct environment access check
+    console.log('Direct env check VITE_ADMIN_EMAILS:', import.meta.env.VITE_ADMIN_EMAILS);
+    const envAdminEmails = import.meta.env.VITE_ADMIN_EMAILS?.split(',') || [];
+    console.log('Parsed env admin emails:', envAdminEmails);
+    const userEmailLower = $user?.email?.toLowerCase() || '';
+    const isAdminByDirect = envAdminEmails.some(email => 
+      email.trim().toLowerCase() === userEmailLower
+    );
+    console.log('Is admin by direct check:', isAdminByDirect);
+    console.log('Is admin by function:', isUserAdmin($user?.email));
+    
+    // Check if this is the debug page - bypass admin check
+    const isDebugPage = $page.url.pathname === '/admin/debug';
+    console.log('Is debug page:', isDebugPage);
+    
+    if (isDebugPage) {
+      console.log('Debug page detected - bypassing admin check');
+      accessGranted = true;
+    } else if (!$isAuthenticated) {
       errorMessage = 'Authentication required. Redirecting to login...';
       console.warn('Not authenticated, redirecting to login.');
       goto(`/login?redirect=${encodeURIComponent($page.url.pathname)}`);
