@@ -12,7 +12,7 @@ type EnsureDefined<T> = T extends null | undefined ? {} : T;
 type OptionalUnion<U extends Record<string, any>, A extends keyof U = U extends U ? keyof U : never> = U extends unknown ? { [P in Exclude<A, keyof U>]?: never } & U : never;
 export type Snapshot<T = any> = Kit.Snapshot<T>;
 type PageParentData = EnsureDefined<LayoutData>;
-type LayoutRouteId = RouteId | "/" | "/admin" | "/admin/courses" | "/admin/courses/[courseId]" | "/admin/courses/new" | "/admin/settings" | "/admin/users" | "/admin/users/new" | "/category/[slug]" | "/courses" | "/courses/[courseId]" | "/courses/[courseId]/lesson/[lessonId]" | "/exercises" | "/exercises/[id]" | "/login" | "/progress" | "/register" | "/reset-password" | "/settings" | "/statistics" | null
+type LayoutRouteId = RouteId | "/" | "/admin" | "/admin/content/exercises" | "/admin/content/media" | "/admin/courses" | "/admin/courses/[courseId]" | "/admin/courses/categories" | "/admin/courses/new" | "/admin/debug" | "/admin/settings" | "/admin/users" | "/admin/users/new" | "/category/[slug]" | "/courses" | "/courses/[courseId]" | "/courses/[courseId]/lesson/[lessonId]" | "/exercises" | "/exercises/[id]" | "/login" | "/progress" | "/register" | "/reset-password" | "/settings" | "/statistics" | null
 type LayoutParams = RouteParams & { courseId?: string; slug?: string; lessonId?: string; id?: string }
 type LayoutParentData = EnsureDefined<{}>;
 

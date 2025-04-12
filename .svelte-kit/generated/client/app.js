@@ -24,7 +24,11 @@ export const nodes = [
 	() => import('./nodes/20'),
 	() => import('./nodes/21'),
 	() => import('./nodes/22'),
-	() => import('./nodes/23')
+	() => import('./nodes/23'),
+	() => import('./nodes/24'),
+	() => import('./nodes/25'),
+	() => import('./nodes/26'),
+	() => import('./nodes/27')
 ];
 
 export const server_loads = [];
@@ -32,24 +36,28 @@ export const server_loads = [];
 export const dictionary = {
 		"/": [4],
 		"/admin": [5,[3]],
-		"/admin/courses": [6,[3]],
-		"/admin/courses/new": [8,[3]],
-		"/admin/courses/[courseId]": [7,[3]],
-		"/admin/settings": [9,[3]],
-		"/admin/users": [10,[3]],
-		"/admin/users/new": [11,[3]],
-		"/category/[slug]": [12],
-		"/courses": [13],
-		"/courses/[courseId]": [14],
-		"/courses/[courseId]/lesson/[lessonId]": [15],
-		"/exercises": [16],
-		"/exercises/[id]": [17],
-		"/login": [18],
-		"/progress": [19],
-		"/register": [20],
-		"/reset-password": [21],
-		"/settings": [22],
-		"/statistics": [23]
+		"/admin/content/exercises": [6,[3]],
+		"/admin/content/media": [7,[3]],
+		"/admin/courses": [8,[3]],
+		"/admin/courses/categories": [10,[3]],
+		"/admin/courses/new": [11,[3]],
+		"/admin/courses/[courseId]": [9,[3]],
+		"/admin/debug": [12,[3]],
+		"/admin/settings": [13,[3]],
+		"/admin/users": [14,[3]],
+		"/admin/users/new": [15,[3]],
+		"/category/[slug]": [16],
+		"/courses": [17],
+		"/courses/[courseId]": [18],
+		"/courses/[courseId]/lesson/[lessonId]": [19],
+		"/exercises": [20],
+		"/exercises/[id]": [21],
+		"/login": [22],
+		"/progress": [23],
+		"/register": [24],
+		"/reset-password": [25],
+		"/settings": [26],
+		"/statistics": [27]
 	};
 
 export const hooks = {
