@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
+  import MarkdownRenderer from '$lib/components/MarkdownRenderer.svelte';
 
   export let data: PageData;
 
@@ -44,16 +45,51 @@
       <span class="block text-sm font-medium text-indigo-200 mb-1">{course.category}</span>
       <h1 class="text-4xl font-bold mb-2">{course.title}</h1>
       <p class="text-lg text-indigo-100">{course.description}</p>
-      <!-- Optional: Add progress indicator here -->
+      
+      <!-- Course tags -->
+      {#if course.tags && course.tags.length > 0}
+        <div class="mt-3 flex flex-wrap gap-2">
+          {#each course.tags as tag}
+            <span class="px-2 py-1 text-xs font-medium bg-indigo-700 text-white rounded-full">
+              {tag}
+            </span>
+          {/each}
+        </div>
+      {/if}
+      
+      <!-- Difficulty level -->
+      {#if course.difficulty}
+        <div class="mt-3">
+          <span class="px-3 py-1 text-xs font-medium bg-indigo-700 text-white rounded-full">
+            {course.difficulty.charAt(0).toUpperCase() + course.difficulty.slice(1)}
+          </span>
+          {#if course.estimatedTime}
+            <span class="ml-2 text-indigo-200">
+              <i class="far fa-clock mr-1"></i>
+              {course.estimatedTime}
+            </span>
+          {/if}
+        </div>
+      {/if}
     </div>
+
+    <!-- Check if we have markdown content -->
+    {#if course.content}
+      <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden mb-8">
+        <div class="p-6">
+          <MarkdownRenderer content={course.content} className="bg-white dark:bg-gray-800" />
+        </div>
+      </div>
+    {/if}
 
     <!-- Course Content - Modules and Lessons -->
     <div class="space-y-6">
+      <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Course Modules</h2>
       {#each course.modules as module, moduleIndex}
         <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
-          <h2 class="text-xl font-semibold p-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 text-gray-800 dark:text-white">
+          <h3 class="text-xl font-semibold p-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 text-gray-800 dark:text-white">
             Module {moduleIndex + 1}: {module.title}
-          </h2>
+          </h3>
           <ul class="divide-y divide-gray-200 dark:divide-gray-700">
             {#each module.lessons as lesson, lessonIndex}
               <li class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150">
