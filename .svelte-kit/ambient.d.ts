@@ -33,6 +33,8 @@ declare module '$env/static/private' {
 	export const VITE_FIREBASE_MESSAGING_SENDER_ID: string;
 	export const VITE_FIREBASE_APP_ID: string;
 	export const VITE_FIREBASE_MEASUREMENT_ID: string;
+	export const VITE_ADMIN_EMAILS: string;
+	export const VITE_CSRF_SECRET: string;
 	export const LESSOPEN: string;
 	export const USER: string;
 	export const npm_config_user_agent: string;
@@ -50,7 +52,6 @@ declare module '$env/static/private' {
 	export const npm_config_userconfig: string;
 	export const npm_config_local_prefix: string;
 	export const DBUS_SESSION_BUS_ADDRESS: string;
-	export const npm_config_engine_strict: string;
 	export const COLORTERM: string;
 	export const WSL_DISTRO_NAME: string;
 	export const COLOR: string;
@@ -134,6 +135,8 @@ declare module '$env/dynamic/private' {
 		VITE_FIREBASE_MESSAGING_SENDER_ID: string;
 		VITE_FIREBASE_APP_ID: string;
 		VITE_FIREBASE_MEASUREMENT_ID: string;
+		VITE_ADMIN_EMAILS: string;
+		VITE_CSRF_SECRET: string;
 		LESSOPEN: string;
 		USER: string;
 		npm_config_user_agent: string;
@@ -151,7 +154,6 @@ declare module '$env/dynamic/private' {
 		npm_config_userconfig: string;
 		npm_config_local_prefix: string;
 		DBUS_SESSION_BUS_ADDRESS: string;
-		npm_config_engine_strict: string;
 		COLORTERM: string;
 		WSL_DISTRO_NAME: string;
 		COLOR: string;

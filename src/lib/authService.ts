@@ -15,8 +15,7 @@ import {
 import { auth as firebaseAuth } from './firebase.js';
 import { isAuthenticated, user, loading, authError } from './stores/authStore.js';
 
-// Explicitly type the imported firebaseAuth. It's likely 'any' because firebase.ts 
-// might return a mock object on error.
+// Explicitly type the imported firebaseAuth
 const auth: Auth = firebaseAuth as Auth;
 
 // Flag to track if auth initialization has completed
@@ -176,8 +175,13 @@ function getCurrentUser(): User | null {
 // Check if a user is admin
 function isUserAdmin(userEmail: string | null | undefined): boolean {
 	if (!userEmail) return false;
-	// In a real app, you would use Firebase custom claims or Firestore
-	return userEmail === 'beeelhaj@gmail.com'; // Set admin email as requested
+	
+	// Get admin emails from environment variables for better security and scalability
+	const adminEmails = import.meta.env.VITE_ADMIN_EMAILS?.split(',') || [];
+	
+	// Convert to lowercase for case-insensitive comparison
+	return adminEmails.map(email => email.trim().toLowerCase())
+		.includes(userEmail.toLowerCase());
 }
 
 export {
