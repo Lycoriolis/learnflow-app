@@ -108,7 +108,14 @@
     aria-label="Quick Tools Widget"
     transition:fly={{ y: 20, duration: 300, easing: quintOut }}
   >
-    <div class="pip-header bg-indigo-600 text-white p-2 flex justify-between items-center cursor-grab" on:mousedown={handleMouseDown}>
+    <div 
+      class="pip-header bg-indigo-600 text-white p-2 flex justify-between items-center cursor-grab" 
+      on:mousedown={handleMouseDown}
+      role="button" 
+      tabindex="0"
+      aria-label="Drag quick tools widget"
+      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleMouseDown(e); }}
+    >
       <h3 class="font-medium text-sm pl-2">Quick Tools</h3>
       <div>
         <button 
