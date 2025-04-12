@@ -24,6 +24,17 @@
   // Mobile sidebar state
   let isMobileSidebarOpen = false;
   let showLogoutConfirm = false;
+
+  // Handle logout confirm
+  function handleShowLogoutConfirm() {
+    showLogoutConfirm = true;
+  }
+    
+  // Handle actual logout
+  async function handleLogout() {
+    await logout();
+    goto('/');
+  }
   
   function handleResize() {
     windowWidth = window.innerWidth;
@@ -45,30 +56,19 @@
       applyTheme(currentTheme);
     }
     
-    // Handle logout confirm
-    function handleShowLogoutConfirm() {
-      showLogoutConfirm = true;
-    }
-    
-    // Handle actual logout
-    async function handleLogout() {
-      await logout();
-      goto('/');
-    }
-    
     // Close mobile sidebar when window is resized to larger than mobile
     const mediaQuery = window.matchMedia('(min-width: 1024px)');
     
-    function handleResize(e) {
+    function handleMediaQueryChange(e: MediaQueryListEvent) {
       if (e.matches) {
         isMobileSidebarOpen = false;
       }
     }
     
-    mediaQuery.addEventListener('change', handleResize);
+    mediaQuery.addEventListener('change', handleMediaQueryChange);
     
     return () => {
-      mediaQuery.removeEventListener('change', handleResize);
+      mediaQuery.removeEventListener('change', handleMediaQueryChange);
     };
   });
   
@@ -92,7 +92,7 @@
     localStorage.setItem('admin-theme', currentTheme);
   }
   
-  function applyTheme(theme) {
+  function applyTheme(theme: string) {
     if (typeof document !== 'undefined') {
       if (theme === 'dark') {
         document.documentElement.classList.add('dark');
@@ -319,203 +319,207 @@
           </div>
         </div>
         
-        <div class="flex-shrink-0 w-14" aria-hidden="true">
-  <div class="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
-    <!-- Top NavBar -->
-    <header class="bg-white dark:bg-gray-800 shadow-sm z-20 relative">
-      <div class="flex items-center justify-between h-16 px-4">
-        <div class="flex items-center">
-          <!-- Mobile menu button -->
-          <button 
-            on:click={toggleSidebar} 
-            class="text-gray-600 dark:text-gray-300 focus:outline-none focus:text-gray-900 dark:focus:text-white"
-          >
-            <i class="fas {sidebarOpen ? 'fa-times' : 'fa-bars'} text-xl"></i>
-          </button>
-          
-          <a href="/" class="flex items-center ml-4">
-            <img 
-              src="/favicon.png" 
-              alt="LearnFlow Logo" 
-              class="h-8 w-auto mr-2"
-            >
-            <span class="text-lg font-bold text-indigo-600 dark:text-indigo-400">LearnFlow</span>
-            <span class="ml-1.5 text-gray-600 dark:text-gray-300 font-medium">Admin</span>
-          </a>
-        </div>
-        
-        <div class="flex items-center space-x-4">
-          <!-- Theme Toggle -->
-          <button
-            on:click={toggleTheme}
-            class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-            aria-label="Toggle theme"
-          >
-            <i class="fas {currentTheme === 'dark' ? 'fa-sun' : 'fa-moon'}"></i>
-          </button>
-          
-          <!-- Help Button -->
-          <a 
-            href="/admin/help" 
-            class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-            aria-label="Help"
-          >
-            <i class="fas fa-question-circle"></i>
-          </a>
-          
-          <!-- Notifications Button -->
-          <button 
-            class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 relative"
-            aria-label="Notifications"
-          >
-            <i class="fas fa-bell"></i>
-            <span class="absolute top-0 right-0 h-4 w-4 rounded-full bg-red-500 text-xs text-white flex items-center justify-center">
-              3
-            </span>
-          </button>
-          
-          <!-- Profile Menu -->
-          <div class="relative">
+        <div class="flex-shrink-0 w-14" aria-hidden="true"></div>
+      </div>
+    </div>
+  
+    <div class="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
+      <!-- Top NavBar -->
+      <header class="bg-white dark:bg-gray-800 shadow-sm z-20 relative">
+        <div class="flex items-center justify-between h-16 px-4">
+          <div class="flex items-center">
+            <!-- Mobile menu button -->
             <button 
-              on:click={toggleProfileMenu}
-              class="flex items-center space-x-2 focus:outline-none"
+              on:click={toggleSidebar} 
+              class="text-gray-600 dark:text-gray-300 focus:outline-none focus:text-gray-900 dark:focus:text-white"
             >
-              <div class="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-medium">
-                {$user?.displayName?.charAt(0).toUpperCase() || $user?.email?.charAt(0).toUpperCase() || 'A'}
-              </div>
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-200 hidden md:block">
-                {$user?.displayName || $user?.email?.split('@')[0] || 'Admin'}
-              </span>
-              <i class="fas fa-chevron-down text-xs text-gray-500 dark:text-gray-400 hidden md:block"></i>
+              <i class="fas {sidebarOpen ? 'fa-times' : 'fa-bars'} text-xl"></i>
             </button>
             
-            {#if profileMenuOpen}
-              <div
-                in:fade={{ duration: 100 }}
-                out:fade={{ duration: 75 }}
-                class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-30"
+            <a href="/" class="flex items-center ml-4">
+              <img 
+                src="/favicon.png" 
+                alt="LearnFlow Logo" 
+                class="h-8 w-auto mr-2"
               >
-                <div class="py-1" role="menu" aria-orientation="vertical">
-                  <a 
-                    href="/admin/profile" 
-                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    role="menuitem"
-                  >
-                    <i class="fas fa-user-circle mr-2"></i> Profile
-                  </a>
-                  <a 
-                    href="/admin/settings" 
-                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    role="menuitem"
-                  >
-                    <i class="fas fa-cog mr-2"></i> Settings
-                  </a>
-                  <button 
-                    on:click={handleLogout}
-                    class="w-full text-left block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    role="menuitem"
-                  >
-                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                  </button>
+              <span class="text-lg font-bold text-indigo-600 dark:text-indigo-400">LearnFlow</span>
+              <span class="ml-1.5 text-gray-600 dark:text-gray-300 font-medium">Admin</span>
+            </a>
+          </div>
+          
+          <div class="flex items-center space-x-4">
+            <!-- Theme Toggle -->
+            <button
+              on:click={toggleTheme}
+              class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+              aria-label="Toggle theme"
+            >
+              <i class="fas {currentTheme === 'dark' ? 'fa-sun' : 'fa-moon'}"></i>
+            </button>
+            
+            <!-- Help Button -->
+            <a 
+              href="/admin/help" 
+              class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+              aria-label="Help"
+            >
+              <i class="fas fa-question-circle"></i>
+            </a>
+            
+            <!-- Notifications Button -->
+            <button 
+              class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 relative"
+              aria-label="Notifications"
+            >
+              <i class="fas fa-bell"></i>
+              <span class="absolute top-0 right-0 h-4 w-4 rounded-full bg-red-500 text-xs text-white flex items-center justify-center">
+                3
+              </span>
+            </button>
+            
+            <!-- Profile Menu -->
+            <div class="relative">
+              <button 
+                on:click={toggleProfileMenu}
+                class="flex items-center space-x-2 focus:outline-none"
+              >
+                <div class="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-medium">
+                  {$user?.displayName?.charAt(0).toUpperCase() || $user?.email?.charAt(0).toUpperCase() || 'A'}
                 </div>
-              </div>
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-200 hidden md:block">
+                  {$user?.displayName || $user?.email?.split('@')[0] || 'Admin'}
+                </span>
+                <i class="fas fa-chevron-down text-xs text-gray-500 dark:text-gray-400 hidden md:block"></i>
+              </button>
+              
+              {#if profileMenuOpen}
+                <div
+                  in:fade={{ duration: 100 }}
+                  out:fade={{ duration: 75 }}
+                  class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-30"
+                >
+                  <div class="py-1" role="menu" aria-orientation="vertical">
+                    <a 
+                      href="/admin/profile" 
+                      class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      role="menuitem"
+                    >
+                      <i class="fas fa-user-circle mr-2"></i> Profile
+                    </a>
+                    <a 
+                      href="/admin/settings" 
+                      class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      role="menuitem"
+                    >
+                      <i class="fas fa-cog mr-2"></i> Settings
+                    </a>
+                    <button 
+                      on:click={handleLogout}
+                      class="w-full text-left block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      role="menuitem"
+                    >
+                      <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                    </button>
+                  </div>
+                </div>
+              {/if}
+            </div>
+          </div>
+        </div>
+        
+        <!-- Breadcrumb navigation under the header -->
+        <div class="px-4 py-2 bg-gray-50 dark:bg-gray-700 text-xs border-t border-gray-200 dark:border-gray-600">
+          <div class="flex items-center text-gray-500 dark:text-gray-400">
+            <a href="/admin" class="hover:text-indigo-600 dark:hover:text-indigo-400">Admin Dashboard</a>
+            {#if $page.url.pathname !== '/admin'}
+              <span class="mx-2">/</span>
+              {#each $page.url.pathname.split('/').filter(Boolean).slice(1) as segment, i}
+                <a 
+                  href={`/${$page.url.pathname.split('/').filter(Boolean).slice(0, i + 2).join('/')}`} 
+                  class="hover:text-indigo-600 dark:hover:text-indigo-400 capitalize"
+                >
+                  {segment.replace('-', ' ')}
+                </a>
+                {#if i < $page.url.pathname.split('/').filter(Boolean).length - 2}
+                  <span class="mx-2">/</span>
+                {/if}
+              {/each}
             {/if}
           </div>
         </div>
-      </div>
+      </header>
       
-      <!-- Breadcrumb navigation under the header -->
-      <div class="px-4 py-2 bg-gray-50 dark:bg-gray-700 text-xs border-t border-gray-200 dark:border-gray-600">
-        <div class="flex items-center text-gray-500 dark:text-gray-400">
-          <a href="/admin" class="hover:text-indigo-600 dark:hover:text-indigo-400">Admin Dashboard</a>
-          {#if $page.url.pathname !== '/admin'}
-            <span class="mx-2">/</span>
-            {#each $page.url.pathname.split('/').filter(Boolean).slice(1) as segment, i}
-              <a 
-                href={`/${$page.url.pathname.split('/').filter(Boolean).slice(0, i + 2).join('/')}`} 
-                class="hover:text-indigo-600 dark:hover:text-indigo-400 capitalize"
-              >
-                {segment.replace('-', ' ')}
-              </a>
-              {#if i < $page.url.pathname.split('/').filter(Boolean).length - 2}
-                <span class="mx-2">/</span>
-              {/if}
-            {/each}
-          {/if}
-        </div>
-      </div>
-    </header>
-    
-    <div class="flex flex-1 overflow-hidden">
-      <!-- Sidebar -->
-      <aside 
-        class="bg-white dark:bg-gray-800 w-64 shadow-md transform transition-all duration-300 ease-in-out z-10 {sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:relative inset-y-0 left-0 overflow-y-auto"
-      >
-        <nav class="mt-4 px-2">
-          {#each navigationCategories as category}
-            <div class="mb-2">
-              <div 
-                class="flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
-                on:click={() => activeCategory = activeCategory === category.id ? '' : category.id}
-              >
-                <div class="flex items-center">
-                  <i class="fas {category.icon} w-5 mr-2 text-gray-500 dark:text-gray-400"></i>
-                  <span>{category.label}</span>
-                </div>
-                <i class="fas {isCategoryExpanded(category.id) ? 'fa-chevron-down' : 'fa-chevron-right'} text-xs text-gray-500 dark:text-gray-400"></i>
-              </div>
-              
-              {#if isCategoryExpanded(category.id)}
+      <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar -->
+        <aside 
+          class="bg-white dark:bg-gray-800 w-64 shadow-md transform transition-all duration-300 ease-in-out z-10 {sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:relative inset-y-0 left-0 overflow-y-auto"
+        >
+          <nav class="mt-4 px-2">
+            {#each navigationCategories as category}
+              <div class="mb-2">
                 <div 
-                  in:fly={{ y: -5, duration: 150 }}
-                  class="mt-1 ml-4 space-y-1 border-l border-gray-200 dark:border-gray-700"
+                  class="flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                  on:click={() => activeCategory = activeCategory === category.id ? '' : category.id}
                 >
-                  {#each category.items as item}
-                    <a 
-                      href={item.path}
-                      class="flex items-center px-3 py-1.5 text-sm border-l-2 {isCurrentPath(item.path) 
-                        ? 'border-indigo-500 text-indigo-700 dark:text-indigo-400 font-medium bg-indigo-50 dark:bg-indigo-900/30' 
-                        : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'}"
-                    >
-                      <i class="fas {item.icon} w-4 mr-2 text-gray-400 dark:text-gray-500"></i>
-                      <span>{item.label}</span>
-                    </a>
-                  {/each}
+                  <div class="flex items-center">
+                    <i class="fas {category.icon} w-5 mr-2 text-gray-500 dark:text-gray-400"></i>
+                    <span>{category.label}</span>
+                  </div>
+                  <i class="fas {isCategoryExpanded(category.id) ? 'fa-chevron-down' : 'fa-chevron-right'} text-xs text-gray-500 dark:text-gray-400"></i>
                 </div>
-              {/if}
-            </div>
-          {/each}
-        </nav>
-        
-        <!-- Status indicator at the bottom -->
-        <div class="absolute bottom-0 left-0 w-full p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <div class="h-2 w-2 rounded-full bg-green-500"></div>
-            </div>
-            <div class="ml-2 text-xs text-gray-500 dark:text-gray-400">
-              <span>System Status:</span>
-              <span class="text-green-500 ml-1 font-medium">Online</span>
+                
+                {#if isCategoryExpanded(category.id)}
+                  <div 
+                    in:fly={{ y: -5, duration: 150 }}
+                    class="mt-1 ml-4 space-y-1 border-l border-gray-200 dark:border-gray-700"
+                  >
+                    {#each category.items as item}
+                      <a 
+                        href={item.path}
+                        class="flex items-center px-3 py-1.5 text-sm border-l-2 {isCurrentPath(item.path) 
+                          ? 'border-indigo-500 text-indigo-700 dark:text-indigo-400 font-medium bg-indigo-50 dark:bg-indigo-900/30' 
+                          : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                      >
+                        <i class="fas {item.icon} w-4 mr-2 text-gray-400 dark:text-gray-500"></i>
+                        <span>{item.label}</span>
+                      </a>
+                    {/each}
+                  </div>
+                {/if}
+              </div>
+            {/each}
+          </nav>
+          
+          <!-- Status indicator at the bottom -->
+          <div class="absolute bottom-0 left-0 w-full p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="h-2 w-2 rounded-full bg-green-500"></div>
+              </div>
+              <div class="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                <span>System Status:</span>
+                <span class="text-green-500 ml-1 font-medium">Online</span>
+              </div>
             </div>
           </div>
-        </div>
-      </aside>
-      
-      <!-- Sidebar backdrop for mobile -->
-      {#if sidebarOpen && windowWidth < 1024}
-        <div 
-          on:click={toggleSidebar}
-          in:fade={{ duration: 100 }}
-          class="fixed inset-0 bg-gray-600 bg-opacity-50 z-0 lg:hidden"
-        ></div>
-      {/if}
-      
-      <!-- Main content area -->
-      <main class="flex-1 overflow-y-auto bg-gray-100 dark:bg-gray-900">
-        <div in:fly={{ y: 10, duration: 200 }} class="p-4 lg:p-6 max-w-7xl mx-auto">
-          <slot />
-        </div>
-      </main>
+        </aside>
+        
+        <!-- Sidebar backdrop for mobile -->
+        {#if sidebarOpen && windowWidth < 1024}
+          <div 
+            on:click={toggleSidebar}
+            in:fade={{ duration: 100 }}
+            class="fixed inset-0 bg-gray-600 bg-opacity-50 z-0 lg:hidden"
+          ></div>
+        {/if}
+        
+        <!-- Main content area -->
+        <main class="flex-1 overflow-y-auto bg-gray-100 dark:bg-gray-900">
+          <div in:fly={{ y: 10, duration: 200 }} class="p-4 lg:p-6 max-w-7xl mx-auto">
+            <slot />
+          </div>
+        </main>
+      </div>
     </div>
   </div>
 {:else}
