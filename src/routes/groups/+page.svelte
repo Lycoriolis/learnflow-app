@@ -18,7 +18,7 @@
   };
 
   // Mock user groups data
-  const allGroups: UserGroup[] = [
+  let allGroups: UserGroup[] = [
     {
       id: 'group-1',
       name: 'JavaScript Study Buddies',
