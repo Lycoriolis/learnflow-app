@@ -16,25 +16,37 @@ export const nodes = [
 	() => import('./nodes/12'),
 	() => import('./nodes/13'),
 	() => import('./nodes/14'),
-	() => import('./nodes/15')
+	() => import('./nodes/15'),
+	() => import('./nodes/16'),
+	() => import('./nodes/17'),
+	() => import('./nodes/18'),
+	() => import('./nodes/19'),
+	() => import('./nodes/20'),
+	() => import('./nodes/21')
 ];
 
 export const server_loads = [];
 
 export const dictionary = {
 		"/": [3],
-		"/category/[slug]": [4],
-		"/courses": [5],
-		"/courses/[courseId]": [6],
-		"/courses/[courseId]/lesson/[lessonId]": [7],
-		"/exercises": [8],
-		"/exercises/[id]": [9],
-		"/login": [10],
-		"/progress": [11],
-		"/register": [12],
-		"/reset-password": [13],
-		"/settings": [14],
-		"/statistics": [15]
+		"/calendar": [4],
+		"/category/[slug]": [5],
+		"/courses": [6],
+		"/courses/[courseId]": [7],
+		"/courses/[courseId]/lesson/[lessonId]": [8],
+		"/events": [9],
+		"/exercises": [10],
+		"/exercises/[id]": [11],
+		"/forums": [12],
+		"/groups": [13],
+		"/help": [14],
+		"/login": [15],
+		"/my-learning": [16],
+		"/progress": [17],
+		"/register": [18],
+		"/reset-password": [19],
+		"/settings": [20],
+		"/statistics": [21]
 	};
 
 export const hooks = {

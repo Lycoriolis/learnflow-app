@@ -1,6 +1,7 @@
 {
 	"/(protected)": [],
 	"/": [],
+	"/calendar": [],
 	"/category/[slug]": [
 		"src/routes/category/[slug]/+page.ts"
 	],
@@ -9,9 +10,14 @@
 		"src/routes/courses/[courseId]/+page.ts"
 	],
 	"/courses/[courseId]/lesson/[lessonId]": [],
+	"/events": [],
 	"/exercises": [],
 	"/exercises/[id]": [],
+	"/forums": [],
+	"/groups": [],
+	"/help": [],
 	"/login": [],
+	"/my-learning": [],
 	"/progress": [],
 	"/register": [],
 	"/reset-password": [],
