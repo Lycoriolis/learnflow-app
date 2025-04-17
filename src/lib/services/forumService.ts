@@ -1,6 +1,6 @@
 import pkg from 'pg';
 const { Pool } = pkg;
-import { env } from '$env/dynamic/private'; // Assuming connection details are in private env vars
+import { env } from '$env/dynamic/private';
 
 // Configure the connection pool
 // Ensure environment variables like DATABASE_URL or POSTGRES_URL are set
