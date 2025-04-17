@@ -28,6 +28,9 @@
 	"/api/groups/leave": [
 		"src/routes/api/groups/leave/+server.ts"
 	],
+	"/api/groups/[id]": [
+		"src/routes/api/groups/[id]/+server.ts"
+	],
 	"/calendar": [],
 	"/category/[slug]": [
 		"src/routes/category/[slug]/+page.ts"
@@ -48,6 +51,8 @@
 		"src/routes/forums/topic/[id]/+page.server.js"
 	],
 	"/groups": [],
+	"/groups/create": [],
+	"/groups/[id]": [],
 	"/help": [],
 	"/login": [],
 	"/my-learning": [],

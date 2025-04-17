@@ -1,5 +1,6 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { Pool } from 'pg';
+import pkg from 'pg';
+const { Pool } = pkg;
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgres://localhost/learnflow_db'
