@@ -7,7 +7,7 @@
   import RecentActivity from '$lib/components/RecentActivity.svelte';
   import { isAuthenticated, user, loading as authLoading } from '$lib/stores/authStore.js';
   import GeneralWelcome from '$lib/components/GeneralWelcome.svelte';
-  import { userProfile } from '$lib/stores/userProfileStore.js';
+  import { userProfile, userProfileLoading } from '$lib/stores/userProfileStore.js';
   import { focusSessions, todos } from '$lib/stores/pipStores';
   import { listContent, type ContentMetadata } from '$lib/services/contentService.js';
   import FocusTimeChart from '$lib/components/FocusTimeChart.svelte';
@@ -50,7 +50,7 @@
 </svelte:head>
 
 <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-  {#if authLoading}
+  {#if $authLoading || $userProfileLoading}
     <div class="flex justify-center items-center min-h-[60vh]"><i class="fas fa-spinner fa-spin text-4xl text-indigo-500"></i></div>
   {:else if $isAuthenticated && $userProfile}
     <WelcomeBanner username={$user.displayName ?? $user.email} />

@@ -1,142 +1,78 @@
 <script lang="ts">
-  import { isAuthenticated, loading } from '$lib/stores/authStore.js';
-  import { login } from '$lib/authService.js';
-  import { todos, notes, timerSettings, focusSessions } from '$lib/stores/pipStores.js';
+  import { isAuthenticated, loading as authLoading } from '$lib/stores/authStore.js';
+  import { userProfile, userProfileLoading } from '$lib/stores/userProfileStore.js';
+  import { focusSessions, todos, exerciseSessions } from '$lib/stores/pipStores';
+  import { goto } from '$app/navigation';
   import StatCard from '$lib/components/StatCard.svelte';
   import FocusTimeChart from '$lib/components/FocusTimeChart.svelte';
-  import { onMount } from 'svelte';
 
-  type TimeUnit = 'day' | 'week' | 'month';
-  let selectedTimeUnit: TimeUnit = 'day';
+  // Chart unit
+  let unit: 'day' | 'week' | 'month' = 'week';
 
-  // Calculate derived stats
-  $: completedTodos = $todos.filter(t => t.completed).length;
-  $: pendingTodos = $todos.length - completedTodos;
-  $: totalNotes = $notes.length;
+  // Derived stats
+  let totalFocus = 0;
+  let sessionCount = 0;
+  let avgSession = 0;
+  let longestSession = 0;
+  let tasksDone = 0;
+  let exercisesCompleted = 0;
+  let enrollmentsCount = 0;
 
-  // Format duration in seconds to minutes
-  function formatMinutes(seconds: number): number {
-    return Math.round(seconds / 60);
+  function goToLogin() {
+    goto('/login?redirect=/statistics');
   }
 
-  let sessionsLoaded = false;
-  onMount(() => {
-      const unsubscribe = focusSessions.subscribe(value => {
-          if (value) {
-              sessionsLoaded = true;
-          }
-      });
-      
-      setTimeout(() => { sessionsLoaded = true; }, 50);
-      return unsubscribe;
-  });
-
+  // Recompute stats whenever relevant stores update
+  $: if ($isAuthenticated && !$authLoading && !$userProfileLoading && $userProfile) {
+    const sessions = $focusSessions;
+    sessionCount = sessions.length;
+    totalFocus = sessions.reduce((sum, s) => sum + s.duration / 60, 0);
+    avgSession = sessionCount ? totalFocus / sessionCount : 0;
+    longestSession = sessions.reduce((max, s) => Math.max(max, s.duration / 60), 0);
+    tasksDone = $todos.filter(t => t.completed).length;
+    exercisesCompleted = $exerciseSessions.filter(es => es.completed).length;
+    const enroll = $userProfile.preferences.enrollments || [];
+    enrollmentsCount = enroll.filter(e => e.progress > 0 && e.progress < 100).length;
+  }
 </script>
 
 <svelte:head>
-  <title>LearnFlow | Statistics</title>
+  <title>Statistics | LearnFlow</title>
 </svelte:head>
 
-<div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-  {#if $loading}
-    <div class="flex justify-center items-center min-h-[calc(100vh-200px)] text-4xl text-indigo-500">
-      <i class="fas fa-spinner fa-spin"></i>
+{#if $authLoading}
+  <div class="flex items-center justify-center min-h-[60vh]"><i class="fas fa-spinner fa-spin text-4xl text-indigo-500"></i></div>
+{:else if !$isAuthenticated}
+  <div class="flex flex-col items-center justify-center min-h-[60vh]">
+    <p class="text-lg text-gray-600 dark:text-gray-300 mb-4">Log in to view your statistics.</p>
+    <button class="px-6 py-2 bg-indigo-600 text-white rounded" on:click={goToLogin}>Log In</button>
+  </div>
+{:else if $userProfileLoading}
+  <div class="flex items-center justify-center min-h-[60vh]"><i class="fas fa-spinner fa-spin text-4xl text-indigo-500"></i></div>
+{:else}
+  <div class="max-w-5xl mx-auto px-4 py-6 space-y-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Your Statistics</h1>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <StatCard title="Focus Sessions" value={String(sessionCount)} icon="fa-stopwatch" color="yellow" />
+      <StatCard title="Total Focus (min)" value={String(Math.round(totalFocus))} icon="fa-clock" color="purple" />
+      <StatCard title="Avg Session (min)" value={avgSession.toFixed(1)} icon="fa-chart-line" color="blue" />
+      <StatCard title="Longest Session" value={longestSession.toFixed(1)} icon="fa-mountain" color="indigo" />
+      <StatCard title="Tasks Completed" value={String(tasksDone)} icon="fa-list-check" color="green" />
+      <StatCard title="Exercises Completed" value={String(exercisesCompleted)} icon="fa-pencil-alt" color="gray" />
+      <StatCard title="Courses In Progress" value={String(enrollmentsCount)} icon="fa-book-open" color="red" />
     </div>
-  {:else if $isAuthenticated}
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Statistics & Activity</h1>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-      <!-- Todo Stats -->
-      <StatCard 
-        title="Tasks Completed" 
-        value={completedTodos.toString()} 
-        icon="fa-check-circle" 
-        color="green"
-      />
-       <StatCard 
-        title="Tasks Pending" 
-        value={pendingTodos.toString()} 
-        icon="fa-clipboard-list" 
-        color="yellow"
-      />
-      <!-- Notes Stats -->
-      <StatCard 
-        title="Notes Created" 
-        value={totalNotes.toString()} 
-        icon="fa-sticky-note" 
-        color="blue"
-      />
-    </div>
-
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4 sm:p-6 mb-8">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-2 sm:mb-0">Focus Time History</h2>
-        <div class="flex space-x-1 bg-gray-200 dark:bg-gray-700 p-1 rounded-md">
-          {#each [
-            { label: 'Day', value: 'day' }, 
-            { label: 'Week', value: 'week' }, 
-            { label: 'Month', value: 'month' }
-          ] as unit}
-            <button 
-              on:click={() => selectedTimeUnit = unit.value as TimeUnit}
-              class="px-3 py-1 text-xs sm:text-sm font-medium rounded-md transition duration-150 
-                     {selectedTimeUnit === unit.value 
-                       ? 'bg-white dark:bg-gray-600 text-indigo-700 dark:text-white shadow' 
-                       : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'}"
-            >
-              {unit.label}
-            </button>
-          {/each}
-        </div>
+    <div class="space-y-4">
+      <div class="flex items-center space-x-4">
+        <label class="font-medium">View by:</label>
+        <select bind:value={unit} class="rounded border-gray-300 p-2 bg-white dark:bg-gray-800">
+          <option value="day">Daily</option>
+          <option value="week">Weekly</option>
+          <option value="month">Monthly</option>
+        </select>
       </div>
-      {#if sessionsLoaded}
-         <FocusTimeChart sessions={$focusSessions} timeUnit={selectedTimeUnit} />
-      {:else}
-          <div class="text-center py-10 text-gray-500">Loading chart data...</div>
-      {/if}
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4" style="height: 300px;">
+        <FocusTimeChart sessions={$focusSessions} timeUnit={unit} />
+      </div>
     </div>
-
-    <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Focus Timer Settings</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-       <StatCard 
-        title="Work Duration" 
-        value={`${formatMinutes($timerSettings.workDuration)} min`} 
-        icon="fa-briefcase" 
-        color="indigo"
-      />
-       <StatCard 
-        title="Short Break" 
-        value={`${formatMinutes($timerSettings.shortBreakDuration)} min`} 
-        icon="fa-coffee" 
-        color="teal"
-      />
-      <StatCard 
-        title="Long Break" 
-        value={`${formatMinutes($timerSettings.longBreakDuration)} min`} 
-        icon="fa-umbrella-beach" 
-        color="cyan"
-      />
-       <StatCard 
-        title="Long Break Interval" 
-        value={`Every ${$timerSettings.longBreakInterval} cycles`} 
-        icon="fa-redo" 
-        color="purple"
-      />
-    </div>
-
-    <p class="mt-8 text-sm text-gray-500 dark:text-gray-400">
-      *Focus time is recorded when a 'Work' timer cycle completes naturally.*
-    </p>
-
-  {:else}
-    <div class="text-center py-10">
-      <p class="text-xl text-gray-600 dark:text-gray-300 mb-4">Please log in to view your statistics.</p>
-      <button 
-        class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md transition duration-150"
-        on:click={login}
-      >
-        Log In
-      </button>
-    </div>
-  {/if}
-</div> 
+  </div>
+{/if}

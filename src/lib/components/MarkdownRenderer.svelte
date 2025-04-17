@@ -1,8 +1,43 @@
+/// <reference lib="dom" />
 <script lang="ts">
   import { onMount, afterUpdate } from 'svelte';
   import { marked } from 'marked';
   import { browser } from '$app/environment';
-  
+
+  // Static import of highlight.js core and styles
+  import hljs from 'highlight.js/lib/core';
+  import javascript from 'highlight.js/lib/languages/javascript';
+  import typescript from 'highlight.js/lib/languages/typescript';
+  import python from 'highlight.js/lib/languages/python';
+  import java from 'highlight.js/lib/languages/java';
+  import cpp from 'highlight.js/lib/languages/cpp';
+  import csharp from 'highlight.js/lib/languages/csharp';
+  import ruby from 'highlight.js/lib/languages/ruby';
+  import go from 'highlight.js/lib/languages/go';
+  import rust from 'highlight.js/lib/languages/rust';
+  import bash from 'highlight.js/lib/languages/bash';
+  import json from 'highlight.js/lib/languages/json';
+  import xml from 'highlight.js/lib/languages/xml';
+  import css from 'highlight.js/lib/languages/css';
+  import markdown from 'highlight.js/lib/languages/markdown';
+  import 'highlight.js/styles/github-dark.css';
+
+  // Register languages once
+  hljs.registerLanguage('javascript', javascript);
+  hljs.registerLanguage('typescript', typescript);
+  hljs.registerLanguage('python', python);
+  hljs.registerLanguage('java', java);
+  hljs.registerLanguage('cpp', cpp);
+  hljs.registerLanguage('csharp', csharp);
+  hljs.registerLanguage('ruby', ruby);
+  hljs.registerLanguage('go', go);
+  hljs.registerLanguage('rust', rust);
+  hljs.registerLanguage('bash', bash);
+  hljs.registerLanguage('json', json);
+  hljs.registerLanguage('xml', xml);
+  hljs.registerLanguage('css', css);
+  hljs.registerLanguage('markdown', markdown);
+
   // Props
   export let content: string = '';
   export let className: string = '';
@@ -10,135 +45,67 @@
   // Local state
   let renderedContent: string = '';
   let markdownContainer: HTMLElement;
-  
-  // Initialize highlightjs for code highlighting
-  async function initHighlightJS() {
-    if (!browser) return;
-    
-    try {
-      // Dynamically load highlight.js and a theme
-      const hljs = await import('https://cdn.skypack.dev/highlight.js/lib/core');
-      
-      // Import common languages
-      const languages = [
-        'javascript', 'typescript', 'python', 'java', 'cpp', 'csharp', 
-        'ruby', 'go', 'rust', 'bash', 'json', 'html', 'css', 'markdown'
-      ];
-      
-      for (const lang of languages) {
-        try {
-          const module = await import(`https://cdn.skypack.dev/highlight.js/lib/languages/${lang}`);
-          hljs.default.registerLanguage(lang, module.default);
-        } catch (e) {
-          console.warn(`Failed to load highlight.js language: ${lang}`, e);
-        }
-      }
-      
-      // Apply highlighting to all code blocks
-      document.querySelectorAll('pre code').forEach((block) => {
-        hljs.default.highlightElement(block as HTMLElement);
-      });
-      
-      // Add the highlight.js stylesheet
-      if (!document.getElementById('highlightjs-theme')) {
-        const link = document.createElement('link');
-        link.id = 'highlightjs-theme';
-        link.rel = 'stylesheet';
-        link.href = 'https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github-dark.css';
-        document.head.appendChild(link);
-      }
-    } catch (e) {
-      console.error('Failed to initialize syntax highlighting', e);
-    }
-  }
-  
-  // Process markdown content
+
   function processMarkdown() {
     if (!content) {
       renderedContent = '';
       return;
     }
-    
     try {
-      // Configure marked options
-      marked.setOptions({
-        gfm: true, // GitHub Flavored Markdown
-        breaks: true, // Convert \n to <br>
-        smartLists: true,
-        smartypants: true, // Better typography
-        highlight: function(code, lang) {
-          // This will be further processed by highlight.js after rendering
-          return code;
-        }
-      });
-      
+      marked.setOptions({ gfm: true, breaks: true, smartLists: true, smartypants: true });
       renderedContent = marked(content);
     } catch (e) {
       console.error('Error rendering markdown:', e);
       renderedContent = `<p class="text-red-500">Error rendering markdown content</p>`;
     }
   }
-  
-  // Process on mount and when content changes
-  $: if (browser && content) {
-    processMarkdown();
-  }
-  
-  // Apply syntax highlighting after content renders
+
+  $: if (browser) processMarkdown();
+
   afterUpdate(() => {
     if (browser && markdownContainer) {
-      initHighlightJS();
+      // highlight code blocks
+      markdownContainer.querySelectorAll('pre code').forEach((block: HTMLElement) => {
+        hljs.highlightElement(block);
+      });
       enhanceContent();
     }
   });
-  
-  // Handle additional content enhancements
+
   function enhanceContent() {
     if (!markdownContainer) return;
-    
-    // Make external links open in new tabs
-    markdownContainer.querySelectorAll('a').forEach(link => {
+    // external links
+    markdownContainer.querySelectorAll('a').forEach((link: HTMLAnchorElement) => {
       if (link.hostname !== window.location.hostname) {
-        link.setAttribute('target', '_blank');
-        link.setAttribute('rel', 'noopener noreferrer');
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
       }
     });
-    
-    // Add responsive classes to images
-    markdownContainer.querySelectorAll('img').forEach(img => {
+    // responsive images
+    markdownContainer.querySelectorAll('img').forEach((img: HTMLImageElement) => {
       img.classList.add('max-w-full', 'h-auto', 'rounded-lg', 'my-4');
     });
-    
-    // Add click-to-copy for code blocks
-    markdownContainer.querySelectorAll('pre').forEach(pre => {
-      // Create copy button
-      const copyButton = document.createElement('button');
-      copyButton.className = 'absolute top-2 right-2 p-1 rounded bg-gray-700 text-gray-200 text-xs hover:bg-gray-600 focus:outline-none transition-colors';
-      copyButton.innerHTML = '<i class="fas fa-copy"></i>';
-      copyButton.addEventListener('click', () => {
-        const code = pre.querySelector('code')?.innerText || '';
-        navigator.clipboard.writeText(code).then(() => {
-          copyButton.innerHTML = '<i class="fas fa-check"></i>';
-          setTimeout(() => {
-            copyButton.innerHTML = '<i class="fas fa-copy"></i>';
-          }, 2000);
-        });
-      });
-      
-      // Position the pre relatively if not already
-      if (pre.style.position !== 'relative') {
+    // code copy button
+    markdownContainer.querySelectorAll('pre').forEach((pre: HTMLElement) => {
+      if (!pre.querySelector('.copy-btn')) {
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn absolute top-2 right-2 p-1 rounded bg-gray-700 text-gray-200 text-xs hover:bg-gray-600';
+        btn.innerHTML = '<i class="fas fa-copy"></i>';
+        btn.onclick = () => {
+          const code = pre.querySelector('code')?.innerText || '';
+          navigator.clipboard.writeText(code).then(() => {
+            btn.innerHTML = '<i class="fas fa-check"></i>';
+            setTimeout(() => btn.innerHTML = '<i class="fas fa-copy"></i>', 2000);
+          });
+        };
         pre.style.position = 'relative';
+        pre.appendChild(btn);
       }
-      
-      pre.appendChild(copyButton);
     });
   }
 </script>
 
-<div 
-  bind:this={markdownContainer}
-  class="markdown-content prose prose-lg dark:prose-invert max-w-none {className}"
->
+<div bind:this={markdownContainer} class="markdown-content prose prose-lg dark:prose-invert max-w-none {className}">
   {@html renderedContent}
 </div>
 
@@ -225,4 +192,4 @@
     background-color: rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.9);
   }
-</style> 
+</style>

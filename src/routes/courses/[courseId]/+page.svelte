@@ -1,118 +1,44 @@
 <script lang="ts">
-  import type { PageData } from './$types';
+  import { page } from '$app/stores';
+  import { onDestroy } from 'svelte';
+  import { loadContent, type ContentItem } from '$lib/services/contentService.js';
   import MarkdownRenderer from '$lib/components/MarkdownRenderer.svelte';
+  import { goto } from '$app/navigation';
 
-  export let data: PageData;
+  let course: ContentItem | null = null;
+  let loading = true;
+  let error: string | null = null;
+  let unsub;
 
-  // Reactive statements to get the course data or error
-  $: course = data.course;
-  $: error = data.error;
+  // Watch route param and fetch content
+  unsub = page.subscribe(async ($page) => {
+    const id = $page.params.courseId;
+    if (!id) return;
+    loading = true;
+    error = null;
+    const item = await loadContent('course', id);
+    if (item) course = item;
+    else {
+      error = 'Course not found';
+      course = null;
+    }
+    loading = false;
+  });
 
-  // Reactive title and description for <svelte:head>
-  $: pageTitle = error 
-      ? 'LearnFlow | Error' 
-      : course 
-      ? `LearnFlow | ${course.title}` 
-      : 'LearnFlow | Loading Course...';
-
-  $: pageDescription = error 
-      ? error.message || 'Could not load the course.'
-      : course
-      ? course.description
-      : 'Loading course details.';
-
+  onDestroy(() => unsub && unsub());
 </script>
 
 <svelte:head>
-  <title>{pageTitle}</title>
-  {#if !error && course}
-    <meta name="description" content={pageDescription} />
-  {/if}
+  <title>{course ? course.title + ' | LearnFlow' : 'Loading...'}</title>
 </svelte:head>
 
-{#if error}
-  <div class="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8 text-center">
-    <h1 class="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Error</h1>
-    <p class="text-gray-600 dark:text-gray-300">{error.message || 'Could not load the course.'}</p>
-    <a href="/courses" class="mt-6 inline-block px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md transition duration-150">
-      Back to Courses
-    </a>
-  </div>
-{:else if course}
-  <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-    <!-- Course Header -->
-    <div class="mb-8 p-6 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg shadow-lg text-white">
-      <span class="block text-sm font-medium text-indigo-200 mb-1">{course.category}</span>
-      <h1 class="text-4xl font-bold mb-2">{course.title}</h1>
-      <p class="text-lg text-indigo-100">{course.description}</p>
-      
-      <!-- Course tags -->
-      {#if course.tags && course.tags.length > 0}
-        <div class="mt-3 flex flex-wrap gap-2">
-          {#each course.tags as tag}
-            <span class="px-2 py-1 text-xs font-medium bg-indigo-700 text-white rounded-full">
-              {tag}
-            </span>
-          {/each}
-        </div>
-      {/if}
-      
-      <!-- Difficulty level -->
-      {#if course.difficulty}
-        <div class="mt-3">
-          <span class="px-3 py-1 text-xs font-medium bg-indigo-700 text-white rounded-full">
-            {course.difficulty.charAt(0).toUpperCase() + course.difficulty.slice(1)}
-          </span>
-          {#if course.estimatedTime}
-            <span class="ml-2 text-indigo-200">
-              <i class="far fa-clock mr-1"></i>
-              {course.estimatedTime}
-            </span>
-          {/if}
-        </div>
-      {/if}
-    </div>
-
-    <!-- Check if we have markdown content -->
-    {#if course.content}
-      <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden mb-8">
-        <div class="p-6">
-          <MarkdownRenderer content={course.content} className="bg-white dark:bg-gray-800" />
-        </div>
-      </div>
-    {/if}
-
-    <!-- Course Content - Modules and Lessons -->
-    <div class="space-y-6">
-      <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Course Modules</h2>
-      {#each course.modules as module, moduleIndex}
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
-          <h3 class="text-xl font-semibold p-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 text-gray-800 dark:text-white">
-            Module {moduleIndex + 1}: {module.title}
-          </h3>
-          <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-            {#each module.lessons as lesson, lessonIndex}
-              <li class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150">
-                <a href="/courses/{course.id}/lesson/{lesson.id}" class="flex justify-between items-center">
-                  <div class="flex items-center">
-                    <span class="text-indigo-600 dark:text-indigo-400 mr-3 font-medium w-8 text-right">{moduleIndex + 1}.{lessonIndex + 1}</span>
-                    <span class="text-gray-700 dark:text-gray-200">{lesson.title}</span>
-                  </div>
-                  <!-- Optional: Add completion status icon -->
-                  <i class="fas fa-chevron-right text-gray-400"></i>
-                </a>
-              </li>
-            {/each}
-          </ul>
-        </div>
-      {/each}
-    </div>
-  </div>
-{:else}
-  <!-- Should ideally not be reached if load handles errors, but good as a fallback -->
-  <div class="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8 text-center">
-     <div class="flex justify-center items-center min-h-[calc(100vh-200px)] text-4xl text-indigo-500">
-      <i class="fas fa-spinner fa-spin"></i>
-    </div>
-  </div>
-{/if} 
+<div class="max-w-3xl mx-auto px-4 py-6">
+  {#if loading}
+    <div class="flex justify-center items-center min-h-[50vh]"><i class="fas fa-spinner fa-spin text-4xl text-indigo-500"></i></div>
+  {:else if error}
+    <div class="text-red-500 text-center py-10">{error}</div>
+  {:else if course}
+    <h1 class="text-3xl font-bold mb-4">{course.title}</h1>
+    <MarkdownRenderer content={course.content} />
+  {/if}
+</div>
