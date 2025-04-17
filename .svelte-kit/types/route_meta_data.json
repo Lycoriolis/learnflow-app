@@ -1,6 +1,24 @@
 {
 	"/(protected)": [],
 	"/": [],
+	"/api/forums/topics": [
+		"src/routes/api/forums/topics/+server.ts"
+	],
+	"/api/forums/topics/create": [
+		"src/routes/api/forums/topics/create/+server.ts"
+	],
+	"/api/forum/categories": [
+		"src/routes/api/forum/categories/+server.ts"
+	],
+	"/api/forum/posts": [
+		"src/routes/api/forum/posts/+server.ts"
+	],
+	"/api/forum/topics": [
+		"src/routes/api/forum/topics/+server.ts"
+	],
+	"/api/forum/topics/[id]/vote": [
+		"src/routes/api/forum/topics/[id]/vote/+server.ts"
+	],
 	"/calendar": [],
 	"/category/[slug]": [
 		"src/routes/category/[slug]/+page.ts"
@@ -13,7 +31,12 @@
 	"/events": [],
 	"/exercises": [],
 	"/exercises/[id]": [],
-	"/forums": [],
+	"/forums": [
+		"src/routes/forums/+page.server.ts"
+	],
+	"/forums/topic/[id]": [
+		"src/routes/forums/topic/[id]/+page.server.js"
+	],
 	"/groups": [],
 	"/help": [],
 	"/login": [],
@@ -22,5 +45,10 @@
 	"/register": [],
 	"/reset-password": [],
 	"/settings": [],
-	"/statistics": []
+	"/statistics": [],
+	"/tools": [],
+	"/tools/chat": [],
+	"/tools/notepad": [],
+	"/tools/pomodoro": [],
+	"/tools/tasks": []
 }

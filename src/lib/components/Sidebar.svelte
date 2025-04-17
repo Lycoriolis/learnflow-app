@@ -45,6 +45,14 @@
         { name: 'Help Center', href: '/help', icon: 'fa-question-circle', authRequired: false },
         { name: 'Contact Support', href: '/support', icon: 'fa-headset', authRequired: false }
       ]
+    },
+    {
+      title: 'Tools',
+      items: [
+        { name: 'Notepad', href: '/tools/notepad', icon: 'fa-sticky-note', authRequired: false },
+        { name: 'Tasks', href: '/tools/tasks', icon: 'fa-list-check', authRequired: false },
+        { name: 'AI Study Chat', href: '/tools/chat', icon: 'fa-robot', authRequired: false }
+      ]
     }
   ];
   
@@ -82,7 +90,7 @@
 </div>
 
 <!-- Sidebar -->
-<div id="sidebar" class="sidebar w-64 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 shadow-lg fixed h-full z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+<div id="sidebar" class="sidebar w-64 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 shadow-lg fixed h-full z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto">
   <div class="p-4">
     <div class="flex items-center mb-6 pt-2 pb-4 border-b border-gray-200 dark:border-gray-700">
       <div class="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center mr-3">

@@ -14,6 +14,7 @@ import {
 } from 'firebase/auth';
 import { auth as firebaseAuth } from './firebase.js';
 import { isAuthenticated, user, loading, authError } from './stores/authStore.js';
+import { loadUserProfile } from '$lib/stores/userProfileStore.js';
 
 // Explicitly type the imported firebaseAuth
 const auth: Auth = firebaseAuth as Auth;
@@ -42,6 +43,9 @@ function initAuth() {
 				});
 				isAuthenticated.set(true);
 				user.set(userData);
+				// Load or initialize Firestore user profile
+				loadUserProfile(userData.uid, userData.email || '', userData.displayName || undefined)
+					.catch(err => console.error('Failed to load user profile:', err));
 			} else {
 				console.log('Auth state changed: User not authenticated');
 				isAuthenticated.set(false);
@@ -180,4 +184,4 @@ export {
 	logout,
 	resetPassword,
 	getCurrentUser
-}; 
+};
