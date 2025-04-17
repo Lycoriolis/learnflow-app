@@ -17,7 +17,7 @@
       errorMessage = 'Please enter title, content, and select a category.';
       return;
     }
-    if (!currentUser || !currentUser.id) {
+    if (!currentUser || !currentUser.uid) {
       errorMessage = 'You must be logged in to create a topic.';
       return;
     }
@@ -27,7 +27,7 @@
       title: title.trim(),
       content: content.trim(),
       category_id,
-      author_id: currentUser.id
+      author_id: currentUser.uid
     };
     try {
       const response = await fetch('/api/forum/topics', {
