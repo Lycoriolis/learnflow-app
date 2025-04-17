@@ -9,8 +9,6 @@
   let exercises: ContentMetadata[] = [];
   let isLoading = true;
   let error: string | null = null;
-  let showAnswer: Record<string, boolean> = {};
-  let showHint: Record<string, boolean> = {};
 
   onMount(async () => {
     try {
@@ -22,14 +20,6 @@
       isLoading = false;
     }
   });
-
-  function toggleAnswer(id: string) {
-    showAnswer[id] = !showAnswer[id];
-  }
-
-  function toggleHint(id: string) {
-    showHint[id] = !showHint[id];
-  }
 
   function goToLogin() {
     goto(`/login?redirect=/exercises`);
@@ -58,35 +48,11 @@
       <div class="col-span-full text-center text-red-500">{error}</div>
     {/if}
     {#each exercises as ex (ex.id)}
-      <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center text-center">
-        <!-- Hint Button -->
-        <button class="absolute top-4 right-4 w-8 h-8 bg-indigo-600 text-white rounded-xl flex items-center justify-center hover:bg-indigo-700 transition"
-                on:click={() => toggleHint(ex.id)}>
-          <i class="fas fa-lightbulb"></i>
-        </button>
-
+      <a href={`/exercises/${ex.id}`} class="block bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition p-6 text-center flex flex-col h-full">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">{ex.title}</h2>
-        <p class="text-gray-600 dark:text-gray-300 mb-4">{ex.description}</p>
-
-        <button class="px-4 py-2 bg-green-600 text-white rounded-md mb-4 hover:bg-green-700 transition"
-                on:click={() => toggleAnswer(ex.id)}>
-          {showAnswer[ex.id] ? 'Hide Answer' : 'Show Answer'}
-        </button>
-
-        {#if showAnswer[ex.id]}
-          <div class="w-full bg-gray-100 dark:bg-gray-700 p-4 rounded mb-4 text-left">
-            <MarkdownRenderer content={ex.answer || 'No answer provided.'} />
-          </div>
-        {/if}
-
-        {#if showHint[ex.id]}
-          <div class="absolute inset-y-0 right-0 w-2/3 bg-indigo-50 dark:bg-gray-900 p-6 overflow-auto"
-               in:slide={{ x: 300 }} out:slide={{ x: 300 }}>
-            <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300 mb-2">Indications</h3>
-            <MarkdownRenderer content={ex.hints || 'No hints available.'} />
-          </div>
-        {/if}
-      </div>
+        <p class="text-gray-600 dark:text-gray-300 flex-grow">{ex.description}</p>
+        <span class="mt-4 inline-block px-3 py-1 bg-indigo-600 text-white rounded">Go to Exercise</span>
+      </a>
     {/each}
   </div>
 {/if}

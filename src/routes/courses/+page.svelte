@@ -63,11 +63,7 @@
     {:else}
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {#each courses as course (course.id)}
-          <div
-            class="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-gray-100 transition-all duration-300 ease-in-out transform hover:-translate-y-1 flex flex-col h-full cursor-pointer"
-            role="button" tabindex="0" aria-label={`View ${course.title} course`}
-            on:click={() => window.location.href = `/courses/${course.id}`}
-          >
+          <a href={`/courses/${course.id}`} class="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-gray-100 transition-all duration-300 ease-in-out transform hover:-translate-y-1 flex flex-col h-full">
             <div
               class="h-36 relative flex items-center justify-center"
               style:--gradient-from={getCssColor('sky-500')}
@@ -94,7 +90,7 @@
                 {/if}
               </div>
             </div>
-          </div>
+          </a>
         {/each}
       </div>
     {/if}

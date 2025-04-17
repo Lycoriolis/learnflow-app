@@ -1,54 +1,56 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { userProfile, userProfileLoading } from '$lib/stores/userProfileStore.js';
-  import { isAuthenticated, user, loading as authLoading } from '$lib/stores/authStore.js';
-  import { listContent, loadContent, type ContentMetadata } from '$lib/services/contentService.js';
+  import { isAuthenticated, loading as authLoading } from '$lib/stores/authStore.js';
+  import { loadContent, type ContentMetadata } from '$lib/services/contentService.js';
   import { goto } from '$app/navigation';
   import { writable } from 'svelte/store';
 
-  interface Enrollment {
-    id: string;
-    progress: number;
-    lastAccessed: number;
-  }
+  interface Enrollment { id: string; progress: number; lastAccessed: number; }
 
-  // Local state
-  let enrollments: Enrollment[] = [];
-  let coursesData = writable<Array<{ meta: ContentMetadata; enrollment: Enrollment }>>([]);
+  let coursesData = writable<{ meta: ContentMetadata; enrollment: Enrollment }[]>([]);
   let loading = false;
   let error: string | null = null;
-
-  // Tabs
   let activeTab: 'in-progress' | 'completed' | 'all' = 'in-progress';
 
-  function goToLogin() {
-    goto(`/login?redirect=/my-learning`);
-  }
+  function goToLogin() { goto('/login?redirect=/my-learning'); }
 
-  onMount(async () => {
-    if (!$isAuthenticated) return;
-    if ($userProfileLoading) return;
+  async function loadCourses() {
+    loading = true;
+    error = null;
     const profile = $userProfile;
-    if (!profile || !profile.preferences?.enrollments) {
+    if (!profile?.preferences?.enrollments) {
       coursesData.set([]);
+      loading = false;
       return;
     }
-    enrollments = profile.preferences.enrollments;
-    loading = true;
     try {
-      const data = await Promise.all(enrollments.map(async e => {
-        const item = await loadContent('course', e.id);
-        return { meta: { ...item } as ContentMetadata, enrollment: e };
-      }));
+      const data = await Promise.all(
+        profile.preferences.enrollments.map(async (e: Enrollment) => ({
+          meta: (await loadContent('course', e.id)) as ContentMetadata,
+          enrollment: e
+        }))
+      );
       coursesData.set(data);
-    } catch (e:any) {
+    } catch (e: any) {
       console.error(e);
       error = 'Failed to load enrolled courses';
     } finally {
       loading = false;
     }
+  }
+
+  onMount(() => {
+    if (!$isAuthenticated) return;
+    // Wait for profile to finish loading
+    const unsub = userProfileLoading.subscribe((loadingProfile) => {
+      if (!loadingProfile) {
+        unsub();
+        loadCourses();
+      }
+    });
   });
-  
+
   // Derived lists
   $: myCourses = $coursesData.filter(c => c.enrollment.progress > 0 && c.enrollment.progress < 100);
   $: completedCourses = $coursesData.filter(c => c.enrollment.progress === 100);
@@ -60,7 +62,7 @@
   <title>My Learning | LearnFlow</title>
 </svelte:head>
 
-{#if authLoading || userProfileLoading || loading}
+{#if $authLoading || $userProfileLoading || loading}
   <div class="flex items-center justify-center min-h-[60vh]"><i class="fas fa-spinner fa-spin text-4xl text-indigo-500"></i></div>
 {:else if !$isAuthenticated}
   <div class="flex flex-col items-center justify-center min-h-[60vh]">

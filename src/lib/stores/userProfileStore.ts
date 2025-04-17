@@ -18,7 +18,18 @@ export async function loadUserProfile(uid: string, email: string, displayName?: 
     if (!profile) {
       // create new profile
       const now = Date.now();
-      profile = { uid, email, displayName, createdAt: now, preferences: {} };
+      profile = {
+        uid,
+        email,
+        displayName,
+        createdAt: now,
+        preferences: {
+          enrollments: [],
+          focusSessions: [],
+          tasks: [],
+          notes: ''
+        }
+      };
       await createUserProfile(profile);
     }
     userProfile.set(profile);

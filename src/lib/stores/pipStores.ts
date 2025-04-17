@@ -77,6 +77,15 @@ export interface FocusSession {
 // Store an array of completed focus sessions (persistent)
 export const focusSessions = persistentStore<FocusSession[]>('learnflow-focus-sessions', []);
 
+// --- Exercise Sessions Store ---
+export interface ExerciseSession {
+  exerciseId: string;
+  timestamp: number;
+  completed: boolean;
+}
+// Store an array of completed exercise sessions (persistent)
+export const exerciseSessions = persistentStore<ExerciseSession[]>('learnflow-exercise-sessions', []);
+
 // --- Calculator Store --- (Transient state)
 export const calcDisplay = writable('0');
 export const calcCurrentInput = writable('');
