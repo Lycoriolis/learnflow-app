@@ -13,6 +13,7 @@
   // Initialize topics and categories from the loaded data
   let topics = data.topics;
   let categories = data.categories;
+  console.log('Loaded categories:', categories);
 
   // Types
   type ForumCategory = {
@@ -196,6 +197,11 @@
     subscribedTopics.update(ids => ids.filter(id => id !== topicId));
   }
 
+  function handleNewTopicClick() {
+    console.log('New Topic button clicked');
+    showCreateTopic = true;
+  }
+
   // Loading state
   let loading = true;
 
@@ -227,7 +233,7 @@
         <div class="mt-4 md:mt-0 flex space-x-2">
           <button
             class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm font-medium flex items-center"
-            on:click={() => showCreateTopic = true}
+            on:click={handleNewTopicClick}
           >
             <i class="fas fa-plus mr-2"></i>
             New Topic

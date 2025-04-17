@@ -3,9 +3,9 @@ const { Pool } = pkg;
 import { env } from '$env/dynamic/private'; // Assuming connection details are in private env vars
 
 // Configure the connection pool
-// Ensure environment variables like POSTGRES_URL or individual PG vars are set
+// Ensure environment variables like DATABASE_URL or POSTGRES_URL are set
 const pool = new Pool({
-  connectionString: env.POSTGRES_URL, // Or use individual env vars: user, host, database, password, port
+  connectionString: env.DATABASE_URL || env.POSTGRES_URL, // Fallback to POSTGRES_URL if DATABASE_URL is not available
 });
 
 /**
@@ -17,8 +17,7 @@ export async function getTopicById(topicId) {
   console.log(`Fetching topic with ID from DB: ${topicId}`);
   const client = await pool.connect();
   try {
-    // TODO: Adjust the query based on your actual 'topics' table schema
-    const res = await client.query('SELECT id, title, author, created_at as date, content FROM topics WHERE id = $1', [topicId]);
+    const res = await client.query('SELECT id, title, author, created_at as date, content FROM forum_topics WHERE id = $1', [topicId]);
     if (res.rows.length > 0) {
       const topic = res.rows[0];
       // TODO: Fetch replies separately if they are in a different table
@@ -43,10 +42,10 @@ export async function getTopicById(topicId) {
 export async function getAllTopics() {
   const client = await pool.connect();
   try {
-    const res = await client.query('SELECT * FROM topics ORDER BY created_at DESC');
+    const res = await client.query('SELECT * FROM forum_topics ORDER BY created_at DESC');
     return res.rows;
   } catch (err) {
-    console.error('Error fetching topics:', err);
+    console.error('Error fetching topics (forum_topics):', err);
     throw new Error('Failed to fetch topics from database');
   } finally {
     client.release();
@@ -60,7 +59,8 @@ export async function getAllTopics() {
 export async function getAllCategories() {
   const client = await pool.connect();
   try {
-    const res = await client.query('SELECT * FROM categories ORDER BY name ASC');
+    const res = await client.query('SELECT * FROM forum_categories ORDER BY name ASC');
+    console.log('Fetched categories from DB:', res.rows);
     return res.rows;
   } catch (err) {
     console.error('Error fetching categories:', err);

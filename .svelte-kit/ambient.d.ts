@@ -29,7 +29,6 @@ declare module '$env/static/private' {
 	export const VITE_OPENROUTER_API_KEY: string;
 	export const VITE_SITE_URL: string;
 	export const VITE_SITE_NAME: string;
-	export const DATABASE_URL: string;
 	export const VITE_FIREBASE_API_KEY: string;
 	export const VITE_FIREBASE_AUTH_DOMAIN: string;
 	export const VITE_FIREBASE_PROJECT_ID: string;
@@ -37,6 +36,7 @@ declare module '$env/static/private' {
 	export const VITE_FIREBASE_MESSAGING_SENDER_ID: string;
 	export const VITE_FIREBASE_APP_ID: string;
 	export const VITE_FIREBASE_MEASUREMENT_ID: string;
+	export const DATABASE_URL: string;
 	export const VITE_ADMIN_EMAILS: string;
 	export const VITE_CSRF_SECRET: string;
 	export const USER: string;
@@ -129,7 +129,6 @@ declare module '$env/dynamic/private' {
 		VITE_OPENROUTER_API_KEY: string;
 		VITE_SITE_URL: string;
 		VITE_SITE_NAME: string;
-		DATABASE_URL: string;
 		VITE_FIREBASE_API_KEY: string;
 		VITE_FIREBASE_AUTH_DOMAIN: string;
 		VITE_FIREBASE_PROJECT_ID: string;
@@ -137,6 +136,7 @@ declare module '$env/dynamic/private' {
 		VITE_FIREBASE_MESSAGING_SENDER_ID: string;
 		VITE_FIREBASE_APP_ID: string;
 		VITE_FIREBASE_MEASUREMENT_ID: string;
+		DATABASE_URL: string;
 		VITE_ADMIN_EMAILS: string;
 		VITE_CSRF_SECRET: string;
 		USER: string;
