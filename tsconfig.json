@@ -12,6 +12,7 @@
 		"strict": true,
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
+		 "lib": ["ES2015", "DOM"],
 		"paths": {
 			"$lib": ["src/lib"],
 			"$lib/*": ["src/lib/*"]

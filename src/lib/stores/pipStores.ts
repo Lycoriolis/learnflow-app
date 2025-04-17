@@ -31,8 +31,8 @@ const initialTimerState: TimerState = {
 	cycle: 0
 };
 
-// Active timer state (non-persistent)
-export const timerState = writable<TimerState>(initialTimerState);
+// Active timer state (persistent)
+export const timerState = persistentStore<TimerState>('learnflow-timer-state', initialTimerState);
 
 // Timer settings (persistent)
 export const timerSettings = persistentStore<TimerSettings>('learnflow-timer-settings', {
@@ -48,6 +48,10 @@ export interface TodoItem {
 	text: string;
 	completed: boolean;
 	createdAt: number;
+	description?: string;
+	deadline?: string; // ISO date string
+	emergency?: number; // 1-5 scale
+	tag?: string;
 }
 export const todos = persistentStore<TodoItem[]>('learnflow-todos', []);
 
@@ -60,6 +64,9 @@ export interface NoteItem {
 	updatedAt: number;
 }
 export const notes = persistentStore<NoteItem[]>('learnflow-notes', []);
+
+// --- Notepad Content Store ---
+export const notepadContent = persistentStore<string>('learnflow-notepad-content', '');
 
 // --- Focus Session Store ---
 export interface FocusSession {
