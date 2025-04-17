@@ -28,6 +28,7 @@
         { name: 'Dashboard', href: '/', icon: 'fa-home', authRequired: false },
         { name: 'Courses', href: '/courses', icon: 'fa-book', authRequired: false },
         { name: 'My Learning', href: '/my-learning', icon: 'fa-graduation-cap', authRequired: true },
+        { name: 'Statistics', href: '/statistics', icon: 'fa-chart-line', authRequired: true },
         { name: 'Calendar', href: '/calendar', icon: 'fa-calendar', authRequired: true }
       ]
     },
