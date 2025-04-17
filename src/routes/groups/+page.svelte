@@ -17,77 +17,17 @@
     isMember?: boolean; // Added to track if the current user is a member
   };
 
-  // Mock user groups data
-  let allGroups: UserGroup[] = [
-    {
-      id: 'group-1',
-      name: 'JavaScript Study Buddies',
-      description: 'Weekly discussions and pair programming for JavaScript learners.',
-      topic: 'Web Development',
-      image: '/images/groups/js-group.jpg',
-      memberCount: 25,
-      isPublic: true,
-      createdBy: 'Alex Johnson',
-      createdAt: '2023-03-15T10:00:00',
-      isMember: false
-    },
-    {
-      id: 'group-2',
-      name: 'Python for Data Science',
-      description: 'Collaborate on data science projects using Python.',
-      topic: 'Data Science',
-      image: '/images/groups/python-ds.jpg',
-      memberCount: 42,
-      isPublic: true,
-      createdBy: 'Emily Chen',
-      createdAt: '2023-03-20T14:30:00',
-      isMember: true
-    },
-    {
-      id: 'group-3',
-      name: 'UI/UX Design Collective',
-      description: 'Share design inspiration, feedback, and resources.',
-      topic: 'Design & UI/UX',
-      image: '/images/groups/uiux-collective.jpg',
-      memberCount: 18,
-      isPublic: false,
-      createdBy: 'Elena Rodriguez',
-      createdAt: '2023-04-01T09:15:00',
-      isMember: false
-    },
-    {
-      id: 'group-4',
-      name: 'Frontend Frameworks Discussion',
-      description: 'Discuss React, Vue, Svelte, and other frontend frameworks.',
-      topic: 'Web Development',
-      image: '/images/groups/frontend-frameworks.jpg',
-      memberCount: 31,
-      isPublic: true,
-      createdBy: 'David Wilson',
-      createdAt: '2023-04-05T11:00:00',
-      isMember: true
-    },
-    {
-      id: 'group-5',
-      name: 'Machine Learning Enthusiasts',
-      description: 'Explore ML algorithms, share papers, and work on projects.',
-      topic: 'Data Science',
-      memberCount: 55,
-      isPublic: true,
-      createdBy: 'Michael Chen',
-      createdAt: '2023-04-08T16:00:00',
-      isMember: false
-    }
-  ];
+  // User groups data fetched from API
+  let allGroups: UserGroup[] = [];
 
   // Filter and search state
   let searchQuery = '';
   let selectedTopic = 'all';
 
-  // Extract unique topics for filtering
-  const groupTopics = [
+  // Extract unique topics for filtering (computed after fetch)
+  $: groupTopics = [
     'all',
-    ...new Set(allGroups.map(group => group.topic))
+    ...Array.from(new Set(allGroups.map(group => group.topic)))
   ];
 
   // Filtered and searched groups
@@ -103,25 +43,46 @@
   $: myGroups = allGroups.filter(group => group.isMember);
   $: discoverGroups = filteredGroups.filter(group => !group.isMember);
 
-  // Function to handle joining/leaving a group (placeholder)
-  function toggleGroupMembership(groupId: string) {
-    // In a real app, this would call an API
-    console.log(`Toggling membership for group ${groupId}`);
-    const groupIndex = allGroups.findIndex(g => g.id === groupId);
-    if (groupIndex !== -1) {
-      allGroups[groupIndex].isMember = !allGroups[groupIndex].isMember;
-      // Trigger reactivity
-      allGroups = [...allGroups]; 
+  // Function to handle joining/leaving a group
+  async function toggleGroupMembership(groupId: string, isMember: boolean) {
+    try {
+      const endpoint = isMember ? '/api/groups/leave' : '/api/groups/join';
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ group_id: groupId })
+      });
+      if (res.ok) {
+        const groupIndex = allGroups.findIndex(g => g.id == groupId || g.id === groupId);
+        if (groupIndex !== -1) {
+          allGroups[groupIndex].isMember = !isMember;
+          allGroups = [...allGroups];
+        }
+      } else {
+        alert('Failed to update group membership.');
+      }
+    } catch (e) {
+      alert('Error updating group membership.');
     }
   }
 
   // Loading state
   let loading = true;
 
-  onMount(() => {
-    setTimeout(() => {
+  onMount(async () => {
+    loading = true;
+    try {
+      const res = await fetch('/api/groups/');
+      if (res.ok) {
+        allGroups = await res.json();
+      } else {
+        allGroups = [];
+      }
+    } catch (e) {
+      allGroups = [];
+    } finally {
       loading = false;
-    }, 800);
+    }
   });
 </script>
 
@@ -212,7 +173,7 @@
                        View Group
                      </a>
                      <button 
-                       on:click={() => toggleGroupMembership(group.id)}
+                       on:click={() => toggleGroupMembership(group.id, true)}
                        class="px-3 py-2 bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-700 dark:text-red-300 rounded-md text-sm font-medium transition-colors"
                        title="Leave Group"
                      >
@@ -283,7 +244,7 @@
                   <div class="mt-auto">
                     {#if group.isPublic}
                       <button 
-                        on:click={() => toggleGroupMembership(group.id)}
+                        on:click={() => toggleGroupMembership(group.id, false)}
                         class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm font-medium transition-colors"
                       >
                         <i class="fas fa-user-plus mr-2"></i>
@@ -329,4 +290,4 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-</style> 
+</style>
