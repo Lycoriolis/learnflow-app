@@ -28,7 +28,10 @@ export const nodes = [
 	() => import('./nodes/24'),
 	() => import('./nodes/25'),
 	() => import('./nodes/26'),
-	() => import('./nodes/27')
+	() => import('./nodes/27'),
+	() => import('./nodes/28'),
+	() => import('./nodes/29'),
+	() => import('./nodes/30')
 ];
 
 export const server_loads = [];
@@ -55,10 +58,13 @@ export const dictionary = {
 		"/settings": [21],
 		"/statistics": [22],
 		"/tools": [23],
-		"/tools/chat": [24],
-		"/tools/notepad": [25],
-		"/tools/pomodoro": [26],
-		"/tools/tasks": [27]
+		"/tools/calculator": [24],
+		"/tools/chat": [25],
+		"/tools/dictionary": [26],
+		"/tools/flashcards": [27],
+		"/tools/notepad": [28],
+		"/tools/pomodoro": [29],
+		"/tools/tasks": [30]
 	};
 
 export const hooks = {

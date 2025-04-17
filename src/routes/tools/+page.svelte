@@ -3,7 +3,10 @@
     { name: 'Pomodoro Timer', path: '/tools/pomodoro', icon: 'fa-clock' },
     { name: 'Notepad', path: '/tools/notepad', icon: 'fa-sticky-note' },
     { name: 'Tasks', path: '/tools/tasks', icon: 'fa-list-check' },
-    { name: 'AI Study Chat', path: '/tools/chat', icon: 'fa-robot' }
+    { name: 'AI Study Chat', path: '/tools/chat', icon: 'fa-robot' },
+    { name: 'Flashcards', path: '/tools/flashcards', icon: 'fa-layer-group' },
+    { name: 'Calculator', path: '/tools/calculator', icon: 'fa-calculator' },
+    { name: 'Dictionary', path: '/tools/dictionary', icon: 'fa-book' }
   ];
 </script>
 

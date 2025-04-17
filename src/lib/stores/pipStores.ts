@@ -86,6 +86,25 @@ export interface ExerciseSession {
 // Store an array of completed exercise sessions (persistent)
 export const exerciseSessions = persistentStore<ExerciseSession[]>('learnflow-exercise-sessions', []);
 
+// --- Flashcards Store ---
+export interface Flashcard {
+  id: string;
+  front: string;
+  back: string;
+  lastReviewed?: number;
+  nextReview?: number;
+  level: number; // 0-5 for spaced repetition
+  tags: string[];
+}
+
+export const flashcards = persistentStore<Flashcard[]>('learnflow-flashcards', []);
+export const flashcardStats = writable({
+  totalReviews: 0,
+  correctReviews: 0,
+  streakDays: 0,
+  lastReviewDate: null as number | null
+});
+
 // --- Calculator Store --- (Transient state)
 export const calcDisplay = writable('0');
 export const calcCurrentInput = writable('');

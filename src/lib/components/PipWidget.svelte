@@ -9,13 +9,17 @@
   import PipTodo from './pip/PipTodo.svelte';
   import PipNotes from './pip/PipNotes.svelte';
   import PipCalculator from './pip/PipCalculator.svelte';
+  import PipFlashcards from './pip/PipFlashcards.svelte';
+  import PipDictionary from './pip/PipDictionary.svelte';
   
   // Tools configuration - Updated for Dark Theme
   const tools = [
     { id: 'timer', name: 'Timer', icon: 'fa-stopwatch', bgClass: 'bg-indigo-800', textClass: 'text-indigo-100', hoverClass: 'hover:bg-indigo-700' },
-    { id: 'todo', name: 'Todo', icon: 'fa-tasks', bgClass: 'bg-green-800', textClass: 'text-green-100', hoverClass: 'hover:bg-green-700' },
-    { id: 'notes', name: 'Notes', icon: 'fa-sticky-note', bgClass: 'bg-blue-800', textClass: 'text-blue-100', hoverClass: 'hover:bg-blue-700' },
-    { id: 'calculator', name: 'Calculator', icon: 'fa-calculator', bgClass: 'bg-purple-800', textClass: 'text-purple-100', hoverClass: 'hover:bg-purple-700' }
+    { id: 'todo', name: 'Todo', icon: 'fa-list-check', bgClass: 'bg-green-800', textClass: 'text-green-100', hoverClass: 'hover:bg-green-700' },
+    { id: 'notes', name: 'Notes', icon: 'fa-sticky-note', bgClass: 'bg-yellow-800', textClass: 'text-yellow-100', hoverClass: 'hover:bg-yellow-700' },
+    { id: 'calculator', name: 'Calculator', icon: 'fa-calculator', bgClass: 'bg-purple-800', textClass: 'text-purple-100', hoverClass: 'hover:bg-purple-700' },
+    { id: 'flashcards', name: 'Flashcards', icon: 'fa-layer-group', bgClass: 'bg-orange-800', textClass: 'text-orange-100', hoverClass: 'hover:bg-orange-700' },
+    { id: 'dictionary', name: 'Dictionary', icon: 'fa-book', bgClass: 'bg-cyan-800', textClass: 'text-cyan-100', hoverClass: 'hover:bg-cyan-700' }
   ];
   
   let minimized = false;
@@ -159,6 +163,10 @@
           <PipNotes />
         {:else if $activeTool === 'calculator'}
           <PipCalculator />
+        {:else if $activeTool === 'flashcards'}
+          <PipFlashcards />
+        {:else if $activeTool === 'dictionary'}
+          <PipDictionary />
         {/if}
       </div>
     {/if}
@@ -225,4 +233,11 @@
   .focus\:ring-purple-400:focus { --tw-ring-color: rgb(192 132 252 / var(--tw-ring-opacity)); }
   .border-purple-100 { --tw-border-opacity: 1; border-color: rgb(243 232 255 / var(--tw-border-opacity)); }
   .hover\:border-purple-200:hover { --tw-border-opacity: 1; border-color: rgb(233 213 255 / var(--tw-border-opacity)); }
+
+  .bg-orange-50 { --tw-bg-opacity: 1; background-color: rgb(255 237 213 / var(--tw-bg-opacity)); }
+  .text-orange-700 { --tw-text-opacity: 1; color: rgb(234 88 12 / var(--tw-text-opacity)); }
+  .hover\:bg-orange-100:hover { --tw-bg-opacity: 1; background-color: rgb(255 229 200 / var(--tw-bg-opacity)); }
+  .focus\:ring-orange-400:focus { --tw-ring-color: rgb(251 146 60 / var(--tw-ring-opacity)); }
+  .border-orange-100 { --tw-border-opacity: 1; border-color: rgb(255 229 200 / var(--tw-border-opacity)); }
+  .hover\:border-orange-200:hover { --tw-border-opacity: 1; border-color: rgb(255 215 170 / var(--tw-border-opacity)); }
 </style>
