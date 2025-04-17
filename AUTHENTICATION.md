@@ -57,4 +57,14 @@ const ADMIN_EMAIL = 'admin@example.com';
 $: isAdmin = $isAuthenticated && $user?.email === ADMIN_EMAIL;
 ```
 
-For production, consider implementing a more robust role management system with Firebase custom claims or Firestore. 
+For production, consider implementing a more robust role management system with Firebase custom claims or Firestore.
+
+## User Profile Persistence
+- Upon successful sign-in, a Firestore document is created or loaded under `users/{uid}`.
+- Profiles include `email`, `displayName`, `createdAt`, and custom `preferences` (e.g. enrollments, settings).
+- The application maintains a Svelte store `userProfile` that reflects this document in real time.
+- Configuration: ensure Firestore credentials are defined in `.env` with `VITE_FIREBASE_*` variables.
+
+## Admin Configuration
+- Admin users are controlled via environment variable `VITE_ADMIN_EMAILS` (comma-separated).
+- The app checks `user.email` against this list to grant admin privileges.
