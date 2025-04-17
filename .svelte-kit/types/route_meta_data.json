@@ -19,6 +19,15 @@
 	"/api/forum/topics/[id]/vote": [
 		"src/routes/api/forum/topics/[id]/vote/+server.ts"
 	],
+	"/api/groups": [
+		"src/routes/api/groups/+server.ts"
+	],
+	"/api/groups/join": [
+		"src/routes/api/groups/join/+server.ts"
+	],
+	"/api/groups/leave": [
+		"src/routes/api/groups/leave/+server.ts"
+	],
 	"/calendar": [],
 	"/category/[slug]": [
 		"src/routes/category/[slug]/+page.ts"
@@ -34,6 +43,7 @@
 	"/forums": [
 		"src/routes/forums/+page.server.ts"
 	],
+	"/forums/category/[categoryId]": [],
 	"/forums/topic/[id]": [
 		"src/routes/forums/topic/[id]/+page.server.js"
 	],

@@ -31,7 +31,8 @@ export const nodes = [
 	() => import('./nodes/27'),
 	() => import('./nodes/28'),
 	() => import('./nodes/29'),
-	() => import('./nodes/30')
+	() => import('./nodes/30'),
+	() => import('./nodes/31')
 ];
 
 export const server_loads = [];
@@ -47,24 +48,25 @@ export const dictionary = {
 		"/exercises": [10],
 		"/exercises/[id]": [11],
 		"/forums": [~12],
-		"/forums/topic/[id]": [~13],
-		"/groups": [14],
-		"/help": [15],
-		"/login": [16],
-		"/my-learning": [17],
-		"/progress": [18],
-		"/register": [19],
-		"/reset-password": [20],
-		"/settings": [21],
-		"/statistics": [22],
-		"/tools": [23],
-		"/tools/calculator": [24],
-		"/tools/chat": [25],
-		"/tools/dictionary": [26],
-		"/tools/flashcards": [27],
-		"/tools/notepad": [28],
-		"/tools/pomodoro": [29],
-		"/tools/tasks": [30]
+		"/forums/category/[categoryId]": [13],
+		"/forums/topic/[id]": [~14],
+		"/groups": [15],
+		"/help": [16],
+		"/login": [17],
+		"/my-learning": [18],
+		"/progress": [19],
+		"/register": [20],
+		"/reset-password": [21],
+		"/settings": [22],
+		"/statistics": [23],
+		"/tools": [24],
+		"/tools/calculator": [25],
+		"/tools/chat": [26],
+		"/tools/dictionary": [27],
+		"/tools/flashcards": [28],
+		"/tools/notepad": [29],
+		"/tools/pomodoro": [30],
+		"/tools/tasks": [31]
 	};
 
 export const hooks = {
