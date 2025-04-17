@@ -4,6 +4,8 @@
   import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
   import { user } from '$lib/stores/authStore.js';
+  import { subscribedTopics } from '$lib/stores/forumStore';
+  import { writable } from 'svelte/store';
 
   // Declare the data prop passed from the load function
   export let data;
@@ -62,41 +64,45 @@
   let difficultyFilter = 'all';
   let showResolved = true;
   let showUnresolved = true;
+  let showCreateTopic = false;
+  let showSubscriptions = false;
 
   // Filtered topics with enhanced filtering
-  $: filteredTopics = topics
-    .filter(topic => {
-      const matchesCategory = filterCategory === 'all' || topic.category === filterCategory;
-      const matchesSearch = searchQuery === '' ||
-        topic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (topic.tags && topic.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())));
-      const matchesDifficulty = difficultyFilter === 'all' || topic.difficulty === difficultyFilter;
-      const matchesResolution = 
-        (showResolved && topic.isResolved) || 
-        (showUnresolved && !topic.isResolved) || 
-        (topic.isResolved === undefined);
-      
-      return matchesCategory && matchesSearch && matchesDifficulty && matchesResolution;
-    })
-    .sort((a, b) => {
-      if (a.isPinned && !b.isPinned) return -1;
-      if (!a.isPinned && b.isPinned) return 1;
-      
-      if (sortOption === 'latest') {
-        const dateA = a.lastPost ? new Date(a.lastPost.date) : new Date(a.createdAt);
-        const dateB = b.lastPost ? new Date(b.lastPost.date) : new Date(b.createdAt);
-        return dateB.getTime() - dateA.getTime();
-      } else if (sortOption === 'popular') {
-        return b.viewsCount - a.viewsCount;
-      } else if (sortOption === 'most-replies') {
-        return b.repliesCount - a.repliesCount;
-      } else if (sortOption === 'created') {
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      } else if (sortOption === 'most-upvoted') {
-        return (b.upvotes || 0) - (a.upvotes || 0);
-      }
-      return 0;
-    });
+  $: filteredTopics = showSubscriptions
+    ? topics.filter(t => $subscribedTopics.includes(t.id))
+    : topics
+        .filter(topic => {
+          const matchesCategory = filterCategory === 'all' || topic.category === filterCategory;
+          const matchesSearch = searchQuery === '' ||
+            topic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (topic.tags && topic.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())));
+          const matchesDifficulty = difficultyFilter === 'all' || topic.difficulty === difficultyFilter;
+          const matchesResolution = 
+            (showResolved && topic.isResolved) || 
+            (showUnresolved && !topic.isResolved) || 
+            (topic.isResolved === undefined);
+          
+          return matchesCategory && matchesSearch && matchesDifficulty && matchesResolution;
+        })
+        .sort((a, b) => {
+          if (a.isPinned && !b.isPinned) return -1;
+          if (!a.isPinned && b.isPinned) return 1;
+          
+          if (sortOption === 'latest') {
+            const dateA = a.lastPost ? new Date(a.lastPost.date) : new Date(a.createdAt);
+            const dateB = b.lastPost ? new Date(b.lastPost.date) : new Date(b.createdAt);
+            return dateB.getTime() - dateA.getTime();
+          } else if (sortOption === 'popular') {
+            return b.viewsCount - a.viewsCount;
+          } else if (sortOption === 'most-replies') {
+            return b.repliesCount - a.repliesCount;
+          } else if (sortOption === 'created') {
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          } else if (sortOption === 'most-upvoted') {
+            return (b.upvotes || 0) - (a.upvotes || 0);
+          }
+          return 0;
+        });
 
   // Helper functions
   function getCategoryById(id: string): ForumCategory | undefined {
@@ -180,6 +186,16 @@
     }
   }
 
+  function handleSubscribe(topicId: string) {
+    if (!$subscribedTopics.includes(topicId)) {
+      subscribedTopics.update(ids => [...ids, topicId]);
+    }
+  }
+
+  function handleUnsubscribe(topicId: string) {
+    subscribedTopics.update(ids => ids.filter(id => id !== topicId));
+  }
+
   // Loading state
   let loading = true;
 
@@ -211,18 +227,31 @@
         <div class="mt-4 md:mt-0 flex space-x-2">
           <button
             class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm font-medium flex items-center"
+            on:click={() => showCreateTopic = true}
           >
             <i class="fas fa-plus mr-2"></i>
             New Topic
           </button>
           <button
             class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md text-sm font-medium flex items-center"
+            on:click={() => showSubscriptions = !showSubscriptions}
           >
             <i class="fas fa-bell mr-2"></i>
             My Subscriptions
           </button>
         </div>
       </div>
+
+      {#if showCreateTopic}
+        <div class="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg relative">
+            <button class="absolute top-2 right-2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" on:click={() => showCreateTopic = false}>
+              <i class="fas fa-times"></i>
+            </button>
+            <CreateTopicForm categories={categories} on:topicCreated={handleTopicCreated} />
+          </div>
+        </div>
+      {/if}
 
       <!-- Search and Filter Bar -->
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-4 mb-8">
@@ -333,128 +362,106 @@
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
               <div class="divide-y divide-gray-200 dark:divide-gray-700">
                 {#each filteredTopics as topic (topic.id)}
-                  <div class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <div class="flex">
-                      <!-- Voting Column -->
-                      <div class="flex flex-col items-center mr-4 pt-1">
-                        <button 
-                          class="text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 {topic.userVote === 'up' ? 'text-indigo-600 dark:text-indigo-400' : ''}"
-                          on:click={() => handleVote(topic.id, 'up')}
-                          aria-label="Upvote"
-                        >
-                          <i class="fas fa-chevron-up"></i>
-                        </button>
-                        <span class="text-sm font-medium my-1">{(topic.upvotes || 0) - (topic.downvotes || 0)}</span>
-                        <button 
-                          class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 {topic.userVote === 'down' ? 'text-gray-600 dark:text-gray-300' : ''}"
-                          on:click={() => handleVote(topic.id, 'down')}
-                          aria-label="Downvote"
-                        >
-                          <i class="fas fa-chevron-down"></i>
-                        </button>
-                      </div>
-                      
-                      <!-- Main Content -->
-                      <div class="flex-1">
-                        <div class="flex items-start justify-between">
-                          <div>
-                            <a href="/forums/{topic.id}" class="text-lg font-medium text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                              {#if topic.isPinned}
-                                <i class="fas fa-thumbtack text-indigo-500 mr-1 text-xs"></i>
-                              {/if}
-                              {#if topic.isLocked}
-                                <i class="fas fa-lock text-gray-500 mr-1 text-xs"></i>
-                              {/if}
-                              {topic.title}
-                            </a>
+                  <div class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex justify-between items-start">
+                    <div class="flex-1">
+                      <div class="flex items-start justify-between">
+                        <div>
+                          <a href="/forums/{topic.id}" class="text-lg font-medium text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                            {#if topic.isPinned}
+                              <i class="fas fa-thumbtack text-indigo-500 mr-1 text-xs"></i>
+                            {/if}
+                            {#if topic.isLocked}
+                              <i class="fas fa-lock text-gray-500 mr-1 text-xs"></i>
+                            {/if}
+                            {topic.title}
+                          </a>
+                          
+                          <!-- Educational indicators -->
+                          <div class="flex flex-wrap gap-1 mt-1">
+                            {#if topic.difficulty}
+                              <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium 
+                                {topic.difficulty === 'beginner' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 
+                                topic.difficulty === 'intermediate' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' : 
+                                'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'}">
+                                {topic.difficulty.charAt(0).toUpperCase() + topic.difficulty.slice(1)}
+                              </span>
+                            {/if}
                             
-                            <!-- Educational indicators -->
-                            <div class="flex flex-wrap gap-1 mt-1">
-                              {#if topic.difficulty}
-                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium 
-                                  {topic.difficulty === 'beginner' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 
-                                  topic.difficulty === 'intermediate' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' : 
-                                  'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'}">
-                                  {topic.difficulty.charAt(0).toUpperCase() + topic.difficulty.slice(1)}
-                                </span>
-                              {/if}
-                              
-                              {#if topic.hasCodeExamples}
-                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
-                                  <i class="fas fa-code mr-1"></i> Code Examples
-                                </span>
-                              {/if}
-                              
-                              {#if topic.isResolved}
-                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
-                                  <i class="fas fa-check-circle mr-1"></i> Resolved
-                                </span>
-                              {/if}
+                            {#if topic.hasCodeExamples}
+                              <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                                <i class="fas fa-code mr-1"></i> Code Examples
+                              </span>
+                            {/if}
+                            
+                            {#if topic.isResolved}
+                              <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                                <i class="fas fa-check-circle mr-1"></i> Resolved
+                              </span>
+                            {/if}
+                          </div>
+                          
+                          <!-- Tags -->
+                          {#if topic.tags && topic.tags.length > 0}
+                            <div class="flex flex-wrap gap-1 mt-2">
+                              {#each topic.tags as tag}
+                                <a href="/forums/tag/{tag}" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                                  #{tag}
+                                </a>
+                              {/each}
                             </div>
-                            
-                            <!-- Tags -->
-                            {#if topic.tags && topic.tags.length > 0}
-                              <div class="flex flex-wrap gap-1 mt-2">
-                                {#each topic.tags as tag}
-                                  <a href="/forums/tag/{tag}" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                                    #{tag}
+                          {/if}
+                          
+                          <!-- Resource Links -->
+                          {#if topic.resourceLinks && topic.resourceLinks.length > 0}
+                            <div class="mt-2">
+                              <span class="text-xs text-gray-500 dark:text-gray-400">Resources: </span>
+                              <div class="flex flex-wrap gap-2 mt-1">
+                                {#each topic.resourceLinks as link}
+                                  <a href={link.url} target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs text-indigo-600 dark:text-indigo-400 hover:underline">
+                                    <i class="fas fa-external-link-alt mr-1"></i> {link.title}
                                   </a>
                                 {/each}
                               </div>
-                            {/if}
-                            
-                            <!-- Resource Links -->
-                            {#if topic.resourceLinks && topic.resourceLinks.length > 0}
-                              <div class="mt-2">
-                                <span class="text-xs text-gray-500 dark:text-gray-400">Resources: </span>
-                                <div class="flex flex-wrap gap-2 mt-1">
-                                  {#each topic.resourceLinks as link}
-                                    <a href={link.url} target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs text-indigo-600 dark:text-indigo-400 hover:underline">
-                                      <i class="fas fa-external-link-alt mr-1"></i> {link.title}
-                                    </a>
-                                  {/each}
-                                </div>
-                              </div>
-                            {/if}
-                          </div>
-                          
-                          <!-- Category Badge -->
-                          <div class="ml-2">
-                            {#if topic.category}
-                              {#if getCategoryById(topic.category)}
-                                {@const category = getCategoryById(topic.category)}
-                                <a
-                                  href="/forums/category/{topic.category}"
-                                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {getCategoryColorClass(category?.color || 'gray')}"
-                                >
-                                  <i class="fas {category?.icon} mr-1"></i>
-                                  {category?.name}
-                                </a>
-                              {/if}
-                            {/if}
-                          </div>
+                            </div>
+                          {/if}
                         </div>
                         
-                        <!-- Author and Stats -->
-                        <div class="mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400">
-                          <div class="flex items-center">
-                            {#if topic.author.avatar}
-                              <img src={topic.author.avatar} alt={topic.author.name} class="w-5 h-5 rounded-full mr-1.5" />
+                        <!-- Category Badge -->
+                        <div class="ml-2">
+                          {#if topic.category}
+                            {#if getCategoryById(topic.category)}
+                              {@const category = getCategoryById(topic.category)}
+                              <a
+                                href="/forums/category/{topic.category}"
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {getCategoryColorClass(category?.color || 'gray')}"
+                              >
+                                <i class="fas {category?.icon} mr-1"></i>
+                                {category?.name}
+                              </a>
                             {/if}
-                            <a href="/profile/{topic.author.id}" class="hover:underline font-medium text-gray-700 dark:text-gray-300">{topic.author.name}</a>
-                            <span class="mx-1.5">·</span>
-                            <span>{formatDate(topic.createdAt)}</span>
+                          {/if}
+                        </div>
+                      </div>
+                      
+                      <!-- Author and Stats -->
+                      <div class="mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400">
+                        <div class="flex items-center">
+                          {#if topic.author.avatar}
+                            <img src={topic.author.avatar} alt={topic.author.name} class="w-5 h-5 rounded-full mr-1.5" />
+                          {/if}
+                          <a href="/profile/{topic.author.id}" class="hover:underline font-medium text-gray-700 dark:text-gray-300">{topic.author.name}</a>
+                          <span class="mx-1.5">·</span>
+                          <span>{formatDate(topic.createdAt)}</span>
+                        </div>
+                        
+                        <div class="flex items-center ml-auto space-x-4">
+                          <div class="flex items-center">
+                            <i class="fas fa-eye text-gray-400 mr-1"></i>
+                            <span>{topic.viewsCount}</span>
                           </div>
-                          
-                          <div class="flex items-center ml-auto space-x-4">
-                            <div class="flex items-center">
-                              <i class="fas fa-eye text-gray-400 mr-1"></i>
-                              <span>{topic.viewsCount}</span>
-                            </div>
-                            <div class="flex items-center">
-                              <i class="fas fa-comment-alt text-gray-400 mr-1"></i>
-                              <span>{topic.repliesCount}</span>
-                            </div>
+                          <div class="flex items-center">
+                            <i class="fas fa-comment-alt text-gray-400 mr-1"></i>
+                            <span>{topic.repliesCount}</span>
                           </div>
                         </div>
                         
@@ -473,6 +480,17 @@
                           </div>
                         {/if}
                       </div>
+                    </div>
+                    <div class="ml-4 flex flex-col items-end gap-2">
+                      {#if $subscribedTopics.includes(topic.id)}
+                        <button class="px-2 py-1 text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded hover:bg-yellow-200 dark:hover:bg-yellow-800" on:click={() => handleUnsubscribe(topic.id)}>
+                          <i class="fas fa-bell-slash mr-1"></i> Unsubscribe
+                        </button>
+                      {:else}
+                        <button class="px-2 py-1 text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 rounded hover:bg-indigo-200 dark:hover:bg-indigo-800" on:click={() => handleSubscribe(topic.id)}>
+                          <i class="fas fa-bell mr-1"></i> Subscribe
+                        </button>
+                      {/if}
                     </div>
                   </div>
                 {/each}

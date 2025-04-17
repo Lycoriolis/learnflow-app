@@ -3,6 +3,7 @@
   import { page } from '$app/stores';
   import { isAuthenticated, loading } from '$lib/stores/authStore.js';
   import MarkdownRenderer from '$lib/components/MarkdownRenderer.svelte';
+  import CourseFlashcardGenerator from '$lib/components/CourseFlashcardGenerator.svelte';
   
   // Get course and lesson IDs from the route params
   $: courseId = $page.params.courseId;
@@ -317,6 +318,15 @@ Then check your work using an HTML validator like [W3C Markup Validation Service
           <div class="p-6">
             <MarkdownRenderer content={lessonContent} className="bg-white dark:bg-gray-800" />
           </div>
+          
+          <!-- Add flashcard generator -->
+          <div class="border-t border-gray-200 dark:border-gray-700 p-6">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4 flex items-center">
+              <i class="fas fa-layer-group mr-2 text-orange-500"></i>
+              Create Flashcards from Lesson
+            </h3>
+            <CourseFlashcardGenerator content={lessonContent} courseName={course.title} />
+          </div>
         </div>
         
         <!-- Navigation Buttons -->
@@ -392,4 +402,3 @@ Then check your work using an HTML validator like [W3C Markup Validation Service
     </div>
   {/if}
 </div>
- 
