@@ -1,8 +1,7 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as firebaseSignOut, onAuthStateChanged, sendPasswordResetEmail, updateProfile, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { auth as firebaseAuth } from './firebase.js';
+import { auth } from './firebase.js';
 import { isAuthenticated, user, loading, authError } from './stores/authStore.js';
-// Explicitly type the imported firebaseAuth
-const auth = firebaseAuth;
+import { loadUserProfile } from './stores/userProfileStore.js';
 // Flag to track if auth initialization has completed
 let authInitialized = false;
 // Initialize the auth listener
@@ -23,6 +22,9 @@ function initAuth() {
             });
             isAuthenticated.set(true);
             user.set(userData);
+            // Load or initialize Firestore user profile
+            loadUserProfile(userData.uid, userData.email || '', userData.displayName || undefined)
+                .catch((err) => console.error('Failed to load user profile:', err));
         }
         else {
             console.log('Auth state changed: User not authenticated');
@@ -154,4 +156,4 @@ function getCurrentUser() {
     } : 'No user');
     return currentUser;
 }
-export { initAuth, register, login, loginWithGoogle, logout, resetPassword, getCurrentUser };
+export { initAuth, register, login, loginWithGoogle, logout, resetPassword, getCurrentUser, updateProfile };

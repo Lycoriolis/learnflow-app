@@ -35,4 +35,9 @@ export function persistentStore(key, initialValue) {
     }
 
     return store;
-} 
+}
+
+// Track completed exercises (array of exercise IDs)
+export const completedExercises = persistentStore('completedExercises', []);
+// Track bookmarked exercises with reason and date
+export const bookmarks = persistentStore('bookmarkedExercises', []);

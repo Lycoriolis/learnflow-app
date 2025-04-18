@@ -54,7 +54,7 @@ catch (error) {
         currentUser: null,
         // Mock implementation of onAuthStateChanged that immediately calls the callback with null
         // and returns an unsubscribe function
-        onAuthStateChanged: (callback, error) => {
+        onAuthStateChanged: (callback) => {
             // Call the callback with null (user not logged in)
             if (typeof callback === 'function') {
                 callback(null);

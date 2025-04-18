@@ -99,7 +99,16 @@ export async function listContent(type) {
                 estimatedTime: '3 hours',
                 tags: ['html', 'css', 'javascript', 'web']
             },
-            // Additional courses would be listed here in a real application
+            {
+                id: 'bezout-theorem',
+                title: "Bezout's Theorem and Identity",
+                type: 'course',
+                slug: 'bezout-theorem',
+                description: "Understanding Bézout's identity, the extended GCD algorithm, and applications.",
+                difficulty: 'intermediate',
+                estimatedTime: '90 minutes',
+                tags: ['math', 'number theory', 'gcd', 'bezout']
+            }
         ];
     }
     else {
@@ -114,7 +123,16 @@ export async function listContent(type) {
                 estimatedTime: '45 minutes',
                 tags: ['html', 'practice']
             },
-            // Additional exercises would be listed here in a real application
+            {
+                id: 'bezout-identity-exercise',
+                title: "Bézout's Identity Exercises",
+                type: 'exercise',
+                slug: 'bezout-identity',
+                description: "Exercises on computing GCD, extended Euclidean algorithm, and Bézout coefficients.",
+                difficulty: 'intermediate',
+                estimatedTime: '30 minutes',
+                tags: ['math', 'number theory', 'gcd', 'bezout']
+            }
         ];
     }
 }

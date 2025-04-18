@@ -3,7 +3,6 @@ export interface UserProfile {
   email: string;
   displayName?: string;
   createdAt: number;
-  // Add any additional fields you need here, e.g. preferences, avatarUrl, etc.
   preferences?: Record<string, any>;
 }
 

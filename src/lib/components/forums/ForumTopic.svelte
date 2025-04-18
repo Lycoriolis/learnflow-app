@@ -4,8 +4,24 @@
   import { user } from '$lib/stores/authStore.js';
   import MarkdownRenderer from '../MarkdownRenderer.svelte';
 
-  export let topic = { id: '', title: 'Loading...', content: '', author: '', createdAt: Date.now(), posts: [] };
-  let posts = [];
+  // Define types
+  type Post = {
+    id: string;
+    author_name: string;
+    author_avatar?: string;
+    created_at?: string;
+    content: string;
+  };
+  type Topic = {
+    id: string;
+    title: string;
+    content: string;
+    author: { id: string; name: string; avatar?: string } | string;
+    createdAt: string;
+  };
+
+  export let topic: Topic = { id: '', title: 'Loading...', content: '', author: '', createdAt: new Date().toISOString() };
+  let posts: Post[] = [];
   let loadingReplies = true;
   let repliesError = '';
   let repliesPerPage = 10;
@@ -42,7 +58,7 @@
 
   async function handleNewPost(event: CustomEvent) {
     const content = event.detail.content;
-    if (!currentUser || !currentUser.id) {
+    if (!currentUser || !currentUser.uid) {
       alert('You must be logged in to reply.');
       return;
     }
@@ -52,7 +68,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           topic_id: topic.id,
-          author_id: currentUser.id,
+          author_id: currentUser.uid,
           content
         })
       });
@@ -105,6 +121,6 @@
 
   <div class="mt-8">
     <h3 class="text-xl font-semibold mb-3">Add a Reply</h3>
-    <NewPostForm topicId={topic.id} on:newPost={handleNewPost} />
+    <NewPostForm on:newPost={handleNewPost} />
   </div>
 </div>
