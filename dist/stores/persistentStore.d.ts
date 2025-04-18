@@ -6,3 +6,5 @@
  * @returns {import('svelte/store').Writable<T>}
  */
 export function persistentStore<T>(key: string, initialValue: T): import("svelte/store").Writable<T>;
+export const completedExercises: import("svelte/store").Writable<never[]>;
+export const bookmarks: import("svelte/store").Writable<never[]>;

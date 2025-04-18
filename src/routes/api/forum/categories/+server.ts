@@ -1,63 +1,49 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import pkg from 'pg';
-const { Pool } = pkg;
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
-});
+import { createCategory, getAllCategories, updateCategory, deleteCategory } from '$lib/services/forumService';
 
 export const GET: RequestHandler = async () => {
-  const res = await pool.query(`
-    SELECT c.*,
-           (SELECT COUNT(*) FROM forum_topics WHERE category_id = c.id) as topics_count,
-           (SELECT COUNT(*) FROM forum_topics t
-            JOIN forum_posts p ON p.topic_id = t.id
-            WHERE t.category_id = c.id) as posts_count
-    FROM forum_categories c
-    ORDER BY c.name ASC
-  `);
-
-  return new Response(JSON.stringify(res.rows), { status: 200 });
+  try {
+    const categories = await getAllCategories();
+    return new Response(JSON.stringify(categories), { status: 200 });
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return new Response('Failed to fetch categories', { status: 500 });
+  }
 };
 
 export const POST: RequestHandler = async ({ request }) => {
-  const { name, description, icon, color } = await request.json();
-
-  if (!name) {
-    return new Response('Category name is required', { status: 400 });
+  const data = await request.json();
+  
+  try {
+    if (!data.name || !data.description || !data.icon || !data.color) {
+      return new Response('Missing required fields', { status: 400 });
+    }
+    
+    const newCategory = await createCategory(data);
+    return new Response(JSON.stringify(newCategory), { status: 201 });
+  } catch (error) {
+    console.error('Error creating category:', error);
+    return new Response('Failed to create category', { status: 500 });
   }
-
-  const res = await pool.query(`
-    INSERT INTO forum_categories (name, description, icon, color)
-    VALUES ($1, $2, $3, $4)
-    RETURNING *
-  `, [name, description, icon, color]);
-
-  return new Response(JSON.stringify(res.rows[0]), { status: 201 });
 };
 
 export const PUT: RequestHandler = async ({ request }) => {
-  const { id, name, description, icon, color } = await request.json();
+  const { id, ...data } = await request.json();
 
-  if (!id || !name) {
-    return new Response('Missing required fields', { status: 400 });
+  if (!id) {
+    return new Response('Category ID is required', { status: 400 });
   }
 
-  const res = await pool.query(`
-    UPDATE forum_categories
-    SET name = $1,
-        description = $2,
-        icon = $3,
-        color = $4
-    WHERE id = $5
-    RETURNING *
-  `, [name, description, icon, color, id]);
-
-  if (res.rowCount === 0) {
-    return new Response('Category not found', { status: 404 });
+  try {
+    const updated = await updateCategory(id, data);
+    if (!updated) {
+      return new Response('Category not found', { status: 404 });
+    }
+    return new Response(JSON.stringify(updated), { status: 200 });
+  } catch (error) {
+    console.error('Error updating category:', error);
+    return new Response('Failed to update category', { status: 500 });
   }
-
-  return new Response(JSON.stringify(res.rows[0]), { status: 200 });
 };
 
 export const DELETE: RequestHandler = async ({ url }) => {
@@ -67,15 +53,17 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return new Response('Category ID is required', { status: 400 });
   }
 
-  const res = await pool.query(`
-    DELETE FROM forum_categories
-    WHERE id = $1
-    RETURNING *
-  `, [id]);
-
-  if (res.rowCount === 0) {
-    return new Response('Category not found', { status: 404 });
+  try {
+    const result = await deleteCategory(id);
+    if (!result) {
+      return new Response('Category not found', { status: 404 });
+    }
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
+  } catch (error) {
+    if (error instanceof Error && error.message === 'Cannot delete category with topics') {
+      return new Response('Cannot delete category that contains topics', { status: 400 });
+    }
+    console.error('Error deleting category:', error);
+    return new Response('Failed to delete category', { status: 500 });
   }
-
-  return new Response(JSON.stringify(res.rows[0]), { status: 200 });
 };

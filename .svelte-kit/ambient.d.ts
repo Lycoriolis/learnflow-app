@@ -37,6 +37,9 @@ declare module '$env/static/private' {
 	export const VITE_FIREBASE_APP_ID: string;
 	export const VITE_FIREBASE_MEASUREMENT_ID: string;
 	export const DATABASE_URL: string;
+	export const POSTGRES_USER: string;
+	export const POSTGRES_PASSWORD: string;
+	export const POSTGRES_DB: string;
 	export const VITE_ADMIN_EMAILS: string;
 	export const VITE_CSRF_SECRET: string;
 	export const USER: string;
@@ -45,12 +48,12 @@ declare module '$env/static/private' {
 	export const XDG_SESSION_TYPE: string;
 	export const GIT_ASKPASS: string;
 	export const npm_node_execpath: string;
+	export const npm_package_resolved: string;
 	export const SHLVL: string;
 	export const BROWSER: string;
 	export const npm_config_noproxy: string;
 	export const MOTD_SHOWN: string;
 	export const HOME: string;
-	export const OLDPWD: string;
 	export const TERM_PROGRAM_VERSION: string;
 	export const VSCODE_IPC_HOOK_CLI: string;
 	export const npm_package_json: string;
@@ -59,16 +62,19 @@ declare module '$env/static/private' {
 	export const SSL_CERT_FILE: string;
 	export const npm_config_userconfig: string;
 	export const npm_config_local_prefix: string;
+	export const npm_package_integrity: string;
 	export const COLORTERM: string;
 	export const COLOR: string;
 	export const LOGNAME: string;
 	export const _: string;
 	export const npm_config_prefix: string;
 	export const npm_config_npm_version: string;
+	export const npm_config_dry_run: string;
 	export const XDG_SESSION_CLASS: string;
 	export const TERM: string;
 	export const XDG_SESSION_ID: string;
 	export const npm_config_cache: string;
+	export const npm_config_ignore_scripts: string;
 	export const npm_config_node_gyp: string;
 	export const PATH: string;
 	export const NODE: string;
@@ -93,7 +99,7 @@ declare module '$env/static/private' {
 	export const npm_command: string;
 	export const INIT_CWD: string;
 	export const EDITOR: string;
-	export const NODE_ENV: string;
+	export const npm_config_json: string;
 }
 
 /**
@@ -137,6 +143,9 @@ declare module '$env/dynamic/private' {
 		VITE_FIREBASE_APP_ID: string;
 		VITE_FIREBASE_MEASUREMENT_ID: string;
 		DATABASE_URL: string;
+		POSTGRES_USER: string;
+		POSTGRES_PASSWORD: string;
+		POSTGRES_DB: string;
 		VITE_ADMIN_EMAILS: string;
 		VITE_CSRF_SECRET: string;
 		USER: string;
@@ -145,12 +154,12 @@ declare module '$env/dynamic/private' {
 		XDG_SESSION_TYPE: string;
 		GIT_ASKPASS: string;
 		npm_node_execpath: string;
+		npm_package_resolved: string;
 		SHLVL: string;
 		BROWSER: string;
 		npm_config_noproxy: string;
 		MOTD_SHOWN: string;
 		HOME: string;
-		OLDPWD: string;
 		TERM_PROGRAM_VERSION: string;
 		VSCODE_IPC_HOOK_CLI: string;
 		npm_package_json: string;
@@ -159,16 +168,19 @@ declare module '$env/dynamic/private' {
 		SSL_CERT_FILE: string;
 		npm_config_userconfig: string;
 		npm_config_local_prefix: string;
+		npm_package_integrity: string;
 		COLORTERM: string;
 		COLOR: string;
 		LOGNAME: string;
 		_: string;
 		npm_config_prefix: string;
 		npm_config_npm_version: string;
+		npm_config_dry_run: string;
 		XDG_SESSION_CLASS: string;
 		TERM: string;
 		XDG_SESSION_ID: string;
 		npm_config_cache: string;
+		npm_config_ignore_scripts: string;
 		npm_config_node_gyp: string;
 		PATH: string;
 		NODE: string;
@@ -193,7 +205,7 @@ declare module '$env/dynamic/private' {
 		npm_command: string;
 		INIT_CWD: string;
 		EDITOR: string;
-		NODE_ENV: string;
+		npm_config_json: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}

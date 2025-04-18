@@ -1,7 +1,10 @@
 import { writable } from 'svelte/store';
-import type { User } from 'firebase/auth'; // Import the User type from Firebase
+import type { User } from 'firebase/auth';
+import { logout as firebaseLogout } from '../authService.js';
 
 export const isAuthenticated = writable<boolean>(false);
-export const user = writable<User | null>(null); // Use the Firebase User type
-export const loading = writable<boolean>(true); // Start in loading state
-export const authError = writable<string | null>(null); // Add error state 
+export const user = writable<User | null>(null);
+export const loading = writable<boolean>(true);
+export const authError = writable<string | null>(null);
+
+export const logout = firebaseLogout;

@@ -10,22 +10,26 @@ export const activePipTool = persistentStore('learnflow-active-pip-tool', null);
 export const activeTool = writable('timer');
 
 // --- Timer Store --- (Types defined inline for simplicity, move to $types later if needed)
-export type TimerMode = 'work' | 'shortBreak' | 'longBreak';
+export interface TimerMode {
+	type: 'work' | 'shortBreak' | 'longBreak';
+}
+
 export interface TimerState {
 	mode: TimerMode;
 	timeLeft: number;
 	isRunning: boolean;
 	cycle: number; // Number of work cycles completed
 }
+
 export interface TimerSettings {
-	workDuration: number;
-	shortBreakDuration: number;
-	longBreakDuration: number;
-	longBreakInterval: number;
+	workDuration: number;        // in seconds
+	shortBreakDuration: number;  // in seconds
+	longBreakDuration: number;   // in seconds
+	longBreakInterval: number;   // number of work sessions before long break
 }
 
 const initialTimerState: TimerState = {
-	mode: 'work',
+	mode: { type: 'work' },
 	timeLeft: 25 * 60, // Default 25 mins work
 	isRunning: false,
 	cycle: 0
@@ -34,12 +38,12 @@ const initialTimerState: TimerState = {
 // Active timer state (persistent)
 export const timerState = persistentStore<TimerState>('learnflow-timer-state', initialTimerState);
 
-// Timer settings (persistent)
+// Timer settings with default values
 export const timerSettings = persistentStore<TimerSettings>('learnflow-timer-settings', {
-	workDuration: 25 * 60,
-	shortBreakDuration: 5 * 60,
-	longBreakDuration: 15 * 60,
-	longBreakInterval: 4
+	workDuration: 25 * 60,        // 25 minutes
+	shortBreakDuration: 5 * 60,   // 5 minutes
+	longBreakDuration: 15 * 60,   // 15 minutes
+	longBreakInterval: 4          // Long break after 4 work sessions
 });
 
 // --- Todo Store ---

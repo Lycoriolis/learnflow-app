@@ -4,55 +4,93 @@
  * This module provides server-side CSRF protection for API endpoints.
  */
 
-import { error, type RequestEvent } from '@sveltejs/kit';
-import { CSRF_HEADER } from '$lib/utils/csrfProtection';
+import type { Handle } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
+import crypto from 'crypto';
+
+// The header name used for CSRF token transmission (keep in sync with client)
+export const CSRF_HEADER = 'X-CSRF-Token';
 
 /**
- * Middleware to validate CSRF tokens on server-side API requests.
- * Use this in API routes that modify state (POST, PUT, DELETE, etc.)
- * 
- * Usage:
- * 
- * // In a +server.ts file:
- * import { validateCsrfToken } from '../csrfMiddleware';
- * 
- * export async function POST(event) {
- *   // Validate CSRF token first
- *   validateCsrfToken(event);
- *   
- *   // Rest of your handler code...
- * }
+ * Generates a cryptographically secure random token
  */
-export function validateCsrfToken(event: RequestEvent): void {
-  // Skip CSRF validation for GET and HEAD requests (they should be idempotent)
-  if (['GET', 'HEAD'].includes(event.request.method)) {
-    return;
-  }
-  
-  // Get the CSRF token from the request header
-  const token = event.request.headers.get(CSRF_HEADER);
-  
-  // Get CSRF secret from environment variables
-  const csrfSecret = import.meta.env.VITE_CSRF_SECRET || 'default-csrf-secret-change-in-production';
-  
-  // In a real application, you'd validate against a token stored in the user's session
-  // For this simplified example, we'll just check if a token exists
-  if (!token) {
-    throw error(403, {
-      message: 'CSRF token missing'
+function generateCsrfToken(): string {
+  return crypto.randomBytes(32).toString('hex');
+}
+
+/**
+ * CSRF protection middleware for SvelteKit
+ * This should be used on all server-side API routes that modify data
+ */
+export const csrfProtect: Handle = async ({ event, resolve }) => {
+  // Skip CSRF check for GET requests (they should be idempotent)
+  if (event.request.method === 'GET') {
+    // Generate a new token for the next request
+    const newToken = generateCsrfToken();
+    event.cookies.set('csrf_token', newToken, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24 // 24 hours
+    });
+    
+    const response = await resolve(event);
+    const headers = new Headers(response.headers);
+    headers.set(CSRF_HEADER, newToken);
+    
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers
     });
   }
   
-  // In a real implementation, you would verify the token against one stored in the user's session
-  // This is a simplified placeholder implementation
+  // For non-GET requests, verify the token
+  const cookieToken = event.cookies.get('csrf_token');
+  const headerToken = event.request.headers.get(CSRF_HEADER);
   
-  // For now, we're just checking if the token exists and has a reasonable length
-  if (token.length < 16) {
+  // Both tokens must exist and match
+  if (!cookieToken || !headerToken || cookieToken !== headerToken) {
     throw error(403, {
-      message: 'Invalid CSRF token'
+      message: 'CSRF token validation failed'
     });
   }
   
-  // Token is valid, continue with the request
-  return;
-} 
+  // Generate a new token for the next request
+  const newToken = generateCsrfToken();
+  event.cookies.set('csrf_token', newToken, {
+    path: '/',
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 60 * 60 * 24 // 24 hours
+  });
+  
+  const response = await resolve(event);
+  const headers = new Headers(response.headers);
+  headers.set(CSRF_HEADER, newToken);
+  
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+};
+
+// Export a helper to initialize CSRF protection on first page load
+export function initializeCsrf(cookies: any) {
+  const existingToken = cookies.get('csrf_token');
+  if (!existingToken) {
+    const newToken = generateCsrfToken();
+    cookies.set('csrf_token', newToken, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24 // 24 hours
+    });
+    return newToken;
+  }
+  return existingToken;
+}

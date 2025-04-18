@@ -1,10 +1,5 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import pkg from 'pg';
-const { Pool } = pkg;
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
-});
+import { getPostsByTopicId, createPost, updatePost, deletePost } from '$lib/services/forumService';
 
 export const GET: RequestHandler = async ({ url }) => {
   const topicId = url.searchParams.get('topic_id');
@@ -13,15 +8,13 @@ export const GET: RequestHandler = async ({ url }) => {
     return new Response('Topic ID is required', { status: 400 });
   }
 
-  const res = await pool.query(`
-    SELECT p.*, u.name as author_name, u.avatar as author_avatar
-    FROM forum_posts p
-    JOIN users u ON p.author_id = u.id
-    WHERE p.topic_id = $1
-    ORDER BY p.created_at ASC
-  `, [topicId]);
-
-  return new Response(JSON.stringify(res.rows), { status: 200 });
+  try {
+    const posts = await getPostsByTopicId(topicId);
+    return new Response(JSON.stringify(posts), { status: 200 });
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return new Response('Failed to fetch posts', { status: 500 });
+  }
 };
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -31,20 +24,13 @@ export const POST: RequestHandler = async ({ request }) => {
     return new Response('Missing required fields', { status: 400 });
   }
 
-  const res = await pool.query(`
-    INSERT INTO forum_posts (topic_id, author_id, content)
-    VALUES ($1, $2, $3)
-    RETURNING *
-  `, [topic_id, author_id, content]);
-
-  // Update topic's updated_at timestamp
-  await pool.query(`
-    UPDATE forum_topics
-    SET updated_at = CURRENT_TIMESTAMP
-    WHERE id = $1
-  `, [topic_id]);
-
-  return new Response(JSON.stringify(res.rows[0]), { status: 201 });
+  try {
+    const post = await createPost({ topic_id, author_id, content });
+    return new Response(JSON.stringify(post), { status: 201 });
+  } catch (error) {
+    console.error('Error creating post:', error);
+    return new Response('Failed to create post', { status: 500 });
+  }
 };
 
 export const PUT: RequestHandler = async ({ request }) => {
@@ -54,18 +40,16 @@ export const PUT: RequestHandler = async ({ request }) => {
     return new Response('Missing required fields', { status: 400 });
   }
 
-  const res = await pool.query(`
-    UPDATE forum_posts
-    SET content = $1, updated_at = CURRENT_TIMESTAMP
-    WHERE id = $2
-    RETURNING *
-  `, [content, id]);
-
-  if (res.rowCount === 0) {
-    return new Response('Post not found', { status: 404 });
+  try {
+    const post = await updatePost(id, content);
+    if (!post) {
+      return new Response('Post not found', { status: 404 });
+    }
+    return new Response(JSON.stringify(post), { status: 200 });
+  } catch (error) {
+    console.error('Error updating post:', error);
+    return new Response('Failed to update post', { status: 500 });
   }
-
-  return new Response(JSON.stringify(res.rows[0]), { status: 200 });
 };
 
 export const DELETE: RequestHandler = async ({ url }) => {
@@ -75,15 +59,14 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return new Response('Post ID is required', { status: 400 });
   }
 
-  const res = await pool.query(`
-    DELETE FROM forum_posts
-    WHERE id = $1
-    RETURNING *
-  `, [id]);
-
-  if (res.rowCount === 0) {
-    return new Response('Post not found', { status: 404 });
+  try {
+    const result = await deletePost(id);
+    if (!result) {
+      return new Response('Post not found', { status: 404 });
+    }
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    return new Response('Failed to delete post', { status: 500 });
   }
-
-  return new Response(JSON.stringify(res.rows[0]), { status: 200 });
 };

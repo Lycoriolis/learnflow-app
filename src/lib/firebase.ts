@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, connectAuthEmulator } from 'firebase/auth';
+import { getAuth, connectAuthEmulator, type Auth } from 'firebase/auth';
 import { getAnalytics } from 'firebase/analytics';
 
 // Firebase configuration
@@ -23,7 +23,7 @@ console.log('Firebase config:', {
 
 // Initialize Firebase
 let app;
-let auth;
+let auth: Auth;
 let analytics = null;
 
 try {
@@ -60,7 +60,7 @@ try {
     currentUser: null,
     // Mock implementation of onAuthStateChanged that immediately calls the callback with null
     // and returns an unsubscribe function
-    onAuthStateChanged: (callback: any, error: any) => {
+    onAuthStateChanged: (callback: any) => {
       // Call the callback with null (user not logged in)
       if (typeof callback === 'function') {
         callback(null);
@@ -68,7 +68,7 @@ try {
       // Return a function that would normally unsubscribe the listener
       return () => {};
     }
-  };
+  } as unknown as Auth;
 }
 
-export { app, auth, analytics }; 
+export { app, auth, analytics };

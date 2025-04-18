@@ -12,8 +12,8 @@ type EnsureDefined<T> = T extends null | undefined ? {} : T;
 type OptionalUnion<U extends Record<string, any>, A extends keyof U = U extends U ? keyof U : never> = U extends unknown ? { [P in Exclude<A, keyof U>]?: never } & U : never;
 export type Snapshot<T = any> = Kit.Snapshot<T>;
 type PageParentData = EnsureDefined<LayoutData>;
-type LayoutRouteId = RouteId | "/" | "/calendar" | "/category/[slug]" | "/courses" | "/courses/[courseId]" | "/courses/[courseId]/lesson/[lessonId]" | "/events" | "/exercises" | "/exercises/[id]" | "/forums" | "/forums/category/[categoryId]" | "/forums/topic/[id]" | "/groups" | "/groups/[id]" | "/groups/create" | "/help" | "/login" | "/my-learning" | "/progress" | "/register" | "/reset-password" | "/settings" | "/statistics" | "/tools" | "/tools/calculator" | "/tools/chat" | "/tools/dictionary" | "/tools/flashcards" | "/tools/notepad" | "/tools/pomodoro" | "/tools/tasks" | null
-type LayoutParams = RouteParams & { slug?: string; courseId?: string; lessonId?: string; id?: string; categoryId?: string }
+type LayoutRouteId = RouteId | "/" | "/admin" | "/admin/courses" | "/admin/forums" | "/admin/forums/category/[id]/edit" | "/admin/forums/topic/[id]/edit" | "/admin/users" | "/calendar" | "/category/[slug]" | "/courses" | "/courses/[courseId]" | "/courses/[courseId]/lesson/[lessonId]" | "/events" | "/exercises" | "/exercises/[id]" | "/forums" | "/forums/category/[id]" | "/forums/tag/[tag]" | "/forums/topic/[id]" | "/groups" | "/groups/[id]" | "/groups/create" | "/help" | "/login" | "/my-learning" | "/progress" | "/register" | "/reset-password" | "/settings" | "/statistics" | "/tools" | "/tools/calculator" | "/tools/chat" | "/tools/dictionary" | "/tools/flashcards" | "/tools/notepad" | "/tools/pomodoro" | "/tools/tasks" | null
+type LayoutParams = RouteParams & { id?: string; slug?: string; courseId?: string; lessonId?: string; tag?: string }
 type LayoutParentData = EnsureDefined<{}>;
 
 export type PageServerData = null;

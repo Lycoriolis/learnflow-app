@@ -1,20 +1,44 @@
 {
 	"/(protected)": [],
 	"/": [],
-	"/api/forums/topics": [
-		"src/routes/api/forums/topics/+server.ts"
+	"/admin": [
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/admin/+layout.server.ts"
 	],
-	"/api/forums/topics/create": [
-		"src/routes/api/forums/topics/create/+server.ts"
+	"/admin/courses": [
+		"src/routes/admin/courses/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
+	"/admin/forums": [
+		"src/routes/admin/forums/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
+	"/admin/forums/category/[id]/edit": [
+		"src/routes/admin/forums/category/[id]/edit/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
+	"/admin/forums/topic/[id]/edit": [
+		"src/routes/admin/forums/topic/[id]/edit/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
+	"/admin/users": [
+		"src/routes/admin/users/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
 	],
 	"/api/forum/categories": [
 		"src/routes/api/forum/categories/+server.ts"
+	],
+	"/api/forum/categories/[id]": [
+		"src/routes/api/forum/categories/[id]/+server.ts"
 	],
 	"/api/forum/posts": [
 		"src/routes/api/forum/posts/+server.ts"
 	],
 	"/api/forum/topics": [
 		"src/routes/api/forum/topics/+server.ts"
+	],
+	"/api/forum/topics/[id]": [
+		"src/routes/api/forum/topics/[id]/+server.ts"
 	],
 	"/api/forum/topics/[id]/vote": [
 		"src/routes/api/forum/topics/[id]/vote/+server.ts"
@@ -46,9 +70,14 @@
 	"/forums": [
 		"src/routes/forums/+page.server.ts"
 	],
-	"/forums/category/[categoryId]": [],
+	"/forums/category/[id]": [
+		"src/routes/forums/category/[id]/+page.server.ts"
+	],
+	"/forums/tag/[tag]": [
+		"src/routes/forums/tag/[tag]/+page.server.ts"
+	],
 	"/forums/topic/[id]": [
-		"src/routes/forums/topic/[id]/+page.server.js"
+		"src/routes/forums/topic/[id]/+page.server.ts"
 	],
 	"/groups": [],
 	"/groups/create": [],

@@ -1,27 +1,22 @@
 /**
- * CSRF Protection Utilities
+ * Client-side CSRF protection utilities
  *
- * This module provides functions to generate and validate CSRF tokens for
- * protecting forms and API endpoints from Cross-Site Request Forgery attacks.
- */
-/**
- * Generates a CSRF token for the current user session
- * In a real application, this should be tied to the user's session
- */
-export declare function generateCsrfToken(): string;
-/**
- * Get the current CSRF token or generate a new one
- */
-export declare function getCsrfToken(): string;
-/**
- * Validates a CSRF token against the stored token
- */
-export declare function validateCsrfToken(token: string): boolean;
-/**
- * Header name for CSRF token
+ * This module provides functions to retrieve and manage CSRF tokens
+ * to protect against Cross-Site Request Forgery attacks.
  */
 export declare const CSRF_HEADER = "X-CSRF-Token";
 /**
- * Adds CSRF token to a fetch request's headers
+ * Retrieves the CSRF token from the page's meta tags
+ * This token is initially set by the server during page load
  */
-export declare function addCsrfHeader(headers?: HeadersInit): HeadersInit;
+export declare function getCsrfToken(): string | null;
+/**
+ * Stores a CSRF token for future use
+ * This is typically called after receiving a new token from the server
+ */
+export declare function storeCsrfToken(token: string): void;
+/**
+ * Updates the CSRF token from response headers if present
+ * Call this after each fetch request to keep the token fresh
+ */
+export declare function updateCsrfTokenFromResponse(response: Response): void;
