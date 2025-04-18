@@ -48,7 +48,6 @@ declare module '$env/static/private' {
 	export const XDG_SESSION_TYPE: string;
 	export const GIT_ASKPASS: string;
 	export const npm_node_execpath: string;
-	export const npm_package_resolved: string;
 	export const SHLVL: string;
 	export const BROWSER: string;
 	export const npm_config_noproxy: string;
@@ -62,19 +61,16 @@ declare module '$env/static/private' {
 	export const SSL_CERT_FILE: string;
 	export const npm_config_userconfig: string;
 	export const npm_config_local_prefix: string;
-	export const npm_package_integrity: string;
 	export const COLORTERM: string;
 	export const COLOR: string;
 	export const LOGNAME: string;
 	export const _: string;
 	export const npm_config_prefix: string;
 	export const npm_config_npm_version: string;
-	export const npm_config_dry_run: string;
 	export const XDG_SESSION_CLASS: string;
 	export const TERM: string;
 	export const XDG_SESSION_ID: string;
 	export const npm_config_cache: string;
-	export const npm_config_ignore_scripts: string;
 	export const npm_config_node_gyp: string;
 	export const PATH: string;
 	export const NODE: string;
@@ -99,7 +95,7 @@ declare module '$env/static/private' {
 	export const npm_command: string;
 	export const INIT_CWD: string;
 	export const EDITOR: string;
-	export const npm_config_json: string;
+	export const NODE_ENV: string;
 }
 
 /**
@@ -154,7 +150,6 @@ declare module '$env/dynamic/private' {
 		XDG_SESSION_TYPE: string;
 		GIT_ASKPASS: string;
 		npm_node_execpath: string;
-		npm_package_resolved: string;
 		SHLVL: string;
 		BROWSER: string;
 		npm_config_noproxy: string;
@@ -168,19 +163,16 @@ declare module '$env/dynamic/private' {
 		SSL_CERT_FILE: string;
 		npm_config_userconfig: string;
 		npm_config_local_prefix: string;
-		npm_package_integrity: string;
 		COLORTERM: string;
 		COLOR: string;
 		LOGNAME: string;
 		_: string;
 		npm_config_prefix: string;
 		npm_config_npm_version: string;
-		npm_config_dry_run: string;
 		XDG_SESSION_CLASS: string;
 		TERM: string;
 		XDG_SESSION_ID: string;
 		npm_config_cache: string;
-		npm_config_ignore_scripts: string;
 		npm_config_node_gyp: string;
 		PATH: string;
 		NODE: string;
@@ -205,7 +197,7 @@ declare module '$env/dynamic/private' {
 		npm_command: string;
 		INIT_CWD: string;
 		EDITOR: string;
-		npm_config_json: string;
+		NODE_ENV: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}

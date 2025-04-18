@@ -10,6 +10,7 @@
   let loading = true;
   let error: string | null = null;
   let unsub;
+  let isCompleted = false;
 
   unsub = page.subscribe(async ($page) => {
     const id = $page.params.id;
@@ -19,6 +20,9 @@
     if (item) {
       exercise = item;
       error = null;
+      // Check if exercise is already completed
+      const sessions = get(exerciseSessions);
+      isCompleted = sessions.some(session => session.exerciseId === id);
     } else {
       exercise = null;
       error = 'Exercise not found';
@@ -28,11 +32,26 @@
 
   onDestroy(() => unsub && unsub());
 
-  function markComplete() {
+  function toggleCompletion() {
     if (!exercise) return;
-    const now = Date.now();
-    const sessions = get(exerciseSessions);
-    exerciseSessions.set([...sessions, { exerciseId: exercise.id, timestamp: now, completed: true }]);
+    
+    if (!isCompleted) {
+      // Add to completed exercises
+      exerciseSessions.update(sessions => [
+        ...sessions,
+        {
+          exerciseId: exercise.id,
+          timestamp: Date.now(),
+          completed: true
+        }
+      ]);
+    } else {
+      // Remove from completed exercises
+      exerciseSessions.update(sessions => 
+        sessions.filter(session => session.exerciseId !== exercise.id)
+      );
+    }
+    isCompleted = !isCompleted;
   }
 </script>
 
@@ -40,17 +59,21 @@
   <title>{exercise ? exercise.title + ' | Exercise' : 'Loading...'}</title>
 </svelte:head>
 
-<div class="max-w-3xl mx-auto px-4 py-6">
+<div class="max-w-4xl mx-auto p-6">
   {#if loading}
-    <div class="flex justify-center items-center min-h-[50vh]"><i class="fas fa-spinner fa-spin text-4xl text-indigo-500"></i></div>
+    <div class="text-center">
+      <span class="loading loading-spinner loading-lg"></span>
+    </div>
   {:else if error}
-    <div class="text-red-500 text-center py-10">{error}</div>
+    <div class="text-red-500">{error}</div>
   {:else if exercise}
     <h1 class="text-3xl font-bold mb-4">{exercise.title}</h1>
     <MarkdownRenderer content={exercise.content} />
-    <button
-      class="mt-6 px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-      on:click={markComplete}
-    >Mark Complete</button>
+    <button 
+      class="mt-8 px-6 py-2 rounded-lg font-bold shadow transition-all duration-200 {isCompleted ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} text-white"
+      on:click={toggleCompletion}
+    >
+      {isCompleted ? 'Mark Incomplete' : 'Mark Complete'}
+    </button>
   {/if}
 </div>
