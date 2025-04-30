@@ -1,7 +1,11 @@
 <script lang="ts">
-  import { onMount, afterUpdate } from 'svelte';
+  import { onMount, onDestroy, afterUpdate } from 'svelte';
   import { writable } from 'svelte/store';
-  import MarkdownRenderer from '$lib/components/MarkdownRenderer.svelte';
+  import MarkdownIt from 'markdown-it';
+  import markdownItKatex from 'markdown-it-katex';
+  // Set up Markdown-It with KaTeX for math rendering
+  const md = new MarkdownIt({ html: true }).use(markdownItKatex);
+  import { logStart, logEnd, logEvent } from '$lib/services/activityService';
 
   const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
   const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
@@ -12,7 +16,7 @@
   interface ChatMessage { role: Role; text: string; }
 
   const modes = [
-    { id: 'assist', label: 'Assist Mode', model: 'google/learnlm-1.5-pro-experimental:free' },
+    { id: 'assist', label: 'Assist Mode', model: 'deepseek/deepseek-prover-v2:free' },
     { id: 'support', label: 'Support Mode', model: 'google/gemini-2.5-pro-exp-03-25:free' }
   ];
 
@@ -22,6 +26,15 @@
   let loading = false;
   let error = '';
   let chatWindow: HTMLElement;
+  let chatViewEventId: string | null = null;
+
+  onMount(async () => {
+    chatViewEventId = await logStart('view_chat', 'chat');
+  });
+
+  onDestroy(() => {
+    if (chatViewEventId) logEnd(chatViewEventId);
+  });
 
   afterUpdate(() => {
     if (chatWindow) {
@@ -31,6 +44,7 @@
 
   async function send() {
     if (!input.trim()) return;
+    await logEvent('send_message', 'chat', { content: input });
     // add user message
     messages = [...messages, { role: 'user', text: input }];
     const userContent = input;
@@ -39,9 +53,12 @@
     error = '';
     const selected = modes.find(m => m.id === mode);
     try {
+      // Build request with full chat history for context (memory)
+      // Include full history and enable streaming
       const body = {
         model: selected.model,
-        messages: [{ role: 'user', content: [{ type: 'text', text: userContent }] }]
+        stream: true,
+        messages: messages.map(msg => ({ role: msg.role, content: [{ type: 'text', text: msg.text }] }))
       };
       const res = await fetch(API_URL, {
         method: 'POST',
@@ -54,15 +71,39 @@
         body: JSON.stringify(body)
       });
       if (!res.ok) throw new Error(await res.text());
-      const data = await res.json();
-      // assume data.choices[0].message.content is text or array
-      let reply = '';
-      const content = data.choices?.[0]?.message?.content;
-      if (typeof content === 'string') reply = content;
-      else if (Array.isArray(content)) {
-        reply = content.map((c:any) => c.text || '').join(' ');
+      // Prepare streaming of assistant reply
+      messages = [...messages, { role: 'assistant', text: '' }];
+      const assistantIndex = messages.length - 1;
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let done = false;
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+        buffer += decoder.decode(value || new Uint8Array(), { stream: true });
+        let boundary;
+        while ((boundary = buffer.indexOf('\n\n')) !== -1) {
+          const eventStr = buffer.slice(0, boundary);
+          buffer = buffer.slice(boundary + 2);
+          for (const line of eventStr.split(/\r?\n/)) {
+            if (!line.startsWith('data: ')) continue;
+            const dataStr = line.slice(6).trim();
+            if (dataStr === '[DONE]') { done = true; break; }
+            try {
+              const json = JSON.parse(dataStr);
+              const delta = json.choices?.[0]?.delta || {};
+              const content = delta.content || delta.text || '';
+              if (content) {
+                messages[assistantIndex].text += content;
+                messages = messages.slice();
+              }
+            } catch {
+              // skip invalid JSON
+            }
+          }
+        }
       }
-      messages = [...messages, { role: 'assistant', text: reply }];
     } catch (e:any) {
       console.error(e);
       error = e.message || 'Error fetching AI response';
@@ -96,7 +137,7 @@
           {msg.role === 'assistant'
             ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-tr-xl rounded-br-xl rounded-tl-xl'
             : 'bg-indigo-600 dark:bg-indigo-500 text-white rounded-tl-xl rounded-bl-xl rounded-br-xl'}">
-          <MarkdownRenderer content={msg.text} />
+          {@html md.render(msg.text)}
         </div>
       </div>
     {/each}

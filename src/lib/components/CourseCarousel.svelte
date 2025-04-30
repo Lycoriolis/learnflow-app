@@ -1,17 +1,12 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import CourseCard from './CourseCard.svelte';
+  import { listCourses, type CourseStructure } from '$lib/services/courseService.js';
+  import { logStart, logEnd } from '$lib/services/activityService.js';
   import '@splidejs/splide/dist/css/splide.min.css';
-  // Import Splide JS type definitions if you have them installed (`npm install -D @splidejs/splide`)
-  // import type Splide from '@splidejs/splide'; // Uncomment if types are installed
 
-  // Sample courses data (remains the same)
-  const courses = [
-      { id: 'js-advanced', title: 'Ad JavaScript', description: 'Master modern JavaScript concepts', progress: 65, icon: 'fa-code', gradient: { from: 'blue-500', to: 'blue-400' } },
-      { id: 'linear-algebra', title: 'Linear Algebra', description: 'Vectors, matrices and transformations', progress: 42, icon: 'fa-calculator', gradient: { from: 'purple-500', to: 'purple-400' } },
-      { id: 'spanish', title: 'Spanish for Beginners', description: 'Build your vocabulary and grammar', progress: 78, icon: 'fa-language', gradient: { from: 'green-500', to: 'green-400' } },
-      { id: 'quantum', title: 'Quantum Physics', description: 'Introduction to quantum mechanics', progress: 15, icon: 'fa-atom', gradient: { from: 'red-500', to: 'red-400' } }
-  ];
+  let courses: CourseStructure[] = [];
+  let viewId: string | null = null;
 
   let splideElement: HTMLElement;
   let splideInstance: any = null; // Use `Splide | null = null;` if types installed
@@ -79,26 +74,13 @@
   };
 
   onMount(async () => {
-    if (typeof window !== 'undefined') {
-      if (!window.Splide) {
-        try {
-          await loadSplideScript();
-          initSplide();
-        } catch (error) {
-          console.error("Failed to load Splide script:", error);
-          // Handle the error appropriately, maybe show a message to the user
-        }
-      } else {
-        initSplide();
-      }
-    }
-    // Cleanup function to destroy Splide instance when component unmounts
-    return () => {
-      if (splideInstance) {
-        splideInstance.destroy(true); // Pass true to completely remove Splide HTML/listeners
-        splideInstance = null;
-      }
-    };
+    viewId = await logStart('view_continuing_learning', 'courses');
+    courses = await listCourses();
+    initSplide();
+  });
+  onDestroy(() => {
+    if (viewId) logEnd(viewId);
+    if (splideInstance) splideInstance.destroy(true);
   });
 </script>
 

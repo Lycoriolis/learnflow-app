@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { fade } from 'svelte/transition';
   import { user } from '$lib/stores/authStore.js';
+  import { logStart, logEnd, logEvent } from '$lib/services/activityService';
 
   // Types
   type UserGroup = {
@@ -69,7 +70,9 @@
   // Loading state
   let loading = true;
 
+  let groupsEventId: string | null = null;
   onMount(async () => {
+    groupsEventId = await logStart('view_groups', 'groups');
     loading = true;
     try {
       const res = await fetch('/api/groups/');
@@ -84,6 +87,20 @@
       loading = false;
     }
   });
+
+  onDestroy(() => {
+    if (groupsEventId) logEnd(groupsEventId);
+  });
+
+  function handleJoin(id: string) {
+    logEvent('join_group', id);
+    toggleGroupMembership(id, false);
+  }
+
+  function handleLeave(id: string) {
+    logEvent('leave_group', id);
+    toggleGroupMembership(id, true);
+  }
 </script>
 
 <svelte:head>
@@ -173,7 +190,7 @@
                        View Group
                      </a>
                      <button 
-                       on:click={() => toggleGroupMembership(group.id, true)}
+                       on:click={() => handleLeave(group.id)}
                        class="px-3 py-2 bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-700 dark:text-red-300 rounded-md text-sm font-medium transition-colors"
                        title="Leave Group"
                      >
@@ -244,7 +261,7 @@
                   <div class="mt-auto">
                     {#if group.isPublic}
                       <button 
-                        on:click={() => toggleGroupMembership(group.id, false)}
+                        on:click={() => handleJoin(group.id)}
                         class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm font-medium transition-colors"
                       >
                         <i class="fas fa-user-plus mr-2"></i>

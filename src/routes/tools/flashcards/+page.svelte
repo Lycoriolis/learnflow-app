@@ -1,9 +1,10 @@
-<!-- filepath: /home/linux/learnflow-app/learnflow-app/src/routes/tools/flashcards/+page.svelte -->
 <script lang="ts">
   import { writable } from 'svelte/store';
   import { persistentStore } from '$lib/stores/persistentStore';
   import { fade, fly } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
+  import { onMount, onDestroy } from 'svelte';
+  import { logStart, logEnd, logEvent } from '$lib/services/activityService';
 
   interface Flashcard {
     id: string;
@@ -24,6 +25,8 @@
   let filterTag = '';
   let sortBy: 'nextReview' | 'level' | 'created' = 'nextReview';
   let showStats = false;
+
+  let flashcardsViewEventId: string | null = null;
 
   $: filteredCards = filterTag 
     ? $flashcards.filter(card => card.tags.includes(filterTag))
@@ -76,7 +79,7 @@
     showingFront = !showingFront;
   }
 
-  function reviewCard(success: boolean) {
+  async function reviewCard(success: boolean) {
     if (!currentCard) return;
     
     const now = Date.now();
@@ -106,6 +109,8 @@
       )
     );
 
+    await logEvent('flashcard_review', currentCard.id, { success });
+
     currentCard = getNextCard();
     showingFront = true;
   }
@@ -126,6 +131,14 @@
   $: if (!currentCard) {
     currentCard = getNextCard();
   }
+
+  onMount(async () => {
+    flashcardsViewEventId = await logStart('view_flashcards', 'flashcards');
+  });
+
+  onDestroy(() => {
+    if (flashcardsViewEventId) logEnd(flashcardsViewEventId);
+  });
 </script>
 
 <svelte:head>

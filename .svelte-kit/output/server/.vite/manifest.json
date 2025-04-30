@@ -1,0 +1,974 @@
+{
+  ".svelte-kit/generated/server/internal.js": {
+    "file": "internal.js",
+    "name": "internal",
+    "src": ".svelte-kit/generated/server/internal.js",
+    "isEntry": true,
+    "imports": [
+      "_internal.js",
+      "_shared-server.js"
+    ]
+  },
+  "_FocusTimeChart.js": {
+    "file": "chunks/FocusTimeChart.js",
+    "name": "FocusTimeChart",
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "_ForumSidebar.js": {
+    "file": "chunks/ForumSidebar.js",
+    "name": "ForumSidebar",
+    "imports": [
+      "_index.js",
+      "_persistentStore.js",
+      "_authStore.js"
+    ]
+  },
+  "_MarkdownRenderer.js": {
+    "file": "chunks/MarkdownRenderer.js",
+    "name": "MarkdownRenderer",
+    "imports": [
+      "_index.js",
+      "_html.js"
+    ],
+    "css": [
+      "_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+    ]
+  },
+  "_MarkdownRenderer.w4HA0fza.css": {
+    "file": "_app/immutable/assets/MarkdownRenderer.w4HA0fza.css",
+    "src": "_MarkdownRenderer.w4HA0fza.css"
+  },
+  "_activityService.js": {
+    "file": "chunks/activityService.js",
+    "name": "activityService"
+  },
+  "_authStore.js": {
+    "file": "chunks/authStore.js",
+    "name": "authStore",
+    "imports": [
+      "_index3.js"
+    ]
+  },
+  "_client.js": {
+    "file": "chunks/client.js",
+    "name": "client",
+    "imports": [
+      "_exports.js",
+      "_index.js"
+    ]
+  },
+  "_courseService.js": {
+    "file": "chunks/courseService.js",
+    "name": "courseService"
+  },
+  "_csrf.server.js": {
+    "file": "chunks/csrf.server.js",
+    "name": "csrf.server",
+    "imports": [
+      "_shared-server.js"
+    ]
+  },
+  "_exports.js": {
+    "file": "chunks/exports.js",
+    "name": "exports"
+  },
+  "_forumService.js": {
+    "file": "chunks/forumService.js",
+    "name": "forumService",
+    "imports": [
+      "_shared-server.js"
+    ]
+  },
+  "_groupService.js": {
+    "file": "chunks/groupService.js",
+    "name": "groupService",
+    "imports": [
+      "_shared-server.js"
+    ]
+  },
+  "_html.js": {
+    "file": "chunks/html.js",
+    "name": "html"
+  },
+  "_index-server.js": {
+    "file": "chunks/index-server.js",
+    "name": "index-server",
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "_index.js": {
+    "file": "chunks/index.js",
+    "name": "index"
+  },
+  "_index2.js": {
+    "file": "chunks/index2.js",
+    "name": "index"
+  },
+  "_index3.js": {
+    "file": "chunks/index3.js",
+    "name": "index",
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "_internal.js": {
+    "file": "chunks/internal.js",
+    "name": "internal",
+    "imports": [
+      "_index.js",
+      "_shared-server.js"
+    ],
+    "dynamicImports": [
+      "src/hooks.server.ts",
+      "src/hooks.ts"
+    ]
+  },
+  "_persistentStore.js": {
+    "file": "chunks/persistentStore.js",
+    "name": "persistentStore",
+    "imports": [
+      "_index3.js"
+    ]
+  },
+  "_pipStores.js": {
+    "file": "chunks/pipStores.js",
+    "name": "pipStores",
+    "imports": [
+      "_index3.js",
+      "_persistentStore.js"
+    ]
+  },
+  "_shared-server.js": {
+    "file": "chunks/shared-server.js",
+    "name": "shared-server"
+  },
+  "_splide.DEMCkssF.css": {
+    "file": "_app/immutable/assets/splide.DEMCkssF.css",
+    "src": "_splide.DEMCkssF.css"
+  },
+  "_stores.js": {
+    "file": "chunks/stores.js",
+    "name": "stores",
+    "imports": [
+      "_index.js",
+      "_client.js"
+    ]
+  },
+  "_userProfileStore.js": {
+    "file": "chunks/userProfileStore.js",
+    "name": "userProfileStore",
+    "imports": [
+      "_index3.js"
+    ]
+  },
+  "_userService.server.js": {
+    "file": "chunks/userService.server.js",
+    "name": "userService.server",
+    "imports": [
+      "_shared-server.js"
+    ]
+  },
+  "node_modules/@sveltejs/kit/src/runtime/server/index.js": {
+    "file": "index.js",
+    "name": "index",
+    "src": "node_modules/@sveltejs/kit/src/runtime/server/index.js",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_internal.js",
+      "_index2.js",
+      "_exports.js",
+      "_index3.js",
+      "_shared-server.js"
+    ]
+  },
+  "src/hooks.server.ts": {
+    "file": "chunks/hooks.server.js",
+    "name": "hooks.server",
+    "src": "src/hooks.server.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "_index2.js",
+      "_csrf.server.js"
+    ]
+  },
+  "src/hooks.ts": {
+    "file": "chunks/hooks.js",
+    "name": "hooks",
+    "src": "src/hooks.ts",
+    "isDynamicEntry": true
+  },
+  "src/routes/(protected)/+layout.svelte": {
+    "file": "entries/pages/(protected)/_layout.svelte.js",
+    "name": "entries/pages/(protected)/_layout.svelte",
+    "src": "src/routes/(protected)/+layout.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_client.js",
+      "_stores.js",
+      "_authStore.js"
+    ]
+  },
+  "src/routes/+error.svelte": {
+    "file": "entries/pages/_error.svelte.js",
+    "name": "entries/pages/_error.svelte",
+    "src": "src/routes/+error.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_error.tn0RQdqM.css"
+    ]
+  },
+  "src/routes/+layout.server.ts": {
+    "file": "entries/pages/_layout.server.ts.js",
+    "name": "entries/pages/_layout.server.ts",
+    "src": "src/routes/+layout.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_csrf.server.js"
+    ]
+  },
+  "src/routes/+layout.svelte": {
+    "file": "entries/pages/_layout.svelte.js",
+    "name": "entries/pages/_layout.svelte",
+    "src": "src/routes/+layout.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_stores.js",
+      "_authStore.js",
+      "_client.js",
+      "_pipStores.js",
+      "_index-server.js",
+      "_persistentStore.js",
+      "_index3.js",
+      "_html.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_layout.C6MQymq0.css",
+      "_app/immutable/assets/splide.DEMCkssF.css"
+    ]
+  },
+  "src/routes/+page.svelte": {
+    "file": "entries/pages/_page.svelte.js",
+    "name": "entries/pages/_page.svelte",
+    "src": "src/routes/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_index-server.js",
+      "_courseService.js",
+      "_authStore.js",
+      "_userProfileStore.js",
+      "_pipStores.js",
+      "_FocusTimeChart.js",
+      "_index3.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.DtUY6XMI.css",
+      "_app/immutable/assets/splide.DEMCkssF.css"
+    ]
+  },
+  "src/routes/admin/+layout.server.ts": {
+    "file": "entries/pages/admin/_layout.server.ts.js",
+    "name": "entries/pages/admin/_layout.server.ts",
+    "src": "src/routes/admin/+layout.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_shared-server.js"
+    ]
+  },
+  "src/routes/admin/+layout.svelte": {
+    "file": "entries/pages/admin/_layout.svelte.js",
+    "name": "entries/pages/admin/_layout.svelte",
+    "src": "src/routes/admin/+layout.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "src/routes/admin/+page.svelte": {
+    "file": "entries/pages/admin/_page.svelte.js",
+    "name": "entries/pages/admin/_page.svelte",
+    "src": "src/routes/admin/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_authStore.js"
+    ]
+  },
+  "src/routes/admin/courses/+page.server.ts": {
+    "file": "entries/pages/admin/courses/_page.server.ts.js",
+    "name": "entries/pages/admin/courses/_page.server.ts",
+    "src": "src/routes/admin/courses/+page.server.ts",
+    "isEntry": true
+  },
+  "src/routes/admin/courses/+page.svelte": {
+    "file": "entries/pages/admin/courses/_page.svelte.js",
+    "name": "entries/pages/admin/courses/_page.svelte",
+    "src": "src/routes/admin/courses/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "src/routes/admin/forums/+page.server.ts": {
+    "file": "entries/pages/admin/forums/_page.server.ts.js",
+    "name": "entries/pages/admin/forums/_page.server.ts",
+    "src": "src/routes/admin/forums/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_forumService.js"
+    ]
+  },
+  "src/routes/admin/forums/+page.svelte": {
+    "file": "entries/pages/admin/forums/_page.svelte.js",
+    "name": "entries/pages/admin/forums/_page.svelte",
+    "src": "src/routes/admin/forums/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_client.js"
+    ]
+  },
+  "src/routes/admin/forums/category/[id]/edit/+page.server.ts": {
+    "file": "entries/pages/admin/forums/category/_id_/edit/_page.server.ts.js",
+    "name": "entries/pages/admin/forums/category/_id_/edit/_page.server.ts",
+    "src": "src/routes/admin/forums/category/[id]/edit/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_forumService.js"
+    ]
+  },
+  "src/routes/admin/forums/category/[id]/edit/+page.svelte": {
+    "file": "entries/pages/admin/forums/category/_id_/edit/_page.svelte.js",
+    "name": "entries/pages/admin/forums/category/_id_/edit/_page.svelte",
+    "src": "src/routes/admin/forums/category/[id]/edit/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_client.js"
+    ]
+  },
+  "src/routes/admin/forums/topic/[id]/edit/+page.server.ts": {
+    "file": "entries/pages/admin/forums/topic/_id_/edit/_page.server.ts.js",
+    "name": "entries/pages/admin/forums/topic/_id_/edit/_page.server.ts",
+    "src": "src/routes/admin/forums/topic/[id]/edit/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_forumService.js"
+    ]
+  },
+  "src/routes/admin/forums/topic/[id]/edit/+page.svelte": {
+    "file": "entries/pages/admin/forums/topic/_id_/edit/_page.svelte.js",
+    "name": "entries/pages/admin/forums/topic/_id_/edit/_page.svelte",
+    "src": "src/routes/admin/forums/topic/[id]/edit/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_client.js"
+    ]
+  },
+  "src/routes/admin/users/+page.server.ts": {
+    "file": "entries/pages/admin/users/_page.server.ts.js",
+    "name": "entries/pages/admin/users/_page.server.ts",
+    "src": "src/routes/admin/users/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_userService.server.js"
+    ]
+  },
+  "src/routes/admin/users/+page.svelte": {
+    "file": "entries/pages/admin/users/_page.svelte.js",
+    "name": "entries/pages/admin/users/_page.svelte",
+    "src": "src/routes/admin/users/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_shared-server.js"
+    ]
+  },
+  "src/routes/api/activities/+server.ts": {
+    "file": "entries/endpoints/api/activities/_server.ts.js",
+    "name": "entries/endpoints/api/activities/_server.ts",
+    "src": "src/routes/api/activities/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_userService.server.js"
+    ]
+  },
+  "src/routes/api/activities/end/+server.ts": {
+    "file": "entries/endpoints/api/activities/end/_server.ts.js",
+    "name": "entries/endpoints/api/activities/end/_server.ts",
+    "src": "src/routes/api/activities/end/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_userService.server.js"
+    ]
+  },
+  "src/routes/api/activities/event/+server.ts": {
+    "file": "entries/endpoints/api/activities/event/_server.ts.js",
+    "name": "entries/endpoints/api/activities/event/_server.ts",
+    "src": "src/routes/api/activities/event/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_userService.server.js"
+    ]
+  },
+  "src/routes/api/activities/recent/+server.ts": {
+    "file": "entries/endpoints/api/activities/recent/_server.ts.js",
+    "name": "entries/endpoints/api/activities/recent/_server.ts",
+    "src": "src/routes/api/activities/recent/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_activityService.js"
+    ]
+  },
+  "src/routes/api/activities/start/+server.ts": {
+    "file": "entries/endpoints/api/activities/start/_server.ts.js",
+    "name": "entries/endpoints/api/activities/start/_server.ts",
+    "src": "src/routes/api/activities/start/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_userService.server.js"
+    ]
+  },
+  "src/routes/api/csrf/init/+server.ts": {
+    "file": "entries/endpoints/api/csrf/init/_server.ts.js",
+    "name": "entries/endpoints/api/csrf/init/_server.ts",
+    "src": "src/routes/api/csrf/init/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_csrf.server.js"
+    ]
+  },
+  "src/routes/api/csrf/refresh/+server.ts": {
+    "file": "entries/endpoints/api/csrf/refresh/_server.ts.js",
+    "name": "entries/endpoints/api/csrf/refresh/_server.ts",
+    "src": "src/routes/api/csrf/refresh/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_csrf.server.js"
+    ]
+  },
+  "src/routes/api/forum/categories/+server.ts": {
+    "file": "entries/endpoints/api/forum/categories/_server.ts.js",
+    "name": "entries/endpoints/api/forum/categories/_server.ts",
+    "src": "src/routes/api/forum/categories/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_forumService.js"
+    ]
+  },
+  "src/routes/api/forum/categories/[id]/+server.ts": {
+    "file": "entries/endpoints/api/forum/categories/_id_/_server.ts.js",
+    "name": "entries/endpoints/api/forum/categories/_id_/_server.ts",
+    "src": "src/routes/api/forum/categories/[id]/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_forumService.js"
+    ]
+  },
+  "src/routes/api/forum/posts/+server.ts": {
+    "file": "entries/endpoints/api/forum/posts/_server.ts.js",
+    "name": "entries/endpoints/api/forum/posts/_server.ts",
+    "src": "src/routes/api/forum/posts/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_forumService.js"
+    ]
+  },
+  "src/routes/api/forum/topics/+server.ts": {
+    "file": "entries/endpoints/api/forum/topics/_server.ts.js",
+    "name": "entries/endpoints/api/forum/topics/_server.ts",
+    "src": "src/routes/api/forum/topics/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_forumService.js"
+    ]
+  },
+  "src/routes/api/forum/topics/[id]/+server.ts": {
+    "file": "entries/endpoints/api/forum/topics/_id_/_server.ts.js",
+    "name": "entries/endpoints/api/forum/topics/_id_/_server.ts",
+    "src": "src/routes/api/forum/topics/[id]/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_forumService.js"
+    ]
+  },
+  "src/routes/api/forum/topics/[id]/vote/+server.ts": {
+    "file": "entries/endpoints/api/forum/topics/_id_/vote/_server.ts.js",
+    "name": "entries/endpoints/api/forum/topics/_id_/vote/_server.ts",
+    "src": "src/routes/api/forum/topics/[id]/vote/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_forumService.js"
+    ]
+  },
+  "src/routes/api/groups/+server.ts": {
+    "file": "entries/endpoints/api/groups/_server.ts.js",
+    "name": "entries/endpoints/api/groups/_server.ts",
+    "src": "src/routes/api/groups/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_groupService.js"
+    ]
+  },
+  "src/routes/api/groups/[id]/+server.ts": {
+    "file": "entries/endpoints/api/groups/_id_/_server.ts.js",
+    "name": "entries/endpoints/api/groups/_id_/_server.ts",
+    "src": "src/routes/api/groups/[id]/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_groupService.js"
+    ]
+  },
+  "src/routes/api/groups/join/+server.ts": {
+    "file": "entries/endpoints/api/groups/join/_server.ts.js",
+    "name": "entries/endpoints/api/groups/join/_server.ts",
+    "src": "src/routes/api/groups/join/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_groupService.js"
+    ]
+  },
+  "src/routes/api/groups/leave/+server.ts": {
+    "file": "entries/endpoints/api/groups/leave/_server.ts.js",
+    "name": "entries/endpoints/api/groups/leave/_server.ts",
+    "src": "src/routes/api/groups/leave/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_groupService.js"
+    ]
+  },
+  "src/routes/api/recommendations/+server.ts": {
+    "file": "entries/endpoints/api/recommendations/_server.ts.js",
+    "name": "entries/endpoints/api/recommendations/_server.ts",
+    "src": "src/routes/api/recommendations/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_courseService.js"
+    ]
+  },
+  "src/routes/api/score/+server.ts": {
+    "file": "entries/endpoints/api/score/_server.ts.js",
+    "name": "entries/endpoints/api/score/_server.ts",
+    "src": "src/routes/api/score/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_userService.server.js",
+      "_courseService.js"
+    ]
+  },
+  "src/routes/calendar/+page.svelte": {
+    "file": "entries/pages/calendar/_page.svelte.js",
+    "name": "entries/pages/calendar/_page.svelte",
+    "src": "src/routes/calendar/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_index-server.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.8iZmPd-X.css"
+    ]
+  },
+  "src/routes/category/[slug]/+page.svelte": {
+    "file": "entries/pages/category/_slug_/_page.svelte.js",
+    "name": "entries/pages/category/_slug_/_page.svelte",
+    "src": "src/routes/category/[slug]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "src/routes/category/[slug]/+page.ts": {
+    "file": "entries/pages/category/_slug_/_page.ts.js",
+    "name": "entries/pages/category/_slug_/_page.ts",
+    "src": "src/routes/category/[slug]/+page.ts",
+    "isEntry": true
+  },
+  "src/routes/courses/+page.svelte": {
+    "file": "entries/pages/courses/_page.svelte.js",
+    "name": "entries/pages/courses/_page.svelte",
+    "src": "src/routes/courses/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_index-server.js",
+      "_courseService.js"
+    ]
+  },
+  "src/routes/courses/[slug]/+page.svelte": {
+    "file": "entries/pages/courses/_slug_/_page.svelte.js",
+    "name": "entries/pages/courses/_slug_/_page.svelte",
+    "src": "src/routes/courses/[slug]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_courseService.js",
+      "_stores.js"
+    ]
+  },
+  "src/routes/courses/[slug]/[lessonId]/+page.svelte": {
+    "file": "entries/pages/courses/_slug_/_lessonId_/_page.svelte.js",
+    "name": "entries/pages/courses/_slug_/_lessonId_/_page.svelte",
+    "src": "src/routes/courses/[slug]/[lessonId]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_stores.js",
+      "_courseService.js"
+    ]
+  },
+  "src/routes/events/+page.svelte": {
+    "file": "entries/pages/events/_page.svelte.js",
+    "name": "entries/pages/events/_page.svelte",
+    "src": "src/routes/events/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.DmsU4q6c.css"
+    ]
+  },
+  "src/routes/exercises/+page.svelte": {
+    "file": "entries/pages/exercises/_page.svelte.js",
+    "name": "entries/pages/exercises/_page.svelte",
+    "src": "src/routes/exercises/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_index-server.js"
+    ]
+  },
+  "src/routes/exercises/[slug]/+page.svelte": {
+    "file": "entries/pages/exercises/_slug_/_page.svelte.js",
+    "name": "entries/pages/exercises/_slug_/_page.svelte",
+    "src": "src/routes/exercises/[slug]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_stores.js"
+    ],
+    "css": [
+      "_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+    ]
+  },
+  "src/routes/forums/+page.server.ts": {
+    "file": "entries/pages/forums/_page.server.ts.js",
+    "name": "entries/pages/forums/_page.server.ts",
+    "src": "src/routes/forums/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_forumService.js"
+    ]
+  },
+  "src/routes/forums/+page.svelte": {
+    "file": "entries/pages/forums/_page.svelte.js",
+    "name": "entries/pages/forums/_page.svelte",
+    "src": "src/routes/forums/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.C_YxPtiW.css"
+    ]
+  },
+  "src/routes/forums/category/[id]/+page.server.ts": {
+    "file": "entries/pages/forums/category/_id_/_page.server.ts.js",
+    "name": "entries/pages/forums/category/_id_/_page.server.ts",
+    "src": "src/routes/forums/category/[id]/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_forumService.js",
+      "_index2.js"
+    ]
+  },
+  "src/routes/forums/category/[id]/+page.svelte": {
+    "file": "entries/pages/forums/category/_id_/_page.svelte.js",
+    "name": "entries/pages/forums/category/_id_/_page.svelte",
+    "src": "src/routes/forums/category/[id]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_ForumSidebar.js"
+    ]
+  },
+  "src/routes/forums/tag/[tag]/+page.server.ts": {
+    "file": "entries/pages/forums/tag/_tag_/_page.server.ts.js",
+    "name": "entries/pages/forums/tag/_tag_/_page.server.ts",
+    "src": "src/routes/forums/tag/[tag]/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_forumService.js"
+    ]
+  },
+  "src/routes/forums/tag/[tag]/+page.svelte": {
+    "file": "entries/pages/forums/tag/_tag_/_page.svelte.js",
+    "name": "entries/pages/forums/tag/_tag_/_page.svelte",
+    "src": "src/routes/forums/tag/[tag]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_ForumSidebar.js"
+    ]
+  },
+  "src/routes/forums/topic/[id]/+page.server.ts": {
+    "file": "entries/pages/forums/topic/_id_/_page.server.ts.js",
+    "name": "entries/pages/forums/topic/_id_/_page.server.ts",
+    "src": "src/routes/forums/topic/[id]/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_forumService.js"
+    ]
+  },
+  "src/routes/forums/topic/[id]/+page.svelte": {
+    "file": "entries/pages/forums/topic/_id_/_page.svelte.js",
+    "name": "entries/pages/forums/topic/_id_/_page.svelte",
+    "src": "src/routes/forums/topic/[id]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_authStore.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.B6pW9uN4.css",
+      "_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+    ]
+  },
+  "src/routes/groups/+page.svelte": {
+    "file": "entries/pages/groups/_page.svelte.js",
+    "name": "entries/pages/groups/_page.svelte",
+    "src": "src/routes/groups/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_index-server.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.Dmvienw-.css"
+    ]
+  },
+  "src/routes/groups/[id]/+page.svelte": {
+    "file": "entries/pages/groups/_id_/_page.svelte.js",
+    "name": "entries/pages/groups/_id_/_page.svelte",
+    "src": "src/routes/groups/[id]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_stores.js",
+      "_client.js"
+    ]
+  },
+  "src/routes/groups/create/+page.svelte": {
+    "file": "entries/pages/groups/create/_page.svelte.js",
+    "name": "entries/pages/groups/create/_page.svelte",
+    "src": "src/routes/groups/create/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_client.js"
+    ]
+  },
+  "src/routes/help/+page.svelte": {
+    "file": "entries/pages/help/_page.svelte.js",
+    "name": "entries/pages/help/_page.svelte",
+    "src": "src/routes/help/+page.svelte",
+    "isEntry": true
+  },
+  "src/routes/login/+page.svelte": {
+    "file": "entries/pages/login/_page.svelte.js",
+    "name": "entries/pages/login/_page.svelte",
+    "src": "src/routes/login/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_authStore.js",
+      "_client.js",
+      "_stores.js"
+    ]
+  },
+  "src/routes/my-learning/+page.svelte": {
+    "file": "entries/pages/my-learning/_page.svelte.js",
+    "name": "entries/pages/my-learning/_page.svelte",
+    "src": "src/routes/my-learning/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_index-server.js",
+      "_userProfileStore.js",
+      "_authStore.js",
+      "_client.js",
+      "_index3.js"
+    ]
+  },
+  "src/routes/progress/+page.svelte": {
+    "file": "entries/pages/progress/_page.svelte.js",
+    "name": "entries/pages/progress/_page.svelte",
+    "src": "src/routes/progress/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_authStore.js"
+    ]
+  },
+  "src/routes/register/+page.svelte": {
+    "file": "entries/pages/register/_page.svelte.js",
+    "name": "entries/pages/register/_page.svelte",
+    "src": "src/routes/register/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_authStore.js",
+      "_client.js"
+    ]
+  },
+  "src/routes/reset-password/+page.svelte": {
+    "file": "entries/pages/reset-password/_page.svelte.js",
+    "name": "entries/pages/reset-password/_page.svelte",
+    "src": "src/routes/reset-password/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_authStore.js"
+    ]
+  },
+  "src/routes/settings/+page.svelte": {
+    "file": "entries/pages/settings/_page.svelte.js",
+    "name": "entries/pages/settings/_page.svelte",
+    "src": "src/routes/settings/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_authStore.js",
+      "_client.js",
+      "_userProfileStore.js"
+    ]
+  },
+  "src/routes/statistics/+page.svelte": {
+    "file": "entries/pages/statistics/_page.svelte.js",
+    "name": "entries/pages/statistics/_page.svelte",
+    "src": "src/routes/statistics/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_authStore.js",
+      "_userProfileStore.js",
+      "_pipStores.js",
+      "_client.js",
+      "_FocusTimeChart.js"
+    ]
+  },
+  "src/routes/tools/+page.svelte": {
+    "file": "entries/pages/tools/_page.svelte.js",
+    "name": "entries/pages/tools/_page.svelte",
+    "src": "src/routes/tools/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_index-server.js"
+    ]
+  },
+  "src/routes/tools/calculator/+page.svelte": {
+    "file": "entries/pages/tools/calculator/_page.svelte.js",
+    "name": "entries/pages/tools/calculator/_page.svelte",
+    "src": "src/routes/tools/calculator/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_pipStores.js",
+      "_index-server.js",
+      "_activityService.js"
+    ]
+  },
+  "src/routes/tools/chat/+page.svelte": {
+    "file": "entries/pages/tools/chat/_page.svelte.js",
+    "name": "entries/pages/tools/chat/_page.svelte",
+    "src": "src/routes/tools/chat/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_index-server.js",
+      "_MarkdownRenderer.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.CQAmqjES.css"
+    ]
+  },
+  "src/routes/tools/dictionary/+page.svelte": {
+    "file": "entries/pages/tools/dictionary/_page.svelte.js",
+    "name": "entries/pages/tools/dictionary/_page.svelte",
+    "src": "src/routes/tools/dictionary/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_persistentStore.js"
+    ]
+  },
+  "src/routes/tools/flashcards/+page.svelte": {
+    "file": "entries/pages/tools/flashcards/_page.svelte.js",
+    "name": "entries/pages/tools/flashcards/_page.svelte",
+    "src": "src/routes/tools/flashcards/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_persistentStore.js",
+      "_index-server.js"
+    ]
+  },
+  "src/routes/tools/notepad/+page.svelte": {
+    "file": "entries/pages/tools/notepad/_page.svelte.js",
+    "name": "entries/pages/tools/notepad/_page.svelte",
+    "src": "src/routes/tools/notepad/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_index-server.js",
+      "_pipStores.js",
+      "_MarkdownRenderer.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.DP28dWN_.css"
+    ]
+  },
+  "src/routes/tools/pomodoro/+page.svelte": {
+    "file": "entries/pages/tools/pomodoro/_page.svelte.js",
+    "name": "entries/pages/tools/pomodoro/_page.svelte",
+    "src": "src/routes/tools/pomodoro/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_index-server.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.nSRtHnJD.css"
+    ]
+  },
+  "src/routes/tools/tasks/+page.svelte": {
+    "file": "entries/pages/tools/tasks/_page.svelte.js",
+    "name": "entries/pages/tools/tasks/_page.svelte",
+    "src": "src/routes/tools/tasks/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_pipStores.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.6g1XFPBr.css"
+    ]
+  }
+}

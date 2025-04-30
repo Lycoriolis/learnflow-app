@@ -1,5 +1,3 @@
-import * as universal_hooks from '../../../src/hooks.ts';
-
 export { matchers } from './matchers.js';
 
 export const nodes = [
@@ -44,10 +42,11 @@ export const nodes = [
 	() => import('./nodes/38'),
 	() => import('./nodes/39'),
 	() => import('./nodes/40'),
-	() => import('./nodes/41')
+	() => import('./nodes/41'),
+	() => import('./nodes/42')
 ];
 
-export const server_loads = [3];
+export const server_loads = [0,3];
 
 export const dictionary = {
 		"/": [4],
@@ -60,11 +59,11 @@ export const dictionary = {
 		"/calendar": [11],
 		"/category/[slug]": [12],
 		"/courses": [13],
-		"/courses/[courseId]": [14],
-		"/courses/[courseId]/lesson/[lessonId]": [15],
+		"/courses/[slug]": [14],
+		"/courses/[slug]/[lessonId]": [15],
 		"/events": [16],
 		"/exercises": [17],
-		"/exercises/[id]": [18],
+		"/exercises/[slug]": [18],
 		"/forums": [~19],
 		"/forums/category/[id]": [~20],
 		"/forums/tag/[tag]": [~21],
@@ -87,14 +86,15 @@ export const dictionary = {
 		"/tools/flashcards": [38],
 		"/tools/notepad": [39],
 		"/tools/pomodoro": [40],
-		"/tools/tasks": [41]
+		"/tools/tasks": [41],
+		"/tools/workspace": [42]
 	};
 
 export const hooks = {
 	handleError: (({ error }) => { console.error(error) }),
 	
-	reroute: universal_hooks.reroute || (() => {}),
-	transport: universal_hooks.transport || {}
+	reroute: (() => {}),
+	transport: {}
 };
 
 export const decoders = Object.fromEntries(Object.entries(hooks.transport).map(([k, v]) => [k, v.decode]));

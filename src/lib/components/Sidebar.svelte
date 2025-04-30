@@ -51,6 +51,7 @@
     {
       title: 'Tools',
       items: [
+        { name: 'Workspace', href: '/tools/workspace', icon: 'fa-tools', authRequired: false },
         { name: 'Notepad', href: '/tools/notepad', icon: 'fa-sticky-note', authRequired: false },
         { name: 'Tasks', href: '/tools/tasks', icon: 'fa-list-check', authRequired: false },
         { name: 'AI Study Chat', href: '/tools/chat', icon: 'fa-robot', authRequired: false }

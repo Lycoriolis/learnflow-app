@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, connectAuthEmulator, type Auth } from 'firebase/auth';
 import { getAnalytics } from 'firebase/analytics';
+import { getFirestore, type Firestore } from 'firebase/firestore';
 
 // Firebase configuration
 // For development, provide sensible defaults if env vars not defined
@@ -14,61 +15,52 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-ABCDEF"
 };
 
-// For debugging
-console.log('Firebase config:', { 
-  apiKey: firebaseConfig.apiKey ? (firebaseConfig.apiKey.substring(0, 3) + '...') : 'missing',
-  authDomain: firebaseConfig.authDomain || 'missing',
-  projectId: firebaseConfig.projectId || 'missing'
-});
+// For debugging - only log in development
+const isDev = import.meta.env.DEV;
+const logDebug = (message: string, data?: any) => {
+  if (isDev) {
+    console.log(message, data);
+  }
+};
 
 // Initialize Firebase
 let app;
 let auth: Auth;
 let analytics = null;
+let db: Firestore;
 
 try {
-  console.log('Initializing Firebase app');
+  logDebug('Initializing Firebase app');
   app = initializeApp(firebaseConfig);
   
   // Initialize Firebase Authentication
-  console.log('Initializing Firebase auth');
   auth = getAuth(app);
   
+  // Initialize Firestore
+  db = getFirestore(app);
+  
   // Use auth emulator if in development
-  if (import.meta.env.DEV && import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true') {
-    console.log('Connecting to Firebase Auth emulator');
+  if (isDev && import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true') {
+    logDebug('Connecting to Firebase Auth emulator');
     connectAuthEmulator(auth, 'http://localhost:9099');
   }
 
   // Initialize Analytics if in browser environment
   if (typeof window !== 'undefined') {
     try {
-      console.log('Initializing Firebase analytics');
       analytics = getAnalytics(app);
+      logDebug('Firebase analytics initialized');
     } catch (error) {
-      console.warn('Failed to initialize Firebase Analytics:', error);
+      if (isDev) {
+        console.warn('Failed to initialize Firebase Analytics:', error);
+      }
     }
   }
   
-  console.log('Firebase initialized successfully');
+  logDebug('Firebase initialized successfully');
 } catch (error) {
   console.error('Error initializing Firebase:', error);
-  // Provide fallback mock implementations for development/testing
-  app = { name: 'mock-app' };
-  // Simple mock auth with minimal functionality
-  auth = { 
-    currentUser: null,
-    // Mock implementation of onAuthStateChanged that immediately calls the callback with null
-    // and returns an unsubscribe function
-    onAuthStateChanged: (callback: any) => {
-      // Call the callback with null (user not logged in)
-      if (typeof callback === 'function') {
-        callback(null);
-      }
-      // Return a function that would normally unsubscribe the listener
-      return () => {};
-    }
-  } as unknown as Auth;
 }
 
-export { app, auth, analytics };
+// Export Firebase services
+export { app, auth, db, analytics };

@@ -1,36 +1,25 @@
-/**
- * Client-side CSRF protection utilities
- * 
- * This module provides functions to retrieve and manage CSRF tokens
- * to protect against Cross-Site Request Forgery attacks.
- */
-
-// The header name used for CSRF token transmission
-export const CSRF_HEADER = 'X-CSRF-Token';
+import { CSRF_HEADER, type CsrfResponse } from './csrfTypes.js';
 
 /**
  * Retrieves the CSRF token from the page's meta tags
- * This token is initially set by the server during page load
  */
 export function getCsrfToken(): string | null {
-  // First check for token in meta tag (set during initial page load)
+  // First check for token in meta tag
   const metaTag = document.querySelector('meta[name="csrf-token"]');
   if (metaTag && metaTag.getAttribute('content')) {
     return metaTag.getAttribute('content');
   }
   
-  // Fallback to localStorage (may have been set by a previous fetch response)
+  // Fallback to localStorage
   return localStorage.getItem('csrf_token');
 }
 
 /**
  * Stores a CSRF token for future use
- * This is typically called after receiving a new token from the server
  */
 export function storeCsrfToken(token: string): void {
   localStorage.setItem('csrf_token', token);
   
-  // Also update the meta tag if it exists
   let metaTag = document.querySelector('meta[name="csrf-token"]');
   if (!metaTag) {
     metaTag = document.createElement('meta');
@@ -42,11 +31,34 @@ export function storeCsrfToken(token: string): void {
 
 /**
  * Updates the CSRF token from response headers if present
- * Call this after each fetch request to keep the token fresh
  */
 export function updateCsrfTokenFromResponse(response: Response): void {
   const newToken = response.headers.get(CSRF_HEADER);
   if (newToken) {
     storeCsrfToken(newToken);
+  }
+}
+
+/**
+ * Initializes CSRF protection by requesting a new token
+ */
+export async function initializeCsrf(): Promise<void> {
+  try {
+    const response = await fetch('/api/csrf/init', {
+      method: 'GET',
+      credentials: 'same-origin'
+    });
+    
+    if (!response.ok) {
+      console.warn('Failed to initialize CSRF token');
+      return;
+    }
+    
+    const token = response.headers.get(CSRF_HEADER);
+    if (token) {
+      storeCsrfToken(token);
+    }
+  } catch (error) {
+    console.error('Error initializing CSRF token:', error);
   }
 }

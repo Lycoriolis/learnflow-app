@@ -1,90 +1,140 @@
 /**
- * Secure Fetch Utility
- * 
- * This utility wraps the browser's fetch API with security enhancements:
- * - Automatically adds CSRF token headers for non-GET/HEAD requests
- * - Includes credentials for session cookies
- * - Provides standardized error handling
+ * Enhanced fetch wrapper with CSRF protection and error handling
  */
+import { getCsrfToken, updateCsrfTokenFromResponse } from './csrf.client.js';
+import { CSRF_HEADER } from './csrf.types.js';
+import { get } from 'svelte/store';
+import { isAuthenticated, user } from '../stores/authStore.js';
+import { auth } from '../firebase.js';
 
-import { getCsrfToken, CSRF_HEADER } from './csrfProtection';
-
-export interface ApiResponse<T> {
-  success: boolean;
+export interface ApiResponse<T = any> {
   data?: T;
   error?: string;
   status: number;
 }
 
 /**
- * Enhanced fetch function with CSRF protection and error handling
- * 
- * @param url The URL to fetch
- * @param options Fetch options (similar to the standard fetch API)
- * @returns A promise resolving to the parsed response with standardized format
+ * Secure fetch wrapper that:
+ * 1. Adds CSRF tokens to requests
+ * 2. Updates CSRF tokens from responses
+ * 3. Adds Firebase auth token for authenticated requests
+ * 4. Handles errors in a consistent way
+ * 5. Provides type safety for API responses
  */
-export async function safeFetch<T = any>(
+export async function secureFetch<T = any>(
   url: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
-  try {
-    // Default request options
-    const requestOptions: RequestInit = {
-      credentials: 'same-origin', // Include cookies with the request
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(options.headers || {})
-      }
-    };
-    
-    // Add CSRF token for non-GET/HEAD requests
-    const method = options.method || 'GET';
-    if (!['GET', 'HEAD'].includes(method.toUpperCase())) {
-      const csrfToken = getCsrfToken();
-      if (csrfToken) {
-        (requestOptions.headers as Record<string, string>)[CSRF_HEADER] = csrfToken;
-      } else {
-        console.warn('CSRF token not available for non-GET request');
-      }
+  // Merge default options with provided options
+  const requestOptions: RequestInit = {
+    credentials: 'same-origin',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers
     }
+  };
 
+  // Add auth token if user is authenticated
+  const headers = requestOptions.headers as Record<string, string>;
+  if (get(isAuthenticated) && auth.currentUser) {
+    try {
+      const idToken = await auth.currentUser.getIdToken();
+      headers['Authorization'] = `Bearer ${idToken}`;
+    } catch (error) {
+      console.error('Failed to get auth token:', error);
+    }
+  }
+
+  // Add CSRF token to non-GET requests
+  if (options.method && options.method !== 'GET') {
+    const csrfToken = getCsrfToken();
+    
+    // If no CSRF token, try to obtain one first
+    if (!csrfToken) {
+      try {
+        const response = await fetch('/api/csrf/refresh', {
+          credentials: 'same-origin'
+        });
+        
+        const newToken = response.headers.get(CSRF_HEADER);
+        if (newToken) {
+          headers[CSRF_HEADER] = newToken;
+        } else {
+          return {
+            error: 'CSRF token required',
+            status: 401
+          };
+        }
+      } catch (error) {
+        return {
+          error: 'Failed to obtain CSRF token',
+          status: 500
+        };
+      }
+    } else {
+      headers[CSRF_HEADER] = csrfToken;
+    }
+  }
+
+  try {
     // Make the fetch request
     const response = await fetch(url, requestOptions);
     
-    // Parse the response
-    let data: any = null;
-    const contentType = response.headers.get('content-type');
+    // Update CSRF token if present in response
+    updateCsrfTokenFromResponse(response);
     
-    if (contentType && contentType.includes('application/json')) {
-      data = await response.json();
-    } else {
-      // For non-JSON responses, just get the text
-      data = await response.text();
+    // Check for CSRF errors (401/403) and retry once if needed
+    if ((response.status === 401 || response.status === 403) && 
+        response.headers.get('X-CSRF-Error') === 'true') {
+      try {
+        // Refresh token and retry
+        await fetch('/api/csrf/refresh', { credentials: 'same-origin' });
+        
+        // Retry the original request with updated token
+        const retryToken = getCsrfToken();
+        if (retryToken) {
+          (requestOptions.headers as Record<string, string>)[CSRF_HEADER] = retryToken;
+          const retryResponse = await fetch(url, requestOptions);
+          updateCsrfTokenFromResponse(retryResponse);
+          
+          // Parse and return response
+          try {
+            const data = await retryResponse.json();
+            return {
+              data,
+              status: retryResponse.status
+            };
+          } catch {
+            // If not JSON, return empty data
+            return {
+              status: retryResponse.status
+            };
+          }
+        }
+      } catch {
+        // Fall through to original error handling
+      }
     }
     
-    // Return a standardized response format
-    if (response.ok) {
+    // Parse and return response
+    try {
+      const data = await response.json();
       return {
-        success: true,
         data,
         status: response.status
       };
-    } else {
-      // Handle API error responses
+    } catch {
+      // If not JSON, return empty data
       return {
-        success: false,
-        error: typeof data === 'object' && data.message ? data.message : 'API request failed',
         status: response.status
       };
     }
   } catch (error) {
-    // Handle network errors or exceptions
-    console.error('Fetch error:', error);
+    console.error('Request failed:', error);
     return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error during API request',
-      status: 0 // Use 0 to indicate a network/client-side error
+      error: error instanceof Error ? error.message : 'Network request failed',
+      status: 0
     };
   }
 }

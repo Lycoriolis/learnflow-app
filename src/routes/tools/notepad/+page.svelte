@@ -2,6 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { notepadContent } from '$lib/stores/pipStores';
   import MarkdownRenderer from '$lib/components/MarkdownRenderer.svelte';
+  import { logStart, logEnd, logEvent } from '$lib/services/activityService';
 
   // Bind directly to the persistent store
   let note = '';
@@ -9,6 +10,17 @@
 
   let saved = false;
   let showSaveAnim = false;
+  let notepadViewId: string | null = null;
+  let showPreview = true;
+
+  onMount(async () => {
+    notepadViewId = await logStart('view_notepad', 'notepad');
+  });
+
+  onDestroy(() => {
+    if (notepadViewId) logEnd(notepadViewId);
+    unsubscribe();
+  });
 
   function saveNote() {
     notepadContent.set(note);
@@ -23,10 +35,14 @@
     saveNote();
   }
 
-  // Clean up subscription
-  onDestroy(() => {
-    unsubscribe();
-  });
+  function handleInput() {
+    logEvent('edit_note', 'notepad', { content: note });
+  }
+
+  function togglePreview() {
+    showPreview = !showPreview;
+    logEvent('toggle_preview', 'notepad', { showPreview });
+  }
 </script>
 
 <svelte:head>
@@ -46,6 +62,7 @@
         id="notepad"
         class="w-full h-64 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-4 font-mono text-base shadow focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-vertical transition"
         bind:value={note}
+        on:input={handleInput}
         placeholder="Write your notes here..."
       ></textarea>
       <div class="flex space-x-2 mt-4">
@@ -55,6 +72,9 @@
         <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md font-semibold shadow hover:bg-gray-300 transition" on:click={clearNote}>
           <i class="fas fa-eraser mr-2"></i> Clear
         </button>
+        <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md font-semibold shadow hover:bg-gray-300 transition" on:click={togglePreview}>
+          Toggle Preview
+        </button>
         {#if showSaveAnim}
           <span class="ml-2 animate-bounce text-green-500 text-xl">✔️</span>
         {/if}
@@ -63,12 +83,14 @@
         {/if}
       </div>
     </div>
-    <div>
-      <label class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200 block">Live Preview</label>
-      <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 h-64 overflow-auto shadow-inner prose dark:prose-invert">
-        <MarkdownRenderer content={note} />
+    {#if showPreview}
+      <div>
+        <label class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200 block">Live Preview</label>
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 h-64 overflow-auto shadow-inner prose dark:prose-invert">
+          <MarkdownRenderer content={note} />
+        </div>
       </div>
-    </div>
+    {/if}
   </div>
 </div>
 

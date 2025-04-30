@@ -37,9 +37,6 @@ declare module '$env/static/private' {
 	export const VITE_FIREBASE_APP_ID: string;
 	export const VITE_FIREBASE_MEASUREMENT_ID: string;
 	export const DATABASE_URL: string;
-	export const POSTGRES_USER: string;
-	export const POSTGRES_PASSWORD: string;
-	export const POSTGRES_DB: string;
 	export const VITE_ADMIN_EMAILS: string;
 	export const VITE_CSRF_SECRET: string;
 	export const USER: string;
@@ -139,9 +136,6 @@ declare module '$env/dynamic/private' {
 		VITE_FIREBASE_APP_ID: string;
 		VITE_FIREBASE_MEASUREMENT_ID: string;
 		DATABASE_URL: string;
-		POSTGRES_USER: string;
-		POSTGRES_PASSWORD: string;
-		POSTGRES_DB: string;
 		VITE_ADMIN_EMAILS: string;
 		VITE_CSRF_SECRET: string;
 		USER: string;

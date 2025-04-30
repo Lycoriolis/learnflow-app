@@ -1,29 +1,60 @@
 {
 	"/(protected)": [],
-	"/": [],
+	"/": [
+		"src/routes/+layout.server.ts",
+		"src/routes/+layout.server.ts"
+	],
 	"/admin": [
 		"src/routes/admin/+layout.server.ts",
-		"src/routes/admin/+layout.server.ts"
+		"src/routes/+layout.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.server.ts"
 	],
 	"/admin/courses": [
 		"src/routes/admin/courses/+page.server.ts",
-		"src/routes/admin/+layout.server.ts"
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.server.ts"
 	],
 	"/admin/forums": [
 		"src/routes/admin/forums/+page.server.ts",
-		"src/routes/admin/+layout.server.ts"
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.server.ts"
 	],
 	"/admin/forums/category/[id]/edit": [
 		"src/routes/admin/forums/category/[id]/edit/+page.server.ts",
-		"src/routes/admin/+layout.server.ts"
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.server.ts"
 	],
 	"/admin/forums/topic/[id]/edit": [
 		"src/routes/admin/forums/topic/[id]/edit/+page.server.ts",
-		"src/routes/admin/+layout.server.ts"
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.server.ts"
 	],
 	"/admin/users": [
 		"src/routes/admin/users/+page.server.ts",
-		"src/routes/admin/+layout.server.ts"
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/api/activities": [
+		"src/routes/api/activities/+server.ts"
+	],
+	"/api/activities/end": [
+		"src/routes/api/activities/end/+server.ts"
+	],
+	"/api/activities/event": [
+		"src/routes/api/activities/event/+server.ts"
+	],
+	"/api/activities/recent": [
+		"src/routes/api/activities/recent/+server.ts"
+	],
+	"/api/activities/start": [
+		"src/routes/api/activities/start/+server.ts"
+	],
+	"/api/csrf/init": [
+		"src/routes/api/csrf/init/+server.ts"
+	],
+	"/api/csrf/refresh": [
+		"src/routes/api/csrf/refresh/+server.ts"
 	],
 	"/api/forum/categories": [
 		"src/routes/api/forum/categories/+server.ts"
@@ -55,47 +86,111 @@
 	"/api/groups/[id]": [
 		"src/routes/api/groups/[id]/+server.ts"
 	],
-	"/calendar": [],
+	"/api/recommendations": [
+		"src/routes/api/recommendations/+server.ts"
+	],
+	"/api/score": [
+		"src/routes/api/score/+server.ts"
+	],
+	"/calendar": [
+		"src/routes/+layout.server.ts"
+	],
 	"/category/[slug]": [
-		"src/routes/category/[slug]/+page.ts"
+		"src/routes/category/[slug]/+page.ts",
+		"src/routes/+layout.server.ts"
 	],
-	"/courses": [],
-	"/courses/[courseId]": [
-		"src/routes/courses/[courseId]/+page.ts"
+	"/courses": [
+		"src/routes/+layout.server.ts"
 	],
-	"/courses/[courseId]/lesson/[lessonId]": [],
-	"/events": [],
-	"/exercises": [],
-	"/exercises/[id]": [],
+	"/courses/[slug]": [
+		"src/routes/+layout.server.ts"
+	],
+	"/courses/[slug]/[lessonId]": [
+		"src/routes/+layout.server.ts"
+	],
+	"/events": [
+		"src/routes/+layout.server.ts"
+	],
+	"/exercises": [
+		"src/routes/+layout.server.ts"
+	],
+	"/exercises/[slug]": [
+		"src/routes/+layout.server.ts"
+	],
 	"/forums": [
-		"src/routes/forums/+page.server.ts"
+		"src/routes/forums/+page.server.ts",
+		"src/routes/+layout.server.ts"
 	],
 	"/forums/category/[id]": [
-		"src/routes/forums/category/[id]/+page.server.ts"
+		"src/routes/forums/category/[id]/+page.server.ts",
+		"src/routes/+layout.server.ts"
 	],
 	"/forums/tag/[tag]": [
-		"src/routes/forums/tag/[tag]/+page.server.ts"
+		"src/routes/forums/tag/[tag]/+page.server.ts",
+		"src/routes/+layout.server.ts"
 	],
 	"/forums/topic/[id]": [
-		"src/routes/forums/topic/[id]/+page.server.ts"
+		"src/routes/forums/topic/[id]/+page.server.ts",
+		"src/routes/+layout.server.ts"
 	],
-	"/groups": [],
-	"/groups/create": [],
-	"/groups/[id]": [],
-	"/help": [],
-	"/login": [],
-	"/my-learning": [],
-	"/progress": [],
-	"/register": [],
-	"/reset-password": [],
-	"/settings": [],
-	"/statistics": [],
-	"/tools": [],
-	"/tools/calculator": [],
-	"/tools/chat": [],
-	"/tools/dictionary": [],
-	"/tools/flashcards": [],
-	"/tools/notepad": [],
-	"/tools/pomodoro": [],
-	"/tools/tasks": []
+	"/groups": [
+		"src/routes/+layout.server.ts"
+	],
+	"/groups/create": [
+		"src/routes/+layout.server.ts"
+	],
+	"/groups/[id]": [
+		"src/routes/+layout.server.ts"
+	],
+	"/help": [
+		"src/routes/+layout.server.ts"
+	],
+	"/login": [
+		"src/routes/+layout.server.ts"
+	],
+	"/my-learning": [
+		"src/routes/+layout.server.ts"
+	],
+	"/progress": [
+		"src/routes/+layout.server.ts"
+	],
+	"/register": [
+		"src/routes/+layout.server.ts"
+	],
+	"/reset-password": [
+		"src/routes/+layout.server.ts"
+	],
+	"/settings": [
+		"src/routes/+layout.server.ts"
+	],
+	"/statistics": [
+		"src/routes/+layout.server.ts"
+	],
+	"/tools": [
+		"src/routes/+layout.server.ts"
+	],
+	"/tools/calculator": [
+		"src/routes/+layout.server.ts"
+	],
+	"/tools/chat": [
+		"src/routes/+layout.server.ts"
+	],
+	"/tools/dictionary": [
+		"src/routes/+layout.server.ts"
+	],
+	"/tools/flashcards": [
+		"src/routes/+layout.server.ts"
+	],
+	"/tools/notepad": [
+		"src/routes/+layout.server.ts"
+	],
+	"/tools/pomodoro": [
+		"src/routes/+layout.server.ts"
+	],
+	"/tools/tasks": [
+		"src/routes/+layout.server.ts"
+	],
+	"/tools/workspace": [
+		"src/routes/+layout.server.ts"
+	]
 }

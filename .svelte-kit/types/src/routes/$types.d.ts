@@ -12,13 +12,17 @@ type EnsureDefined<T> = T extends null | undefined ? {} : T;
 type OptionalUnion<U extends Record<string, any>, A extends keyof U = U extends U ? keyof U : never> = U extends unknown ? { [P in Exclude<A, keyof U>]?: never } & U : never;
 export type Snapshot<T = any> = Kit.Snapshot<T>;
 type PageParentData = EnsureDefined<LayoutData>;
-type LayoutRouteId = RouteId | "/" | "/admin" | "/admin/courses" | "/admin/forums" | "/admin/forums/category/[id]/edit" | "/admin/forums/topic/[id]/edit" | "/admin/users" | "/calendar" | "/category/[slug]" | "/courses" | "/courses/[courseId]" | "/courses/[courseId]/lesson/[lessonId]" | "/events" | "/exercises" | "/exercises/[id]" | "/forums" | "/forums/category/[id]" | "/forums/tag/[tag]" | "/forums/topic/[id]" | "/groups" | "/groups/[id]" | "/groups/create" | "/help" | "/login" | "/my-learning" | "/progress" | "/register" | "/reset-password" | "/settings" | "/statistics" | "/tools" | "/tools/calculator" | "/tools/chat" | "/tools/dictionary" | "/tools/flashcards" | "/tools/notepad" | "/tools/pomodoro" | "/tools/tasks" | null
-type LayoutParams = RouteParams & { id?: string; slug?: string; courseId?: string; lessonId?: string; tag?: string }
+type LayoutRouteId = RouteId | "/" | "/admin" | "/admin/courses" | "/admin/forums" | "/admin/forums/category/[id]/edit" | "/admin/forums/topic/[id]/edit" | "/admin/users" | "/calendar" | "/category/[slug]" | "/courses" | "/courses/[slug]" | "/courses/[slug]/[lessonId]" | "/events" | "/exercises" | "/exercises/[slug]" | "/forums" | "/forums/category/[id]" | "/forums/tag/[tag]" | "/forums/topic/[id]" | "/groups" | "/groups/[id]" | "/groups/create" | "/help" | "/login" | "/my-learning" | "/progress" | "/register" | "/reset-password" | "/settings" | "/statistics" | "/tools" | "/tools/calculator" | "/tools/chat" | "/tools/dictionary" | "/tools/flashcards" | "/tools/notepad" | "/tools/pomodoro" | "/tools/tasks" | "/tools/workspace" | null
+type LayoutParams = RouteParams & { id?: string; slug?: string; lessonId?: string; tag?: string }
+type LayoutServerParentData = EnsureDefined<{}>;
 type LayoutParentData = EnsureDefined<{}>;
 
 export type PageServerData = null;
 export type PageData = Expand<PageParentData>;
 export type PageProps = { data: PageData }
-export type LayoutServerData = null;
-export type LayoutData = Expand<LayoutParentData>;
+export type LayoutServerLoad<OutputData extends OutputDataShape<LayoutServerParentData> = OutputDataShape<LayoutServerParentData>> = Kit.ServerLoad<LayoutParams, LayoutServerParentData, OutputData, LayoutRouteId>;
+export type LayoutServerLoadEvent = Parameters<LayoutServerLoad>[0];
+export type LayoutServerData = Expand<OptionalUnion<EnsureDefined<Kit.LoadProperties<Awaited<ReturnType<typeof import('./proxy+layout.server.js').load>>>>>>;
+export type LayoutData = Expand<Omit<LayoutParentData, keyof LayoutServerData> & EnsureDefined<LayoutServerData>>;
 export type LayoutProps = { data: LayoutData; children: import("svelte").Snippet }
+export type RequestEvent = Kit.RequestEvent<RouteParams, RouteId>;

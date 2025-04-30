@@ -1,0 +1,1087 @@
+{
+  "\u0000/home/linux/learnflow-app/learnflow-app/node_modules/gray-matter/index.js?commonjs-es-import": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "\u0000/home/linux/learnflow-app/learnflow-app/node_modules/gray-matter/lib/engines.js?commonjs-module": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "\u0000/home/linux/learnflow-app/learnflow-app/node_modules/gray-matter/lib/utils.js?commonjs-exports": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "\u0000/home/linux/learnflow-app/learnflow-app/node_modules/highlight.js/lib/core.js?commonjs-es-import": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "\u0000/home/linux/learnflow-app/learnflow-app/node_modules/js-yaml/lib/js-yaml.js?commonjs-exports": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "\u0000/home/linux/learnflow-app/learnflow-app/node_modules/js-yaml/lib/js-yaml/common.js?commonjs-exports": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "\u0000/home/linux/learnflow-app/learnflow-app/node_modules/js-yaml/lib/js-yaml/dumper.js?commonjs-exports": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "\u0000/home/linux/learnflow-app/learnflow-app/node_modules/js-yaml/lib/js-yaml/loader.js?commonjs-exports": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "\u0000__vite-browser-external?commonjs-proxy": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "\u0000commonjs-dynamic-modules": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "\u0000commonjsHelpers.js": [
+    "./_app/immutable/chunks/gnU0ypJ3.js"
+  ],
+  "\u0000virtual:__sveltekit/environment": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "\u0000virtual:__sveltekit/paths": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "\u0000virtual:env/dynamic/public": [],
+  "\u0000vite/preload-helper.js": [
+    "./_app/immutable/chunks/C1FmrZbK.js"
+  ],
+  ".svelte-kit/generated/client-optimized/app.js": [],
+  ".svelte-kit/generated/client-optimized/matchers.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/0.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/1.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/10.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/11.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/12.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/13.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/14.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/15.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/16.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/17.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/18.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/19.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/2.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/20.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/21.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/22.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/23.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/24.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/25.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/26.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/27.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/28.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/29.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/3.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/30.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/31.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/32.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/33.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/34.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/35.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/36.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/37.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/38.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/39.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/4.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/40.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/41.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/5.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/6.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/7.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/8.js": [],
+  ".svelte-kit/generated/client-optimized/nodes/9.js": [],
+  ".svelte-kit/generated/root.js": [],
+  ".svelte-kit/generated/root.svelte": [],
+  "__vite-browser-external": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/@firebase/analytics/dist/esm/index.esm2017.js": [
+    "./_app/immutable/chunks/DI_EjB8G.js"
+  ],
+  "node_modules/@firebase/app/dist/esm/index.esm2017.js": [
+    "./_app/immutable/chunks/z6kK6n-3.js"
+  ],
+  "node_modules/@firebase/auth/dist/esm2017/index-68602d24.js": [
+    "./_app/immutable/chunks/z6kK6n-3.js"
+  ],
+  "node_modules/@firebase/component/dist/esm/index.esm2017.js": [
+    "./_app/immutable/chunks/z6kK6n-3.js"
+  ],
+  "node_modules/@firebase/firestore/dist/index.esm2017.js": [
+    "./_app/immutable/chunks/DI_EjB8G.js"
+  ],
+  "node_modules/@firebase/installations/dist/esm/index.esm2017.js": [
+    "./_app/immutable/chunks/DI_EjB8G.js"
+  ],
+  "node_modules/@firebase/logger/dist/esm/index.esm2017.js": [
+    "./_app/immutable/chunks/z6kK6n-3.js"
+  ],
+  "node_modules/@firebase/util/dist/index.esm2017.js": [
+    "./_app/immutable/chunks/z6kK6n-3.js"
+  ],
+  "node_modules/@firebase/webchannel-wrapper/dist/bloom-blob/esm/bloom_blob_es2018.js": [
+    "./_app/immutable/chunks/DI_EjB8G.js"
+  ],
+  "node_modules/@firebase/webchannel-wrapper/dist/webchannel-blob/esm/webchannel_blob_es2018.js": [
+    "./_app/immutable/chunks/DI_EjB8G.js"
+  ],
+  "node_modules/@kurkle/color/dist/color.esm.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/@sveltejs/kit/src/runtime/app/environment/index.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/@sveltejs/kit/src/runtime/app/stores.js": [
+    "./_app/immutable/chunks/Doo5AiZ_.js"
+  ],
+  "node_modules/@sveltejs/kit/src/runtime/client/client.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/runtime/client/constants.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/runtime/client/entry.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/runtime/client/fetcher.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/runtime/client/parse.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/runtime/client/session-storage.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/runtime/client/state.svelte.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/runtime/client/utils.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/runtime/control.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/runtime/hash.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/runtime/pathname.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/runtime/shared.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/runtime/utils.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/utils/array.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/utils/error.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/utils/exports.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/utils/routing.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/@sveltejs/kit/src/utils/url.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/chart.js/dist/chart.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/chart.js/dist/chunks/helpers.segment.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.esm.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/_lib/addLeadingZeros.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/_lib/defaultOptions.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/_lib/format/formatters.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/_lib/format/lightFormatters.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/_lib/format/longFormatters.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/_lib/getRoundingMethod.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/_lib/getTimezoneOffsetInMilliseconds.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/_lib/normalizeDates.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/_lib/protectedTokens.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/addDays.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/addHours.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/addMilliseconds.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/addMinutes.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/addMonths.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/addQuarters.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/addSeconds.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/addWeeks.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/addYears.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/compareAsc.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/constants.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/constructFrom.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/differenceInCalendarDays.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/differenceInCalendarMonths.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/differenceInCalendarYears.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/differenceInDays.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/differenceInHours.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/differenceInMilliseconds.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/differenceInMinutes.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/differenceInMonths.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/differenceInQuarters.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/differenceInSeconds.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/differenceInWeeks.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/differenceInYears.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/endOfDay.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/endOfHour.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/endOfMinute.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/endOfMonth.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/endOfQuarter.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/endOfSecond.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/endOfWeek.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/endOfYear.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/format.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/getDayOfYear.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/getDefaultOptions.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/getISODay.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/getISOWeek.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/getISOWeekYear.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/getWeek.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/getWeekYear.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/isDate.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/isLastDayOfMonth.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/isValid.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/locale/_lib/buildFormatLongFn.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/locale/_lib/buildLocalizeFn.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/locale/_lib/buildMatchFn.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/locale/_lib/buildMatchPatternFn.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/locale/en-US.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/locale/en-US/_lib/formatDistance.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/locale/en-US/_lib/formatLong.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/locale/en-US/_lib/formatRelative.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/locale/en-US/_lib/localize.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/locale/en-US/_lib/match.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/Parser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/Setter.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/constants.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/AMPMMidnightParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/AMPMParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/DateParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/DayOfYearParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/DayParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/DayPeriodParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/EraParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/ExtendedYearParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/FractionOfSecondParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/Hour0To11Parser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/Hour0to23Parser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/Hour1To24Parser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/Hour1to12Parser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/ISODayParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/ISOTimezoneParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/ISOTimezoneWithZParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/ISOWeekParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/ISOWeekYearParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/LocalDayParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/LocalWeekParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/LocalWeekYearParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/MinuteParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/MonthParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/QuarterParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/SecondParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/StandAloneLocalDayParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/StandAloneMonthParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/StandAloneQuarterParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/TimestampMillisecondsParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/TimestampSecondsParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/parsers/YearParser.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parse/_lib/utils.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/parseISO.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/setDay.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/setISODay.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/setISOWeek.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/setWeek.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/startOfDay.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/startOfHour.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/startOfISOWeek.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/startOfISOWeekYear.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/startOfMinute.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/startOfMonth.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/startOfQuarter.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/startOfSecond.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/startOfWeek.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/startOfWeekYear.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/startOfYear.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/toDate.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/date-fns/transpose.js": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "node_modules/devalue/src/base64.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/devalue/src/constants.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/devalue/src/parse.js": [
+    "./_app/immutable/chunks/BMc8ARJA.js"
+  ],
+  "node_modules/esm-env/false.js": [
+    "./_app/immutable/chunks/D8Zr53n5.js"
+  ],
+  "node_modules/esm-env/true.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/extend-shallow/index.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/firebase/app/dist/esm/index.esm.js": [
+    "./_app/immutable/chunks/DI_EjB8G.js"
+  ],
+  "node_modules/firebase/firestore/dist/esm/index.esm.js": [
+    "./_app/immutable/chunks/QfzvdxsM.js"
+  ],
+  "node_modules/gray-matter/index.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/gray-matter/lib/defaults.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/gray-matter/lib/engine.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/gray-matter/lib/engines.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/gray-matter/lib/excerpt.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/gray-matter/lib/parse.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/gray-matter/lib/stringify.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/gray-matter/lib/to-file.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/gray-matter/lib/utils.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/highlight.js/es/languages/bash.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/highlight.js/es/languages/cpp.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/highlight.js/es/languages/csharp.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/highlight.js/es/languages/css.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/highlight.js/es/languages/go.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/highlight.js/es/languages/java.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/highlight.js/es/languages/javascript.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/highlight.js/es/languages/json.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/highlight.js/es/languages/markdown.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/highlight.js/es/languages/python.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/highlight.js/es/languages/ruby.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/highlight.js/es/languages/rust.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/highlight.js/es/languages/typescript.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/highlight.js/es/languages/xml.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/highlight.js/lib/core.js": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/highlight.js/styles/github-dark.css": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "node_modules/idb/build/index.js": [
+    "./_app/immutable/chunks/z6kK6n-3.js"
+  ],
+  "node_modules/idb/build/wrap-idb-value.js": [
+    "./_app/immutable/chunks/z6kK6n-3.js"
+  ],
+  "node_modules/is-extendable/index.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/index.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/common.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/dumper.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/exception.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/loader.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/mark.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/schema.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/schema/core.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/schema/default_full.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/schema/default_safe.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/schema/failsafe.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/schema/json.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type/binary.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type/bool.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type/float.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type/int.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type/js/function.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type/js/regexp.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type/js/undefined.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type/map.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type/merge.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type/null.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type/omap.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type/pairs.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type/seq.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type/set.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type/str.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/js-yaml/lib/js-yaml/type/timestamp.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/kind-of/index.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/marked/lib/marked.esm.js": [
+    "./_app/immutable/chunks/CHieB3Fn.js"
+  ],
+  "node_modules/section-matter/index.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/strip-bom-string/index.js": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "node_modules/svelte/src/animate/index.js": [],
+  "node_modules/svelte/src/constants.js": [
+    "./_app/immutable/chunks/D8Zr53n5.js"
+  ],
+  "node_modules/svelte/src/easing/index.js": [
+    "./_app/immutable/chunks/Ccw7PXcW.js"
+  ],
+  "node_modules/svelte/src/index-client.js": [
+    "./_app/immutable/chunks/DyX_nzx0.js"
+  ],
+  "node_modules/svelte/src/internal/client/constants.js": [
+    "./_app/immutable/chunks/D8Zr53n5.js"
+  ],
+  "node_modules/svelte/src/internal/client/context.js": [
+    "./_app/immutable/chunks/D8Zr53n5.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/blocks/each.js": [
+    "./_app/immutable/chunks/8AErAcLY.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/blocks/html.js": [
+    "./_app/immutable/chunks/CHieB3Fn.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/blocks/if.js": [
+    "./_app/immutable/chunks/BAqAra_5.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/blocks/slot.js": [
+    "./_app/immutable/chunks/ycPwrSgR.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/blocks/svelte-component.js": [],
+  "node_modules/svelte/src/internal/client/dom/blocks/svelte-head.js": [
+    "./_app/immutable/chunks/CCLz0Z0F.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/elements/attributes.js": [
+    "./_app/immutable/chunks/DpNHaJTn.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/elements/bindings/input.js": [
+    "./_app/immutable/chunks/Djn-aou_.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/elements/bindings/select.js": [
+    "./_app/immutable/chunks/dleV8ATl.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/elements/bindings/shared.js": [
+    "./_app/immutable/chunks/CCLz0Z0F.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/elements/bindings/this.js": [
+    "./_app/immutable/chunks/BM8m5GYV.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/elements/class.js": [
+    "./_app/immutable/chunks/Cw_GgyMt.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/elements/events.js": [
+    "./_app/immutable/chunks/CCLz0Z0F.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/elements/misc.js": [
+    "./_app/immutable/chunks/CCLz0Z0F.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/elements/style.js": [
+    "./_app/immutable/chunks/DbFW2zKx.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/elements/transitions.js": [
+    "./_app/immutable/chunks/CwmK-V57.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/hydration.js": [
+    "./_app/immutable/chunks/D8Zr53n5.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/legacy/event-modifiers.js": [
+    "./_app/immutable/chunks/Bfc47y5P.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/legacy/lifecycle.js": [
+    "./_app/immutable/chunks/BzVavbfz.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/operations.js": [
+    "./_app/immutable/chunks/D8Zr53n5.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/reconciler.js": [
+    "./_app/immutable/chunks/ByokzzJe.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/task.js": [
+    "./_app/immutable/chunks/D8Zr53n5.js"
+  ],
+  "node_modules/svelte/src/internal/client/dom/template.js": [
+    "./_app/immutable/chunks/ByokzzJe.js"
+  ],
+  "node_modules/svelte/src/internal/client/errors.js": [
+    "./_app/immutable/chunks/D8Zr53n5.js"
+  ],
+  "node_modules/svelte/src/internal/client/loop.js": [
+    "./_app/immutable/chunks/CwmK-V57.js"
+  ],
+  "node_modules/svelte/src/internal/client/proxy.js": [
+    "./_app/immutable/chunks/D8Zr53n5.js"
+  ],
+  "node_modules/svelte/src/internal/client/reactivity/deriveds.js": [
+    "./_app/immutable/chunks/D8Zr53n5.js"
+  ],
+  "node_modules/svelte/src/internal/client/reactivity/effects.js": [
+    "./_app/immutable/chunks/D8Zr53n5.js"
+  ],
+  "node_modules/svelte/src/internal/client/reactivity/equality.js": [
+    "./_app/immutable/chunks/D8Zr53n5.js"
+  ],
+  "node_modules/svelte/src/internal/client/reactivity/props.js": [
+    "./_app/immutable/chunks/D0guHZRM.js"
+  ],
+  "node_modules/svelte/src/internal/client/reactivity/sources.js": [
+    "./_app/immutable/chunks/D8Zr53n5.js"
+  ],
+  "node_modules/svelte/src/internal/client/reactivity/store.js": [
+    "./_app/immutable/chunks/CYIMW-vo.js"
+  ],
+  "node_modules/svelte/src/internal/client/render.js": [
+    "./_app/immutable/chunks/UpSy6tP0.js"
+  ],
+  "node_modules/svelte/src/internal/client/runtime.js": [
+    "./_app/immutable/chunks/D8Zr53n5.js"
+  ],
+  "node_modules/svelte/src/internal/client/timing.js": [
+    "./_app/immutable/chunks/CwmK-V57.js"
+  ],
+  "node_modules/svelte/src/internal/client/warnings.js": [
+    "./_app/immutable/chunks/D8Zr53n5.js"
+  ],
+  "node_modules/svelte/src/internal/disclose-version.js": [
+    "./_app/immutable/chunks/CWj6FrbW.js"
+  ],
+  "node_modules/svelte/src/internal/flags/index.js": [
+    "./_app/immutable/chunks/DIeogL5L.js"
+  ],
+  "node_modules/svelte/src/internal/flags/legacy.js": [
+    "./_app/immutable/chunks/69_IOA4Y.js"
+  ],
+  "node_modules/svelte/src/internal/shared/attributes.js": [
+    "./_app/immutable/chunks/Cw_GgyMt.js"
+  ],
+  "node_modules/svelte/src/internal/shared/errors.js": [
+    "./_app/immutable/chunks/DyX_nzx0.js"
+  ],
+  "node_modules/svelte/src/internal/shared/utils.js": [
+    "./_app/immutable/chunks/D8Zr53n5.js"
+  ],
+  "node_modules/svelte/src/legacy/legacy-client.js": [],
+  "node_modules/svelte/src/store/shared/index.js": [
+    "./_app/immutable/chunks/B51PyqUg.js"
+  ],
+  "node_modules/svelte/src/store/utils.js": [
+    "./_app/immutable/chunks/B51PyqUg.js"
+  ],
+  "node_modules/svelte/src/transition/index.js": [
+    "./_app/immutable/chunks/CwmK-V57.js"
+  ],
+  "node_modules/svelte/src/utils.js": [
+    "./_app/immutable/chunks/UpSy6tP0.js"
+  ],
+  "node_modules/svelte/src/version.js": [
+    "./_app/immutable/chunks/CWj6FrbW.js"
+  ],
+  "node_modules/tslib/tslib.es6.mjs": [
+    "./_app/immutable/chunks/z6kK6n-3.js"
+  ],
+  "src/app.css": [],
+  "src/lib/authService.ts": [
+    "./_app/immutable/chunks/QfzvdxsM.js"
+  ],
+  "src/lib/components/CourseCard.svelte": [
+    "./_app/immutable/chunks/Dcydao5J.js"
+  ],
+  "src/lib/components/CourseCarousel.svelte": [],
+  "src/lib/components/CourseCarousel.svelte?svelte&type=style&lang.css": [],
+  "src/lib/components/CourseModal.svelte": [],
+  "src/lib/components/ExerciseCard.svelte": [],
+  "src/lib/components/ExercisesSection.svelte": [],
+  "src/lib/components/FocusTimeChart.svelte": [
+    "./_app/immutable/chunks/rA2gTqDF.js"
+  ],
+  "src/lib/components/Footer.svelte": [],
+  "src/lib/components/GeneralWelcome.svelte": [],
+  "src/lib/components/Header.svelte": [],
+  "src/lib/components/Login.svelte": [],
+  "src/lib/components/MarkdownRenderer.svelte": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "src/lib/components/MarkdownRenderer.svelte?svelte&type=style&lang.css": [
+    "./_app/immutable/chunks/DYIbtIuY.js",
+    "./_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+  ],
+  "src/lib/components/PipWidget.svelte": [],
+  "src/lib/components/PipWidget.svelte?svelte&type=style&lang.css": [],
+  "src/lib/components/ProgressMetrics.svelte": [],
+  "src/lib/components/RecentActivity.svelte": [],
+  "src/lib/components/RecommendationsSection.svelte": [],
+  "src/lib/components/Register.svelte": [],
+  "src/lib/components/ResetPassword.svelte": [],
+  "src/lib/components/ScoreCard.svelte": [],
+  "src/lib/components/Sidebar.svelte": [],
+  "src/lib/components/Sidebar.svelte?svelte&type=style&lang.css": [],
+  "src/lib/components/StatCard.svelte": [],
+  "src/lib/components/WelcomeBanner.svelte": [],
+  "src/lib/components/forums/CreateTopicForm.svelte": [
+    "./_app/immutable/chunks/BJI8ZFFo.js"
+  ],
+  "src/lib/components/forums/ForumFilters.svelte": [],
+  "src/lib/components/forums/ForumHeader.svelte": [
+    "./_app/immutable/chunks/BJI8ZFFo.js"
+  ],
+  "src/lib/components/forums/ForumList.svelte": [
+    "./_app/immutable/chunks/BJI8ZFFo.js"
+  ],
+  "src/lib/components/forums/ForumSidebar.svelte": [
+    "./_app/immutable/chunks/BJI8ZFFo.js"
+  ],
+  "src/lib/components/forums/ForumTopic.svelte": [],
+  "src/lib/components/forums/NewPostForm.svelte": [],
+  "src/lib/components/pip/PipCalculator.svelte": [],
+  "src/lib/components/pip/PipDictionary.svelte": [],
+  "src/lib/components/pip/PipFlashcards.svelte": [],
+  "src/lib/components/pip/PipNotes.svelte": [],
+  "src/lib/components/pip/PipTimer.svelte": [],
+  "src/lib/components/pip/PipTodo.svelte": [],
+  "src/lib/firebase.ts": [
+    "./_app/immutable/chunks/DI_EjB8G.js"
+  ],
+  "src/lib/services/activityService.ts": [
+    "./_app/immutable/chunks/C44GRa1C.js"
+  ],
+  "src/lib/services/contentService.ts": [
+    "./_app/immutable/chunks/LciTkaa2.js"
+  ],
+  "src/lib/services/courseService.ts": [
+    "./_app/immutable/chunks/CJImBPi4.js"
+  ],
+  "src/lib/services/userService.ts": [
+    "./_app/immutable/chunks/QfzvdxsM.js"
+  ],
+  "src/lib/stores/appStore.ts": [],
+  "src/lib/stores/authStore.ts": [
+    "./_app/immutable/chunks/QfzvdxsM.js"
+  ],
+  "src/lib/stores/forumStore.ts": [
+    "./_app/immutable/chunks/BJI8ZFFo.js"
+  ],
+  "src/lib/stores/persistentStore.js": [
+    "./_app/immutable/chunks/C9hOER03.js"
+  ],
+  "src/lib/stores/pipStores.ts": [
+    "./_app/immutable/chunks/DXDQnthP.js"
+  ],
+  "src/lib/stores/userProfileStore.ts": [
+    "./_app/immutable/chunks/QfzvdxsM.js"
+  ],
+  "src/lib/utils/csrf.client.ts": [
+    "./_app/immutable/chunks/B19BcPMY.js"
+  ],
+  "src/lib/utils/csrf.types.ts": [
+    "./_app/immutable/chunks/B19BcPMY.js"
+  ],
+  "src/lib/utils/secureFetch.ts": [],
+  "src/routes/(protected)/+layout.svelte": [],
+  "src/routes/+error.svelte": [],
+  "src/routes/+error.svelte?svelte&type=style&lang.css": [],
+  "src/routes/+layout.svelte": [],
+  "src/routes/+layout.svelte?svelte&type=style&lang.css": [],
+  "src/routes/+page.svelte": [],
+  "src/routes/admin/+layout.svelte": [],
+  "src/routes/admin/+page.svelte": [],
+  "src/routes/admin/courses/+page.svelte": [],
+  "src/routes/admin/forums/+page.svelte": [],
+  "src/routes/admin/forums/category/[id]/edit/+page.svelte": [],
+  "src/routes/admin/forums/topic/[id]/edit/+page.svelte": [],
+  "src/routes/admin/users/+page.svelte": [],
+  "src/routes/calendar/+page.svelte": [],
+  "src/routes/calendar/+page.svelte?svelte&type=style&lang.css": [],
+  "src/routes/category/[slug]/+page.svelte": [],
+  "src/routes/category/[slug]/+page.ts": [],
+  "src/routes/courses/+page.svelte": [],
+  "src/routes/courses/[slug]/+page.svelte": [],
+  "src/routes/courses/[slug]/[lessonId]/+page.svelte": [],
+  "src/routes/events/+page.svelte": [],
+  "src/routes/events/+page.svelte?svelte&type=style&lang.css": [],
+  "src/routes/exercises/+page.svelte": [],
+  "src/routes/exercises/[slug]/+page.svelte": [],
+  "src/routes/forums/+page.svelte": [],
+  "src/routes/forums/+page.svelte?svelte&type=style&lang.css": [],
+  "src/routes/forums/category/[id]/+page.svelte": [],
+  "src/routes/forums/tag/[tag]/+page.svelte": [],
+  "src/routes/forums/topic/[id]/+page.svelte": [],
+  "src/routes/forums/topic/[id]/+page.svelte?svelte&type=style&lang.css": [],
+  "src/routes/groups/+page.svelte": [],
+  "src/routes/groups/+page.svelte?svelte&type=style&lang.css": [],
+  "src/routes/groups/[id]/+page.svelte": [],
+  "src/routes/groups/create/+page.svelte": [],
+  "src/routes/help/+page.svelte": [],
+  "src/routes/login/+page.svelte": [],
+  "src/routes/my-learning/+page.svelte": [],
+  "src/routes/progress/+page.svelte": [],
+  "src/routes/register/+page.svelte": [],
+  "src/routes/reset-password/+page.svelte": [],
+  "src/routes/settings/+page.svelte": [],
+  "src/routes/statistics/+page.svelte": [],
+  "src/routes/tools/+page.svelte": [],
+  "src/routes/tools/calculator/+page.svelte": [],
+  "src/routes/tools/chat/+page.svelte": [],
+  "src/routes/tools/chat/+page.svelte?svelte&type=style&lang.css": [],
+  "src/routes/tools/dictionary/+page.svelte": [],
+  "src/routes/tools/flashcards/+page.svelte": [],
+  "src/routes/tools/notepad/+page.svelte": [],
+  "src/routes/tools/notepad/+page.svelte?svelte&type=style&lang.css": [],
+  "src/routes/tools/pomodoro/+page.svelte": [],
+  "src/routes/tools/pomodoro/+page.svelte?svelte&type=style&lang.css": [],
+  "src/routes/tools/tasks/+page.svelte": [],
+  "src/routes/tools/tasks/+page.svelte?svelte&type=style&lang.css": []
+}

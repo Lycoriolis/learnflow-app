@@ -1,15 +1,31 @@
-<!-- filepath: /home/linux/learnflow-app/learnflow-app/src/routes/tools/calculator/+page.svelte -->
 <script lang="ts">
   import { calcDisplay, calcCurrentInput, calcOperator, calcPreviousValue, calcWaitingForSecondOperand } from '$lib/stores/pipStores';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
+  import { logStart, logEnd, logEvent } from '$lib/services/activityService';
 
   let scientificMode = false;
   let memoryValue = 0;
   let showHistory = false;
   let calculationHistory: string[] = [];
   let angleMode: 'deg' | 'rad' = 'deg';
+  let calcViewId: string | null = null;
+
+  onMount(async () => {
+    calcViewId = await logStart('view_calculator', 'calculator');
+    window.addEventListener('keydown', handleKeydown);
+  });
+
+  onDestroy(() => {
+    if (calcViewId) logEnd(calcViewId);
+    window.removeEventListener('keydown', handleKeydown);
+  });
+
+  function logCalc(action: string) {
+    logEvent('calculate', 'calculator', { action });
+  }
 
   function inputDigit(digit: string) {
+    logCalc(`digit_${digit}`);
     if ($calcWaitingForSecondOperand) {
       calcDisplay.set(digit);
       calcWaitingForSecondOperand.set(false);
@@ -20,6 +36,7 @@
   }
 
   function inputDecimal() {
+    logCalc('decimal');
     if ($calcWaitingForSecondOperand) {
       calcDisplay.set('0.');
       calcWaitingForSecondOperand.set(false);
@@ -33,6 +50,7 @@
   }
 
   function clearAll() {
+    logCalc('clear_all');
     calcDisplay.set('0');
     calcCurrentInput.set('');
     calcOperator.set(null);
@@ -41,6 +59,7 @@
   }
 
   function handleOperator(nextOperator: string) {
+    logCalc(`operator_${nextOperator}`);
     const inputValue = parseFloat($calcDisplay);
 
     if ($calcPreviousValue === null) {
@@ -88,6 +107,7 @@
   }
 
   function handleScientificFunction(fn: string) {
+    logCalc(`scientific_${fn}`);
     const currentValue = parseFloat($calcDisplay);
     let result: number;
 
@@ -135,6 +155,7 @@
   }
 
   function handleMemory(operation: string) {
+    logCalc(`memory_${operation}`);
     const currentValue = parseFloat($calcDisplay);
     
     switch (operation) {
@@ -157,16 +178,19 @@
   }
 
   function copyToClipboard() {
+    logCalc('copy_to_clipboard');
     navigator.clipboard.writeText($calcDisplay);
   }
 
   function clearHistory() {
+    logCalc('clear_history');
     calculationHistory = [];
   }
 
   // Handle keyboard input
   function handleKeydown(event: KeyboardEvent) {
     const key = event.key;
+    logCalc(`keydown_${key}`);
     
     if (/[0-9]/.test(key)) {
       inputDigit(key);
@@ -182,13 +206,6 @@
       calcDisplay.set($calcDisplay.slice(0, -1) || '0');
     }
   }
-
-  onMount(() => {
-    window.addEventListener('keydown', handleKeydown);
-    return () => {
-      window.removeEventListener('keydown', handleKeydown);
-    };
-  });
 </script>
 
 <svelte:head>
@@ -206,13 +223,13 @@
     <div class="flex gap-2">
       <button 
         class="text-sm px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition"
-        on:click={() => showHistory = !showHistory}
+        on:click={() => { logCalc('toggle_history'); showHistory = !showHistory; }}
       >
         <i class="fas fa-history mr-2"></i> History
       </button>
       <button 
         class="text-sm px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
-        on:click={() => scientificMode = !scientificMode}
+        on:click={() => { logCalc('toggle_mode'); scientificMode = !scientificMode; }}
       >
         {scientificMode ? 'Basic' : 'Scientific'}
       </button>
@@ -232,7 +249,7 @@
           >
           <button
             class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-            on:click={copyToClipboard}
+            on:click={() => { logCalc('copy'); copyToClipboard(); }}
             title="Copy to clipboard"
           >
             <i class="fas fa-copy"></i>
@@ -244,47 +261,47 @@
           <div class="grid grid-cols-4 gap-2 mb-4">
             <button 
               class="p-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-              on:click={() => handleScientificFunction('sin')}
+              on:click={() => { logCalc('sin'); handleScientificFunction('sin'); }}
             >sin</button>
             <button 
               class="p-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-              on:click={() => handleScientificFunction('cos')}
+              on:click={() => { logCalc('cos'); handleScientificFunction('cos'); }}
             >cos</button>
             <button 
               class="p-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-              on:click={() => handleScientificFunction('tan')}
+              on:click={() => { logCalc('tan'); handleScientificFunction('tan'); }}
             >tan</button>
             <button 
               class="p-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-              on:click={() => angleMode = angleMode === 'deg' ? 'rad' : 'deg'}
+              on:click={() => { logCalc('toggle_angle'); angleMode = angleMode === 'deg' ? 'rad' : 'deg'; }}
             >{angleMode}</button>
             <button 
               class="p-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-              on:click={() => handleScientificFunction('log')}
+              on:click={() => { logCalc('log'); handleScientificFunction('log'); }}
             >log</button>
             <button 
               class="p-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-              on:click={() => handleScientificFunction('ln')}
+              on:click={() => { logCalc('ln'); handleScientificFunction('ln'); }}
             >ln</button>
             <button 
               class="p-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-              on:click={() => handleScientificFunction('exp')}
+              on:click={() => { logCalc('exp'); handleScientificFunction('exp'); }}
             >exp</button>
             <button 
               class="p-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-              on:click={() => handleScientificFunction('sqrt')}
+              on:click={() => { logCalc('sqrt'); handleScientificFunction('sqrt'); }}
             >√</button>
             <button 
               class="p-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-              on:click={() => handleOperator('pow')}
+              on:click={() => { logCalc('pow'); handleOperator('pow'); }}
             >x^y</button>
             <button 
               class="p-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-              on:click={() => handleScientificFunction('pi')}
+              on:click={() => { logCalc('pi'); handleScientificFunction('pi'); }}
             >π</button>
             <button 
               class="p-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-              on:click={() => handleScientificFunction('e')}
+              on:click={() => { logCalc('e'); handleScientificFunction('e'); }}
             >e</button>
           </div>
 
@@ -292,23 +309,23 @@
           <div class="grid grid-cols-5 gap-2 mb-4">
             <button 
               class="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm"
-              on:click={() => handleMemory('MC')}
+              on:click={() => { logCalc('MC'); handleMemory('MC'); }}
             >MC</button>
             <button 
               class="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm"
-              on:click={() => handleMemory('MR')}
+              on:click={() => { logCalc('MR'); handleMemory('MR'); }}
             >MR</button>
             <button 
               class="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm"
-              on:click={() => handleMemory('M+')}
+              on:click={() => { logCalc('M+'); handleMemory('M+'); }}
             >M+</button>
             <button 
               class="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm"
-              on:click={() => handleMemory('M-')}
+              on:click={() => { logCalc('M-'); handleMemory('M-'); }}
             >M-</button>
             <button 
               class="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm"
-              on:click={() => handleMemory('MS')}
+              on:click={() => { logCalc('MS'); handleMemory('MS'); }}
             >MS</button>
           </div>
         {/if}
@@ -317,19 +334,19 @@
         <div class="grid grid-cols-4 gap-2">
           <button
             class="p-4 bg-red-600 text-white rounded hover:bg-red-700 transition"
-            on:click={clearAll}
+            on:click={() => { logCalc('AC'); clearAll(); }}
           >AC</button>
           <button
             class="p-4 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-            on:click={() => calcDisplay.set(String(-parseFloat($calcDisplay)))}
+            on:click={() => { logCalc('negate'); calcDisplay.set(String(-parseFloat($calcDisplay))); }}
           >±</button>
           <button
             class="p-4 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-            on:click={() => calcDisplay.set(String(parseFloat($calcDisplay) / 100))}
+            on:click={() => { logCalc('percent'); calcDisplay.set(String(parseFloat($calcDisplay) / 100)); }}
           >%</button>
           <button
             class="p-4 bg-purple-600 text-white rounded hover:bg-purple-700 transition"
-            on:click={() => handleOperator('/')}
+            on:click={() => { logCalc('divide'); handleOperator('/'); }}
           >÷</button>
           
           {#each [7, 8, 9, '*', 4, 5, 6, '-', 1, 2, 3, '+', 0, '.', '='] as key}
@@ -340,8 +357,10 @@
                      text-white rounded transition {isZero ? 'col-span-2' : ''}"
               on:click={() => {
                 if (typeof key === 'number' || key === '.') {
+                  key === '.' ? logCalc('decimal') : logCalc(`digit_${key}`);
                   key === '.' ? inputDecimal() : inputDigit(String(key));
                 } else {
+                  logCalc(`operator_${key}`);
                   handleOperator(key);
                 }
               }}
@@ -364,7 +383,7 @@
             <h3 class="text-lg font-medium text-gray-900 dark:text-white">History</h3>
             <button
               class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              on:click={clearHistory}
+              on:click={() => { logCalc('clear_history'); clearHistory(); }}
             >
               Clear
             </button>

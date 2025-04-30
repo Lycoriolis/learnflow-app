@@ -2,7 +2,7 @@
   export let data: { topics: import('$lib/services/forumService').getAllTopics extends (...args:any)=>Promise<infer R> ? R : any, categories: import('$lib/services/forumService').getAllCategories extends (...args:any)=>Promise<infer R> ? R : any };
   import { fade } from 'svelte/transition';
   import { goto } from '$app/navigation';
-  import { safeFetch } from '$lib/utils/secureFetch';
+  import { secureFetch } from '$lib/utils/secureFetch';
   let { topics, categories } = data;
   let showNewCategoryForm = false;
   
@@ -48,7 +48,7 @@
     if (!confirm('Delete topic?')) return;
     
     try {
-      await safeFetch(`/api/forum/topics/${id}`, {
+      await secureFetch(`/api/forum/topics/${id}`, {
         method: 'DELETE'
       });
       
@@ -68,7 +68,7 @@
     if (!confirm('Delete category? This will also delete all topics in this category.')) return;
     
     try {
-      await safeFetch(`/api/forum/categories/${id}`, {
+      await secureFetch(`/api/forum/categories/${id}`, {
         method: 'DELETE'
       });
       
@@ -93,7 +93,7 @@
         throw new Error('Name and description are required');
       }
       
-      const category = await safeFetch('/api/forum/categories', {
+      const category = await secureFetch('/api/forum/categories', {
         method: 'POST',
         body: newCategory
       });
