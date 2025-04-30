@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { fade } from 'svelte/transition';
   import { user } from '$lib/stores/authStore.js';
+  import { logStart, logEnd } from '$lib/services/activityService';
 
   // Types
   type CalendarEvent = {
@@ -87,6 +88,7 @@
   let currentView = 'month';
   let currentYear = currentDate.getFullYear();
   let currentMonth = currentDate.getMonth();
+  let calendarEventId: string | null = null;
 
   // Navigation functions
   function prevMonth() {
@@ -224,10 +226,15 @@
 
   let loading = true;
 
-  onMount(() => {
+  onMount(async () => {
+    calendarEventId = await logStart('view_calendar', 'calendar');
     setTimeout(() => {
       loading = false;
     }, 800);
+  });
+
+  onDestroy(() => {
+    if (calendarEventId) logEnd(calendarEventId);
   });
 </script>
 
@@ -549,4 +556,4 @@
   .grid-rows-6 {
     grid-template-rows: repeat(6, minmax(120px, 1fr));
   }
-</style> 
+</style>

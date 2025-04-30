@@ -1,10 +1,5 @@
-/**
- * Content Service
- * 
- * Handles loading and managing markdown content for courses and exercises
- */
-
 import { browser } from '$app/environment';
+import matter from 'gray-matter';
 
 // Types
 export interface ContentMetadata {
@@ -86,23 +81,36 @@ function extractMetadata(content: string, id: string, type: 'course' | 'exercise
  */
 export async function loadContent(type: 'course' | 'exercise', id: string): Promise<ContentItem | null> {
   if (!browser) return null;
-  
+
   try {
     const basePath = type === 'course' ? COURSES_PATH : EXERCISES_PATH;
     const response = await fetch(`${basePath}/${id}.md`);
-    
     if (!response.ok) {
       console.error(`Failed to load ${type} content:`, response.statusText);
       return null;
     }
-    
     const content = await response.text();
-    const metadata = extractMetadata(content, id, type);
-    
-    return {
-      ...metadata,
-      content
-    };
+    // Try to parse frontmatter with gray-matter
+    let metadata: ContentMetadata;
+    try {
+      const parsed = matter(content);
+      metadata = {
+        id,
+        title: parsed.data.title || id,
+        type,
+        slug: id,
+        description: parsed.data.description,
+        tags: parsed.data.tags,
+        difficulty: parsed.data.difficulty,
+        estimatedTime: parsed.data.estimatedTime,
+        ...parsed.data
+      };
+      return { ...metadata, content: parsed.content };
+    } catch (e) {
+      // fallback: try to extract metadata manually
+      metadata = extractMetadata(content, id, type);
+      return { ...metadata, content };
+    }
   } catch (error) {
     console.error(`Error loading ${type} content:`, error);
     return null;
@@ -113,54 +121,61 @@ export async function loadContent(type: 'course' | 'exercise', id: string): Prom
  * List available content items (with basic metadata)
  */
 export async function listContent(type: 'course' | 'exercise'): Promise<ContentMetadata[]> {
-  // In a real application, you would have an API endpoint that returns the list of content items
-  // For this example, we'll use a hardcoded list of available content
-  
-  if (type === 'course') {
-    return [
-      {
-        id: 'sample-course',
-        title: 'Introduction to Web Development',
-        type: 'course',
-        slug: 'intro-web-dev',
-        description: 'Learn the basics of web development with HTML, CSS, and JavaScript',
-        difficulty: 'beginner',
-        estimatedTime: '3 hours',
-        tags: ['html', 'css', 'javascript', 'web']
-      },
-      {
-        id: 'bezout-theorem',
-        title: "Bezout's Theorem and Identity",
-        type: 'course',
-        slug: 'bezout-theorem',
-        description: "Understanding Bézout's identity, the extended GCD algorithm, and applications.",
-        difficulty: 'intermediate',
-        estimatedTime: '90 minutes',
-        tags: ['math', 'number theory', 'gcd', 'bezout']
-      }
-    ];
-  } else {
-    return [
-      {
-        id: 'html-basics-exercise',
-        title: 'HTML Basics Exercise',
-        type: 'exercise',
-        slug: 'html-basics',
-        description: 'Practice creating a simple HTML webpage with various elements',
-        difficulty: 'beginner',
-        estimatedTime: '45 minutes',
-        tags: ['html', 'practice']
-      },
-      {
-        id: 'bezout-identity-exercise',
-        title: "Bézout's Identity Exercises",
-        type: 'exercise',
-        slug: 'bezout-identity',
-        description: "Exercises on computing GCD, extended Euclidean algorithm, and Bézout coefficients.",
-        difficulty: 'intermediate',
-        estimatedTime: '30 minutes',
-        tags: ['math', 'number theory', 'gcd', 'bezout']
-      }
-    ];
+  try {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const content: ContentMetadata[] = type === 'course' ? [
+          {
+            id: 'sample-course',
+            title: 'Introduction to Web Development',
+            type: 'course' as const,
+            slug: 'intro-web-dev',
+            description: 'Learn the basics of web development with HTML, CSS, and JavaScript',
+            difficulty: 'beginner',
+            estimatedTime: '3 hours',
+            tags: ['html', 'css', 'javascript', 'web']
+          },
+          {
+            id: 'bezout-theorem',
+            title: "Bezout's Theorem and Identity",
+            type: 'course' as const,
+            slug: 'bezout-theorem',
+            description: "Understanding Bézout's identity, the extended GCD algorithm, and applications.",
+            difficulty: 'intermediate',
+            estimatedTime: '90 minutes',
+            tags: ['math', 'number theory', 'gcd', 'bezout']
+          }
+        ] : [
+          {
+            id: 'html-basics-exercise',
+            title: 'HTML Basics Exercise',
+            type: 'exercise' as const,
+            slug: 'html-basics',
+            description: 'Practice creating a simple HTML webpage with various elements',
+            difficulty: 'beginner',
+            estimatedTime: '45 minutes',
+            tags: ['html', 'practice']
+          },
+          {
+            id: 'bezout-identity-exercise',
+            title: "Bézout's Identity Exercises",
+            type: 'exercise' as const,
+            slug: 'bezout-identity',
+            description: "Exercises on computing GCD, extended Euclidean algorithm, and Bézout coefficients.",
+            difficulty: 'intermediate',
+            estimatedTime: '30 minutes',
+            tags: ['math', 'number theory', 'gcd', 'bezout']
+          }
+        ];
+        
+        if (content.length === 0) {
+          console.warn(`No ${type} content found`);
+        }
+        resolve(content);
+      }, 500);
+    });
+  } catch (error) {
+    console.error(`Error loading ${type} content:`, error);
+    throw new Error(`Failed to load ${type} content`);
   }
 }

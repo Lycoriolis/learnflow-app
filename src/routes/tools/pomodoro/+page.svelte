@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { tick } from 'svelte';
+  import { logStart, logEnd, logEvent } from '$lib/services/activityService';
 
   // Pomodoro settings
   const WORK_MIN = 25;
@@ -16,8 +17,19 @@
   let interval: any = null;
   let completedCycles = 0;
   let showConfetti = false;
+  let pomodoroEventId: string | null = null;
+
+  onMount(async () => {
+    pomodoroEventId = await logStart('view_pomodoro', 'pomodoro');
+    resetTimer();
+  });
+
+  onDestroy(() => {
+    if (pomodoroEventId) logEnd(pomodoroEventId);
+  });
 
   function startTimer() {
+    logEvent('start_pomodoro', 'pomodoro');
     if (!isRunning) {
       isRunning = true;
       interval = setInterval(tickTimer, 1000);
@@ -25,13 +37,33 @@
   }
 
   function pauseTimer() {
+    logEvent('pause_pomodoro', 'pomodoro');
     isRunning = false;
     clearInterval(interval);
   }
 
   function resetTimer() {
+    logEvent('reset_pomodoro', 'pomodoro');
     pauseTimer();
     minutes = isWork ? WORK_MIN : (cycle % CYCLES_BEFORE_LONG === 0 ? LONG_BREAK_MIN : BREAK_MIN);
+    seconds = 0;
+  }
+
+  async function completeSession() {
+    logEvent('complete_session', 'pomodoro', { isWork });
+    pauseTimer();
+    showConfetti = true;
+    await tick();
+    setTimeout(() => showConfetti = false, 2000);
+    if (isWork) {
+      completedCycles++;
+      isWork = false;
+      minutes = (cycle % CYCLES_BEFORE_LONG === 0) ? LONG_BREAK_MIN : BREAK_MIN;
+      cycle++;
+    } else {
+      isWork = true;
+      minutes = WORK_MIN;
+    }
     seconds = 0;
   }
 
@@ -49,30 +81,8 @@
     }
   }
 
-  async function completeSession() {
-    pauseTimer();
-    showConfetti = true;
-    await tick();
-    setTimeout(() => showConfetti = false, 2000);
-    if (isWork) {
-      completedCycles++;
-      isWork = false;
-      minutes = (cycle % CYCLES_BEFORE_LONG === 0) ? LONG_BREAK_MIN : BREAK_MIN;
-      cycle++;
-    } else {
-      isWork = true;
-      minutes = WORK_MIN;
-    }
-    seconds = 0;
-  }
-
   // Format time as MM:SS
   $: timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-  // Reset on mount
-  onMount(() => {
-    resetTimer();
-  });
 </script>
 
 <svelte:head>

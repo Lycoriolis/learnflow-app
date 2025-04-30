@@ -1,63 +1,74 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { isAuthenticated, loading } from '$lib/stores/authStore.js';
-  import { goto } from '$app/navigation';
-  import { listContent, type ContentMetadata } from '$lib/services/contentService.js';
-  import MarkdownRenderer from '$lib/components/MarkdownRenderer.svelte';
-  import { slide } from 'svelte/transition';
+  import { onMount, onDestroy } from 'svelte';
+  import { logStart, logEnd } from '$lib/services/activityService';
+  import ExerciseCard from '$lib/components/ExerciseCard.svelte';
+  import { listContent, type ContentMetadata } from '$lib/services/contentService';
 
   let exercises: ContentMetadata[] = [];
-  let isLoading = true;
+  let loading = true;
   let error: string | null = null;
+  let viewId: string | null = null;
 
   onMount(async () => {
     try {
+      console.log('Exercises page mounted - fetching exercises');
+      viewId = await logStart('view_exercises', 'exercises');
       exercises = await listContent('exercise');
+      console.log('Exercises fetched:', exercises);
     } catch (err) {
-      console.error(err);
-      error = 'Failed to load exercises';
+      console.error("Error loading exercises:", err);
+      error = "Failed to load exercises. Please try again later.";
     } finally {
-      isLoading = false;
+      loading = false;
+      console.log('Exercises loading complete:', { loading, error, exercisesCount: exercises.length });
     }
   });
 
-  function goToLogin() {
-    goto(`/login?redirect=/exercises`);
-  }
+  onDestroy(() => {
+    if (viewId) logEnd(viewId);
+  });
 </script>
 
 <svelte:head>
-  <title>LearnFlow | Exercises</title>
+  <title>Exercises | LearnFlow</title>
 </svelte:head>
 
-{#if $loading || isLoading}
-  <div class="flex items-center justify-center min-h-[60vh]">
-    <i class="fas fa-spinner fa-spin text-4xl text-indigo-500"></i>
-  </div>
-{:else if !$isAuthenticated}
-  <div class="flex flex-col items-center justify-center min-h-[60vh]">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Practice Exercises</h1>
-    <p class="text-gray-600 dark:text-gray-300 mb-6">Please log in to access exercises.</p>
-    <button class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md" on:click={goToLogin}>
-      Log In
-    </button>
-  </div>
-{:else}
-  <div class="max-w-7xl mx-auto p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    {#if error}
-      <div class="col-span-full text-center text-red-500">{error}</div>
-    {/if}
-    {#each exercises as ex (ex.id)}
-      <a href={`/exercises/${ex.id}`} class="block bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition p-6 text-center flex flex-col h-full">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">{ex.title}</h2>
-        <p class="text-gray-600 dark:text-gray-300 flex-grow">{ex.description}</p>
-        <span class="mt-4 inline-block px-3 py-1 bg-indigo-600 text-white rounded">Go to Exercise</span>
-      </a>
-    {/each}
-  </div>
-{/if}
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Exercises</h1>
 
-<style>
-  /* Ensure each tile is centered and hint panel overlays correctly */
-  .relative { position: relative; }
-</style>
+  {#if loading}
+    <div class="flex justify-center items-center py-12">
+      <div class="w-12 h-12 border-4 border-t-indigo-500 border-indigo-200 rounded-full animate-spin"></div>
+    </div>
+  {:else if error}
+    <div class="bg-red-50 dark:bg-red-900 p-4 rounded-lg">
+      <p class="text-red-600 dark:text-red-200">{error}</p>
+    </div>
+  {:else if exercises.length === 0}
+    <div class="text-center py-12">
+      <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+        <i class="fas fa-code text-2xl text-gray-400"></i>
+      </div>
+      <p class="text-gray-500 dark:text-gray-400">No exercises available at the moment.</p>
+    </div>
+  {:else}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {#each exercises as ex}
+        <ExerciseCard exercise={{
+          id: ex.id,
+          title: ex.title,
+          description: ex.description || '',
+          category: { 
+            name: ex.tags?.[0] || 'General',
+            color: ex.difficulty === 'beginner' ? 'green' : 
+                   ex.difficulty === 'intermediate' ? 'yellow' : 
+                   ex.difficulty === 'advanced' ? 'red' : 'blue'
+          },
+          icon: 'fa-code',
+          difficulty: ex.difficulty || 'beginner',
+          estimatedTime: ex.estimatedTime || ''
+        }} />
+      {/each}
+    </div>
+  {/if}
+</div>

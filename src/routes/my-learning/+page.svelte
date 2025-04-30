@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { userProfile, userProfileLoading } from '$lib/stores/userProfileStore.js';
   import { isAuthenticated, loading as authLoading } from '$lib/stores/authStore.js';
   import { loadContent, type ContentMetadata } from '$lib/services/contentService.js';
@@ -12,6 +12,7 @@
   let loading = false;
   let error: string | null = null;
   let activeTab: 'in-progress' | 'completed' | 'all' = 'in-progress';
+  let profileUnsub: () => void;
 
   function goToLogin() { goto('/login?redirect=/my-learning'); }
 
@@ -43,12 +44,15 @@
   onMount(() => {
     if (!$isAuthenticated) return;
     // Wait for profile to finish loading
-    const unsub = userProfileLoading.subscribe((loadingProfile) => {
+    profileUnsub = userProfileLoading.subscribe((loadingProfile) => {
       if (!loadingProfile) {
-        unsub();
         loadCourses();
       }
     });
+  });
+
+  onDestroy(() => {
+    if (profileUnsub) profileUnsub();
   });
 
   // Derived lists
