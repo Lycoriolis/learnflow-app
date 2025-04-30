@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { sidebarCollapsed } from '$lib/stores/sidebarStore.js';
+  let collapsed = false;
+  sidebarCollapsed.subscribe(v => collapsed = v);
   import '../app.css';
   import '@splidejs/splide/dist/css/splide.min.css';
   import { onMount } from 'svelte';
@@ -89,10 +92,9 @@
   />
 </svelte:head>
 
-<div class="min-h-screen">
+<div class="min-h-screen flex">
   <Sidebar />
-  
-  <div class="lg:ml-64">
+  <div class={`flex-1 transition-all duration-300 ${collapsed ? 'lg:ml-0' : 'lg:ml-64'}`}>
     <Header onTogglePip={togglePip} />
     
     <main>

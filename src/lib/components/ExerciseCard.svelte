@@ -12,11 +12,14 @@
   import { goto } from '$app/navigation';
 
   // Map difficulty to colors
-  const difficultyColors = {
+  const difficultyColors: Record<'beginner'|'intermediate'|'advanced', string> = {
     beginner: 'green',
     intermediate: 'yellow',
     advanced: 'red'
   };
+  // Compute actual color for current difficulty
+  const diffKey = exercise.difficulty as keyof typeof difficultyColors;
+  const diffColor = difficultyColors[diffKey] || 'blue';
 </script>
 
 <a
@@ -39,7 +42,7 @@
       <h3 class="font-semibold text-gray-100">{exercise.title}</h3>
       <p class="text-gray-300 text-sm mb-2">{exercise.description}</p>
       <div class="flex gap-2 items-center">
-        <span class="text-xs px-2 py-1 rounded-full" style="background-color: rgb(var(--color-{difficultyColors[exercise.difficulty] || 'blue'}-500))">
+        <span class="text-xs px-2 py-1 rounded-full" style="background-color: rgb(var(--color-{diffColor}-500))">
           {exercise.difficulty}
         </span>
         {#if exercise.estimatedTime}
