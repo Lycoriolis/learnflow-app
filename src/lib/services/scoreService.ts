@@ -1,6 +1,7 @@
 // src/lib/services/scoreService.ts
-import { pool } from './userService.server';
-import { getCourse } from './courseService';
+import { pool } from './userService.server.js';
+import { getCourse } from './courseService.js';
+import type { CourseStructure } from './courseService.js';
 
 /**
  * Calculates a user score on a 0–5 scale.
@@ -42,7 +43,7 @@ export async function calculateUserScore(userId: string): Promise<number> {
 
     // Extract and calculate course ratio
     const viewedLessons = Number(lessonResults.rows[0]?.viewed || 0);
-    const courses = Object.values(courseStructures);
+    const courses = Object.values(courseStructures) as CourseStructure[];
     const totalLessons = courses.reduce(
       (sum, course) => sum + course.modules.reduce((mSum, m) => mSum + m.lessons.length, 0), 
       0
@@ -78,20 +79,18 @@ export async function calculateUserScore(userId: string): Promise<number> {
 /**
  * Helper: load all course structures
  */
-async function getAllCourseStructures() {
+async function getAllCourseStructures(): Promise<Record<string, CourseStructure>> {
   // Use memoization to cache course structures
   if (!getAllCourseStructures.cache) {
     const courseIds = ['web-development-101', 'mpsi-mathematiques', 'intro-python'];
-    const structures = await Promise.all(courseIds.map(id => getCourse(id)));
-    
-    getAllCourseStructures.cache = structures
-      .filter(Boolean)
-      .reduce((acc, course) => {
-        if (course?.id) {
-          acc[course.id] = course;
-        }
-        return acc;
-      }, {} as Record<string, any>);
+    const raw = await Promise.all(courseIds.map(id => getCourse(id)));
+    // filter out nulls
+    const structures = raw.filter((c): c is CourseStructure => c !== null);
+
+    getAllCourseStructures.cache = structures.reduce<Record<string, CourseStructure>>((acc, course) => {
+      acc[course.id] = course;
+      return acc;
+    }, {});
   }
   
   return getAllCourseStructures.cache;
@@ -99,5 +98,5 @@ async function getAllCourseStructures() {
 
 // Add type for the cache property
 declare namespace getAllCourseStructures {
-  var cache: Record<string, any> | undefined;
+  var cache: Record<string, CourseStructure> | undefined;
 }

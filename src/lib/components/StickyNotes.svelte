@@ -65,7 +65,7 @@
         <textarea
           class="w-full h-24 bg-transparent p-2 rounded resize-none focus:outline-none border-none outline-none bg-opacity-50 text-gray-900 dark:text-gray-900 placeholder-gray-600 dark:placeholder-gray-400"
           bind:value={note.content}
-          on:input={e => updateNote(note.id, e.target.value)}
+          on:input={e => updateNote(note.id, (e.target as HTMLTextAreaElement).value)}
           placeholder="Your note here..."
         ></textarea>
         <div class="flex justify-end mt-2">

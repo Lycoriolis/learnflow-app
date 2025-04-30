@@ -1,8 +1,8 @@
 // hooks.server.ts - Server-side only hooks
 import type { Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
-import { csrfProtect } from './routes/api/csrfMiddleware.server';
-import { authMiddleware, requireAuth } from './routes/api/authMiddleware.server';
+import { csrfProtect } from './routes/api/csrfMiddleware.server.js';
+import { authMiddleware, requireAuth } from './routes/api/authMiddleware.server.js';
 
 // Define API routes that require authentication
 const authRequiredPaths = [
