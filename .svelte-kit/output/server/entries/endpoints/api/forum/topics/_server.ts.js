@@ -1,11 +1,11 @@
-import { h as getAllTopics, i as createTopic, j as updateTopic, k as deleteTopic } from "../../../../../chunks/forumService.js";
+import { k as getTopics, l as createForumTopic, u as updateTopic, d as deleteTopic } from "../../../../../chunks/forumService.js";
 const GET = async ({ url }) => {
-  const categoryId = url.searchParams.get("category_id");
+  const categoryId = url.searchParams.get("categoryId");
   let topics;
   try {
-    topics = await getAllTopics();
+    topics = await getTopics();
     if (categoryId) {
-      topics = topics.filter((t) => t.category_id === categoryId);
+      topics = topics.filter((t) => t.categoryId === categoryId);
     }
     return new Response(JSON.stringify(topics), { status: 200 });
   } catch (error) {
@@ -14,17 +14,17 @@ const GET = async ({ url }) => {
   }
 };
 const POST = async ({ request }) => {
-  const { title, category_id, author_id, content } = await request.json();
-  if (!title || !category_id || !author_id || !content) {
+  const { title, categoryId, authorId, content } = await request.json();
+  if (!title || !categoryId || !authorId || !content) {
     const missing = [];
     if (!title) missing.push("title");
-    if (!category_id) missing.push("category_id");
-    if (!author_id) missing.push("author_id");
+    if (!categoryId) missing.push("categoryId");
+    if (!authorId) missing.push("authorId");
     if (!content) missing.push("content");
     return new Response(`Missing required fields: ${missing.join(", ")}`, { status: 400 });
   }
   try {
-    const newTopic = await createTopic({ title, category_id, author_id, content });
+    const newTopic = await createForumTopic({ title, categoryId, authorId, content });
     return new Response(JSON.stringify(newTopic), { status: 201 });
   } catch (error) {
     console.error("Error creating topic:", error);
@@ -38,7 +38,7 @@ const PUT = async ({ request }) => {
   }
   try {
     const topic = await updateTopic(id, data);
-    if (!topic) {
+    if (topic === null) {
       return new Response("Topic not found", { status: 404 });
     }
     return new Response(JSON.stringify(topic), { status: 200 });
@@ -54,7 +54,7 @@ const DELETE = async ({ url }) => {
   }
   try {
     const result = await deleteTopic(id);
-    if (!result) {
+    if (result === false) {
       return new Response("Topic not found", { status: 404 });
     }
     return new Response(JSON.stringify({ success: true }), { status: 200 });
@@ -69,3 +69,4 @@ export {
   POST,
   PUT
 };
+//# sourceMappingURL=_server.ts.js.map

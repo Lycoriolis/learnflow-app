@@ -1,7 +1,5 @@
-import { C as store_get, E as ensure_array_like, O as head, I as attr, F as escape_html, K as unsubscribe_stores, B as pop, z as push } from "../../../../chunks/index.js";
+import { c as store_get, e as ensure_array_like, h as head, b as attr, f as escape_html, u as unsubscribe_stores, a as pop, p as push } from "../../../../chunks/index3.js";
 import { p as persistentStore } from "../../../../chunks/persistentStore.js";
-import { o as onDestroy } from "../../../../chunks/index-server.js";
-import "firebase/firestore";
 function _page($$payload, $$props) {
   push();
   var $$store_subs;
@@ -17,8 +15,6 @@ function _page($$payload, $$props) {
     if (dueCards.length === 0) return null;
     return dueCards[0];
   }
-  onDestroy(() => {
-  });
   filteredCards = store_get($$store_subs ??= {}, "$flashcards", flashcards);
   sortedCards = [...filteredCards].sort((a, b) => {
     {
@@ -39,11 +35,7 @@ function _page($$payload, $$props) {
   head($$payload, ($$payload2) => {
     $$payload2.title = `<title>Flashcards | LearnFlow</title>`;
   });
-  $$payload.out += `<div class="max-w-4xl mx-auto px-4 py-10"><div class="flex justify-between items-start mb-8"><div><h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center"><i class="fas fa-layer-group mr-3 text-orange-500"></i> Flashcards</h1> <p class="text-gray-600 dark:text-gray-400">Study smarter with spaced repetition flashcards</p></div> <button class="text-sm px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"><i class="fas fa-chart-bar mr-2"></i> Stats</button></div> `;
-  {
-    $$payload.out += "<!--[!-->";
-  }
-  $$payload.out += `<!--]--> <div class="flex flex-wrap gap-4 mb-8"><select class="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-sm"><option value="">All Tags</option><!--[-->`;
+  $$payload.out += `<div class="max-w-4xl mx-auto px-4 py-10"><div class="flex justify-between items-start mb-8"><div><h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center"><i class="fas fa-layer-group mr-3 text-orange-500"></i> Flashcards</h1> <p class="text-gray-600 dark:text-gray-400">Study smarter with spaced repetition flashcards</p></div></div> <div class="flex flex-wrap gap-4 mb-8"><select class="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-sm"><option value="">All Tags</option><!--[-->`;
   for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
     let tag = each_array[$$index];
     $$payload.out += `<option${attr("value", tag)}>${escape_html(tag)}</option>`;
@@ -57,7 +49,7 @@ function _page($$payload, $$props) {
       let tag = each_array_1[$$index_1];
       $$payload.out += `<span class="px-2 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded text-xs">${escape_html(tag)}</span>`;
     }
-    $$payload.out += `<!--]--></div> <div class="text-sm text-gray-500 dark:text-gray-400">Level: ${escape_html(currentCard.level)}/5</div></div> <div class="min-h-[200px] p-6 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-inner flex items-center justify-center cursor-pointer select-none mb-6"><div class="prose dark:prose-invert max-w-none text-center">${escape_html(currentCard.front)}</div></div> <div class="flex justify-between"><button class="px-6 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition flex items-center"><i class="fas fa-times mr-2"></i> Again</button> <button class="px-6 py-3 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition"><i class="fas fa-trash-alt"></i></button> <button class="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition flex items-center"><i class="fas fa-check mr-2"></i> Good</button></div></div>`;
+    $$payload.out += `<!--]--></div> <div class="text-sm text-gray-500 dark:text-gray-400">Level: ${escape_html(currentCard.level)}/5</div></div> <div role="button" tabindex="0" class="min-h-[200px] p-6 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-inner flex items-center justify-center cursor-pointer select-none mb-6 focus:outline-none focus:ring-2 focus:ring-orange-500"><div class="prose dark:prose-invert max-w-none text-center">${escape_html(currentCard.front)}</div></div> <div class="flex justify-between"><button class="px-6 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition flex items-center"><i class="fas fa-times mr-2"></i> Again</button> <button class="px-6 py-3 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition"><i class="fas fa-trash-alt"></i></button> <button class="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition flex items-center"><i class="fas fa-check mr-2"></i> Good</button></div></div>`;
   } else {
     $$payload.out += "<!--[!-->";
     $$payload.out += `<div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg text-center"><i class="fas fa-check-circle text-green-500 text-4xl mb-4"></i> <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">All Caught Up!</h3> <p class="text-gray-600 dark:text-gray-400">No cards due for review. Add new cards or check back later.</p></div>`;
@@ -79,3 +71,4 @@ function _page($$payload, $$props) {
 export {
   _page as default
 };
+//# sourceMappingURL=_page.svelte.js.map

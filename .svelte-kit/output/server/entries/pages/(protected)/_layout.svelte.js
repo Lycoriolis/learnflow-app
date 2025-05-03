@@ -1,11 +1,19 @@
-import { C as store_get, P as slot, K as unsubscribe_stores, B as pop, z as push } from "../../../chunks/index.js";
+import { c as store_get, u as unsubscribe_stores, a as pop, p as push } from "../../../chunks/index3.js";
 import { g as goto } from "../../../chunks/client.js";
 import { p as page } from "../../../chunks/stores.js";
-import { l as loading, i as isAuthenticated } from "../../../chunks/authStore.js";
+import { l as loading, i as isAuthenticated, a as authError } from "../../../chunks/authStore.js";
+import { o as onDestroy } from "../../../chunks/index-server.js";
+import "firebase/auth";
+import "clsx";
 function _layout($$payload, $$props) {
   push();
   var $$store_subs;
   let checked = false;
+  function redirectToLogin() {
+    goto("/login?redirect=" + encodeURIComponent(store_get($$store_subs ??= {}, "$page", page).url.pathname));
+  }
+  onDestroy(() => {
+  });
   if (!store_get($$store_subs ??= {}, "$loading", loading) && !checked) {
     checked = true;
     console.log("Auth check in protected layout:", {
@@ -14,20 +22,15 @@ function _layout($$payload, $$props) {
     });
     if (!store_get($$store_subs ??= {}, "$isAuthenticated", isAuthenticated)) {
       console.warn("User not authenticated, redirecting to login");
-      goto("/login?redirect=" + encodeURIComponent(store_get($$store_subs ??= {}, "$page", page).url.pathname));
+      redirectToLogin();
     }
   }
-  if (store_get($$store_subs ??= {}, "$loading", loading) || !checked) {
+  if (store_get($$store_subs ??= {}, "$authError", authError)) {
+    store_get($$store_subs ??= {}, "$authError", authError);
+  }
+  if (store_get($$store_subs ??= {}, "$loading", loading) || true) {
     $$payload.out += "<!--[-->";
     $$payload.out += `<div class="fixed inset-0 bg-white dark:bg-gray-900 z-50 flex justify-center items-center"><div class="flex flex-col items-center"><div class="w-16 h-16 border-4 border-t-indigo-500 border-indigo-200 rounded-full animate-spin"></div> <p class="mt-4 text-gray-600 dark:text-gray-400">Verifying authentication...</p></div></div>`;
-  } else if (store_get($$store_subs ??= {}, "$isAuthenticated", isAuthenticated)) {
-    $$payload.out += "<!--[1-->";
-    $$payload.out += `<!---->`;
-    slot($$payload, $$props, "default", {});
-    $$payload.out += `<!---->`;
-  } else {
-    $$payload.out += "<!--[!-->";
-    $$payload.out += `<div class="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900"><div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg max-w-md w-full"><div class="text-center"><div class="mb-4 flex justify-center"><div class="h-16 w-16 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center"><i class="fas fa-lock text-red-600 dark:text-red-400 text-2xl"></i></div></div> <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Authentication Required</h2> <p class="text-gray-600 dark:text-gray-400 mb-6">You need to be logged in to access this page.</p> <a href="/login" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded">Go to Login</a></div></div></div>`;
   }
   $$payload.out += `<!--]-->`;
   if ($$store_subs) unsubscribe_stores($$store_subs);
@@ -36,3 +39,4 @@ function _layout($$payload, $$props) {
 export {
   _layout as default
 };
+//# sourceMappingURL=_layout.svelte.js.map

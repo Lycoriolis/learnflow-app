@@ -1,6 +1,12 @@
-import { u as updateCategory, d as deleteCategory } from "../../../../../../chunks/forumService.js";
+import { b as updateCategory, e as deleteCategory } from "../../../../../../chunks/forumService.js";
 const PUT = async ({ request, params }) => {
   const categoryId = params.id;
+  if (!categoryId) {
+    return new Response(JSON.stringify({ message: "Category ID is required" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
   const data = await request.json();
   try {
     const updatedCategory = await updateCategory(categoryId, {
@@ -29,6 +35,12 @@ const PUT = async ({ request, params }) => {
 };
 const DELETE = async ({ params }) => {
   const categoryId = params.id;
+  if (!categoryId) {
+    return new Response(JSON.stringify({ message: "Category ID is required" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
   try {
     const success = await deleteCategory(categoryId);
     if (!success) {
@@ -59,3 +71,4 @@ export {
   DELETE,
   PUT
 };
+//# sourceMappingURL=_server.ts.js.map

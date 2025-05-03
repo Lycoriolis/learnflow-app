@@ -1,7 +1,6 @@
-import { E as ensure_array_like, O as head, F as escape_html, G as attr_class, I as attr, C as store_get, K as unsubscribe_stores, B as pop, z as push, J as stringify } from "../../../../chunks/index.js";
-import { c as calcDisplay, d as calcWaitingForSecondOperand, g as calcCurrentInput, h as calcPreviousValue, i as calcOperator } from "../../../../chunks/pipStores.js";
+import { e as ensure_array_like, h as head, f as escape_html, d as attr_class, b as attr, c as store_get, u as unsubscribe_stores, a as pop, p as push, j as stringify } from "../../../../chunks/index3.js";
+import { c as calcDisplay, a as calcWaitingForSecondOperand, b as calcCurrentInput, d as calcPreviousValue, g as calcOperator } from "../../../../chunks/pipStores.js";
 import { o as onDestroy } from "../../../../chunks/index-server.js";
-import { l as logEvent } from "../../../../chunks/activityService.js";
 function _page($$payload, $$props) {
   push();
   var $$store_subs;
@@ -9,11 +8,7 @@ function _page($$payload, $$props) {
   onDestroy(() => {
     window.removeEventListener("keydown", handleKeydown);
   });
-  function logCalc(action) {
-    logEvent("calculate", "calculator", { action });
-  }
   function inputDigit(digit) {
-    logCalc(`digit_${digit}`);
     if (store_get($$store_subs ??= {}, "$calcWaitingForSecondOperand", calcWaitingForSecondOperand)) {
       calcDisplay.set(digit);
       calcWaitingForSecondOperand.set(false);
@@ -23,7 +18,6 @@ function _page($$payload, $$props) {
     calcCurrentInput.set(store_get($$store_subs ??= {}, "$calcDisplay", calcDisplay));
   }
   function inputDecimal() {
-    logCalc("decimal");
     if (store_get($$store_subs ??= {}, "$calcWaitingForSecondOperand", calcWaitingForSecondOperand)) {
       calcDisplay.set("0.");
       calcWaitingForSecondOperand.set(false);
@@ -35,7 +29,6 @@ function _page($$payload, $$props) {
     }
   }
   function clearAll() {
-    logCalc("clear_all");
     calcDisplay.set("0");
     calcCurrentInput.set("");
     calcOperator.set(null);
@@ -43,7 +36,6 @@ function _page($$payload, $$props) {
     calcWaitingForSecondOperand.set(false);
   }
   function handleOperator(nextOperator) {
-    logCalc(`operator_${nextOperator}`);
     const inputValue = parseFloat(store_get($$store_subs ??= {}, "$calcDisplay", calcDisplay));
     if (store_get($$store_subs ??= {}, "$calcPreviousValue", calcPreviousValue) === null) {
       calcPreviousValue.set(inputValue);
@@ -87,7 +79,6 @@ function _page($$payload, $$props) {
   }
   function handleKeydown(event) {
     const key = event.key;
-    logCalc(`keydown_${key}`);
     if (/[0-9]/.test(key)) {
       inputDigit(key);
     } else if (key === ".") {
@@ -161,3 +152,4 @@ function _page($$payload, $$props) {
 export {
   _page as default
 };
+//# sourceMappingURL=_page.svelte.js.map

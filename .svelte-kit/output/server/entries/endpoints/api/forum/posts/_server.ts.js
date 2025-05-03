@@ -1,4 +1,4 @@
-import { a as getPostsByTopicId, b as createPost, e as updatePost, f as deletePost } from "../../../../../chunks/forumService.js";
+import { f as getPostsByTopicId, h as createPost, i as updatePost, j as deletePost } from "../../../../../chunks/forumService.js";
 const GET = async ({ url }) => {
   const topicId = url.searchParams.get("topic_id");
   if (!topicId) {
@@ -32,7 +32,7 @@ const PUT = async ({ request }) => {
   }
   try {
     const post = await updatePost(id, content);
-    if (!post) {
+    if (post === null) {
       return new Response("Post not found", { status: 404 });
     }
     return new Response(JSON.stringify(post), { status: 200 });
@@ -48,7 +48,7 @@ const DELETE = async ({ url }) => {
   }
   try {
     const result = await deletePost(id);
-    if (!result) {
+    if (result === false) {
       return new Response("Post not found", { status: 404 });
     }
     return new Response(JSON.stringify({ success: true }), { status: 200 });
@@ -63,3 +63,4 @@ export {
   POST,
   PUT
 };
+//# sourceMappingURL=_server.ts.js.map

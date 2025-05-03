@@ -15,3 +15,4 @@ const load = ({ params }) => {
 export {
   load
 };
+//# sourceMappingURL=_page.ts.js.map

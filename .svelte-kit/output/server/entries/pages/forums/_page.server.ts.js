@@ -1,9 +1,9 @@
-import { h as getAllTopics, g as getAllCategories } from "../../../chunks/forumService.js";
+import { k as getTopics, a as getCategories } from "../../../chunks/forumService.js";
 const load = async () => {
   try {
     const [topics, categories] = await Promise.all([
-      getAllTopics(),
-      getAllCategories()
+      getTopics(),
+      getCategories()
     ]);
     return {
       topics,
@@ -21,3 +21,4 @@ const load = async () => {
 export {
   load
 };
+//# sourceMappingURL=_page.server.ts.js.map

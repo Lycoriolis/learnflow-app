@@ -1,4 +1,4 @@
-import { U as current_component } from "./index.js";
+import { k as current_component } from "./index3.js";
 function onDestroy(fn) {
   var context = (
     /** @type {Component} */
@@ -9,3 +9,4 @@ function onDestroy(fn) {
 export {
   onDestroy as o
 };
+//# sourceMappingURL=index-server.js.map

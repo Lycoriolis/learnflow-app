@@ -1,4 +1,4 @@
-import { O as head, F as escape_html, M as bind_props, B as pop, z as push } from "../../chunks/index.js";
+import { h as head, f as escape_html, g as bind_props, a as pop, p as push } from "../../chunks/index3.js";
 function _error($$payload, $$props) {
   push();
   let error = $$props["error"], status = $$props["status"];
@@ -12,3 +12,4 @@ function _error($$payload, $$props) {
 export {
   _error as default
 };
+//# sourceMappingURL=_error.svelte.js.map

@@ -1,4 +1,4 @@
-import { O as head, I as attr, C as store_get, E as ensure_array_like, F as escape_html, K as unsubscribe_stores, B as pop, z as push } from "../../../../chunks/index.js";
+import { h as head, b as attr, c as store_get, e as ensure_array_like, f as escape_html, u as unsubscribe_stores, a as pop, p as push } from "../../../../chunks/index3.js";
 import { p as persistentStore } from "../../../../chunks/persistentStore.js";
 function _page($$payload, $$props) {
   push();
@@ -8,6 +8,21 @@ function _page($$payload, $$props) {
   function formatDate(timestamp) {
     return new Date(timestamp).toLocaleString();
   }
+  function handleKeydown(event) {
+    if ((event.ctrlKey || event.metaKey) && event.key === "/") {
+      event.preventDefault();
+      const searchInput = document.querySelector("#word-search");
+      if (searchInput) {
+        searchInput.focus();
+      }
+    }
+  }
+  onMount(() => {
+    window.addEventListener("keydown", handleKeydown);
+    return () => {
+      window.removeEventListener("keydown", handleKeydown);
+    };
+  });
   head($$payload, ($$payload2) => {
     $$payload2.title = `<title>Dictionary &amp; Reference | LearnFlow</title>`;
   });
@@ -42,3 +57,4 @@ function _page($$payload, $$props) {
 export {
   _page as default
 };
+//# sourceMappingURL=_page.svelte.js.map

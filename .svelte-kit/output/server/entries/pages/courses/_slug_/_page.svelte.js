@@ -1,22 +1,24 @@
-import { C as store_get, O as head, K as unsubscribe_stores, B as pop, z as push, F as escape_html } from "../../../../chunks/index.js";
-import "../../../../chunks/courseService.js";
-import { p as page } from "../../../../chunks/stores.js";
+import "clsx";
+import { a as pop, p as push } from "../../../../chunks/index3.js";
+import "../../../../chunks/client.js";
+import "firebase/firestore";
+import "firebase/auth";
+import "marked";
+import "dompurify";
+/* empty css                             */
+/* empty css                                                                */
+import "../../../../chunks/functions.js";
 function _page($$payload, $$props) {
   push();
-  var $$store_subs;
-  store_get($$store_subs ??= {}, "$page", page).params.slug;
-  head($$payload, ($$payload2) => {
-    $$payload2.title = `<title>${escape_html("Course")} | LearnFlow</title>`;
-  });
-  $$payload.out += `<div class="max-w-3xl mx-auto px-4 py-8">`;
+  $$payload.out += `<div class="container mx-auto px-4 py-8">`;
   {
     $$payload.out += "<!--[-->";
-    $$payload.out += `<p>Loading course...</p>`;
+    $$payload.out += `<div class="flex justify-center items-center min-h-[60vh]"><i class="fas fa-spinner fa-spin text-4xl text-indigo-500"></i></div>`;
   }
   $$payload.out += `<!--]--></div>`;
-  if ($$store_subs) unsubscribe_stores($$store_subs);
   pop();
 }
 export {
   _page as default
 };
+//# sourceMappingURL=_page.svelte.js.map

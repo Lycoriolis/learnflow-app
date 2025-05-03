@@ -9,46 +9,84 @@
       "_shared-server.js"
     ]
   },
+  "_CourseCard.js": {
+    "file": "chunks/CourseCard.js",
+    "name": "CourseCard",
+    "imports": [
+      "_index3.js",
+      "_utils.js",
+      "_Icon.js",
+      "_client.js"
+    ],
+    "css": [
+      "_app/immutable/assets/CourseCard.niTa1fSk.css"
+    ]
+  },
+  "_CourseCard.niTa1fSk.css": {
+    "file": "_app/immutable/assets/CourseCard.niTa1fSk.css",
+    "src": "_CourseCard.niTa1fSk.css"
+  },
+  "_ExerciseCard.DPCSqYM9.css": {
+    "file": "_app/immutable/assets/ExerciseCard.DPCSqYM9.css",
+    "src": "_ExerciseCard.DPCSqYM9.css"
+  },
+  "_ExerciseRating.OLATrJU2.css": {
+    "file": "_app/immutable/assets/ExerciseRating.OLATrJU2.css",
+    "src": "_ExerciseRating.OLATrJU2.css"
+  },
+  "_ExerciseRating.js": {
+    "file": "chunks/ExerciseRating.js",
+    "name": "ExerciseRating",
+    "imports": [
+      "_index3.js",
+      "_MarkdownRenderer.js",
+      "_utils.js",
+      "_Icon.js"
+    ],
+    "css": [
+      "_app/immutable/assets/ExerciseRating.OLATrJU2.css"
+    ]
+  },
   "_FocusTimeChart.js": {
     "file": "chunks/FocusTimeChart.js",
     "name": "FocusTimeChart",
     "imports": [
-      "_index.js"
+      "_index3.js",
+      "_index-server.js",
+      "_utils.js"
     ]
   },
-  "_ForumSidebar.js": {
-    "file": "chunks/ForumSidebar.js",
-    "name": "ForumSidebar",
+  "_Icon.js": {
+    "file": "chunks/Icon.js",
+    "name": "Icon",
     "imports": [
-      "_index.js",
-      "_persistentStore.js",
-      "_authStore.js"
+      "_index3.js",
+      "_index-server.js",
+      "_functions.js"
     ]
+  },
+  "_MarkdownRenderer.BULUyxN7.css": {
+    "file": "_app/immutable/assets/MarkdownRenderer.BULUyxN7.css",
+    "src": "_MarkdownRenderer.BULUyxN7.css"
   },
   "_MarkdownRenderer.js": {
     "file": "chunks/MarkdownRenderer.js",
     "name": "MarkdownRenderer",
     "imports": [
-      "_index.js",
+      "_index3.js",
+      "_utils.js",
       "_html.js"
     ],
     "css": [
-      "_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+      "_app/immutable/assets/github-dark.BEHUn5zE.css",
+      "_app/immutable/assets/MarkdownRenderer.BULUyxN7.css"
     ]
-  },
-  "_MarkdownRenderer.w4HA0fza.css": {
-    "file": "_app/immutable/assets/MarkdownRenderer.w4HA0fza.css",
-    "src": "_MarkdownRenderer.w4HA0fza.css"
-  },
-  "_activityService.js": {
-    "file": "chunks/activityService.js",
-    "name": "activityService"
   },
   "_authStore.js": {
     "file": "chunks/authStore.js",
     "name": "authStore",
     "imports": [
-      "_index3.js"
+      "_index2.js"
     ]
   },
   "_client.js": {
@@ -56,12 +94,15 @@
     "name": "client",
     "imports": [
       "_exports.js",
-      "_index.js"
+      "_utils.js"
     ]
   },
-  "_courseService.js": {
-    "file": "chunks/courseService.js",
-    "name": "courseService"
+  "_contentService.js": {
+    "file": "chunks/contentService.js",
+    "name": "contentService",
+    "imports": [
+      "_index.js"
+    ]
   },
   "_csrf.server.js": {
     "file": "chunks/csrf.server.js",
@@ -74,12 +115,29 @@
     "file": "chunks/exports.js",
     "name": "exports"
   },
+  "_firebaseAdmin.js": {
+    "file": "chunks/firebaseAdmin.js",
+    "name": "firebaseAdmin"
+  },
   "_forumService.js": {
     "file": "chunks/forumService.js",
-    "name": "forumService",
+    "name": "forumService"
+  },
+  "_forumStore.js": {
+    "file": "chunks/forumStore.js",
+    "name": "forumStore",
     "imports": [
-      "_shared-server.js"
+      "_persistentStore.js",
+      "_index2.js"
     ]
+  },
+  "_functions.js": {
+    "file": "chunks/functions.js",
+    "name": "functions"
+  },
+  "_github-dark.BEHUn5zE.css": {
+    "file": "_app/immutable/assets/github-dark.BEHUn5zE.css",
+    "src": "_github-dark.BEHUn5zE.css"
   },
   "_groupService.js": {
     "file": "chunks/groupService.js",
@@ -96,7 +154,7 @@
     "file": "chunks/index-server.js",
     "name": "index-server",
     "imports": [
-      "_index.js"
+      "_index3.js"
     ]
   },
   "_index.js": {
@@ -105,39 +163,42 @@
   },
   "_index2.js": {
     "file": "chunks/index2.js",
-    "name": "index"
+    "name": "index",
+    "imports": [
+      "_utils.js"
+    ]
   },
   "_index3.js": {
     "file": "chunks/index3.js",
     "name": "index",
     "imports": [
-      "_index.js"
+      "_utils.js"
     ]
   },
   "_internal.js": {
     "file": "chunks/internal.js",
     "name": "internal",
     "imports": [
-      "_index.js",
+      "_utils.js",
+      "_index3.js",
       "_shared-server.js"
     ],
     "dynamicImports": [
-      "src/hooks.server.ts",
-      "src/hooks.ts"
+      "src/hooks.server.ts"
     ]
   },
   "_persistentStore.js": {
     "file": "chunks/persistentStore.js",
     "name": "persistentStore",
     "imports": [
-      "_index3.js"
+      "_index2.js"
     ]
   },
   "_pipStores.js": {
     "file": "chunks/pipStores.js",
     "name": "pipStores",
     "imports": [
-      "_index3.js",
+      "_index2.js",
       "_persistentStore.js"
     ]
   },
@@ -145,23 +206,26 @@
     "file": "chunks/shared-server.js",
     "name": "shared-server"
   },
-  "_splide.DEMCkssF.css": {
-    "file": "_app/immutable/assets/splide.DEMCkssF.css",
-    "src": "_splide.DEMCkssF.css"
-  },
   "_stores.js": {
     "file": "chunks/stores.js",
     "name": "stores",
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_client.js"
+    ]
+  },
+  "_topicService.js": {
+    "file": "chunks/topicService.js",
+    "name": "topicService",
+    "imports": [
+      "_userService.server.js"
     ]
   },
   "_userProfileStore.js": {
     "file": "chunks/userProfileStore.js",
     "name": "userProfileStore",
     "imports": [
-      "_index3.js"
+      "_index2.js"
     ]
   },
   "_userService.server.js": {
@@ -171,19 +235,631 @@
       "_shared-server.js"
     ]
   },
+  "_utils.js": {
+    "file": "chunks/utils.js",
+    "name": "utils"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-400-normal.woff": {
+    "file": "_app/immutable/assets/jetbrains-mono-cyrillic-400-normal.CIEtRijs.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-400-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-400-normal.woff2": {
+    "file": "_app/immutable/assets/jetbrains-mono-cyrillic-400-normal.BEIGL1Tu.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-400-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-500-normal.woff": {
+    "file": "_app/immutable/assets/jetbrains-mono-cyrillic-500-normal.CIOHU3Xd.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-500-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-500-normal.woff2": {
+    "file": "_app/immutable/assets/jetbrains-mono-cyrillic-500-normal.DmUKJPL_.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-500-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-ext-400-normal.woff": {
+    "file": "_app/immutable/assets/jetbrains-mono-cyrillic-ext-400-normal.BHyURHCj.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-ext-400-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-ext-400-normal.woff2": {
+    "file": "_app/immutable/assets/jetbrains-mono-cyrillic-ext-400-normal.C_uLvvQ5.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-ext-400-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-ext-500-normal.woff": {
+    "file": "_app/immutable/assets/jetbrains-mono-cyrillic-ext-500-normal.BaAnyG2f.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-ext-500-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-ext-500-normal.woff2": {
+    "file": "_app/immutable/assets/jetbrains-mono-cyrillic-ext-500-normal.C9ShMxGR.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-cyrillic-ext-500-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-greek-400-normal.woff": {
+    "file": "_app/immutable/assets/jetbrains-mono-greek-400-normal.CNojz0t3.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-greek-400-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-greek-400-normal.woff2": {
+    "file": "_app/immutable/assets/jetbrains-mono-greek-400-normal.C190GLew.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-greek-400-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-greek-500-normal.woff": {
+    "file": "_app/immutable/assets/jetbrains-mono-greek-500-normal.CtHEZ2Bp.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-greek-500-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-greek-500-normal.woff2": {
+    "file": "_app/immutable/assets/jetbrains-mono-greek-500-normal.JpySY46c.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-greek-500-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff": {
+    "file": "_app/immutable/assets/jetbrains-mono-latin-400-normal.B11XCQ5g.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2": {
+    "file": "_app/immutable/assets/jetbrains-mono-latin-400-normal.V6pRDFza.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff": {
+    "file": "_app/immutable/assets/jetbrains-mono-latin-500-normal.DNWG5JNy.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff2": {
+    "file": "_app/immutable/assets/jetbrains-mono-latin-500-normal.BWZEU5yA.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-ext-400-normal.woff": {
+    "file": "_app/immutable/assets/jetbrains-mono-latin-ext-400-normal.DHMOLxAi.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-ext-400-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-ext-400-normal.woff2": {
+    "file": "_app/immutable/assets/jetbrains-mono-latin-ext-400-normal.Bc8Ftmh3.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-ext-400-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-ext-500-normal.woff": {
+    "file": "_app/immutable/assets/jetbrains-mono-latin-ext-500-normal.BcGe3QHD.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-ext-500-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-ext-500-normal.woff2": {
+    "file": "_app/immutable/assets/jetbrains-mono-latin-ext-500-normal.Cut-4mMH.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-ext-500-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-vietnamese-400-normal.woff": {
+    "file": "_app/immutable/assets/jetbrains-mono-vietnamese-400-normal.BeU3T8wf.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-vietnamese-400-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-vietnamese-400-normal.woff2": {
+    "file": "_app/immutable/assets/jetbrains-mono-vietnamese-400-normal.ByoDsISC.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-vietnamese-400-normal.woff2"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-vietnamese-500-normal.woff": {
+    "file": "_app/immutable/assets/jetbrains-mono-vietnamese-500-normal.D74nanfL.woff",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-vietnamese-500-normal.woff"
+  },
+  "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-vietnamese-500-normal.woff2": {
+    "file": "_app/immutable/assets/jetbrains-mono-vietnamese-500-normal.BvH7FW2L.woff2",
+    "src": "node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-vietnamese-500-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-cyrillic-400-normal.woff": {
+    "file": "_app/immutable/assets/manrope-cyrillic-400-normal.BSokYSPU.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-cyrillic-400-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-cyrillic-400-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-cyrillic-400-normal.DYJIFuzK.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-cyrillic-400-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-cyrillic-500-normal.woff": {
+    "file": "_app/immutable/assets/manrope-cyrillic-500-normal.DgR5lgmT.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-cyrillic-500-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-cyrillic-500-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-cyrillic-500-normal.DWzw0g5S.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-cyrillic-500-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-cyrillic-600-normal.woff": {
+    "file": "_app/immutable/assets/manrope-cyrillic-600-normal.5gpPULAf.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-cyrillic-600-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-cyrillic-600-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-cyrillic-600-normal.VxnJDbp5.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-cyrillic-600-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-cyrillic-ext-400-normal.woff": {
+    "file": "_app/immutable/assets/manrope-cyrillic-ext-400-normal.CDnTonny.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-cyrillic-ext-400-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-cyrillic-ext-400-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-cyrillic-ext-400-normal.B30t888a.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-cyrillic-ext-400-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-cyrillic-ext-500-normal.woff": {
+    "file": "_app/immutable/assets/manrope-cyrillic-ext-500-normal.DHUaR1_Z.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-cyrillic-ext-500-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-cyrillic-ext-500-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-cyrillic-ext-500-normal.BoWzFFJG.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-cyrillic-ext-500-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-cyrillic-ext-600-normal.woff": {
+    "file": "_app/immutable/assets/manrope-cyrillic-ext-600-normal.DXAT6-aT.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-cyrillic-ext-600-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-cyrillic-ext-600-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-cyrillic-ext-600-normal.DkaCbNks.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-cyrillic-ext-600-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-greek-400-normal.woff": {
+    "file": "_app/immutable/assets/manrope-greek-400-normal.BAy2wLnG.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-greek-400-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-greek-400-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-greek-400-normal.B7YXE4JD.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-greek-400-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-greek-500-normal.woff": {
+    "file": "_app/immutable/assets/manrope-greek-500-normal.D4HlrTgY.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-greek-500-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-greek-500-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-greek-500-normal.BSi42KJL.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-greek-500-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-greek-600-normal.woff": {
+    "file": "_app/immutable/assets/manrope-greek-600-normal.TmIlooTP.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-greek-600-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-greek-600-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-greek-600-normal.C_7rp3is.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-greek-600-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-latin-400-normal.woff": {
+    "file": "_app/immutable/assets/manrope-latin-400-normal.CVCPdBT6.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-latin-400-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-latin-400-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-latin-400-normal.BWi5-Pby.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-latin-400-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-latin-500-normal.woff": {
+    "file": "_app/immutable/assets/manrope-latin-500-normal.CaA3LSzB.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-latin-500-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-latin-500-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-latin-500-normal.DSFH1H_4.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-latin-500-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-latin-600-normal.woff": {
+    "file": "_app/immutable/assets/manrope-latin-600-normal.CCCdT9q6.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-latin-600-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-latin-600-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-latin-600-normal.ZV4JKEZQ.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-latin-600-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-latin-ext-400-normal.woff": {
+    "file": "_app/immutable/assets/manrope-latin-ext-400-normal.hdRL3SMy.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-latin-ext-400-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-latin-ext-400-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-latin-ext-400-normal.CdEq0HKV.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-latin-ext-400-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-latin-ext-500-normal.woff": {
+    "file": "_app/immutable/assets/manrope-latin-ext-500-normal.DXsA-slP.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-latin-ext-500-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-latin-ext-500-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-latin-ext-500-normal.DPfi1Vys.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-latin-ext-500-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-latin-ext-600-normal.woff": {
+    "file": "_app/immutable/assets/manrope-latin-ext-600-normal.DOurb6rQ.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-latin-ext-600-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-latin-ext-600-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-latin-ext-600-normal.D61wMqfr.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-latin-ext-600-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-vietnamese-400-normal.woff": {
+    "file": "_app/immutable/assets/manrope-vietnamese-400-normal.DJunoU0M.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-vietnamese-400-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-vietnamese-400-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-vietnamese-400-normal.ooLdXFia.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-vietnamese-400-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-vietnamese-500-normal.woff": {
+    "file": "_app/immutable/assets/manrope-vietnamese-500-normal.D7uDxg24.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-vietnamese-500-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-vietnamese-500-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-vietnamese-500-normal.DVrhJLrs.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-vietnamese-500-normal.woff2"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-vietnamese-600-normal.woff": {
+    "file": "_app/immutable/assets/manrope-vietnamese-600-normal.DCQPeBJO.woff",
+    "src": "node_modules/@fontsource/manrope/files/manrope-vietnamese-600-normal.woff"
+  },
+  "node_modules/@fontsource/manrope/files/manrope-vietnamese-600-normal.woff2": {
+    "file": "_app/immutable/assets/manrope-vietnamese-600-normal.D3KJ3O1G.woff2",
+    "src": "node_modules/@fontsource/manrope/files/manrope-vietnamese-600-normal.woff2"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-cyrillic-ext-400-normal.woff": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-cyrillic-ext-400-normal.Mmei8vUI.woff",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-cyrillic-ext-400-normal.woff"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-cyrillic-ext-400-normal.woff2": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-cyrillic-ext-400-normal.-YUEboYX.woff2",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-cyrillic-ext-400-normal.woff2"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-cyrillic-ext-500-normal.woff": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-cyrillic-ext-500-normal.CIyo_J9r.woff",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-cyrillic-ext-500-normal.woff"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-cyrillic-ext-500-normal.woff2": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-cyrillic-ext-500-normal.D8ivh4-1.woff2",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-cyrillic-ext-500-normal.woff2"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-cyrillic-ext-600-normal.woff": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-cyrillic-ext-600-normal.9vZTa9p0.woff",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-cyrillic-ext-600-normal.woff"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-cyrillic-ext-600-normal.woff2": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-cyrillic-ext-600-normal.Cvr4i4-u.woff2",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-cyrillic-ext-600-normal.woff2"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-cyrillic-ext-700-normal.woff": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-cyrillic-ext-700-normal.CBwMqzPO.woff",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-cyrillic-ext-700-normal.woff"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-cyrillic-ext-700-normal.woff2": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-cyrillic-ext-700-normal.DCGDJcu8.woff2",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-cyrillic-ext-700-normal.woff2"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-400-normal.woff": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-latin-400-normal.B430qp47.woff",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-400-normal.woff"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-400-normal.woff2": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-latin-400-normal.BEreAzRs.woff2",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-400-normal.woff2"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-500-normal.woff": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-latin-500-normal.8oBgpzDE.woff",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-500-normal.woff"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-500-normal.woff2": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-latin-500-normal.QJgU3aHP.woff2",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-500-normal.woff2"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-600-normal.woff": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-latin-600-normal.BGO7_dKe.woff",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-600-normal.woff"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-600-normal.woff2": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-latin-600-normal.DZHTH_YQ.woff2",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-600-normal.woff2"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-latin-700-normal.B-Gqp1pw.woff",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff2": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-latin-700-normal.ByV-LENh.woff2",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff2"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-400-normal.woff": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-latin-ext-400-normal.BsqZKeor.woff",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-400-normal.woff"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-400-normal.woff2": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-latin-ext-400-normal.DoLIX7aW.woff2",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-400-normal.woff2"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-500-normal.woff": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-latin-ext-500-normal.B3NWVrCc.woff",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-500-normal.woff"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-500-normal.woff2": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-latin-ext-500-normal.CPn9LCJy.woff2",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-500-normal.woff2"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-600-normal.woff": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-latin-ext-600-normal.CB6G-JUj.woff",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-600-normal.woff"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-600-normal.woff2": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-latin-ext-600-normal.CnFlO-3n.woff2",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-600-normal.woff2"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-700-normal.woff": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-latin-ext-700-normal.CKyey7Yb.woff",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-700-normal.woff"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-700-normal.woff2": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-latin-ext-700-normal.DvYoLYTT.woff2",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-700-normal.woff2"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-vietnamese-400-normal.woff": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-vietnamese-400-normal.C8e2rZwZ.woff",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-vietnamese-400-normal.woff"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-vietnamese-400-normal.woff2": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-vietnamese-400-normal.DSBfeMfZ.woff2",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-vietnamese-400-normal.woff2"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-vietnamese-500-normal.woff": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-vietnamese-500-normal.B82lGh9n.woff",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-vietnamese-500-normal.woff"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-vietnamese-500-normal.woff2": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-vietnamese-500-normal.DV0RQ-PV.woff2",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-vietnamese-500-normal.woff2"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-vietnamese-600-normal.woff": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-vietnamese-600-normal.DeS4BEfh.woff",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-vietnamese-600-normal.woff"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-vietnamese-600-normal.woff2": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-vietnamese-600-normal.CC6hLFtX.woff2",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-vietnamese-600-normal.woff2"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-vietnamese-700-normal.woff": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-vietnamese-700-normal.CZVFApIP.woff",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-vietnamese-700-normal.woff"
+  },
+  "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-vietnamese-700-normal.woff2": {
+    "file": "_app/immutable/assets/plus-jakarta-sans-vietnamese-700-normal.M8Q6kGfw.woff2",
+    "src": "node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-vietnamese-700-normal.woff2"
+  },
   "node_modules/@sveltejs/kit/src/runtime/server/index.js": {
     "file": "index.js",
     "name": "index",
     "src": "node_modules/@sveltejs/kit/src/runtime/server/index.js",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_utils.js",
       "_internal.js",
-      "_index2.js",
+      "_index.js",
       "_exports.js",
-      "_index3.js",
+      "_index2.js",
       "_shared-server.js"
     ]
+  },
+  "node_modules/katex/dist/fonts/KaTeX_AMS-Regular.ttf": {
+    "file": "_app/immutable/assets/KaTeX_AMS-Regular.DRggAlZN.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_AMS-Regular.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_AMS-Regular.woff": {
+    "file": "_app/immutable/assets/KaTeX_AMS-Regular.DMm9YOAa.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_AMS-Regular.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_AMS-Regular.woff2": {
+    "file": "_app/immutable/assets/KaTeX_AMS-Regular.BQhdFMY1.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_AMS-Regular.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Caligraphic-Bold.ttf": {
+    "file": "_app/immutable/assets/KaTeX_Caligraphic-Bold.ATXxdsX0.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Caligraphic-Bold.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Caligraphic-Bold.woff": {
+    "file": "_app/immutable/assets/KaTeX_Caligraphic-Bold.BEiXGLvX.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Caligraphic-Bold.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Caligraphic-Bold.woff2": {
+    "file": "_app/immutable/assets/KaTeX_Caligraphic-Bold.Dq_IR9rO.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Caligraphic-Bold.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Caligraphic-Regular.ttf": {
+    "file": "_app/immutable/assets/KaTeX_Caligraphic-Regular.wX97UBjC.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Caligraphic-Regular.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Caligraphic-Regular.woff": {
+    "file": "_app/immutable/assets/KaTeX_Caligraphic-Regular.CTRA-rTL.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Caligraphic-Regular.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Caligraphic-Regular.woff2": {
+    "file": "_app/immutable/assets/KaTeX_Caligraphic-Regular.Di6jR-x-.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Caligraphic-Regular.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Fraktur-Bold.ttf": {
+    "file": "_app/immutable/assets/KaTeX_Fraktur-Bold.BdnERNNW.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Fraktur-Bold.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Fraktur-Bold.woff": {
+    "file": "_app/immutable/assets/KaTeX_Fraktur-Bold.BsDP51OF.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Fraktur-Bold.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Fraktur-Bold.woff2": {
+    "file": "_app/immutable/assets/KaTeX_Fraktur-Bold.CL6g_b3V.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Fraktur-Bold.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Fraktur-Regular.ttf": {
+    "file": "_app/immutable/assets/KaTeX_Fraktur-Regular.CB_wures.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Fraktur-Regular.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Fraktur-Regular.woff": {
+    "file": "_app/immutable/assets/KaTeX_Fraktur-Regular.Dxdc4cR9.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Fraktur-Regular.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Fraktur-Regular.woff2": {
+    "file": "_app/immutable/assets/KaTeX_Fraktur-Regular.CTYiF6lA.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Fraktur-Regular.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Main-Bold.ttf": {
+    "file": "_app/immutable/assets/KaTeX_Main-Bold.waoOVXN0.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Main-Bold.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Main-Bold.woff": {
+    "file": "_app/immutable/assets/KaTeX_Main-Bold.Jm3AIy58.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Main-Bold.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Main-Bold.woff2": {
+    "file": "_app/immutable/assets/KaTeX_Main-Bold.Cx986IdX.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Main-Bold.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Main-BoldItalic.ttf": {
+    "file": "_app/immutable/assets/KaTeX_Main-BoldItalic.DzxPMmG6.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Main-BoldItalic.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Main-BoldItalic.woff": {
+    "file": "_app/immutable/assets/KaTeX_Main-BoldItalic.SpSLRI95.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Main-BoldItalic.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Main-BoldItalic.woff2": {
+    "file": "_app/immutable/assets/KaTeX_Main-BoldItalic.DxDJ3AOS.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Main-BoldItalic.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Main-Italic.ttf": {
+    "file": "_app/immutable/assets/KaTeX_Main-Italic.3WenGoN9.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Main-Italic.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Main-Italic.woff": {
+    "file": "_app/immutable/assets/KaTeX_Main-Italic.BMLOBm91.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Main-Italic.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Main-Italic.woff2": {
+    "file": "_app/immutable/assets/KaTeX_Main-Italic.NWA7e6Wa.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Main-Italic.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Main-Regular.ttf": {
+    "file": "_app/immutable/assets/KaTeX_Main-Regular.ypZvNtVU.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Main-Regular.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Main-Regular.woff": {
+    "file": "_app/immutable/assets/KaTeX_Main-Regular.Dr94JaBh.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Main-Regular.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Main-Regular.woff2": {
+    "file": "_app/immutable/assets/KaTeX_Main-Regular.B22Nviop.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Main-Regular.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Math-BoldItalic.ttf": {
+    "file": "_app/immutable/assets/KaTeX_Math-BoldItalic.B3XSjfu4.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Math-BoldItalic.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Math-BoldItalic.woff": {
+    "file": "_app/immutable/assets/KaTeX_Math-BoldItalic.iY-2wyZ7.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Math-BoldItalic.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Math-BoldItalic.woff2": {
+    "file": "_app/immutable/assets/KaTeX_Math-BoldItalic.CZnvNsCZ.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Math-BoldItalic.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Math-Italic.ttf": {
+    "file": "_app/immutable/assets/KaTeX_Math-Italic.flOr_0UB.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Math-Italic.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Math-Italic.woff": {
+    "file": "_app/immutable/assets/KaTeX_Math-Italic.DA0__PXp.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Math-Italic.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Math-Italic.woff2": {
+    "file": "_app/immutable/assets/KaTeX_Math-Italic.t53AETM-.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Math-Italic.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_SansSerif-Bold.ttf": {
+    "file": "_app/immutable/assets/KaTeX_SansSerif-Bold.CFMepnvq.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_SansSerif-Bold.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_SansSerif-Bold.woff": {
+    "file": "_app/immutable/assets/KaTeX_SansSerif-Bold.DbIhKOiC.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_SansSerif-Bold.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_SansSerif-Bold.woff2": {
+    "file": "_app/immutable/assets/KaTeX_SansSerif-Bold.D1sUS0GD.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_SansSerif-Bold.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_SansSerif-Italic.ttf": {
+    "file": "_app/immutable/assets/KaTeX_SansSerif-Italic.YYjJ1zSn.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_SansSerif-Italic.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_SansSerif-Italic.woff": {
+    "file": "_app/immutable/assets/KaTeX_SansSerif-Italic.DN2j7dab.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_SansSerif-Italic.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_SansSerif-Italic.woff2": {
+    "file": "_app/immutable/assets/KaTeX_SansSerif-Italic.C3H0VqGB.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_SansSerif-Italic.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_SansSerif-Regular.ttf": {
+    "file": "_app/immutable/assets/KaTeX_SansSerif-Regular.BNo7hRIc.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_SansSerif-Regular.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_SansSerif-Regular.woff": {
+    "file": "_app/immutable/assets/KaTeX_SansSerif-Regular.CS6fqUqJ.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_SansSerif-Regular.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_SansSerif-Regular.woff2": {
+    "file": "_app/immutable/assets/KaTeX_SansSerif-Regular.DDBCnlJ7.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_SansSerif-Regular.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Script-Regular.ttf": {
+    "file": "_app/immutable/assets/KaTeX_Script-Regular.C5JkGWo-.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Script-Regular.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Script-Regular.woff": {
+    "file": "_app/immutable/assets/KaTeX_Script-Regular.D5yQViql.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Script-Regular.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Script-Regular.woff2": {
+    "file": "_app/immutable/assets/KaTeX_Script-Regular.D3wIWfF6.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Script-Regular.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Size1-Regular.ttf": {
+    "file": "_app/immutable/assets/KaTeX_Size1-Regular.Dbsnue_I.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Size1-Regular.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Size1-Regular.woff": {
+    "file": "_app/immutable/assets/KaTeX_Size1-Regular.C195tn64.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Size1-Regular.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Size1-Regular.woff2": {
+    "file": "_app/immutable/assets/KaTeX_Size1-Regular.mCD8mA8B.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Size1-Regular.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Size2-Regular.ttf": {
+    "file": "_app/immutable/assets/KaTeX_Size2-Regular.B7gKUWhC.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Size2-Regular.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Size2-Regular.woff": {
+    "file": "_app/immutable/assets/KaTeX_Size2-Regular.oD1tc_U0.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Size2-Regular.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Size2-Regular.woff2": {
+    "file": "_app/immutable/assets/KaTeX_Size2-Regular.Dy4dx90m.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Size2-Regular.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Size3-Regular.ttf": {
+    "file": "_app/immutable/assets/KaTeX_Size3-Regular.DgpXs0kz.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Size3-Regular.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Size3-Regular.woff": {
+    "file": "_app/immutable/assets/KaTeX_Size3-Regular.CTq5MqoE.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Size3-Regular.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Size3-Regular.woff2": {
+    "file": "_app/immutable/assets/KaTeX_Size3-Regular.gV2CO0n9.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Size3-Regular.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Size4-Regular.ttf": {
+    "file": "_app/immutable/assets/KaTeX_Size4-Regular.DWFBv043.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Size4-Regular.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Size4-Regular.woff": {
+    "file": "_app/immutable/assets/KaTeX_Size4-Regular.BF-4gkZK.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Size4-Regular.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Size4-Regular.woff2": {
+    "file": "_app/immutable/assets/KaTeX_Size4-Regular.Dl5lxZxV.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Size4-Regular.woff2"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Typewriter-Regular.ttf": {
+    "file": "_app/immutable/assets/KaTeX_Typewriter-Regular.D3Ib7_Hf.ttf",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Typewriter-Regular.ttf"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Typewriter-Regular.woff": {
+    "file": "_app/immutable/assets/KaTeX_Typewriter-Regular.C0xS9mPB.woff",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Typewriter-Regular.woff"
+  },
+  "node_modules/katex/dist/fonts/KaTeX_Typewriter-Regular.woff2": {
+    "file": "_app/immutable/assets/KaTeX_Typewriter-Regular.CO6r4hn1.woff2",
+    "src": "node_modules/katex/dist/fonts/KaTeX_Typewriter-Regular.woff2"
   },
   "src/hooks.server.ts": {
     "file": "chunks/hooks.server.js",
@@ -191,15 +867,10 @@
     "src": "src/hooks.server.ts",
     "isDynamicEntry": true,
     "imports": [
-      "_index2.js",
-      "_csrf.server.js"
+      "_index.js",
+      "_csrf.server.js",
+      "_firebaseAdmin.js"
     ]
-  },
-  "src/hooks.ts": {
-    "file": "chunks/hooks.js",
-    "name": "hooks",
-    "src": "src/hooks.ts",
-    "isDynamicEntry": true
   },
   "src/routes/(protected)/+layout.svelte": {
     "file": "entries/pages/(protected)/_layout.svelte.js",
@@ -207,10 +878,11 @@
     "src": "src/routes/(protected)/+layout.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_client.js",
       "_stores.js",
-      "_authStore.js"
+      "_authStore.js",
+      "_index-server.js"
     ]
   },
   "src/routes/+error.svelte": {
@@ -219,7 +891,7 @@
     "src": "src/routes/+error.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js"
+      "_index3.js"
     ],
     "css": [
       "_app/immutable/assets/_error.tn0RQdqM.css"
@@ -240,19 +912,121 @@
     "src": "src/routes/+layout.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
-      "_stores.js",
-      "_authStore.js",
-      "_client.js",
-      "_pipStores.js",
-      "_index-server.js",
-      "_persistentStore.js",
       "_index3.js",
+      "_index2.js",
+      "_index-server.js",
+      "_client.js",
+      "_authStore.js",
+      "_pipStores.js",
+      "_utils.js",
       "_html.js"
     ],
     "css": [
-      "_app/immutable/assets/_layout.C6MQymq0.css",
-      "_app/immutable/assets/splide.DEMCkssF.css"
+      "_app/immutable/assets/_layout.BQ3k9Bj5.css"
+    ],
+    "assets": [
+      "_app/immutable/assets/plus-jakarta-sans-cyrillic-ext-400-normal.-YUEboYX.woff2",
+      "_app/immutable/assets/plus-jakarta-sans-cyrillic-ext-400-normal.Mmei8vUI.woff",
+      "_app/immutable/assets/plus-jakarta-sans-vietnamese-400-normal.DSBfeMfZ.woff2",
+      "_app/immutable/assets/plus-jakarta-sans-vietnamese-400-normal.C8e2rZwZ.woff",
+      "_app/immutable/assets/plus-jakarta-sans-latin-ext-400-normal.DoLIX7aW.woff2",
+      "_app/immutable/assets/plus-jakarta-sans-latin-ext-400-normal.BsqZKeor.woff",
+      "_app/immutable/assets/plus-jakarta-sans-latin-400-normal.BEreAzRs.woff2",
+      "_app/immutable/assets/plus-jakarta-sans-latin-400-normal.B430qp47.woff",
+      "_app/immutable/assets/plus-jakarta-sans-cyrillic-ext-500-normal.D8ivh4-1.woff2",
+      "_app/immutable/assets/plus-jakarta-sans-cyrillic-ext-500-normal.CIyo_J9r.woff",
+      "_app/immutable/assets/plus-jakarta-sans-vietnamese-500-normal.DV0RQ-PV.woff2",
+      "_app/immutable/assets/plus-jakarta-sans-vietnamese-500-normal.B82lGh9n.woff",
+      "_app/immutable/assets/plus-jakarta-sans-latin-ext-500-normal.CPn9LCJy.woff2",
+      "_app/immutable/assets/plus-jakarta-sans-latin-ext-500-normal.B3NWVrCc.woff",
+      "_app/immutable/assets/plus-jakarta-sans-latin-500-normal.QJgU3aHP.woff2",
+      "_app/immutable/assets/plus-jakarta-sans-latin-500-normal.8oBgpzDE.woff",
+      "_app/immutable/assets/plus-jakarta-sans-cyrillic-ext-600-normal.Cvr4i4-u.woff2",
+      "_app/immutable/assets/plus-jakarta-sans-cyrillic-ext-600-normal.9vZTa9p0.woff",
+      "_app/immutable/assets/plus-jakarta-sans-vietnamese-600-normal.CC6hLFtX.woff2",
+      "_app/immutable/assets/plus-jakarta-sans-vietnamese-600-normal.DeS4BEfh.woff",
+      "_app/immutable/assets/plus-jakarta-sans-latin-ext-600-normal.CnFlO-3n.woff2",
+      "_app/immutable/assets/plus-jakarta-sans-latin-ext-600-normal.CB6G-JUj.woff",
+      "_app/immutable/assets/plus-jakarta-sans-latin-600-normal.DZHTH_YQ.woff2",
+      "_app/immutable/assets/plus-jakarta-sans-latin-600-normal.BGO7_dKe.woff",
+      "_app/immutable/assets/plus-jakarta-sans-cyrillic-ext-700-normal.DCGDJcu8.woff2",
+      "_app/immutable/assets/plus-jakarta-sans-cyrillic-ext-700-normal.CBwMqzPO.woff",
+      "_app/immutable/assets/plus-jakarta-sans-vietnamese-700-normal.M8Q6kGfw.woff2",
+      "_app/immutable/assets/plus-jakarta-sans-vietnamese-700-normal.CZVFApIP.woff",
+      "_app/immutable/assets/plus-jakarta-sans-latin-ext-700-normal.DvYoLYTT.woff2",
+      "_app/immutable/assets/plus-jakarta-sans-latin-ext-700-normal.CKyey7Yb.woff",
+      "_app/immutable/assets/plus-jakarta-sans-latin-700-normal.ByV-LENh.woff2",
+      "_app/immutable/assets/plus-jakarta-sans-latin-700-normal.B-Gqp1pw.woff",
+      "_app/immutable/assets/manrope-cyrillic-ext-400-normal.B30t888a.woff2",
+      "_app/immutable/assets/manrope-cyrillic-ext-400-normal.CDnTonny.woff",
+      "_app/immutable/assets/manrope-cyrillic-400-normal.DYJIFuzK.woff2",
+      "_app/immutable/assets/manrope-cyrillic-400-normal.BSokYSPU.woff",
+      "_app/immutable/assets/manrope-greek-400-normal.B7YXE4JD.woff2",
+      "_app/immutable/assets/manrope-greek-400-normal.BAy2wLnG.woff",
+      "_app/immutable/assets/manrope-vietnamese-400-normal.ooLdXFia.woff2",
+      "_app/immutable/assets/manrope-vietnamese-400-normal.DJunoU0M.woff",
+      "_app/immutable/assets/manrope-latin-ext-400-normal.CdEq0HKV.woff2",
+      "_app/immutable/assets/manrope-latin-ext-400-normal.hdRL3SMy.woff",
+      "_app/immutable/assets/manrope-latin-400-normal.BWi5-Pby.woff2",
+      "_app/immutable/assets/manrope-latin-400-normal.CVCPdBT6.woff",
+      "_app/immutable/assets/manrope-cyrillic-ext-500-normal.BoWzFFJG.woff2",
+      "_app/immutable/assets/manrope-cyrillic-ext-500-normal.DHUaR1_Z.woff",
+      "_app/immutable/assets/manrope-cyrillic-500-normal.DWzw0g5S.woff2",
+      "_app/immutable/assets/manrope-cyrillic-500-normal.DgR5lgmT.woff",
+      "_app/immutable/assets/manrope-greek-500-normal.BSi42KJL.woff2",
+      "_app/immutable/assets/manrope-greek-500-normal.D4HlrTgY.woff",
+      "_app/immutable/assets/manrope-vietnamese-500-normal.DVrhJLrs.woff2",
+      "_app/immutable/assets/manrope-vietnamese-500-normal.D7uDxg24.woff",
+      "_app/immutable/assets/manrope-latin-ext-500-normal.DPfi1Vys.woff2",
+      "_app/immutable/assets/manrope-latin-ext-500-normal.DXsA-slP.woff",
+      "_app/immutable/assets/manrope-latin-500-normal.DSFH1H_4.woff2",
+      "_app/immutable/assets/manrope-latin-500-normal.CaA3LSzB.woff",
+      "_app/immutable/assets/manrope-cyrillic-ext-600-normal.DkaCbNks.woff2",
+      "_app/immutable/assets/manrope-cyrillic-ext-600-normal.DXAT6-aT.woff",
+      "_app/immutable/assets/manrope-cyrillic-600-normal.VxnJDbp5.woff2",
+      "_app/immutable/assets/manrope-cyrillic-600-normal.5gpPULAf.woff",
+      "_app/immutable/assets/manrope-greek-600-normal.C_7rp3is.woff2",
+      "_app/immutable/assets/manrope-greek-600-normal.TmIlooTP.woff",
+      "_app/immutable/assets/manrope-vietnamese-600-normal.D3KJ3O1G.woff2",
+      "_app/immutable/assets/manrope-vietnamese-600-normal.DCQPeBJO.woff",
+      "_app/immutable/assets/manrope-latin-ext-600-normal.D61wMqfr.woff2",
+      "_app/immutable/assets/manrope-latin-ext-600-normal.DOurb6rQ.woff",
+      "_app/immutable/assets/manrope-latin-600-normal.ZV4JKEZQ.woff2",
+      "_app/immutable/assets/manrope-latin-600-normal.CCCdT9q6.woff",
+      "_app/immutable/assets/jetbrains-mono-cyrillic-ext-400-normal.C_uLvvQ5.woff2",
+      "_app/immutable/assets/jetbrains-mono-cyrillic-ext-400-normal.BHyURHCj.woff",
+      "_app/immutable/assets/jetbrains-mono-cyrillic-400-normal.BEIGL1Tu.woff2",
+      "_app/immutable/assets/jetbrains-mono-cyrillic-400-normal.CIEtRijs.woff",
+      "_app/immutable/assets/jetbrains-mono-greek-400-normal.C190GLew.woff2",
+      "_app/immutable/assets/jetbrains-mono-greek-400-normal.CNojz0t3.woff",
+      "_app/immutable/assets/jetbrains-mono-vietnamese-400-normal.ByoDsISC.woff2",
+      "_app/immutable/assets/jetbrains-mono-vietnamese-400-normal.BeU3T8wf.woff",
+      "_app/immutable/assets/jetbrains-mono-latin-ext-400-normal.Bc8Ftmh3.woff2",
+      "_app/immutable/assets/jetbrains-mono-latin-ext-400-normal.DHMOLxAi.woff",
+      "_app/immutable/assets/jetbrains-mono-latin-400-normal.V6pRDFza.woff2",
+      "_app/immutable/assets/jetbrains-mono-latin-400-normal.B11XCQ5g.woff",
+      "_app/immutable/assets/jetbrains-mono-cyrillic-ext-500-normal.C9ShMxGR.woff2",
+      "_app/immutable/assets/jetbrains-mono-cyrillic-ext-500-normal.BaAnyG2f.woff",
+      "_app/immutable/assets/jetbrains-mono-cyrillic-500-normal.DmUKJPL_.woff2",
+      "_app/immutable/assets/jetbrains-mono-cyrillic-500-normal.CIOHU3Xd.woff",
+      "_app/immutable/assets/jetbrains-mono-greek-500-normal.JpySY46c.woff2",
+      "_app/immutable/assets/jetbrains-mono-greek-500-normal.CtHEZ2Bp.woff",
+      "_app/immutable/assets/jetbrains-mono-vietnamese-500-normal.BvH7FW2L.woff2",
+      "_app/immutable/assets/jetbrains-mono-vietnamese-500-normal.D74nanfL.woff",
+      "_app/immutable/assets/jetbrains-mono-latin-ext-500-normal.Cut-4mMH.woff2",
+      "_app/immutable/assets/jetbrains-mono-latin-ext-500-normal.BcGe3QHD.woff",
+      "_app/immutable/assets/jetbrains-mono-latin-500-normal.BWZEU5yA.woff2",
+      "_app/immutable/assets/jetbrains-mono-latin-500-normal.DNWG5JNy.woff"
+    ]
+  },
+  "src/routes/+page.server.ts": {
+    "file": "entries/pages/_page.server.ts.js",
+    "name": "entries/pages/_page.server.ts",
+    "src": "src/routes/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_contentService.js",
+      "_index.js"
     ]
   },
   "src/routes/+page.svelte": {
@@ -261,18 +1035,19 @@
     "src": "src/routes/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_index-server.js",
-      "_courseService.js",
+      "_utils.js",
+      "_CourseCard.js",
+      "_Icon.js",
       "_authStore.js",
       "_userProfileStore.js",
       "_pipStores.js",
-      "_FocusTimeChart.js",
-      "_index3.js"
+      "_FocusTimeChart.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.DtUY6XMI.css",
-      "_app/immutable/assets/splide.DEMCkssF.css"
+      "_app/immutable/assets/_page.DQ1mHQJ4.css",
+      "_app/immutable/assets/ExerciseCard.DPCSqYM9.css"
     ]
   },
   "src/routes/admin/+layout.server.ts": {
@@ -281,7 +1056,7 @@
     "src": "src/routes/admin/+layout.server.ts",
     "isEntry": true,
     "imports": [
-      "_index2.js",
+      "_index.js",
       "_shared-server.js"
     ]
   },
@@ -291,7 +1066,9 @@
     "src": "src/routes/admin/+layout.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js"
+      "_index3.js",
+      "_stores.js",
+      "_authStore.js"
     ]
   },
   "src/routes/admin/+page.svelte": {
@@ -300,7 +1077,7 @@
     "src": "src/routes/admin/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_authStore.js"
     ]
   },
@@ -308,7 +1085,10 @@
     "file": "entries/pages/admin/courses/_page.server.ts.js",
     "name": "entries/pages/admin/courses/_page.server.ts",
     "src": "src/routes/admin/courses/+page.server.ts",
-    "isEntry": true
+    "isEntry": true,
+    "imports": [
+      "_contentService.js"
+    ]
   },
   "src/routes/admin/courses/+page.svelte": {
     "file": "entries/pages/admin/courses/_page.svelte.js",
@@ -316,7 +1096,7 @@
     "src": "src/routes/admin/courses/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js"
+      "_index3.js"
     ]
   },
   "src/routes/admin/forums/+page.server.ts": {
@@ -334,8 +1114,9 @@
     "src": "src/routes/admin/forums/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
-      "_client.js"
+      "_index3.js",
+      "_forumStore.js",
+      "_Icon.js"
     ]
   },
   "src/routes/admin/forums/category/[id]/edit/+page.server.ts": {
@@ -353,8 +1134,8 @@
     "src": "src/routes/admin/forums/category/[id]/edit/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
-      "_client.js"
+      "_index3.js",
+      "_forumService.js"
     ]
   },
   "src/routes/admin/forums/topic/[id]/edit/+page.server.ts": {
@@ -372,8 +1153,10 @@
     "src": "src/routes/admin/forums/topic/[id]/edit/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
-      "_client.js"
+      "_index3.js",
+      "_stores.js",
+      "_client.js",
+      "_Icon.js"
     ]
   },
   "src/routes/admin/users/+page.server.ts": {
@@ -391,9 +1174,15 @@
     "src": "src/routes/admin/users/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_shared-server.js"
     ]
+  },
+  "src/routes/api/[id]/+server.ts": {
+    "file": "entries/endpoints/api/_id_/_server.ts.js",
+    "name": "entries/endpoints/api/_id_/_server.ts",
+    "src": "src/routes/api/[id]/+server.ts",
+    "isEntry": true
   },
   "src/routes/api/activities/+server.ts": {
     "file": "entries/endpoints/api/activities/_server.ts.js",
@@ -428,8 +1217,8 @@
     "src": "src/routes/api/activities/recent/+server.ts",
     "isEntry": true,
     "imports": [
-      "_index2.js",
-      "_activityService.js"
+      "_index.js",
+      "_authStore.js"
     ]
   },
   "src/routes/api/activities/start/+server.ts": {
@@ -441,13 +1230,19 @@
       "_userService.server.js"
     ]
   },
+  "src/routes/api/content/list/+server.ts": {
+    "file": "entries/endpoints/api/content/list/_server.ts.js",
+    "name": "entries/endpoints/api/content/list/_server.ts",
+    "src": "src/routes/api/content/list/+server.ts",
+    "isEntry": true
+  },
   "src/routes/api/csrf/init/+server.ts": {
     "file": "entries/endpoints/api/csrf/init/_server.ts.js",
     "name": "entries/endpoints/api/csrf/init/_server.ts",
     "src": "src/routes/api/csrf/init/+server.ts",
     "isEntry": true,
     "imports": [
-      "_index2.js",
+      "_index.js",
       "_csrf.server.js"
     ]
   },
@@ -459,6 +1254,12 @@
     "imports": [
       "_csrf.server.js"
     ]
+  },
+  "src/routes/api/exercises/+server.ts": {
+    "file": "entries/endpoints/api/exercises/_server.ts.js",
+    "name": "entries/endpoints/api/exercises/_server.ts",
+    "src": "src/routes/api/exercises/+server.ts",
+    "isEntry": true
   },
   "src/routes/api/forum/categories/+server.ts": {
     "file": "entries/endpoints/api/forum/categories/_server.ts.js",
@@ -502,7 +1303,8 @@
     "src": "src/routes/api/forum/topics/[id]/+server.ts",
     "isEntry": true,
     "imports": [
-      "_forumService.js"
+      "_forumService.js",
+      "_topicService.js"
     ]
   },
   "src/routes/api/forum/topics/[id]/vote/+server.ts": {
@@ -511,6 +1313,16 @@
     "src": "src/routes/api/forum/topics/[id]/vote/+server.ts",
     "isEntry": true,
     "imports": [
+      "_topicService.js"
+    ]
+  },
+  "src/routes/api/forums/topics/[id]/+server.ts": {
+    "file": "entries/endpoints/api/forums/topics/_id_/_server.ts.js",
+    "name": "entries/endpoints/api/forums/topics/_id_/_server.ts",
+    "src": "src/routes/api/forums/topics/[id]/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
       "_forumService.js"
     ]
   },
@@ -556,7 +1368,9 @@
     "src": "src/routes/api/recommendations/+server.ts",
     "isEntry": true,
     "imports": [
-      "_courseService.js"
+      "_index.js",
+      "_contentService.js",
+      "_firebaseAdmin.js"
     ]
   },
   "src/routes/api/score/+server.ts": {
@@ -566,7 +1380,16 @@
     "isEntry": true,
     "imports": [
       "_userService.server.js",
-      "_courseService.js"
+      "_contentService.js"
+    ]
+  },
+  "src/routes/api/topic/[id]/+server.ts": {
+    "file": "entries/endpoints/api/topic/_id_/_server.ts.js",
+    "name": "entries/endpoints/api/topic/_id_/_server.ts",
+    "src": "src/routes/api/topic/[id]/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_firebaseAdmin.js"
     ]
   },
   "src/routes/calendar/+page.svelte": {
@@ -575,11 +1398,19 @@
     "src": "src/routes/calendar/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
-      "_index-server.js"
+      "_index3.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.8iZmPd-X.css"
+      "_app/immutable/assets/_page.CmJyB1ij.css"
+    ]
+  },
+  "src/routes/category/[slug]/+page.server.ts": {
+    "file": "entries/pages/category/_slug_/_page.server.ts.js",
+    "name": "entries/pages/category/_slug_/_page.server.ts",
+    "src": "src/routes/category/[slug]/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_contentService.js"
     ]
   },
   "src/routes/category/[slug]/+page.svelte": {
@@ -588,7 +1419,7 @@
     "src": "src/routes/category/[slug]/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js"
+      "_index3.js"
     ]
   },
   "src/routes/category/[slug]/+page.ts": {
@@ -597,15 +1428,40 @@
     "src": "src/routes/category/[slug]/+page.ts",
     "isEntry": true
   },
+  "src/routes/courses/+page.server.ts": {
+    "file": "entries/pages/courses/_page.server.ts.js",
+    "name": "entries/pages/courses/_page.server.ts",
+    "src": "src/routes/courses/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_contentService.js"
+    ]
+  },
   "src/routes/courses/+page.svelte": {
     "file": "entries/pages/courses/_page.svelte.js",
     "name": "entries/pages/courses/_page.svelte",
     "src": "src/routes/courses/+page.svelte",
     "isEntry": true,
     "imports": [
+      "_index3.js",
+      "_index2.js",
+      "_CourseCard.js",
+      "_utils.js",
+      "_MarkdownRenderer.js",
+      "_ExerciseRating.js",
+      "_Icon.js",
+      "_client.js"
+    ]
+  },
+  "src/routes/courses/[slug]/+page.server.ts": {
+    "file": "entries/pages/courses/_slug_/_page.server.ts.js",
+    "name": "entries/pages/courses/_slug_/_page.server.ts",
+    "src": "src/routes/courses/[slug]/+page.server.ts",
+    "isEntry": true,
+    "imports": [
       "_index.js",
-      "_index-server.js",
-      "_courseService.js"
+      "_contentService.js"
     ]
   },
   "src/routes/courses/[slug]/+page.svelte": {
@@ -614,21 +1470,20 @@
     "src": "src/routes/courses/[slug]/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
-      "_courseService.js",
-      "_stores.js"
+      "_index3.js",
+      "_client.js",
+      "_functions.js"
+    ],
+    "css": [
+      "_app/immutable/assets/github-dark.BEHUn5zE.css",
+      "_app/immutable/assets/MarkdownRenderer.BULUyxN7.css"
     ]
   },
-  "src/routes/courses/[slug]/[lessonId]/+page.svelte": {
-    "file": "entries/pages/courses/_slug_/_lessonId_/_page.svelte.js",
-    "name": "entries/pages/courses/_slug_/_lessonId_/_page.svelte",
-    "src": "src/routes/courses/[slug]/[lessonId]/+page.svelte",
-    "isEntry": true,
-    "imports": [
-      "_index.js",
-      "_stores.js",
-      "_courseService.js"
-    ]
+  "src/routes/courses/maths/mpsi-maths/+page.svelte": {
+    "file": "entries/pages/courses/maths/mpsi-maths/_page.svelte.js",
+    "name": "entries/pages/courses/maths/mpsi-maths/_page.svelte",
+    "src": "src/routes/courses/maths/mpsi-maths/+page.svelte",
+    "isEntry": true
   },
   "src/routes/events/+page.svelte": {
     "file": "entries/pages/events/_page.svelte.js",
@@ -636,10 +1491,21 @@
     "src": "src/routes/events/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js"
+      "_index3.js",
+      "_authStore.js"
     ],
     "css": [
       "_app/immutable/assets/_page.DmsU4q6c.css"
+    ]
+  },
+  "src/routes/exercises/+page.server.ts": {
+    "file": "entries/pages/exercises/_page.server.ts.js",
+    "name": "entries/pages/exercises/_page.server.ts",
+    "src": "src/routes/exercises/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_contentService.js"
     ]
   },
   "src/routes/exercises/+page.svelte": {
@@ -648,22 +1514,118 @@
     "src": "src/routes/exercises/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
-      "_index-server.js"
+      "_index3.js",
+      "_utils.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.C6x7nEyJ.css"
     ]
   },
-  "src/routes/exercises/[slug]/+page.svelte": {
-    "file": "entries/pages/exercises/_slug_/_page.svelte.js",
-    "name": "entries/pages/exercises/_slug_/_page.svelte",
-    "src": "src/routes/exercises/[slug]/+page.svelte",
+  "src/routes/exercises/[id]/+page.server.ts": {
+    "file": "entries/pages/exercises/_id_/_page.server.ts.js",
+    "name": "entries/pages/exercises/_id_/_page.server.ts",
+    "src": "src/routes/exercises/[id]/+page.server.ts",
     "isEntry": true,
     "imports": [
       "_index.js",
-      "_stores.js"
+      "_contentService.js"
+    ]
+  },
+  "src/routes/exercises/[id]/+page.svelte": {
+    "file": "entries/pages/exercises/_id_/_page.svelte.js",
+    "name": "entries/pages/exercises/_id_/_page.svelte",
+    "src": "src/routes/exercises/[id]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index3.js",
+      "_ExerciseRating.js",
+      "_utils.js"
     ],
     "css": [
-      "_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+      "_app/immutable/assets/_page.BTc0gWom.css",
+      "_app/immutable/assets/github-dark.BEHUn5zE.css",
+      "_app/immutable/assets/ExerciseCard.DPCSqYM9.css"
+    ],
+    "assets": [
+      "_app/immutable/assets/KaTeX_AMS-Regular.BQhdFMY1.woff2",
+      "_app/immutable/assets/KaTeX_AMS-Regular.DMm9YOAa.woff",
+      "_app/immutable/assets/KaTeX_AMS-Regular.DRggAlZN.ttf",
+      "_app/immutable/assets/KaTeX_Caligraphic-Bold.Dq_IR9rO.woff2",
+      "_app/immutable/assets/KaTeX_Caligraphic-Bold.BEiXGLvX.woff",
+      "_app/immutable/assets/KaTeX_Caligraphic-Bold.ATXxdsX0.ttf",
+      "_app/immutable/assets/KaTeX_Caligraphic-Regular.Di6jR-x-.woff2",
+      "_app/immutable/assets/KaTeX_Caligraphic-Regular.CTRA-rTL.woff",
+      "_app/immutable/assets/KaTeX_Caligraphic-Regular.wX97UBjC.ttf",
+      "_app/immutable/assets/KaTeX_Fraktur-Bold.CL6g_b3V.woff2",
+      "_app/immutable/assets/KaTeX_Fraktur-Bold.BsDP51OF.woff",
+      "_app/immutable/assets/KaTeX_Fraktur-Bold.BdnERNNW.ttf",
+      "_app/immutable/assets/KaTeX_Fraktur-Regular.CTYiF6lA.woff2",
+      "_app/immutable/assets/KaTeX_Fraktur-Regular.Dxdc4cR9.woff",
+      "_app/immutable/assets/KaTeX_Fraktur-Regular.CB_wures.ttf",
+      "_app/immutable/assets/KaTeX_Main-Bold.Cx986IdX.woff2",
+      "_app/immutable/assets/KaTeX_Main-Bold.Jm3AIy58.woff",
+      "_app/immutable/assets/KaTeX_Main-Bold.waoOVXN0.ttf",
+      "_app/immutable/assets/KaTeX_Main-BoldItalic.DxDJ3AOS.woff2",
+      "_app/immutable/assets/KaTeX_Main-BoldItalic.SpSLRI95.woff",
+      "_app/immutable/assets/KaTeX_Main-BoldItalic.DzxPMmG6.ttf",
+      "_app/immutable/assets/KaTeX_Main-Italic.NWA7e6Wa.woff2",
+      "_app/immutable/assets/KaTeX_Main-Italic.BMLOBm91.woff",
+      "_app/immutable/assets/KaTeX_Main-Italic.3WenGoN9.ttf",
+      "_app/immutable/assets/KaTeX_Main-Regular.B22Nviop.woff2",
+      "_app/immutable/assets/KaTeX_Main-Regular.Dr94JaBh.woff",
+      "_app/immutable/assets/KaTeX_Main-Regular.ypZvNtVU.ttf",
+      "_app/immutable/assets/KaTeX_Math-BoldItalic.CZnvNsCZ.woff2",
+      "_app/immutable/assets/KaTeX_Math-BoldItalic.iY-2wyZ7.woff",
+      "_app/immutable/assets/KaTeX_Math-BoldItalic.B3XSjfu4.ttf",
+      "_app/immutable/assets/KaTeX_Math-Italic.t53AETM-.woff2",
+      "_app/immutable/assets/KaTeX_Math-Italic.DA0__PXp.woff",
+      "_app/immutable/assets/KaTeX_Math-Italic.flOr_0UB.ttf",
+      "_app/immutable/assets/KaTeX_SansSerif-Bold.D1sUS0GD.woff2",
+      "_app/immutable/assets/KaTeX_SansSerif-Bold.DbIhKOiC.woff",
+      "_app/immutable/assets/KaTeX_SansSerif-Bold.CFMepnvq.ttf",
+      "_app/immutable/assets/KaTeX_SansSerif-Italic.C3H0VqGB.woff2",
+      "_app/immutable/assets/KaTeX_SansSerif-Italic.DN2j7dab.woff",
+      "_app/immutable/assets/KaTeX_SansSerif-Italic.YYjJ1zSn.ttf",
+      "_app/immutable/assets/KaTeX_SansSerif-Regular.DDBCnlJ7.woff2",
+      "_app/immutable/assets/KaTeX_SansSerif-Regular.CS6fqUqJ.woff",
+      "_app/immutable/assets/KaTeX_SansSerif-Regular.BNo7hRIc.ttf",
+      "_app/immutable/assets/KaTeX_Script-Regular.D3wIWfF6.woff2",
+      "_app/immutable/assets/KaTeX_Script-Regular.D5yQViql.woff",
+      "_app/immutable/assets/KaTeX_Script-Regular.C5JkGWo-.ttf",
+      "_app/immutable/assets/KaTeX_Size1-Regular.mCD8mA8B.woff2",
+      "_app/immutable/assets/KaTeX_Size1-Regular.C195tn64.woff",
+      "_app/immutable/assets/KaTeX_Size1-Regular.Dbsnue_I.ttf",
+      "_app/immutable/assets/KaTeX_Size2-Regular.Dy4dx90m.woff2",
+      "_app/immutable/assets/KaTeX_Size2-Regular.oD1tc_U0.woff",
+      "_app/immutable/assets/KaTeX_Size2-Regular.B7gKUWhC.ttf",
+      "_app/immutable/assets/KaTeX_Size3-Regular.gV2CO0n9.woff2",
+      "_app/immutable/assets/KaTeX_Size3-Regular.CTq5MqoE.woff",
+      "_app/immutable/assets/KaTeX_Size3-Regular.DgpXs0kz.ttf",
+      "_app/immutable/assets/KaTeX_Size4-Regular.Dl5lxZxV.woff2",
+      "_app/immutable/assets/KaTeX_Size4-Regular.BF-4gkZK.woff",
+      "_app/immutable/assets/KaTeX_Size4-Regular.DWFBv043.ttf",
+      "_app/immutable/assets/KaTeX_Typewriter-Regular.CO6r4hn1.woff2",
+      "_app/immutable/assets/KaTeX_Typewriter-Regular.C0xS9mPB.woff",
+      "_app/immutable/assets/KaTeX_Typewriter-Regular.D3Ib7_Hf.ttf"
     ]
+  },
+  "src/routes/exercises/maths/+page.svelte": {
+    "file": "entries/pages/exercises/maths/_page.svelte.js",
+    "name": "entries/pages/exercises/maths/_page.svelte",
+    "src": "src/routes/exercises/maths/+page.svelte",
+    "isEntry": true
+  },
+  "src/routes/exercises/maths/mpsi-maths/+page.svelte": {
+    "file": "entries/pages/exercises/maths/mpsi-maths/_page.svelte.js",
+    "name": "entries/pages/exercises/maths/mpsi-maths/_page.svelte",
+    "src": "src/routes/exercises/maths/mpsi-maths/+page.svelte",
+    "isEntry": true
+  },
+  "src/routes/exercises/maths/mpsi-maths/[exerciseId]/+page.svelte": {
+    "file": "entries/pages/exercises/maths/mpsi-maths/_exerciseId_/_page.svelte.js",
+    "name": "entries/pages/exercises/maths/mpsi-maths/_exerciseId_/_page.svelte",
+    "src": "src/routes/exercises/maths/mpsi-maths/[exerciseId]/+page.svelte",
+    "isEntry": true
   },
   "src/routes/forums/+page.server.ts": {
     "file": "entries/pages/forums/_page.server.ts.js",
@@ -680,10 +1642,11 @@
     "src": "src/routes/forums/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js"
-    ],
-    "css": [
-      "_app/immutable/assets/_page.C_YxPtiW.css"
+      "_index3.js",
+      "_utils.js",
+      "_forumStore.js",
+      "_authStore.js",
+      "_Icon.js"
     ]
   },
   "src/routes/forums/category/[id]/+page.server.ts": {
@@ -693,7 +1656,7 @@
     "isEntry": true,
     "imports": [
       "_forumService.js",
-      "_index2.js"
+      "_index.js"
     ]
   },
   "src/routes/forums/category/[id]/+page.svelte": {
@@ -702,8 +1665,24 @@
     "src": "src/routes/forums/category/[id]/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
-      "_ForumSidebar.js"
+      "_index3.js",
+      "_stores.js",
+      "_forumStore.js",
+      "_client.js",
+      "_Icon.js"
+    ]
+  },
+  "src/routes/forums/create/+page.svelte": {
+    "file": "entries/pages/forums/create/_page.svelte.js",
+    "name": "entries/pages/forums/create/_page.svelte",
+    "src": "src/routes/forums/create/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_forumStore.js",
+      "_index3.js",
+      "_utils.js",
+      "_client.js",
+      "_Icon.js"
     ]
   },
   "src/routes/forums/tag/[tag]/+page.server.ts": {
@@ -712,7 +1691,7 @@
     "src": "src/routes/forums/tag/[tag]/+page.server.ts",
     "isEntry": true,
     "imports": [
-      "_index2.js",
+      "_index.js",
       "_forumService.js"
     ]
   },
@@ -722,8 +1701,10 @@
     "src": "src/routes/forums/tag/[tag]/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
-      "_ForumSidebar.js"
+      "_index3.js",
+      "_stores.js",
+      "_forumStore.js",
+      "_Icon.js"
     ]
   },
   "src/routes/forums/topic/[id]/+page.server.ts": {
@@ -732,7 +1713,7 @@
     "src": "src/routes/forums/topic/[id]/+page.server.ts",
     "isEntry": true,
     "imports": [
-      "_index2.js",
+      "_index.js",
       "_forumService.js"
     ]
   },
@@ -742,12 +1723,14 @@
     "src": "src/routes/forums/topic/[id]/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
-      "_authStore.js"
+      "_index3.js",
+      "_stores.js",
+      "_forumStore.js",
+      "_Icon.js",
+      "_MarkdownRenderer.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.B6pW9uN4.css",
-      "_app/immutable/assets/MarkdownRenderer.w4HA0fza.css"
+      "_app/immutable/assets/_error.tn0RQdqM.css"
     ]
   },
   "src/routes/groups/+page.svelte": {
@@ -756,8 +1739,7 @@
     "src": "src/routes/groups/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
-      "_index-server.js"
+      "_index3.js"
     ],
     "css": [
       "_app/immutable/assets/_page.Dmvienw-.css"
@@ -769,7 +1751,7 @@
     "src": "src/routes/groups/[id]/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_stores.js",
       "_client.js"
     ]
@@ -780,7 +1762,7 @@
     "src": "src/routes/groups/create/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_client.js"
     ]
   },
@@ -796,10 +1778,21 @@
     "src": "src/routes/login/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_authStore.js",
+      "_utils.js",
       "_client.js",
       "_stores.js"
+    ]
+  },
+  "src/routes/my-learning/+page.server.ts": {
+    "file": "entries/pages/my-learning/_page.server.ts.js",
+    "name": "entries/pages/my-learning/_page.server.ts",
+    "src": "src/routes/my-learning/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_contentService.js",
+      "_index.js"
     ]
   },
   "src/routes/my-learning/+page.svelte": {
@@ -808,12 +1801,9 @@
     "src": "src/routes/my-learning/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
-      "_index-server.js",
-      "_userProfileStore.js",
+      "_index3.js",
       "_authStore.js",
-      "_client.js",
-      "_index3.js"
+      "_client.js"
     ]
   },
   "src/routes/progress/+page.svelte": {
@@ -822,7 +1812,7 @@
     "src": "src/routes/progress/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_authStore.js"
     ]
   },
@@ -832,8 +1822,9 @@
     "src": "src/routes/register/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_authStore.js",
+      "_utils.js",
       "_client.js"
     ]
   },
@@ -843,8 +1834,10 @@
     "src": "src/routes/reset-password/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
-      "_authStore.js"
+      "_index3.js",
+      "_authStore.js",
+      "_utils.js",
+      "_client.js"
     ]
   },
   "src/routes/settings/+page.svelte": {
@@ -853,7 +1846,7 @@
     "src": "src/routes/settings/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_authStore.js",
       "_client.js",
       "_userProfileStore.js"
@@ -865,11 +1858,12 @@
     "src": "src/routes/statistics/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_authStore.js",
       "_userProfileStore.js",
       "_pipStores.js",
       "_client.js",
+      "_utils.js",
       "_FocusTimeChart.js"
     ]
   },
@@ -879,8 +1873,9 @@
     "src": "src/routes/tools/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
-      "_index-server.js"
+      "_index3.js",
+      "_index-server.js",
+      "_authStore.js"
     ]
   },
   "src/routes/tools/calculator/+page.svelte": {
@@ -889,10 +1884,9 @@
     "src": "src/routes/tools/calculator/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_pipStores.js",
-      "_index-server.js",
-      "_activityService.js"
+      "_index-server.js"
     ]
   },
   "src/routes/tools/chat/+page.svelte": {
@@ -901,9 +1895,10 @@
     "src": "src/routes/tools/chat/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_index-server.js",
-      "_MarkdownRenderer.js"
+      "_authStore.js",
+      "_html.js"
     ],
     "css": [
       "_app/immutable/assets/_page.CQAmqjES.css"
@@ -915,7 +1910,7 @@
     "src": "src/routes/tools/dictionary/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_persistentStore.js"
     ]
   },
@@ -925,9 +1920,8 @@
     "src": "src/routes/tools/flashcards/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
-      "_persistentStore.js",
-      "_index-server.js"
+      "_index3.js",
+      "_persistentStore.js"
     ]
   },
   "src/routes/tools/notepad/+page.svelte": {
@@ -936,13 +1930,16 @@
     "src": "src/routes/tools/notepad/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_index-server.js",
       "_pipStores.js",
-      "_MarkdownRenderer.js"
+      "_utils.js",
+      "_html.js",
+      "_authStore.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.DP28dWN_.css"
+      "_app/immutable/assets/_page.ud8--3cK.css",
+      "_app/immutable/assets/github-dark.BEHUn5zE.css"
     ]
   },
   "src/routes/tools/pomodoro/+page.svelte": {
@@ -951,8 +1948,9 @@
     "src": "src/routes/tools/pomodoro/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
-      "_index-server.js"
+      "_index3.js",
+      "_index-server.js",
+      "_authStore.js"
     ],
     "css": [
       "_app/immutable/assets/_page.nSRtHnJD.css"
@@ -964,11 +1962,21 @@
     "src": "src/routes/tools/tasks/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_index.js",
+      "_index3.js",
       "_pipStores.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.6g1XFPBr.css"
+      "_app/immutable/assets/_page.BzSDsfUX.css"
+    ]
+  },
+  "src/routes/tools/workspace/+page.svelte": {
+    "file": "entries/pages/tools/workspace/_page.svelte.js",
+    "name": "entries/pages/tools/workspace/_page.svelte",
+    "src": "src/routes/tools/workspace/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index3.js",
+      "_index-server.js"
     ]
   }
 }

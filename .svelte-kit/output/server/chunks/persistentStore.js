@@ -1,4 +1,4 @@
-import { w as writable } from "./index3.js";
+import { w as writable } from "./index2.js";
 function persistentStore(key, initialValue) {
   let initial = initialValue;
   const store = writable(initial);
@@ -7,3 +7,4 @@ function persistentStore(key, initialValue) {
 export {
   persistentStore as p
 };
+//# sourceMappingURL=persistentStore.js.map

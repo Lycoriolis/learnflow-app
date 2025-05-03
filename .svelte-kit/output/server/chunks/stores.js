@@ -1,4 +1,4 @@
-import { T as getContext } from "./index.js";
+import { l as getContext } from "./index3.js";
 import "./client.js";
 const getStores = () => {
   const stores = getContext("__svelte__");
@@ -24,3 +24,4 @@ const page = {
 export {
   page as p
 };
+//# sourceMappingURL=stores.js.map

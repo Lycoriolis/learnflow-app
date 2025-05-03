@@ -1,9 +1,9 @@
-import { g as getAllCategories, h as getAllTopics } from "../../../../../chunks/forumService.js";
-import { e as error } from "../../../../../chunks/index2.js";
+import { a as getCategories, k as getTopics } from "../../../../../chunks/forumService.js";
+import { e as error } from "../../../../../chunks/index.js";
 const load = async ({ params }) => {
-  const categories = await getAllCategories();
-  const allTopics = await getAllTopics();
-  const topics = allTopics.filter((t) => t.category === params.id || t.category_id === params.id);
+  const categories = await getCategories();
+  const allTopics = await getTopics();
+  const topics = allTopics.filter((t) => t.category_id === params.id);
   if (!categories.find((c) => c.id === params.id)) {
     throw error(404, "Category not found");
   }
@@ -12,3 +12,4 @@ const load = async ({ params }) => {
 export {
   load
 };
+//# sourceMappingURL=_page.server.ts.js.map

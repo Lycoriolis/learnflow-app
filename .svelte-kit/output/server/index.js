@@ -1,9 +1,9 @@
-import { D as DEV } from "./chunks/index.js";
+import { D as DEV } from "./chunks/utils.js";
 import { a as assets, b as base, c as app_dir, o as override, r as reset, d as read_implementation, e as options, g as get_hooks, p as prerendering, s as set_read_implementation } from "./chunks/internal.js";
-import { H as HttpError, S as SvelteKitError, j as json, t as text, R as Redirect, A as ActionFailure } from "./chunks/index2.js";
+import { H as HttpError, S as SvelteKitError, j as json, t as text, R as Redirect, A as ActionFailure } from "./chunks/index.js";
 import * as devalue from "devalue";
 import { m as make_trackable, d as disable_search, a as decode_params, v as validate_layout_server_exports, b as validate_layout_exports, c as validate_page_server_exports, e as validate_page_exports, n as normalize_path, r as resolve, f as decode_pathname, g as validate_server_exports } from "./chunks/exports.js";
-import { r as readable, w as writable } from "./chunks/index3.js";
+import { r as readable, w as writable } from "./chunks/index2.js";
 import { p as public_env, s as safe_public_env, a as set_private_env, b as set_public_env, c as set_safe_public_env } from "./chunks/shared-server.js";
 import { parse, serialize } from "cookie";
 import * as set_cookie_parser from "set-cookie-parser";
@@ -2272,14 +2272,16 @@ async function render_page(event, page, options2, manifest, state, nodes, resolv
     const should_prerender_data = nodes.should_prerender_data();
     const data_pathname = add_data_suffix(event.url.pathname);
     const fetched = [];
-    if (nodes.ssr() === false && !(state.prerendering && should_prerender_data)) {
+    const ssr = nodes.ssr();
+    const csr = nodes.csr();
+    if (ssr === false && !(state.prerendering && should_prerender_data)) {
       if (DEV && action_result && !event.request.headers.has("x-sveltekit-action")) ;
       return await render_response({
         branch: [],
         fetched,
         page_config: {
           ssr: false,
-          csr: nodes.csr()
+          csr
         },
         status,
         error: null,
@@ -2321,7 +2323,6 @@ async function render_page(event, page, options2, manifest, state, nodes, resolv
         }
       });
     });
-    const csr = nodes.csr();
     const load_promises = nodes.data.map((node, i) => {
       if (load_error) throw load_error;
       return Promise.resolve().then(async () => {
@@ -2386,16 +2387,21 @@ async function render_page(event, page, options2, manifest, state, nodes, resolv
               const node2 = await manifest._.nodes[index]();
               let j = i;
               while (!branch[j]) j -= 1;
+              const layouts = compact(branch.slice(0, j + 1));
+              const nodes2 = new PageNodes(layouts.map((layout) => layout.node));
               return await render_response({
                 event,
                 options: options2,
                 manifest,
                 state,
                 resolve_opts,
-                page_config: { ssr: true, csr: true },
+                page_config: {
+                  ssr: nodes2.ssr(),
+                  csr: nodes2.csr()
+                },
                 status: status2,
                 error,
-                branch: compact(branch.slice(0, j + 1)).concat({
+                branch: layouts.concat({
                   node: node2,
                   data: null,
                   server_data: null
@@ -2426,7 +2432,6 @@ async function render_page(event, page, options2, manifest, state, nodes, resolv
         body: data
       });
     }
-    const ssr = nodes.ssr();
     return await render_response({
       event,
       options: options2,
@@ -2434,7 +2439,7 @@ async function render_page(event, page, options2, manifest, state, nodes, resolv
       state,
       resolve_opts,
       page_config: {
-        csr: nodes.csr(),
+        csr,
         ssr
       },
       status,
@@ -3246,3 +3251,4 @@ class Server {
 export {
   Server
 };
+//# sourceMappingURL=index.js.map

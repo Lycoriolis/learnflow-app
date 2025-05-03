@@ -1,4 +1,4 @@
-import "../../../../../chunks/index2.js";
+import "../../../../../chunks/index.js";
 import { s as setupCsrfToken, C as CSRF_HEADER } from "../../../../../chunks/csrf.server.js";
 if (typeof window !== "undefined") {
   throw new Error("This endpoint should only be imported on the server!");
@@ -15,3 +15,4 @@ const GET = async ({ cookies }) => {
 export {
   GET
 };
+//# sourceMappingURL=_server.ts.js.map

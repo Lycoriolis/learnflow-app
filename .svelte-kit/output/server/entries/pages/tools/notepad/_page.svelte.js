@@ -1,8 +1,52 @@
-import { O as head, F as escape_html, B as pop, z as push } from "../../../../chunks/index.js";
+import { g as bind_props, a as pop, p as push, h as head, f as escape_html } from "../../../../chunks/index3.js";
 import { o as onDestroy } from "../../../../chunks/index-server.js";
-import { j as notepadContent } from "../../../../chunks/pipStores.js";
-import { M as MarkdownRenderer } from "../../../../chunks/MarkdownRenderer.js";
+import { n as notepadContent } from "../../../../chunks/pipStores.js";
+import { D as DEV, y as fallback } from "../../../../chunks/utils.js";
+import DOMPurify from "dompurify";
+/* empty css                             */
+import { h as html } from "../../../../chunks/html.js";
 import "firebase/firestore";
+import "clsx";
+import "../../../../chunks/authStore.js";
+const browser = DEV;
+function renderMarkdown(markdown) {
+  if (!markdown) return "";
+  return markdown.replace(/^### (.*$)/gim, "<h3>$1</h3>").replace(/^## (.*$)/gim, "<h2>$1</h2>").replace(/^# (.*$)/gim, "<h1>$1</h1>").replace(/```(\w*)\n([\s\S]*?)```/gm, '<pre><code class="language-$1">$2</code></pre>').replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\*(.*?)\*/g, "<em>$1</em>").replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>').replace(/^\s*(\n)?(.+)/gm, function(m) {
+    return /^<(\/)?(h\d|pre|ul|ol|li|blockquote|p|table|tr|td|th)/.test(m) ? m : "<p>" + m + "</p>";
+  }).replace(/\n/g, "<br>");
+}
+function MarkdownRendererComponent($$payload, $$props) {
+  push();
+  let content = fallback($$props["content"], "");
+  let htmlContent = "";
+  function updateContent() {
+    if (!content) {
+      htmlContent = "";
+      return;
+    }
+    try {
+      htmlContent = renderMarkdown(content);
+      if (browser && DOMPurify && typeof htmlContent === "string") ;
+    } catch (error) {
+      console.error("Error rendering markdown:", error);
+      htmlContent = `<p>Error rendering content</p>`;
+    }
+  }
+  if (content) {
+    updateContent();
+  }
+  $$payload.out += `<div class="markdown-content svelte-1b5iehr">`;
+  if (htmlContent) {
+    $$payload.out += "<!--[-->";
+    $$payload.out += `${html(htmlContent)}`;
+  } else {
+    $$payload.out += "<!--[!-->";
+    $$payload.out += `<div class="loading svelte-1b5iehr">Loading content...</div>`;
+  }
+  $$payload.out += `<!--]--></div>`;
+  bind_props($$props, { content });
+  pop();
+}
 function _page($$payload, $$props) {
   push();
   let note = "";
@@ -30,7 +74,7 @@ function _page($$payload, $$props) {
   {
     $$payload.out += "<!--[-->";
     $$payload.out += `<div class="svelte-1oo81za"><label class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200 block svelte-1oo81za">Live Preview</label> <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 h-64 overflow-auto shadow-inner prose dark:prose-invert svelte-1oo81za">`;
-    MarkdownRenderer($$payload, { content: note });
+    MarkdownRendererComponent($$payload, { content: note });
     $$payload.out += `<!----></div></div>`;
   }
   $$payload.out += `<!--]--></div></div>`;
@@ -39,3 +83,4 @@ function _page($$payload, $$props) {
 export {
   _page as default
 };
+//# sourceMappingURL=_page.svelte.js.map

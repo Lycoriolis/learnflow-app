@@ -1,6 +1,5 @@
-import { O as head, B as pop, z as push } from "../../../chunks/index.js";
-import "clsx";
-import "firebase/auth";
+import { h as head, a as pop, p as push } from "../../../chunks/index3.js";
+import "../../../chunks/authStore.js";
 function _page($$payload, $$props) {
   push();
   let filteredEvents;
@@ -107,3 +106,4 @@ function _page($$payload, $$props) {
 export {
   _page as default
 };
+//# sourceMappingURL=_page.svelte.js.map

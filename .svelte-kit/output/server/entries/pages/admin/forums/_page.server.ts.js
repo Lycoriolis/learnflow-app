@@ -1,9 +1,10 @@
-import { h as getAllTopics, g as getAllCategories } from "../../../../chunks/forumService.js";
+import { k as getTopics, a as getCategories } from "../../../../chunks/forumService.js";
 const load = async () => {
-  const topics = await getAllTopics();
-  const categories = await getAllCategories();
+  const topics = await getTopics();
+  const categories = await getCategories();
   return { topics, categories };
 };
 export {
   load
 };
+//# sourceMappingURL=_page.server.ts.js.map

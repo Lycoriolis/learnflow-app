@@ -1,6 +1,6 @@
 import "clsx";
 import "./exports.js";
-import { R as noop } from "./index.js";
+import { z as noop } from "./utils.js";
 function get(key, parse = JSON.parse) {
   try {
     return parse(sessionStorage[key]);
@@ -32,3 +32,4 @@ function goto(url, opts = {}) {
 export {
   goto as g
 };
+//# sourceMappingURL=client.js.map

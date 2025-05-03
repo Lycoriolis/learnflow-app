@@ -14,3 +14,4 @@ function GET(event) {
 export {
   GET
 };
+//# sourceMappingURL=_server.ts.js.map

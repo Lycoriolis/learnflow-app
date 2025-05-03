@@ -7,10 +7,10 @@ function __memo(fn) {
 return {
 	appDir: "_app",
 	appPath: "_app",
-	assets: new Set(["favicon.ico"]),
-	mimeTypes: {},
+	assets: new Set(["content/courses/index.json","content/courses/intro-python/variables.md","content/courses/maths/index.json","content/courses/maths/mpsi-maths/calculs_algebriques.md","content/courses/maths/mpsi-maths/equations-differentielles.md","content/courses/maths/mpsi-maths/espaces-vectoriels-applications-lineaires.md","content/courses/maths/mpsi-maths/groupes-symetriques-et-determinants.md","content/courses/maths/mpsi-maths/index.json","content/courses/maths/mpsi-maths/integration-espaces-produits.md","content/courses/maths/mpsi-maths/nombres-complexes-trigonometrie.md","content/courses/maths/mpsi-maths/raisonnement-et-vocabulaire-ensembliste.md","content/courses/maths/mpsi-maths/series-numeriques.md","content/courses/maths/mpsi-maths/structures-algebriques.md","content/courses/mpsi-maths/index.json","content/exercises/index.json","content/exercises/maths/index.json","content/exercises/maths/mpsi-maths/arithmetique.md","content/exercises/maths/mpsi-maths/calculs-algebriques.md","content/exercises/maths/mpsi-maths/espaces-prehilbertiens.md","content/exercises/maths/mpsi-maths/espaces-vectoriels-applications-lineaires.md","content/exercises/maths/mpsi-maths/groupe-symetrique-et-determinant.md","content/exercises/maths/mpsi-maths/groupes-symetriques-et-determinants.md","content/exercises/maths/mpsi-maths/index.json","content/exercises/maths/mpsi-maths/integration-espaces-produits.md","content/exercises/maths/mpsi-maths/nombres-complexes-trigonometrie.md","content/exercises/maths/mpsi-maths/polynomes.md","content/exercises/maths/mpsi-maths/raisonnement-et-vocabulaire-ensembliste.md","content/exercises/maths/mpsi-maths/series-numeriques.md","content/exercises/maths/mpsi-maths/structures-algebriques.md","content/exercises/programming/index.json","favicon.ico"]),
+	mimeTypes: {".json":"application/json",".md":"text/markdown"},
 	_: {
-		client: {start:"_app/immutable/entry/start.HWP6r5Zx.js",app:"_app/immutable/entry/app.Ce4xd_MG.js",imports:["_app/immutable/entry/start.HWP6r5Zx.js","_app/immutable/chunks/BMc8ARJA.js","_app/immutable/chunks/D8Zr53n5.js","_app/immutable/chunks/DIeogL5L.js","_app/immutable/chunks/B51PyqUg.js","_app/immutable/chunks/DyX_nzx0.js","_app/immutable/entry/app.Ce4xd_MG.js","_app/immutable/chunks/C1FmrZbK.js","_app/immutable/chunks/D8Zr53n5.js","_app/immutable/chunks/DIeogL5L.js","_app/immutable/chunks/UpSy6tP0.js","_app/immutable/chunks/CCLz0Z0F.js","_app/immutable/chunks/ByokzzJe.js","_app/immutable/chunks/CWj6FrbW.js","_app/immutable/chunks/BAqAra_5.js","_app/immutable/chunks/BM8m5GYV.js","_app/immutable/chunks/D0guHZRM.js","_app/immutable/chunks/CYIMW-vo.js","_app/immutable/chunks/B51PyqUg.js","_app/immutable/chunks/DyX_nzx0.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:true},
+		client: {start:"_app/immutable/entry/start.C4IoMYiv.js",app:"_app/immutable/entry/app.GDGHBi2y.js",imports:["_app/immutable/entry/start.C4IoMYiv.js","_app/immutable/chunks/GvWXBGfm.js","_app/immutable/chunks/HPQed-Yx.js","_app/immutable/chunks/DIeogL5L.js","_app/immutable/chunks/CToUoAZH.js","_app/immutable/chunks/Bpt9IQqH.js","_app/immutable/entry/app.GDGHBi2y.js","_app/immutable/chunks/Dp1pzeXC.js","_app/immutable/chunks/HPQed-Yx.js","_app/immutable/chunks/DIeogL5L.js","_app/immutable/chunks/PqlH_gqs.js","_app/immutable/chunks/ZM6Rlk1U.js","_app/immutable/chunks/Bkjpsbyi.js","_app/immutable/chunks/B0JaqILT.js","_app/immutable/chunks/COm6N4YE.js","_app/immutable/chunks/Da7F0fHf.js","_app/immutable/chunks/BV8la0Yt.js","_app/immutable/chunks/BWjJF4ZV.js","_app/immutable/chunks/CGqtlgv0.js","_app/immutable/chunks/CToUoAZH.js","_app/immutable/chunks/Bpt9IQqH.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:true},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),
@@ -52,7 +52,12 @@ return {
 			__memo(() => import('./nodes/38.js')),
 			__memo(() => import('./nodes/39.js')),
 			__memo(() => import('./nodes/40.js')),
-			__memo(() => import('./nodes/41.js'))
+			__memo(() => import('./nodes/41.js')),
+			__memo(() => import('./nodes/42.js')),
+			__memo(() => import('./nodes/43.js')),
+			__memo(() => import('./nodes/44.js')),
+			__memo(() => import('./nodes/45.js')),
+			__memo(() => import('./nodes/46.js'))
 		],
 		routes: [
 			{
@@ -140,6 +145,13 @@ return {
 				endpoint: __memo(() => import('./entries/endpoints/api/activities/start/_server.ts.js'))
 			},
 			{
+				id: "/api/content/list",
+				pattern: /^\/api\/content\/list\/?$/,
+				params: [],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/content/list/_server.ts.js'))
+			},
+			{
 				id: "/api/csrf/init",
 				pattern: /^\/api\/csrf\/init\/?$/,
 				params: [],
@@ -152,6 +164,20 @@ return {
 				params: [],
 				page: null,
 				endpoint: __memo(() => import('./entries/endpoints/api/csrf/refresh/_server.ts.js'))
+			},
+			{
+				id: "/api/exercises",
+				pattern: /^\/api\/exercises\/?$/,
+				params: [],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/exercises/_server.ts.js'))
+			},
+			{
+				id: "/api/forums/topics/[id]",
+				pattern: /^\/api\/forums\/topics\/([^/]+?)\/?$/,
+				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/forums/topics/_id_/_server.ts.js'))
 			},
 			{
 				id: "/api/forum/categories",
@@ -238,6 +264,20 @@ return {
 				endpoint: __memo(() => import('./entries/endpoints/api/score/_server.ts.js'))
 			},
 			{
+				id: "/api/topic/[id]",
+				pattern: /^\/api\/topic\/([^/]+?)\/?$/,
+				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/topic/_id_/_server.ts.js'))
+			},
+			{
+				id: "/api/[id]",
+				pattern: /^\/api\/([^/]+?)\/?$/,
+				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/_id_/_server.ts.js'))
+			},
+			{
 				id: "/calendar",
 				pattern: /^\/calendar\/?$/,
 				params: [],
@@ -259,17 +299,17 @@ return {
 				endpoint: null
 			},
 			{
+				id: "/courses/maths/mpsi-maths",
+				pattern: /^\/courses\/maths\/mpsi-maths\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 14 },
+				endpoint: null
+			},
+			{
 				id: "/courses/[slug]",
 				pattern: /^\/courses\/([^/]+?)\/?$/,
 				params: [{"name":"slug","optional":false,"rest":false,"chained":false}],
 				page: { layouts: [0,], errors: [1,], leaf: 13 },
-				endpoint: null
-			},
-			{
-				id: "/courses/[slug]/[lessonId]",
-				pattern: /^\/courses\/([^/]+?)\/([^/]+?)\/?$/,
-				params: [{"name":"slug","optional":false,"rest":false,"chained":false},{"name":"lessonId","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 14 },
 				endpoint: null
 			},
 			{
@@ -287,9 +327,30 @@ return {
 				endpoint: null
 			},
 			{
-				id: "/exercises/[slug]",
+				id: "/exercises/maths",
+				pattern: /^\/exercises\/maths\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 18 },
+				endpoint: null
+			},
+			{
+				id: "/exercises/maths/mpsi-maths",
+				pattern: /^\/exercises\/maths\/mpsi-maths\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 19 },
+				endpoint: null
+			},
+			{
+				id: "/exercises/maths/mpsi-maths/[exerciseId]",
+				pattern: /^\/exercises\/maths\/mpsi-maths\/([^/]+?)\/?$/,
+				params: [{"name":"exerciseId","optional":false,"rest":false,"chained":false}],
+				page: { layouts: [0,], errors: [1,], leaf: 20 },
+				endpoint: null
+			},
+			{
+				id: "/exercises/[id]",
 				pattern: /^\/exercises\/([^/]+?)\/?$/,
-				params: [{"name":"slug","optional":false,"rest":false,"chained":false}],
+				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
 				page: { layouts: [0,], errors: [1,], leaf: 17 },
 				endpoint: null
 			},
@@ -297,161 +358,175 @@ return {
 				id: "/forums",
 				pattern: /^\/forums\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 18 },
+				page: { layouts: [0,], errors: [1,], leaf: 21 },
 				endpoint: null
 			},
 			{
 				id: "/forums/category/[id]",
 				pattern: /^\/forums\/category\/([^/]+?)\/?$/,
 				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 19 },
+				page: { layouts: [0,], errors: [1,], leaf: 22 },
+				endpoint: null
+			},
+			{
+				id: "/forums/create",
+				pattern: /^\/forums\/create\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 23 },
 				endpoint: null
 			},
 			{
 				id: "/forums/tag/[tag]",
 				pattern: /^\/forums\/tag\/([^/]+?)\/?$/,
 				params: [{"name":"tag","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 20 },
+				page: { layouts: [0,], errors: [1,], leaf: 24 },
 				endpoint: null
 			},
 			{
 				id: "/forums/topic/[id]",
 				pattern: /^\/forums\/topic\/([^/]+?)\/?$/,
 				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 21 },
+				page: { layouts: [0,], errors: [1,], leaf: 25 },
 				endpoint: null
 			},
 			{
 				id: "/groups",
 				pattern: /^\/groups\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 22 },
+				page: { layouts: [0,], errors: [1,], leaf: 26 },
 				endpoint: null
 			},
 			{
 				id: "/groups/create",
 				pattern: /^\/groups\/create\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 24 },
+				page: { layouts: [0,], errors: [1,], leaf: 28 },
 				endpoint: null
 			},
 			{
 				id: "/groups/[id]",
 				pattern: /^\/groups\/([^/]+?)\/?$/,
 				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 23 },
+				page: { layouts: [0,], errors: [1,], leaf: 27 },
 				endpoint: null
 			},
 			{
 				id: "/help",
 				pattern: /^\/help\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 25 },
+				page: { layouts: [0,], errors: [1,], leaf: 29 },
 				endpoint: null
 			},
 			{
 				id: "/login",
 				pattern: /^\/login\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 26 },
+				page: { layouts: [0,], errors: [1,], leaf: 30 },
 				endpoint: null
 			},
 			{
 				id: "/my-learning",
 				pattern: /^\/my-learning\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 27 },
+				page: { layouts: [0,], errors: [1,], leaf: 31 },
 				endpoint: null
 			},
 			{
 				id: "/progress",
 				pattern: /^\/progress\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 28 },
+				page: { layouts: [0,], errors: [1,], leaf: 32 },
 				endpoint: null
 			},
 			{
 				id: "/register",
 				pattern: /^\/register\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 29 },
+				page: { layouts: [0,], errors: [1,], leaf: 33 },
 				endpoint: null
 			},
 			{
 				id: "/reset-password",
 				pattern: /^\/reset-password\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 30 },
+				page: { layouts: [0,], errors: [1,], leaf: 34 },
 				endpoint: null
 			},
 			{
 				id: "/settings",
 				pattern: /^\/settings\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 31 },
+				page: { layouts: [0,], errors: [1,], leaf: 35 },
 				endpoint: null
 			},
 			{
 				id: "/statistics",
 				pattern: /^\/statistics\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 32 },
+				page: { layouts: [0,], errors: [1,], leaf: 36 },
 				endpoint: null
 			},
 			{
 				id: "/tools",
 				pattern: /^\/tools\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 33 },
+				page: { layouts: [0,], errors: [1,], leaf: 37 },
 				endpoint: null
 			},
 			{
 				id: "/tools/calculator",
 				pattern: /^\/tools\/calculator\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 34 },
+				page: { layouts: [0,], errors: [1,], leaf: 38 },
 				endpoint: null
 			},
 			{
 				id: "/tools/chat",
 				pattern: /^\/tools\/chat\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 35 },
+				page: { layouts: [0,], errors: [1,], leaf: 39 },
 				endpoint: null
 			},
 			{
 				id: "/tools/dictionary",
 				pattern: /^\/tools\/dictionary\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 36 },
+				page: { layouts: [0,], errors: [1,], leaf: 40 },
 				endpoint: null
 			},
 			{
 				id: "/tools/flashcards",
 				pattern: /^\/tools\/flashcards\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 37 },
+				page: { layouts: [0,], errors: [1,], leaf: 41 },
 				endpoint: null
 			},
 			{
 				id: "/tools/notepad",
 				pattern: /^\/tools\/notepad\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 38 },
+				page: { layouts: [0,], errors: [1,], leaf: 42 },
 				endpoint: null
 			},
 			{
 				id: "/tools/pomodoro",
 				pattern: /^\/tools\/pomodoro\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 39 },
+				page: { layouts: [0,], errors: [1,], leaf: 43 },
 				endpoint: null
 			},
 			{
 				id: "/tools/tasks",
 				pattern: /^\/tools\/tasks\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 40 },
+				page: { layouts: [0,], errors: [1,], leaf: 44 },
+				endpoint: null
+			},
+			{
+				id: "/tools/workspace",
+				pattern: /^\/tools\/workspace\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 45 },
 				endpoint: null
 			}
 		],

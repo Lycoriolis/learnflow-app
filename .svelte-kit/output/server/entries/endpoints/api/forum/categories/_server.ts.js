@@ -1,7 +1,7 @@
-import { g as getAllCategories, c as createCategory, u as updateCategory, d as deleteCategory } from "../../../../../chunks/forumService.js";
+import { a as getCategories, c as createCategory, b as updateCategory, e as deleteCategory } from "../../../../../chunks/forumService.js";
 const GET = async () => {
   try {
-    const categories = await getAllCategories();
+    const categories = await getCategories();
     return new Response(JSON.stringify(categories), { status: 200 });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -28,7 +28,7 @@ const PUT = async ({ request }) => {
   }
   try {
     const updated = await updateCategory(id, data);
-    if (!updated) {
+    if (updated === null) {
       return new Response("Category not found", { status: 404 });
     }
     return new Response(JSON.stringify(updated), { status: 200 });
@@ -44,7 +44,7 @@ const DELETE = async ({ url }) => {
   }
   try {
     const result = await deleteCategory(id);
-    if (!result) {
+    if (result === false) {
       return new Response("Category not found", { status: 404 });
     }
     return new Response(JSON.stringify({ success: true }), { status: 200 });
@@ -62,3 +62,4 @@ export {
   POST,
   PUT
 };
+//# sourceMappingURL=_server.ts.js.map

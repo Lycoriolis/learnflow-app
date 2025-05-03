@@ -46,5 +46,144 @@ Instrumented pages to call `logStart`/`logEnd` and `logEvent`:
 ## 6. Documentation
 - **RECOMMENDATIONS.md**: API design, data model, service logic, future enhancements
 
+## 7. Course System Revamp (as of May 2025)
+
+### Content-Driven Course System
+- Migrated to markdown-based content system:
+  - Course content stored in `/static/content/courses/`
+  - Support for frontmatter metadata
+  - Course structure extracted from markdown headers
+  - Lesson content in individual markdown files
+
+### Services Integration
+- **ContentService** enhancements:
+  - `listContent('course')`: Lists available courses from index.json
+  - `loadContent('course', id)`: Loads course content and metadata
+  - Enhanced metadata extraction with frontmatter support
+  - Backward compatibility with existing mock data
+
+### Course Content Structure
+- Standard course file format:
+  ```markdown
+  ---
+  title: Course Title
+  description: Course description
+  tags: ['tag1', 'tag2']
+  difficulty: beginner|intermediate|advanced
+  estimatedTime: duration
+  ---
+
+  # Course Title
+  Description
+
+  ## Module: Module Title
+  Module description
+
+  ### Lesson: Lesson Title
+  Lesson content
+  ```
+
+### Navigation & UI Updates
+- Enhanced breadcrumb navigation in course and lesson pages
+- Proper loading states and error handling
+- Course cards with dynamic gradients based on category
+- MathContent integration for mathematical content
+- Responsive layout improvements
+
+### Content Management
+- New admin interface for course management:
+  - Course listing with metadata
+  - Basic CRUD operations
+  - Markdown preview support
+  - Metadata validation
+
+### Progress Tracking
+- Integrated with activity logging system:
+  - `view_course_detail`
+  - `view_lesson`
+  - `start_course`
+  - Progress persistence in user preferences
+
+### Migration Path
+- Dual content system during transition:
+  1. New markdown-based content system
+  2. Legacy mock data fallback
+  3. Gradual migration strategy for existing courses
+
+### Technical Notes
+- Course content fetching:
+  ```
+  /content/courses/
+    ├── index.json         # Course metadata index
+    ├── course-id/         # Course directory
+    │   ├── lesson-1.md    # Individual lesson files
+    │   └── lesson-2.md
+    └── course-id.md       # Main course content
+  ```
+
+### Content Management System Updates (May 2025)
+
+#### File-Based Course System
+- Removed mock data system in favor of file-based content
+- Courses now fully loaded from `/static/content/courses/`:
+  - `index.json`: Central course metadata registry
+  - Individual `.md` files for course content
+  - Support for nested lesson structure
+
+#### Visual Improvements
+- Enhanced course card design:
+  - Dark theme optimization
+  - Dynamic gradient colors based on course type:
+    - Math/Calculus: Blue gradient
+    - Programming/Python: Green gradient
+    - Physics/Science: Purple gradient
+    - Language courses: Orange gradient
+    - Other courses: Indigo gradient (default)
+  - Improved text contrast and readability
+  - Consistent card styling across views
+
+#### CourseService Enhancements
+- Direct content loading from filesystem
+- Robust error handling for missing content
+- Improved module/lesson structure parsing
+- Enhanced metadata integration from frontmatter
+
+### Hierarchical Course Organization (May 2025)
+
+#### Nested Course Structure
+- Implemented hierarchical course navigation:
+  - Main `/courses` page shows course categories and standalone courses
+  - Course categories (e.g. "MPSI - Mathématiques") link to dedicated category pages
+  - Category pages display all related subcourses
+  - Each subcourse has its own detail page
+
+#### Directory Structure Reorganization
+- Restructured content directories for better organization:
+  ```
+  /content/courses/
+    ├── index.json                 # Main courses index
+    ├── intro-python.md            # Standalone course
+    └── mpsi-maths/                # Course category directory
+        ├── index.json             # Category index with subcourses
+        ├── mpsi-mathematiques.md  # Overview course
+        ├── calculs_algebriques.md # Subcourse
+        └── ...                    # Other subcourses
+  ```
+
+#### Navigation Improvements
+- Layer-by-layer navigation path:
+  1. Courses page → lists categories and standalone courses
+  2. Category page → displays all subcourses in the category
+  3. Course detail page → shows specific course content
+- Intelligent breadcrumb navigation adapts to course hierarchy
+- Smart back buttons that return to appropriate parent page
+- Visual distinction between course categories and individual courses
+
+#### Content Service Enhancements
+- Support for nested content directories
+- Custom category index files for subcourse listings
+- Adaptable content paths to work with subdirectories
+- Proper routing to handle nested course structure
+
 ---
-*Implementation log as of 24 April 2025.*
+*Implementation log last updated: 1 May 2025.*

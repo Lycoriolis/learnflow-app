@@ -18,3 +18,4 @@ const GET = async ({ params }) => {
 export {
   GET
 };
+//# sourceMappingURL=_server.ts.js.map

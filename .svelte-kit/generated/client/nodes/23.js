@@ -1,1 +1,1 @@
-export { default as component } from "../../../../src/routes/groups/+page.svelte";
+export { default as component } from "../../../../src/routes/exercises/maths/mpsi-maths/[exerciseId]/+page.svelte";

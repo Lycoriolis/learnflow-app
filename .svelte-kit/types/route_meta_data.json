@@ -1,6 +1,7 @@
 {
 	"/(protected)": [],
 	"/": [
+		"src/routes/+page.server.ts",
 		"src/routes/+layout.server.ts",
 		"src/routes/+layout.server.ts"
 	],
@@ -12,6 +13,11 @@
 	],
 	"/admin/courses": [
 		"src/routes/admin/courses/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/admin/dashboard": [
+		"src/routes/admin/dashboard/+page.server.ts",
 		"src/routes/admin/+layout.server.ts",
 		"src/routes/+layout.server.ts"
 	],
@@ -27,6 +33,10 @@
 	],
 	"/admin/forums/topic/[id]/edit": [
 		"src/routes/admin/forums/topic/[id]/edit/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/admin/login": [
 		"src/routes/admin/+layout.server.ts",
 		"src/routes/+layout.server.ts"
 	],
@@ -50,11 +60,20 @@
 	"/api/activities/start": [
 		"src/routes/api/activities/start/+server.ts"
 	],
+	"/api/content/list": [
+		"src/routes/api/content/list/+server.ts"
+	],
 	"/api/csrf/init": [
 		"src/routes/api/csrf/init/+server.ts"
 	],
 	"/api/csrf/refresh": [
 		"src/routes/api/csrf/refresh/+server.ts"
+	],
+	"/api/exercises": [
+		"src/routes/api/exercises/+server.ts"
+	],
+	"/api/forums/topics/[id]": [
+		"src/routes/api/forums/topics/[id]/+server.ts"
 	],
 	"/api/forum/categories": [
 		"src/routes/api/forum/categories/+server.ts"
@@ -92,29 +111,49 @@
 	"/api/score": [
 		"src/routes/api/score/+server.ts"
 	],
+	"/api/topic/[id]": [
+		"src/routes/api/topic/[id]/+server.ts"
+	],
+	"/api/[id]": [
+		"src/routes/api/[id]/+server.ts"
+	],
 	"/calendar": [
 		"src/routes/+layout.server.ts"
 	],
 	"/category/[slug]": [
 		"src/routes/category/[slug]/+page.ts",
+		"src/routes/category/[slug]/+page.server.ts",
 		"src/routes/+layout.server.ts"
 	],
 	"/courses": [
+		"src/routes/courses/+page.server.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/courses/maths/mpsi-maths": [
 		"src/routes/+layout.server.ts"
 	],
 	"/courses/[slug]": [
-		"src/routes/+layout.server.ts"
-	],
-	"/courses/[slug]/[lessonId]": [
+		"src/routes/courses/[slug]/+page.server.ts",
 		"src/routes/+layout.server.ts"
 	],
 	"/events": [
 		"src/routes/+layout.server.ts"
 	],
 	"/exercises": [
+		"src/routes/exercises/+page.server.ts",
 		"src/routes/+layout.server.ts"
 	],
-	"/exercises/[slug]": [
+	"/exercises/maths": [
+		"src/routes/+layout.server.ts"
+	],
+	"/exercises/maths/mpsi-maths": [
+		"src/routes/+layout.server.ts"
+	],
+	"/exercises/maths/mpsi-maths/[exerciseId]": [
+		"src/routes/+layout.server.ts"
+	],
+	"/exercises/[id]": [
+		"src/routes/exercises/[id]/+page.server.ts",
 		"src/routes/+layout.server.ts"
 	],
 	"/forums": [
@@ -123,6 +162,9 @@
 	],
 	"/forums/category/[id]": [
 		"src/routes/forums/category/[id]/+page.server.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/forums/create": [
 		"src/routes/+layout.server.ts"
 	],
 	"/forums/tag/[tag]": [
@@ -149,6 +191,7 @@
 		"src/routes/+layout.server.ts"
 	],
 	"/my-learning": [
+		"src/routes/my-learning/+page.server.ts",
 		"src/routes/+layout.server.ts"
 	],
 	"/progress": [

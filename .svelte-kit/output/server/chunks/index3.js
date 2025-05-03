@@ -1,59 +1,245 @@
-import { R as noop, S as safe_not_equal } from "./index.js";
 import "clsx";
-const subscriber_queue = [];
-function readable(value, start) {
+import { h as HYDRATION_START, j as HYDRATION_END, B as subscribe_to_store } from "./utils.js";
+function lifecycle_outside_component(name) {
+  {
+    throw new Error(`https://svelte.dev/e/lifecycle_outside_component`);
+  }
+}
+const ATTR_REGEX = /[&"<]/g;
+const CONTENT_REGEX = /[&<]/g;
+function escape_html(value, is_attr) {
+  const str = String(value ?? "");
+  const pattern = is_attr ? ATTR_REGEX : CONTENT_REGEX;
+  pattern.lastIndex = 0;
+  let escaped = "";
+  let last = 0;
+  while (pattern.test(str)) {
+    const i = pattern.lastIndex - 1;
+    const ch = str[i];
+    escaped += str.substring(last, i) + (ch === "&" ? "&amp;" : ch === '"' ? "&quot;" : "&lt;");
+    last = i + 1;
+  }
+  return escaped + str.substring(last);
+}
+const replacements = {
+  translate: /* @__PURE__ */ new Map([
+    [true, "yes"],
+    [false, "no"]
+  ])
+};
+function attr(name, value, is_boolean = false) {
+  if (value == null || !value && is_boolean) return "";
+  const normalized = name in replacements && replacements[name].get(value) || value;
+  const assignment = is_boolean ? "" : `="${escape_html(normalized, true)}"`;
+  return ` ${name}${assignment}`;
+}
+const whitespace = [..." 	\n\r\f \v\uFEFF"];
+function to_class(value, hash, directives) {
+  var classname = value == null ? "" : "" + value;
+  if (hash) {
+    classname = classname ? classname + " " + hash : hash;
+  }
+  if (directives) {
+    for (var key in directives) {
+      if (directives[key]) {
+        classname = classname ? classname + " " + key : key;
+      } else if (classname.length) {
+        var len = key.length;
+        var a = 0;
+        while ((a = classname.indexOf(key, a)) >= 0) {
+          var b = a + len;
+          if ((a === 0 || whitespace.includes(classname[a - 1])) && (b === classname.length || whitespace.includes(classname[b]))) {
+            classname = (a === 0 ? "" : classname.substring(0, a)) + classname.substring(b + 1);
+          } else {
+            a = b;
+          }
+        }
+      }
+    }
+  }
+  return classname === "" ? null : classname;
+}
+function to_style(value, styles) {
+  return value == null ? null : String(value);
+}
+var current_component = null;
+function getContext(key) {
+  const context_map = get_or_init_context_map();
+  const result = (
+    /** @type {T} */
+    context_map.get(key)
+  );
+  return result;
+}
+function setContext(key, context) {
+  get_or_init_context_map().set(key, context);
+  return context;
+}
+function get_or_init_context_map(name) {
+  if (current_component === null) {
+    lifecycle_outside_component();
+  }
+  return current_component.c ??= new Map(get_parent_context(current_component) || void 0);
+}
+function push(fn) {
+  current_component = { p: current_component, c: null, d: null };
+}
+function pop() {
+  var component = (
+    /** @type {Component} */
+    current_component
+  );
+  var ondestroy = component.d;
+  if (ondestroy) {
+    on_destroy.push(...ondestroy);
+  }
+  current_component = component.p;
+}
+function get_parent_context(component_context) {
+  let parent = component_context.p;
+  while (parent !== null) {
+    const context_map = parent.c;
+    if (context_map !== null) {
+      return context_map;
+    }
+    parent = parent.p;
+  }
+  return null;
+}
+const BLOCK_OPEN = `<!--${HYDRATION_START}-->`;
+const BLOCK_CLOSE = `<!--${HYDRATION_END}-->`;
+class HeadPayload {
+  /** @type {Set<{ hash: string; code: string }>} */
+  css = /* @__PURE__ */ new Set();
+  out = "";
+  uid = () => "";
+  title = "";
+  constructor(css = /* @__PURE__ */ new Set(), out = "", title = "", uid = () => "") {
+    this.css = css;
+    this.out = out;
+    this.title = title;
+    this.uid = uid;
+  }
+}
+class Payload {
+  /** @type {Set<{ hash: string; code: string }>} */
+  css = /* @__PURE__ */ new Set();
+  out = "";
+  uid = () => "";
+  head = new HeadPayload();
+  constructor(id_prefix = "") {
+    this.uid = props_id_generator(id_prefix);
+    this.head.uid = this.uid;
+  }
+}
+function props_id_generator(prefix) {
+  let uid = 1;
+  return () => `${prefix}s${uid++}`;
+}
+let on_destroy = [];
+function render(component, options = {}) {
+  const payload = new Payload(options.idPrefix ? options.idPrefix + "-" : "");
+  const prev_on_destroy = on_destroy;
+  on_destroy = [];
+  payload.out += BLOCK_OPEN;
+  if (options.context) {
+    push();
+    current_component.c = options.context;
+  }
+  component(payload, options.props ?? {}, {}, {});
+  if (options.context) {
+    pop();
+  }
+  payload.out += BLOCK_CLOSE;
+  for (const cleanup of on_destroy) cleanup();
+  on_destroy = prev_on_destroy;
+  let head2 = payload.head.out + payload.head.title;
+  for (const { hash, code } of payload.css) {
+    head2 += `<style id="${hash}">${code}</style>`;
+  }
   return {
-    subscribe: writable(value, start).subscribe
+    head: head2,
+    html: payload.out,
+    body: payload.out
   };
 }
-function writable(value, start = noop) {
-  let stop = null;
-  const subscribers = /* @__PURE__ */ new Set();
-  function set(new_value) {
-    if (safe_not_equal(value, new_value)) {
-      value = new_value;
-      if (stop) {
-        const run_queue = !subscriber_queue.length;
-        for (const subscriber of subscribers) {
-          subscriber[1]();
-          subscriber_queue.push(subscriber, value);
-        }
-        if (run_queue) {
-          for (let i = 0; i < subscriber_queue.length; i += 2) {
-            subscriber_queue[i][0](subscriber_queue[i + 1]);
-          }
-          subscriber_queue.length = 0;
-        }
-      }
+function head(payload, fn) {
+  const head_payload = payload.head;
+  head_payload.out += BLOCK_OPEN;
+  fn(head_payload);
+  head_payload.out += BLOCK_CLOSE;
+}
+function stringify(value) {
+  return typeof value === "string" ? value : value == null ? "" : value + "";
+}
+function attr_class(value, hash, directives) {
+  var result = to_class(value, hash, directives);
+  return result ? ` class="${escape_html(result, true)}"` : "";
+}
+function attr_style(value, directives) {
+  var result = to_style(value);
+  return result ? ` style="${escape_html(result, true)}"` : "";
+}
+function store_get(store_values, store_name, store) {
+  if (store_name in store_values && store_values[store_name][0] === store) {
+    return store_values[store_name][2];
+  }
+  store_values[store_name]?.[1]();
+  store_values[store_name] = [store, null, void 0];
+  const unsub = subscribe_to_store(
+    store,
+    /** @param {any} v */
+    (v) => store_values[store_name][2] = v
+  );
+  store_values[store_name][1] = unsub;
+  return store_values[store_name][2];
+}
+function unsubscribe_stores(store_values) {
+  for (const store_name in store_values) {
+    store_values[store_name][1]();
+  }
+}
+function slot(payload, $$props, name, slot_props, fallback_fn) {
+  var slot_fn = $$props.$$slots?.[name];
+  if (slot_fn === true) {
+    slot_fn = $$props["children"];
+  }
+  if (slot_fn !== void 0) {
+    slot_fn(payload, slot_props);
+  }
+}
+function bind_props(props_parent, props_now) {
+  for (const key in props_now) {
+    const initial_value = props_parent[key];
+    const value = props_now[key];
+    if (initial_value === void 0 && value !== void 0 && Object.getOwnPropertyDescriptor(props_parent, key)?.set) {
+      props_parent[key] = value;
     }
   }
-  function update(fn) {
-    set(fn(
-      /** @type {T} */
-      value
-    ));
+}
+function ensure_array_like(array_like_or_iterator) {
+  if (array_like_or_iterator) {
+    return array_like_or_iterator.length !== void 0 ? array_like_or_iterator : Array.from(array_like_or_iterator);
   }
-  function subscribe(run, invalidate = noop) {
-    const subscriber = [run, invalidate];
-    subscribers.add(subscriber);
-    if (subscribers.size === 1) {
-      stop = start(set, update) || noop;
-    }
-    run(
-      /** @type {T} */
-      value
-    );
-    return () => {
-      subscribers.delete(subscriber);
-      if (subscribers.size === 0 && stop) {
-        stop();
-        stop = null;
-      }
-    };
-  }
-  return { set, update, subscribe };
+  return [];
 }
 export {
-  readable as r,
-  writable as w
+  pop as a,
+  attr as b,
+  store_get as c,
+  attr_class as d,
+  ensure_array_like as e,
+  escape_html as f,
+  bind_props as g,
+  head as h,
+  slot as i,
+  stringify as j,
+  current_component as k,
+  getContext as l,
+  attr_style as m,
+  push as p,
+  render as r,
+  setContext as s,
+  unsubscribe_stores as u
 };
+//# sourceMappingURL=index3.js.map

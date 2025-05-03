@@ -1,15 +1,16 @@
-import { N as fallback, F as escape_html, M as bind_props, E as ensure_array_like, G as attr_class, J as stringify, I as attr, Q as attr_style, B as pop, z as push, O as head, C as store_get, K as unsubscribe_stores } from "../../chunks/index.js";
+import { f as escape_html, g as bind_props, e as ensure_array_like, d as attr_class, j as stringify, b as attr, m as attr_style, a as pop, p as push, h as head, c as store_get, u as unsubscribe_stores } from "../../chunks/index3.js";
 import { o as onDestroy } from "../../chunks/index-server.js";
-import "../../chunks/courseService.js";
+import { y as fallback } from "../../chunks/utils.js";
+import { C as CourseCard } from "../../chunks/CourseCard.js";
+import { I as Icon } from "../../chunks/Icon.js";
+/* empty css                                                      */
 import "firebase/firestore";
-/* empty css                      */
-import { l as loading, i as isAuthenticated, u as user } from "../../chunks/authStore.js";
+import "firebase/auth";
 import "clsx";
+import { l as loading, i as isAuthenticated, u as user } from "../../chunks/authStore.js";
 import { u as userProfileLoading, a as userProfile } from "../../chunks/userProfileStore.js";
 import { f as focusSessions } from "../../chunks/pipStores.js";
-import "gray-matter";
 import { F as FocusTimeChart } from "../../chunks/FocusTimeChart.js";
-import { w as writable } from "../../chunks/index3.js";
 function WelcomeBanner($$payload, $$props) {
   let username = fallback($$props["username"], "Hakim");
   $$payload.out += `<div class="bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-2xl p-6 mb-8 text-white squircle"><div class="flex flex-col md:flex-row justify-between items-start md:items-center"><div><h2 class="text-2xl font-bold mb-2">Welcome back, ${escape_html(username)}!</h2> <p class="opacity-90 mb-4 md:mb-0">Continue your learning journey with these recommended courses</p></div> <a href="/courses" class="bg-indigo-100 text-indigo-800 px-4 py-2 rounded-lg font-medium hover:bg-indigo-200 transition">Explore Courses</a></div></div>`;
@@ -49,81 +50,64 @@ function ProgressMetrics($$payload, $$props) {
   $$payload.out += `<!--]--></div>`;
   bind_props($$props, { metrics });
 }
-function CourseCard($$payload, $$props) {
-  push();
-  let courseGradient;
-  let course = fallback(
-    $$props["course"],
-    () => ({
-      id: "",
-      title: "",
-      description: "",
-      progress: 0,
-      icon: "fa-book",
-      gradient: { from: "blue-500", to: "blue-400" }
-    }),
-    true
-  );
-  courseGradient = {
-    from: course?.gradient?.from || "blue-500",
-    to: course?.gradient?.to || "blue-400"
-  };
-  $$payload.out += `<a${attr("href", `/courses/${course.id}`)} class="bg-gray-700 border border-orange-500 p-5 rounded-2xl shadow-sm squircle-sm card-hover h-full block focus:outline-none focus:ring-2 focus:ring-indigo-500"><div${attr_class(`h-32 rounded-xl mb-4 flex items-center justify-center bg-gradient-to-r from-${courseGradient.from} to-${courseGradient.to}`)}><i${attr_class(`fas ${course.icon} text-white text-4xl`)}></i></div> <h3 class="font-semibold text-gray-100 mb-2">${escape_html(course.title)}</h3> <p class="text-gray-300 text-sm mb-4 line-clamp-2">${escape_html(course.description)}</p> <div class="flex items-center justify-between"><div class="w-full bg-gray-600 rounded-full h-2"><div class="h-2 rounded-full"${attr_style(`width: ${course.progress}%; background-color: #3B82F6;`)}></div></div> <span class="text-xs text-gray-300 ml-2">${escape_html(course.progress)}%</span></div></a>`;
-  bind_props($$props, { course });
-  pop();
-}
 function CourseCarousel($$payload, $$props) {
   push();
-  let courses = [];
-  onDestroy(() => {
-  });
+  let courses = fallback($$props["courses"], () => [], true);
+  let title = fallback($$props["title"], "Featured Courses");
+  let selectedIndex = 0;
   const each_array = ensure_array_like(courses);
-  $$payload.out += `<div class="course-carousel-container mb-8 py-4 svelte-1aw9g38" style="--carousel-bg-rgb: 17, 24, 39;"><div class="container mx-auto px-4"><div class="flex justify-between items-center mb-6"><h2 class="text-xl font-semibold text-gray-100">Continue Learning</h2> <a href="/courses" class="text-sm text-indigo-400 hover:text-indigo-200 font-medium transition-colors duration-200 ease-in-out">View All</a></div> <div class="splide"><div class="splide__track"><ul class="splide__list"><!--[-->`;
-  for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
-    let course = each_array[$$index];
-    $$payload.out += `<li class="splide__slide">`;
-    CourseCard($$payload, { course });
-    $$payload.out += `<!----></li>`;
+  $$payload.out += `<div class="course-carousel"><div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold text-gray-900 dark:text-white">${escape_html(title)}</h2> <div class="flex space-x-2"><button class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"${attr("disabled", selectedIndex === 0, true)}>`;
+  Icon($$payload, { icon: "mdi:chevron-left", class: "w-5 h-5" });
+  $$payload.out += `<!----></button> <button class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"${attr("disabled", selectedIndex === courses.length - 1, true)}>`;
+  Icon($$payload, { icon: "mdi:chevron-right", class: "w-5 h-5" });
+  $$payload.out += `<!----></button></div></div> <div class="carousel-container overflow-hidden"><div class="carousel-track flex transition-transform duration-300"${attr_style(`transform: translateX(-${stringify(selectedIndex * 100)}%)`)}><!--[-->`;
+  for (let i = 0, $$length = each_array.length; i < $$length; i++) {
+    let course = each_array[i];
+    $$payload.out += `<div class="carousel-item w-full flex-shrink-0 p-2">`;
+    CourseCard($$payload, { course, isSelected: i === selectedIndex });
+    $$payload.out += `<!----></div>`;
   }
-  $$payload.out += `<!--]--></ul></div></div></div></div>`;
+  $$payload.out += `<!--]--></div></div></div>`;
+  bind_props($$props, { courses, title });
   pop();
 }
 function ExercisesSection($$payload, $$props) {
-  let exercises = fallback(
-    $$props["exercises"],
-    () => [
-      {
-        title: "JavaScript Closure Exercise",
-        description: "Practice with closures and scope",
-        icon: "fa-code",
-        color: "blue",
-        category: "JavaScript"
-      },
-      {
-        title: "Matrix Multiplication",
-        description: "Practice matrix operations",
-        icon: "fa-calculator",
-        color: "purple",
-        category: "Math"
-      },
-      {
-        title: "Spanish Vocabulary Quiz",
-        description: "Test your vocabulary knowledge",
-        icon: "fa-language",
-        color: "green",
-        category: "Language"
-      }
-    ],
-    true
-  );
-  const each_array = ensure_array_like(exercises);
-  $$payload.out += `<div class="mb-8"><div class="flex justify-between items-center mb-4"><h2 class="text-lg font-semibold text-gray-100">Recommended Exercises</h2> <a href="/exercises" class="text-sm text-indigo-300 hover:text-indigo-100 font-medium">View All</a></div> <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><!--[-->`;
-  for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
-    let exercise = each_array[$$index];
-    $$payload.out += `<div class="bg-gray-700 border border-orange-500 p-5 rounded-2xl shadow-sm squircle-sm card-hover" role="button" tabindex="0"><div class="flex items-start mb-4"><div class="w-10 h-10 bg-indigo-900 rounded-lg flex items-center justify-center mr-3"><i${attr_class(`fas ${stringify(exercise.icon)} text-indigo-300`)}></i></div> <div><h3 class="font-semibold text-gray-100">${escape_html(exercise.title)}</h3> <p class="text-gray-300 text-sm">${escape_html(exercise.description)}</p></div></div> <div class="flex justify-between items-center"><span class="text-xs px-2 py-1 bg-indigo-800 text-indigo-100 rounded">${escape_html(exercise.category)}</span> <button class="text-sm text-indigo-300 hover:text-indigo-100 font-medium">Start</button></div></div>`;
+  push();
+  let categoryId = fallback($$props["categoryId"], null);
+  let limit = fallback($$props["limit"], null);
+  let title = fallback($$props["title"], "Exercises");
+  let onExerciseClick = fallback($$props["onExerciseClick"], (exercise) => {
+    console.log("Exercise clicked:", exercise.id);
+  });
+  let exercises = [];
+  let searchQuery = "";
+  let selectedTags = [];
+  let showFilters = false;
+  function applyFilters() {
+    let result = exercises;
+    if (selectedTags.length > 0) {
+      result = result.filter((ex) => selectedTags.every((tag) => ex.tags?.includes(tag)));
+    }
+    if (limit !== null) {
+      result = result.slice(0, limit);
+    }
   }
-  $$payload.out += `<!--]--></div></div>`;
-  bind_props($$props, { exercises });
+  applyFilters();
+  $$payload.out += `<section class="exercises-section svelte-468fi1"><div class="section-header svelte-468fi1"><h2 class="section-title svelte-468fi1">${escape_html(title)}</h2> <button${attr("aria-expanded", showFilters)} class="filter-toggle svelte-468fi1"><i class="fas fa-filter"></i> Filters `;
+  if (selectedTags.length || searchQuery) {
+    $$payload.out += "<!--[-->";
+    $$payload.out += `<span class="filter-badge svelte-468fi1">${escape_html(selectedTags.length + 0 + 0)}</span>`;
+  } else {
+    $$payload.out += "<!--[!-->";
+  }
+  $$payload.out += `<!--]--></button></div> `;
+  {
+    $$payload.out += "<!--[-->";
+    $$payload.out += `<div class="loading-state svelte-468fi1">Loading exercises...</div>`;
+  }
+  $$payload.out += `<!--]--></section>`;
+  bind_props($$props, { categoryId, limit, title, onExerciseClick });
+  pop();
 }
 function RecentActivity($$payload, $$props) {
   push();
@@ -172,10 +156,12 @@ function ScoreCard($$payload, $$props) {
 function _page($$payload, $$props) {
   push();
   var $$store_subs;
+  let suggestedCourses;
+  let data = $$props["data"];
   let metrics = [];
-  let suggestions = writable([]);
   onDestroy(() => {
   });
+  suggestedCourses = data.suggestedCourses || [];
   head($$payload, ($$payload2) => {
     $$payload2.title = `<title>LearnFlow | Your Dashboard</title>`;
     $$payload2.out += `<meta name="description" content="Your personalized learning dashboard on LearnFlow.">`;
@@ -198,10 +184,11 @@ function _page($$payload, $$props) {
     });
     $$payload.out += `<!----></div> <div class="mb-8"><h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h2> <div class="flex flex-col gap-4 w-full">`;
     CourseCarousel($$payload, {
-      items: store_get($$store_subs ??= {}, "$suggestions", suggestions)
+      title: "Suggested Courses",
+      items: suggestedCourses
     });
     $$payload.out += `<!----> `;
-    ExercisesSection($$payload, {});
+    ExercisesSection($$payload, { limit: 5 });
     $$payload.out += `<!----> <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow min-h-[140px] flex flex-col items-center justify-center text-center transition hover:shadow-xl hover:ring-2 hover:ring-indigo-300 w-full"><h3 class="text-lg font-semibold mb-2">Your Tasks</h3> <p class="text-gray-600 dark:text-gray-300">Manage your study tasks.</p></div> <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow min-h-[140px] flex flex-col items-center justify-center text-center transition hover:shadow-xl hover:ring-2 hover:ring-indigo-300 w-full"><h3 class="text-lg font-semibold mb-2">Your Notes</h3> <p class="text-gray-600 dark:text-gray-300">Jot down quick thoughts.</p></div></div></div> `;
     ScoreCard($$payload);
     $$payload.out += `<!----> `;
@@ -215,8 +202,10 @@ function _page($$payload, $$props) {
   }
   $$payload.out += `<!--]--></div>`;
   if ($$store_subs) unsubscribe_stores($$store_subs);
+  bind_props($$props, { data });
   pop();
 }
 export {
   _page as default
 };
+//# sourceMappingURL=_page.svelte.js.map

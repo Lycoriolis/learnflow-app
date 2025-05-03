@@ -1,1 +1,1 @@
-export { default as component } from "../../../../src/routes/tools/flashcards/+page.svelte";
+export { default as component } from "../../../../src/routes/tools/+page.svelte";

@@ -1,4 +1,4 @@
-import { O as head, C as store_get, K as unsubscribe_stores } from "../../../chunks/index.js";
+import { h as head, c as store_get, u as unsubscribe_stores } from "../../../chunks/index3.js";
 import { l as loading, i as isAuthenticated } from "../../../chunks/authStore.js";
 import "firebase/auth";
 import "clsx";
@@ -24,3 +24,4 @@ function _page($$payload) {
 export {
   _page as default
 };
+//# sourceMappingURL=_page.svelte.js.map

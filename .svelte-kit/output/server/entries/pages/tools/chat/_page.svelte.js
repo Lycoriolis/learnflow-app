@@ -1,14 +1,18 @@
-import { E as ensure_array_like, O as head, G as attr_class, F as escape_html, J as stringify, I as attr, B as pop, z as push } from "../../../../chunks/index.js";
+import { e as ensure_array_like, h as head, d as attr_class, f as escape_html, j as stringify, b as attr, a as pop, p as push } from "../../../../chunks/index3.js";
 import { o as onDestroy } from "../../../../chunks/index-server.js";
-import { M as MarkdownRenderer } from "../../../../chunks/MarkdownRenderer.js";
+import MarkdownIt from "markdown-it";
+import markdownItKatex from "markdown-it-katex";
 import "firebase/firestore";
+import "../../../../chunks/authStore.js";
+import { h as html } from "../../../../chunks/html.js";
 function _page($$payload, $$props) {
   push();
+  const md = new MarkdownIt({ html: true }).use(markdownItKatex);
   const modes = [
     {
       id: "assist",
       label: "Assist Mode",
-      model: "google/learnlm-1.5-pro-experimental:free"
+      model: "deepseek/deepseek-prover-v2:free"
     },
     {
       id: "support",
@@ -34,9 +38,7 @@ function _page($$payload, $$props) {
   $$payload.out += `<!--]--></div> <div class="flex-1 overflow-y-auto space-y-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-inner svelte-b8plu3" id="chat-window"><!--[-->`;
   for (let $$index_1 = 0, $$length = each_array_1.length; $$index_1 < $$length; $$index_1++) {
     let msg = each_array_1[$$index_1];
-    $$payload.out += `<div${attr_class(`flex ${stringify(msg.role === "assistant" ? "justify-start" : "justify-end")}`, "svelte-b8plu3")}><div${attr_class(`max-w-[80%] p-3 prose dark:prose-invert ${stringify(msg.role === "assistant" ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-tr-xl rounded-br-xl rounded-tl-xl" : "bg-indigo-600 dark:bg-indigo-500 text-white rounded-tl-xl rounded-bl-xl rounded-br-xl")}`, "svelte-b8plu3")}>`;
-    MarkdownRenderer($$payload, { content: msg.text });
-    $$payload.out += `<!----></div></div>`;
+    $$payload.out += `<div${attr_class(`flex ${stringify(msg.role === "assistant" ? "justify-start" : "justify-end")}`, "svelte-b8plu3")}><div${attr_class(`max-w-[80%] p-3 prose dark:prose-invert ${stringify(msg.role === "assistant" ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-tr-xl rounded-br-xl rounded-tl-xl" : "bg-indigo-600 dark:bg-indigo-500 text-white rounded-tl-xl rounded-bl-xl rounded-br-xl")}`, "svelte-b8plu3")}>${html(md.render(msg.text))}</div></div>`;
   }
   $$payload.out += `<!--]--> `;
   {
@@ -57,3 +59,4 @@ function _page($$payload, $$props) {
 export {
   _page as default
 };
+//# sourceMappingURL=_page.svelte.js.map

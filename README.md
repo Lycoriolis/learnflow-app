@@ -94,6 +94,19 @@ POSTGRES_DB=your_db_name
 # Admin Configuration
 VITE_ADMIN_EMAILS=admin@example.com
 VITE_CSRF_SECRET=your_csrf_secret
+
+# Firebase Admin SDK Configuration
+FIREBASE_PROJECT_ID=your-project-id
+FIREBASE_ADMIN_CLIENT_EMAIL=your-service-account-email
+FIREBASE_ADMIN_PRIVATE_KEY=your-private-key
+
+# Firebase Client Configuration
+VITE_FIREBASE_API_KEY=your-api-key
+VITE_FIREBASE_AUTH_DOMAIN=your-auth-domain
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_STORAGE_BUCKET=your-storage-bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
+VITE_FIREBASE_APP_ID=your-app-id
 ```
 
 ## 🚀 Development
@@ -175,3 +188,175 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - SvelteKit team for the amazing framework
 - Firebase team for authentication services
 - All contributors and users of the platform
+
+## 📚 Content Management
+
+### Course Creation
+
+Courses are managed through a file-based system in the `/static/content/courses/` directory:
+
+1. Add course metadata to `index.json`:
+```json
+{
+  "courses": [
+    {
+      "id": "course-id",
+      "title": "Course Title",
+      "type": "course",
+      "slug": "course-slug",
+      "description": "Course description",
+      "difficulty": "beginner|intermediate|advanced",
+      "estimatedTime": "duration",
+      "tags": ["tag1", "tag2"]
+    }
+  ]
+}
+```
+
+2. Create course content in `course-id.md`:
+```markdown
+---
+title: Course Title
+description: Course description
+tags: ["tag1", "tag2"]
+difficulty: beginner
+estimatedTime: duration
+---
+
+# Course Title
+
+Course introduction...
+
+## Module: Module Title
+
+Module description...
+
+### Lesson: Lesson Title
+
+Lesson content...
+```
+
+The course system supports:
+- Markdown content with frontmatter metadata
+- Mathematical expressions via KaTeX
+- Code syntax highlighting
+- Module and lesson hierarchy
+- Course tagging and categorization
+
+## Course Summaries
+
+Below is a structured summary of the MPSI - Mathématiques course, organized by domain:
+
+### Raisonnement et vocabulaire ensembliste
+Key Topics:
+- Logique et raisonnement
+- Ensembles, fonctions et relations binaires
+
+Summary:
+- Logique et raisonnement: assertions, modes de raisonnement formel
+- Ensembles : inclusion, opérations (union, intersection, complémentaire)
+- Fonctions et relations : définitions, injectivité, surjectivité, bijectivité
+
+Exercises:
+- Exercice 1.1 : Vrai/Faux sur les formules logiques
+- Exercice 1.2 : Manipulation d'ensembles et relations
+
+### Calculs algébriques
+Key Topics:
+- Sommations et produits
+
+Summary:
+- Sommations simples : séries géométriques, télescopiques
+- Produits et factorisations remarquables
+
+Exercises:
+- Exercice 2.1 : Calcul de sommes géométriques
+- Exercice 2.2 : Factorisation de polynômes
+
+### Nombres complexes et trigonométrie
+Key Topics:
+- Nombres complexes
+- Trigonométrie
+
+Summary:
+- Forme algébrique et trigonométrique des complexes
+- Applications de la trigonométrie (identités, équations)
+
+Exercises:
+- Exercice 3.1 : Opérations sur nombres complexes
+- Exercice 3.2 : Résolution d'équations trigonométriques
+
+### Arithmétique
+Key Topics:
+- Arithmétique dans l'ensemble des entiers
+
+Summary:
+- Divisibilité, pgcd, algorithme d'Euclide
+- Congruences et théorèmes classiques
+
+Exercises:
+- Exercice 4.1 : Calcul de pgcd
+- Exercice 4.2 : Problèmes de congruences
+
+### Structures algébriques usuelles
+Key Topics:
+- Groupes, anneaux, corps élémentaires
+
+Summary:
+- Définitions et exemples de structures algébriques
+- Propriétés élémentaires (associativité, commutativité)
+
+Exercises:
+- Exercice 5.1 : Vérification des axiomes d'un groupe
+
+### Polynômes et fractions rationnelles
+Key Topics:
+- Polynômes
+- Fractions rationnelles
+
+Summary:
+- Degré, racines, factorisation
+- Décomposition en éléments simples
+
+Exercises:
+- Exercice 6.1 : Factorisation polynomiale
+- Exercice 6.2 : Décomposition de fractions rationnelles
+
+### Espaces vectoriels et applications linéaires
+Key Topics:
+- Espaces vectoriels de dimension finie
+- Applications linéaires, matrices, changement de base
+
+Summary:
+- Bases, dimension, sous-espaces affines
+- Représentation matricielle, équivalence, similarité
+
+Exercises:
+- Exercice 7.1 : Calcul de dimension et base
+- Exercice 7.2 : Passage d'une base à une autre
+
+### Groupe symétrique et déterminant
+Key Topics:
+- Groupe symétrique
+- Déterminant des matrices
+
+Summary:
+- Permutations, signature
+- Propriétés du déterminant et calcul
+
+Exercises:
+- Exercice 8.1 : Calcul de déterminant par développement
+- Exercice 8.2 : Signature d'une permutation
+
+### Espaces préhilbertiens réels
+Key Topics:
+- Produit scalaire, normes
+- Orthogonalité, projections
+
+Summary:
+- Définition d'un espace préhilbertien réel
+- Inégalités de Cauchy-Schwarz et de Minkowski
+
+Exercises:
+- Exercice 9.1 : Calcul de produit scalaire
+- Exercice 9.2 : Construction de projections orthogonales

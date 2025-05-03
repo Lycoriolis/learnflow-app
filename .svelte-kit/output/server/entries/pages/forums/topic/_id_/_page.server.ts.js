@@ -1,7 +1,7 @@
-import { e as error } from "../../../../../chunks/index2.js";
-import { o as getTopicById, a as getPostsByTopicId } from "../../../../../chunks/forumService.js";
+import { e as error } from "../../../../../chunks/index.js";
+import { g as getTopic, f as getPostsByTopicId } from "../../../../../chunks/forumService.js";
 const load = async ({ params }) => {
-  const topic = await getTopicById(params.id);
+  const topic = await getTopic(params.id);
   if (!topic) {
     throw error(404, "Topic not found");
   }
@@ -11,3 +11,4 @@ const load = async ({ params }) => {
 export {
   load
 };
+//# sourceMappingURL=_page.server.ts.js.map

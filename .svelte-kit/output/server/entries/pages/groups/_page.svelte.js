@@ -1,15 +1,9 @@
-import { O as head, B as pop, z as push } from "../../../chunks/index.js";
-import { o as onDestroy } from "../../../chunks/index-server.js";
-import "clsx";
-import "firebase/auth";
-import "firebase/firestore";
+import { h as head, a as pop, p as push } from "../../../chunks/index3.js";
 function _page($$payload, $$props) {
   push();
   let filteredGroups;
   let allGroups = [];
   let searchQuery = "";
-  onDestroy(() => {
-  });
   [
     "all",
     ...Array.from(new Set(allGroups.map((group) => group.topic)))
@@ -34,3 +28,4 @@ function _page($$payload, $$props) {
 export {
   _page as default
 };
+//# sourceMappingURL=_page.svelte.js.map

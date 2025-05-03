@@ -1,5 +1,3 @@
-import * as universal_hooks from '../../../src/hooks.ts';
-
 export { matchers } from './matchers.js';
 
 export const nodes = [
@@ -44,13 +42,18 @@ export const nodes = [
 	() => import('./nodes/38'),
 	() => import('./nodes/39'),
 	() => import('./nodes/40'),
-	() => import('./nodes/41')
+	() => import('./nodes/41'),
+	() => import('./nodes/42'),
+	() => import('./nodes/43'),
+	() => import('./nodes/44'),
+	() => import('./nodes/45'),
+	() => import('./nodes/46')
 ];
 
 export const server_loads = [0,3];
 
 export const dictionary = {
-		"/": [4],
+		"/": [~4],
 		"/admin": [5,[3]],
 		"/admin/courses": [~6,[3]],
 		"/admin/forums": [~7,[3]],
@@ -58,43 +61,48 @@ export const dictionary = {
 		"/admin/forums/topic/[id]/edit": [~9,[3]],
 		"/admin/users": [~10,[3]],
 		"/calendar": [11],
-		"/category/[slug]": [12],
-		"/courses": [13],
-		"/courses/[slug]": [14],
-		"/courses/[slug]/[lessonId]": [15],
+		"/category/[slug]": [~12],
+		"/courses": [~13],
+		"/courses/maths/mpsi-maths": [15],
+		"/courses/[slug]": [~14],
 		"/events": [16],
-		"/exercises": [17],
-		"/exercises/[slug]": [18],
-		"/forums": [~19],
-		"/forums/category/[id]": [~20],
-		"/forums/tag/[tag]": [~21],
-		"/forums/topic/[id]": [~22],
-		"/groups": [23],
-		"/groups/create": [25],
-		"/groups/[id]": [24],
-		"/help": [26],
-		"/login": [27],
-		"/my-learning": [28],
-		"/progress": [29],
-		"/register": [30],
-		"/reset-password": [31],
-		"/settings": [32],
-		"/statistics": [33],
-		"/tools": [34],
-		"/tools/calculator": [35],
-		"/tools/chat": [36],
-		"/tools/dictionary": [37],
-		"/tools/flashcards": [38],
-		"/tools/notepad": [39],
-		"/tools/pomodoro": [40],
-		"/tools/tasks": [41]
+		"/exercises": [~17],
+		"/exercises/maths": [19],
+		"/exercises/maths/mpsi-maths": [20],
+		"/exercises/maths/mpsi-maths/[exerciseId]": [21],
+		"/exercises/[id]": [~18],
+		"/forums": [~22],
+		"/forums/category/[id]": [~23],
+		"/forums/create": [24],
+		"/forums/tag/[tag]": [~25],
+		"/forums/topic/[id]": [~26],
+		"/groups": [27],
+		"/groups/create": [29],
+		"/groups/[id]": [28],
+		"/help": [30],
+		"/login": [31],
+		"/my-learning": [~32],
+		"/progress": [33],
+		"/register": [34],
+		"/reset-password": [35],
+		"/settings": [36],
+		"/statistics": [37],
+		"/tools": [38],
+		"/tools/calculator": [39],
+		"/tools/chat": [40],
+		"/tools/dictionary": [41],
+		"/tools/flashcards": [42],
+		"/tools/notepad": [43],
+		"/tools/pomodoro": [44],
+		"/tools/tasks": [45],
+		"/tools/workspace": [46]
 	};
 
 export const hooks = {
 	handleError: (({ error }) => { console.error(error) }),
 	
-	reroute: universal_hooks.reroute || (() => {}),
-	transport: universal_hooks.transport || {}
+	reroute: (() => {}),
+	transport: {}
 };
 
 export const decoders = Object.fromEntries(Object.entries(hooks.transport).map(([k, v]) => [k, v.decode]));

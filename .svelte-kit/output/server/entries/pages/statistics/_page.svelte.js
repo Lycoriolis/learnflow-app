@@ -1,8 +1,9 @@
-import { N as fallback, F as escape_html, G as attr_class, J as stringify, M as bind_props, C as store_get, O as head, K as unsubscribe_stores, B as pop, z as push } from "../../../chunks/index.js";
+import { f as escape_html, d as attr_class, j as stringify, g as bind_props, c as store_get, h as head, u as unsubscribe_stores, a as pop, p as push } from "../../../chunks/index3.js";
 import { i as isAuthenticated, l as loading } from "../../../chunks/authStore.js";
 import { u as userProfileLoading, a as userProfile } from "../../../chunks/userProfileStore.js";
-import { f as focusSessions, a as todos, e as exerciseSessions } from "../../../chunks/pipStores.js";
+import { f as focusSessions, t as todos, e as exerciseSessions } from "../../../chunks/pipStores.js";
 import "../../../chunks/client.js";
+import { y as fallback } from "../../../chunks/utils.js";
 import { F as FocusTimeChart } from "../../../chunks/FocusTimeChart.js";
 function StatCard($$payload, $$props) {
   let colorStyle;
@@ -40,7 +41,7 @@ function StatCard($$payload, $$props) {
       text: "text-gray-600 dark:text-gray-300"
     }
   };
-  colorStyle = colorClasses[color] || colorClasses.blue;
+  colorStyle = colorClasses[color];
   $$payload.out += `<div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300"><div class="flex items-center justify-between"><div><p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">${escape_html(title)}</p> <p class="text-2xl font-bold text-gray-900 dark:text-white">${escape_html(value)}</p></div> <div${attr_class(`h-12 w-12 ${stringify(colorStyle.bg)} rounded-full flex items-center justify-center ${stringify(colorStyle.text)}`)}><i${attr_class(`fas ${stringify(icon)} text-xl`)}></i></div></div></div>`;
   bind_props($$props, { title, value, icon, color });
 }
@@ -63,8 +64,9 @@ function _page($$payload, $$props) {
     longestSession = sessions.reduce((max, s) => Math.max(max, s.duration / 60), 0);
     tasksDone = store_get($$store_subs ??= {}, "$todos", todos).filter((t) => t.completed).length;
     exercisesCompleted = store_get($$store_subs ??= {}, "$exerciseSessions", exerciseSessions).filter((es) => es.completed).length;
-    const enroll = store_get($$store_subs ??= {}, "$userProfile", userProfile).preferences.enrollments || [];
-    enrollmentsCount = enroll.filter((e) => e.progress > 0 && e.progress < 100).length;
+    const preferences = store_get($$store_subs ??= {}, "$userProfile", userProfile).preferences || {};
+    const enrollments = preferences.enrollments || [];
+    enrollmentsCount = enrollments.filter((e) => e.progress > 0 && e.progress < 100).length;
   }
   head($$payload, ($$payload2) => {
     $$payload2.title = `<title>Statistics | LearnFlow</title>`;
@@ -143,3 +145,4 @@ function _page($$payload, $$props) {
 export {
   _page as default
 };
+//# sourceMappingURL=_page.svelte.js.map

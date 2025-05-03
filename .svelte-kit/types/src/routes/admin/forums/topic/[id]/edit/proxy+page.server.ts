@@ -1,9 +1,9 @@
 // @ts-nocheck
 import type { PageServerLoad } from './$types';
-import { getAllCategories, getTopic } from '$lib/services/forumService';
+import { getCategories, getTopic } from '$lib/services/forums/forumService';
 
 export const load = async ({ params }: Parameters<PageServerLoad>[0]) => {
-  const categories = await getAllCategories();
+  const categories = await getCategories();
   const topic = await getTopic(params.id);
   return { topic, categories };
 };

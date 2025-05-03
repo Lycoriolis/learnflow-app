@@ -1,8 +1,4 @@
-import { O as head, B as pop, z as push } from "../../../chunks/index.js";
-import { o as onDestroy } from "../../../chunks/index-server.js";
-import "clsx";
-import "firebase/auth";
-import "firebase/firestore";
+import { h as head, a as pop, p as push } from "../../../chunks/index3.js";
 function _page($$payload, $$props) {
   push();
   const events = [
@@ -97,8 +93,6 @@ function _page($$payload, $$props) {
   function isSameDay(date1, date2) {
     return date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate();
   }
-  onDestroy(() => {
-  });
   {
     const daysInMonth = getDaysInMonth(currentYear, currentMonth);
     const firstDayOfMonth = getFirstDayOfMonth(currentYear, currentMonth);
@@ -141,10 +135,10 @@ function _page($$payload, $$props) {
   head($$payload, ($$payload2) => {
     $$payload2.title = `<title>Calendar | LearnFlow</title>`;
   });
-  $$payload.out += `<div class="container mx-auto px-4 py-8 max-w-6xl svelte-1etmp0p">`;
+  $$payload.out += `<div class="container mx-auto px-4 py-8 max-w-6xl svelte-rdy7il">`;
   {
     $$payload.out += "<!--[-->";
-    $$payload.out += `<div class="flex justify-center items-center h-64 svelte-1etmp0p"><div class="loader svelte-1etmp0p"></div></div>`;
+    $$payload.out += `<div class="flex justify-center items-center h-64 svelte-rdy7il"><div class="loader svelte-rdy7il"></div></div>`;
   }
   $$payload.out += `<!--]--></div>`;
   pop();
@@ -152,3 +146,4 @@ function _page($$payload, $$props) {
 export {
   _page as default
 };
+//# sourceMappingURL=_page.svelte.js.map

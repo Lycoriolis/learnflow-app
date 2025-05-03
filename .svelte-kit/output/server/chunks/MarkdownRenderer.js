@@ -1,45 +1,65 @@
-import { N as fallback, G as attr_class, M as bind_props, B as pop, z as push, J as stringify } from "./index.js";
-import "marked";
-import hljs from "highlight.js/lib/core";
-import javascript from "highlight.js/lib/languages/javascript";
-import typescript from "highlight.js/lib/languages/typescript";
-import python from "highlight.js/lib/languages/python";
-import java from "highlight.js/lib/languages/java";
-import cpp from "highlight.js/lib/languages/cpp";
-import csharp from "highlight.js/lib/languages/csharp";
-import ruby from "highlight.js/lib/languages/ruby";
-import go from "highlight.js/lib/languages/go";
-import rust from "highlight.js/lib/languages/rust";
-import bash from "highlight.js/lib/languages/bash";
-import json from "highlight.js/lib/languages/json";
-import xml from "highlight.js/lib/languages/xml";
-import css from "highlight.js/lib/languages/css";
-import markdown from "highlight.js/lib/languages/markdown";
+import { f as escape_html, g as bind_props, a as pop, p as push } from "./index3.js";
+import { y as fallback } from "./utils.js";
+import { marked } from "marked";
+import DOMPurify from "dompurify";
+/* empty css            */
 /* empty css                                               */
 import { h as html } from "./html.js";
 function MarkdownRenderer($$payload, $$props) {
   push();
-  hljs.registerLanguage("javascript", javascript);
-  hljs.registerLanguage("typescript", typescript);
-  hljs.registerLanguage("python", python);
-  hljs.registerLanguage("java", java);
-  hljs.registerLanguage("cpp", cpp);
-  hljs.registerLanguage("csharp", csharp);
-  hljs.registerLanguage("ruby", ruby);
-  hljs.registerLanguage("go", go);
-  hljs.registerLanguage("rust", rust);
-  hljs.registerLanguage("bash", bash);
-  hljs.registerLanguage("json", json);
-  hljs.registerLanguage("xml", xml);
-  hljs.registerLanguage("css", css);
-  hljs.registerLanguage("markdown", markdown);
   let content = fallback($$props["content"], "");
-  let className = fallback($$props["className"], "");
-  let renderedContent = "";
-  $$payload.out += `<!---->/// <reference lib="dom"></reference> <div${attr_class(`markdown-content prose prose-lg dark:prose-invert max-w-none ${stringify(className)}`)}>${html(renderedContent)}</div>`;
-  bind_props($$props, { content, className });
+  let htmlContent = "";
+  let isLoading = false;
+  let hasError = false;
+  let errorMessage = "";
+  function processMarkdown(markdownContent) {
+    if (!markdownContent) return "";
+    try {
+      return DOMPurify.sanitize(marked.parse(markdownContent, { breaks: true, gfm: true }));
+    } catch (err) {
+      console.error("Error processing markdown:", err);
+      hasError = true;
+      errorMessage = err instanceof Error ? err.message : "Unknown error processing markdown";
+      return "";
+    }
+  }
+  {
+    if (content) {
+      if (typeof content === "string") {
+        htmlContent = processMarkdown(content);
+      } else {
+        isLoading = true;
+        hasError = false;
+        content.then((result) => {
+          htmlContent = processMarkdown(result);
+        }).catch((err) => {
+          console.error("Error resolving content:", err);
+          hasError = true;
+          errorMessage = err instanceof Error ? err.message : "Failed to load content";
+        }).finally(() => {
+          isLoading = false;
+        });
+      }
+    } else {
+      htmlContent = "";
+    }
+  }
+  $$payload.out += `<div class="markdown-content svelte-1bth7ib">`;
+  if (isLoading) {
+    $$payload.out += "<!--[-->";
+    $$payload.out += `<div class="loading-indicator svelte-1bth7ib"><div class="spinner svelte-1bth7ib"></div> <p class="svelte-1bth7ib">Loading content...</p></div>`;
+  } else if (hasError) {
+    $$payload.out += "<!--[1-->";
+    $$payload.out += `<div class="error-message svelte-1bth7ib"><p class="svelte-1bth7ib">Error: ${escape_html(errorMessage)}</p></div>`;
+  } else {
+    $$payload.out += "<!--[!-->";
+    $$payload.out += `${html(htmlContent)}`;
+  }
+  $$payload.out += `<!--]--></div>`;
+  bind_props($$props, { content });
   pop();
 }
 export {
   MarkdownRenderer as M
 };
+//# sourceMappingURL=MarkdownRenderer.js.map
