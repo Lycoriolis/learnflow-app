@@ -1,6 +1,5 @@
 <!-- filepath: /home/linux/learnflow-app/learnflow-app/src/routes/tools/dictionary/+page.svelte -->
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { persistentStore } from '$lib/stores/persistentStore';
 
   interface DictionaryEntry {

@@ -1,26 +1,15 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+  import { page } from '$app/stores';
   import ForumTopic from '$lib/components/forums/ForumTopic.svelte';
-  export let data: any;  // data.topic, data.posts loaded by +page.server.ts
-  let topic = data.topic;
-  let posts = data.posts;
+  
+  const topicId = $page.params.id;
 </script>
 
-<!-- Render topic detail and replies via ForumTopic component -->
-<ForumTopic {topic} {posts} />
+<div class="container mx-auto px-4 py-8">
+  <ForumTopic {topicId} />
+</div>
 
 <style>
   /* Add any component-specific styles here */
-  .loader {
-    border: 4px solid #f3f3f3; /* Light grey */
-    border-top: 4px solid #4f46e5; /* Indigo */
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
 </style>

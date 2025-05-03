@@ -1,77 +1,84 @@
 <script lang="ts">
-  // Removing PageData type import due to module resolution issues
-  export let data: any;
-  import { fade } from 'svelte/transition';
-  import { user } from '$lib/stores/authStore.js';
-  import { subscribedTopics } from '$lib/stores/forumStore.js';
-  import ForumHeader from '$lib/components/forums/ForumHeader.svelte';
-  import ForumList from '$lib/components/forums/ForumList.svelte';
-  import ForumSidebar from '$lib/components/forums/ForumSidebar.svelte';
-  import CreateTopicForm from '$lib/components/forums/CreateTopicForm.svelte';
-
-  let topics = data.topics;
-  let categories = data.categories;
-  let selectedTag = data.selectedTag;
-  let showCreateTopic = false;
-  let showSubscriptions = false;
-
-  function handleNewTopicClick() {
-    showCreateTopic = true;
-  }
-
-  function handleToggleSubscriptions() {
-    showSubscriptions = !showSubscriptions;
-  }
-
-  function handleTopicCreated(event: CustomEvent) {
-    topics = [event.detail, ...topics];
-  }
-
-  function handleSubscribe(id: string) {
-    if (!$subscribedTopics.includes(id)) subscribedTopics.update((ids: string[]) => [...ids, id]);
-  }
-
-  function handleUnsubscribe(id: string) {
-    subscribedTopics.update((ids: string[]) => ids.filter(i => i !== id));
-  }
-
-  function handleVote(id: string, type: 'up' | 'down') {
-    fetch(`/api/forum/topics/${id}/vote`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user_id: $user?.uid, vote_type: type === 'up' ? 1 : -1 })
-    }).then(res => { if (!res.ok) throw new Error('Vote failed'); }).catch(console.error);
-  }
+  import { onMount } from 'svelte';
+  import { page } from '$app/stores';
+  import { topics, filterTopicsByTag, clearTagFilter, isLoading, error, activeTagFilter } from '$lib/stores/forumStore';
+  import Icon from '@iconify/svelte';
+  
+  let tag = $page.params.tag;
+  
+  onMount(() => {
+    filterTopicsByTag(tag);
+    
+    return () => {
+      clearTagFilter();
+    };
+  });
 </script>
 
-<svelte:head>
-  <title>Tag: {selectedTag} | LearnFlow Forums</title>
-</svelte:head>
-
-<div class="container mx-auto px-4 py-8 max-w-7xl">
-  <ForumHeader on:newTopic={handleNewTopicClick} on:toggleSubscriptions={handleToggleSubscriptions} />
-
-  {#if showCreateTopic}
-    <div class="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg relative">
-        <button class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" on:click={() => showCreateTopic = false}>&times;</button>
-        <CreateTopicForm categories={categories} on:topicCreated={handleTopicCreated} />
-      </div>
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-6">
+    <a href="/forums" class="inline-flex items-center text-cherry-600 dark:text-cherry-400 hover:underline mb-4">
+      <Icon icon="mdi:arrow-left" class="w-5 h-5 mr-1" />
+      Back to Forums
+    </a>
+    
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+      <span>Topics tagged:</span> 
+      <span class="ml-2 px-2.5 py-0.5 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300">
+        {tag}
+      </span>
+    </h1>
+  </div>
+  
+  {#if $isLoading}
+    <div class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cherry-500"></div>
+    </div>
+  {:else if $error}
+    <div class="bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 p-4 rounded-md mb-6">
+      <p>{$error}</p>
+    </div>
+  {:else if $topics.length === 0}
+    <div class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+      <Icon icon="mdi:tag-outline" class="w-16 h-16 mx-auto text-gray-400 mb-4" />
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No topics found</h3>
+      <p class="text-gray-600 dark:text-gray-400">There are no topics with the tag "{tag}".</p>
+    </div>
+  {:else}
+    <div class="space-y-4">
+      {#each $topics as topic}
+        <a href="/forums/topic/{topic.id}" class="block">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+            <div class="p-4">
+              <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-1">{topic.title}</h4>
+              
+              <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-2">
+                <span>{topic.authorName || 'Unknown'}</span>
+                <span class="mx-2">•</span>
+                <span>{new Date(topic.createdAt).toLocaleDateString()}</span>
+                <span class="mx-2">•</span>
+                <span class="flex items-center">
+                  <Icon icon="mdi:eye-outline" class="w-4 h-4 mr-1" />
+                  {topic.viewCount}
+                </span>
+                <span class="mx-2">•</span>
+                <span class="flex items-center">
+                  <Icon icon="mdi:comment-outline" class="w-4 h-4 mr-1" />
+                  {topic.replyCount}
+                </span>
+              </div>
+              
+              <div class="flex flex-wrap gap-2">
+                {#each topic.tags || [] as topicTag}
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {topicTag === tag ? 'bg-cherry-100 dark:bg-cherry-900/30 text-cherry-800 dark:text-cherry-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'}">
+                    {topicTag}
+                  </span>
+                {/each}
+              </div>
+            </div>
+          </div>
+        </a>
+      {/each}
     </div>
   {/if}
-
-  <div in:fade={{ duration: 300 }} class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-    <div class="lg:col-span-9">
-      <h2 class="text-2xl font-bold mb-4">Tag: {selectedTag}</h2>
-      <ForumList
-        topics={topics}
-        categories={categories}
-        on:subscribe={({ detail }) => handleSubscribe(detail)}
-        on:unsubscribe={({ detail }) => handleUnsubscribe(detail)}
-        on:vote={({ detail }) => handleVote(detail.id, detail.type)}
-      />
-    </div>
-    <div class="lg:col-span-3">
-      <ForumSidebar categories={categories} filterCategory="all" />
-    </div>
-  </div>
 </div>

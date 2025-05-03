@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { timerState, timerSettings, focusSessions, type FocusSession } from '$lib/stores/pipStores.js';
+  import { timerState, timerSettings, focusSessions, type TimerMode, type FocusSession } from '$lib/stores/pipStores';
   import { onDestroy } from 'svelte';
+  import { browser } from '$app/environment';
 
   let intervalId: ReturnType<typeof setInterval> | null = null;
 
@@ -11,8 +12,22 @@
     return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   })();
 
+  // Get mode display string with proper formatting
+  $: modeDisplay = (() => {
+    if (!$timerState.mode) return "Work";
+    
+    const modeType = $timerState.mode.type || "work";
+    // Format the mode string (e.g., 'shortBreak' -> 'Short Break')
+    return modeType
+      .replace(/([A-Z])/g, ' $1') // Add space before capital letters
+      .replace(/^./, str => str.toUpperCase()) // Capitalize first letter
+      .replace(/([a-z])([A-Z])/g, '$1 $2'); // Add space between words
+  })();
+
   function startTimer() {
+    if (!browser) return;
     if ($timerState.isRunning || intervalId) return;
+    
     timerState.update(state => ({ ...state, isRunning: true }));
 
     intervalId = setInterval(() => {
@@ -36,58 +51,56 @@
 
   function resetTimer() {
     pauseTimer();
+    
+    const workMode: TimerMode = { type: 'work' };
+    
     timerState.update(state => ({
       ...state,
-      mode: 'work',
+      mode: workMode,
       timeLeft: $timerSettings.workDuration,
       cycle: 0
     }));
   }
 
   function nextPhase() {
-      pauseTimer(); // Stop current interval
+    pauseTimer(); // Stop current interval
 
-      // --- Record completed work session --- 
-      if ($timerState.mode === 'work') {
-        const completedSession: FocusSession = {
-          timestamp: Date.now(),
-          duration: $timerSettings.workDuration // Record the planned duration
-        };
-        focusSessions.update(sessions => [...sessions, completedSession]);
-        console.log('Recorded focus session:', completedSession); // Optional logging
+    // --- Record completed work session --- 
+    if ($timerState.mode && $timerState.mode.type === 'work') {
+      const completedSession: FocusSession = {
+        timestamp: Date.now(),
+        duration: $timerSettings.workDuration // Record the planned duration
+      };
+      focusSessions.update(sessions => [...sessions, completedSession]);
+    }
+    // --- End recording --- 
+
+    let nextModeType: 'work' | 'shortBreak' | 'longBreak' = 'work';
+    let nextTimeLeft = $timerSettings.workDuration;
+    let nextCycle = $timerState.cycle;
+
+    if ($timerState.mode && $timerState.mode.type === 'work') {
+      nextCycle++;
+      if (nextCycle % $timerSettings.longBreakInterval === 0) {
+        nextModeType = 'longBreak';
+        nextTimeLeft = $timerSettings.longBreakDuration;
+      } else {
+        nextModeType = 'shortBreak';
+        nextTimeLeft = $timerSettings.shortBreakDuration;
       }
-      // --- End recording --- 
+    } else { // If current mode is shortBreak or longBreak
+      nextModeType = 'work';
+      nextTimeLeft = $timerSettings.workDuration;
+    }
 
-      let nextMode: typeof $timerState.mode = 'work';
-      let nextTimeLeft = $timerSettings.workDuration;
-      let nextCycle = $timerState.cycle;
+    const nextMode: TimerMode = { type: nextModeType };
 
-      if ($timerState.mode === 'work') {
-          nextCycle++;
-          if (nextCycle % $timerSettings.longBreakInterval === 0) {
-              nextMode = 'longBreak';
-              nextTimeLeft = $timerSettings.longBreakDuration;
-          } else {
-              nextMode = 'shortBreak';
-              nextTimeLeft = $timerSettings.shortBreakDuration;
-          }
-      } else { // If current mode is shortBreak or longBreak
-          nextMode = 'work';
-          nextTimeLeft = $timerSettings.workDuration;
-      }
-
-      timerState.set({
-          mode: nextMode,
-          timeLeft: nextTimeLeft,
-          isRunning: false, // Start paused in the new phase
-          cycle: nextCycle
-      });
-      
-      // Optional: Auto-start the next phase?
-      // startTimer(); 
-      
-      // Optional: Notify user (e.g., with a sound)
-      // new Audio('/path/to/notification.mp3').play();
+    timerState.set({
+      mode: nextMode,
+      timeLeft: nextTimeLeft,
+      isRunning: false, // Start paused in the new phase
+      cycle: nextCycle
+    });
   }
 
   // Ensure interval is cleared when component is destroyed
@@ -98,7 +111,7 @@
 </script>
 
 <div class="text-center p-2 bg-gray-700 rounded-lg">
-  <div class="text-xs font-medium text-indigo-300 uppercase mb-1">{$timerState.mode.replace('B', ' B')}</div>
+  <div class="text-xs font-medium text-indigo-300 uppercase mb-1">{modeDisplay}</div>
   <div class="text-3xl font-bold mb-3 text-gray-100 tracking-wider">{formattedTime}</div>
   <div class="flex justify-center space-x-2">
     {#if !$timerState.isRunning}

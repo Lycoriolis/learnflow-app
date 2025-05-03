@@ -1,8 +1,9 @@
 <script lang="ts">
   import { fly } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
-  import { pipVisible, activeTool } from '$lib/stores/pipStores.js';
-  import { onMount } from 'svelte';
+  import { pipVisible, activeTool } from '$lib/stores/pipStores';
+  import { onMount, tick, onDestroy } from 'svelte';
+  import { browser } from '$app/environment';
   
   // Import the tool components
   import PipTimer from './pip/PipTimer.svelte';
@@ -23,22 +24,35 @@
   ];
   
   let minimized = false;
-  let widgetElement: HTMLElement;
+  let widgetElement: HTMLElement | null = null;
   let isDragging = false;
   let startX = 0;
   let startY = 0;
   let initialLeft = 0;
   let initialTop = 0;
   
+  // Use these variables for CSS instead of direct style manipulation
+  let widgetLeft = 'auto';
+  let widgetTop = 'auto';
+  let widgetBottom = '1rem';
+  let widgetRight = '1rem';
+  let widgetCursor = 'grab';
+  let widgetUserSelect = 'auto';
+  
+  // Safely close the pip widget
   function closePip() {
-    pipVisible.set(false);
-    minimized = false;
+    if (browser) {
+      pipVisible.set(false);
+      minimized = false;
+    }
   }
   
+  // Toggle minimized state
   function minimizePip() {
     minimized = !minimized;
   }
   
+  // Switch between tools
   function setTool(id: string) {
     activeTool.set(id);
     minimized = false;
@@ -46,6 +60,8 @@
   
   // Draggable functionality
   function handleMouseDown(e: MouseEvent) {
+    if (!browser || !widgetElement) return;
+    
     // Only drag via the header (check if the event target is within the header)
     const header = widgetElement.querySelector('.pip-header');
     if (!header || !header.contains(e.target as Node)) return;
@@ -56,58 +72,96 @@
     isDragging = true;
     startX = e.clientX;
     startY = e.clientY;
+    
     const rect = widgetElement.getBoundingClientRect();
     initialLeft = rect.left;
     initialTop = rect.top;
 
     // Style changes for dragging state
-    widgetElement.style.cursor = 'grabbing';
-    document.body.style.userSelect = 'none'; // Prevent text selection
-    widgetElement.style.bottom = 'auto'; // Ensure absolute positioning takes over
-    widgetElement.style.right = 'auto';
+    widgetCursor = 'grabbing';
+    widgetUserSelect = 'none'; // Prevent text selection
+    widgetBottom = 'auto'; // Ensure absolute positioning takes over
+    widgetRight = 'auto';
+    
+    // Set explicit position
+    widgetLeft = `${initialLeft}px`;
+    widgetTop = `${initialTop}px`;
   }
   
   function handleMouseMove(e: MouseEvent) {
-    if (!isDragging) return;
+    if (!browser || !isDragging) return;
+    
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
-    widgetElement.style.left = `${initialLeft + dx}px`;
-    widgetElement.style.top = `${initialTop + dy}px`;
+    
+    widgetLeft = `${initialLeft + dx}px`;
+    widgetTop = `${initialTop + dy}px`;
   }
   
   function handleMouseUp() {
+    if (!browser) return;
+    
     if (isDragging) {
       isDragging = false;
-      widgetElement.style.cursor = 'grab';
-      document.body.style.userSelect = ''; // Re-enable text selection
+      widgetCursor = 'grab';
+      widgetUserSelect = 'auto'; // Re-enable text selection
     }
   }
   
+  // Keep track of event listeners to clean up properly
+  let mouseMoveListener: ((e: MouseEvent) => void) | null = null;
+  let mouseUpListener: (() => void) | null = null;
+  
   onMount(() => {
-    // Add event listeners to document for reliable drag tracking
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    if (!browser) return;
     
-    // Initial cursor style
-    if (widgetElement) widgetElement.style.cursor = 'grab';
-
-    // Clean up
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-      // Reset body style if component is destroyed mid-drag
-      if (isDragging) {
-         document.body.style.userSelect = '';
-      }
-    };
+    // Add event listeners to document for reliable drag tracking
+    mouseMoveListener = handleMouseMove;
+    mouseUpListener = handleMouseUp;
+    
+    document.addEventListener('mousemove', mouseMoveListener);
+    document.addEventListener('mouseup', mouseUpListener);
   });
+  
+  // Ensure cleanup of event listeners when component is destroyed
+  onDestroy(() => {
+    if (!browser) return;
+    
+    if (mouseMoveListener) {
+      document.removeEventListener('mousemove', mouseMoveListener);
+    }
+    
+    if (mouseUpListener) {
+      document.removeEventListener('mouseup', mouseUpListener);
+    }
+  });
+  
+  // Function for keyboard accessibility
+  async function handleKeyDown(e: KeyboardEvent) {
+    if (!browser || !widgetElement) return;
+    
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      // We need to create a synthetic MouseEvent for handleMouseDown
+      // First, wait for the DOM to be updated
+      await tick();
+      
+      const rect = widgetElement.getBoundingClientRect();
+      const mouseEvent = new MouseEvent('mousedown', {
+        clientX: rect.left + rect.width / 2,
+        clientY: rect.top + 20, // Position in the header
+        bubbles: true
+      });
+      handleMouseDown(mouseEvent);
+    }
+  }
 </script>
 
-{#if $pipVisible}
+{#if browser && $pipVisible}
   <div
     bind:this={widgetElement}
-    class="pip-widget {minimized ? 'minimized' : ''} bg-gray-800 text-gray-100 rounded-2xl overflow-hidden shadow-lg fixed bottom-4 right-4 z-50 squircle"
-    style="position: fixed; bottom: 1rem; right: 1rem; cursor: grab;"
+    class="pip-widget {minimized ? 'minimized' : ''} bg-gray-800 text-gray-100 rounded-2xl overflow-hidden shadow-lg fixed squircle"
+    style="position: fixed; bottom: {widgetBottom}; right: {widgetRight}; left: {widgetLeft}; top: {widgetTop}; cursor: {widgetCursor}; user-select: {widgetUserSelect};"
     role="region" 
     aria-label="Quick Tools Widget"
     transition:fly={{ y: 20, duration: 300, easing: quintOut }}
@@ -118,7 +172,7 @@
       role="button" 
       tabindex="0"
       aria-label="Drag quick tools widget"
-      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleMouseDown(e); }}
+      on:keydown={handleKeyDown}
     >
       <h3 class="font-medium text-sm pl-2">Quick Tools</h3>
       <div>
@@ -146,6 +200,7 @@
             <button
               on:click={() => setTool(tool.id)}
               class="p-2 {tool.bgClass} rounded-lg {tool.textClass} {tool.hoverClass} flex flex-col items-center text-center transition duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 { $activeTool === tool.id ? 'ring-2 ring-white' : 'ring-0' }"
+              aria-label={`Open ${tool.name} tool`}
             >
               <i class="fas {tool.icon} text-base mb-1"></i>
               <span class="text-xs font-medium">{tool.name}</span>

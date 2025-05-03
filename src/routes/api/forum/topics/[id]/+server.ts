@@ -1,5 +1,6 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { updateTopic, deleteTopic } from '$lib/services/forumService';
+import { updateTopic, deleteTopic } from '$lib/services/forums/forumService';
+import { getTopic, createPost } from '$lib/services/forums/topicService';
 
 export const PUT: RequestHandler = async ({ request, params }) => {
   const topicId = params.id;
@@ -14,7 +15,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
       is_locked: data.is_locked
     });
     
-    if (!updatedTopic) {
+    if (updatedTopic === null) {
       return new Response(JSON.stringify({ message: 'Topic not found' }), { 
         status: 404,
         headers: { 'Content-Type': 'application/json' }
@@ -40,7 +41,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
   try {
     const success = await deleteTopic(topicId);
     
-    if (!success) {
+    if (success === false) {
       return new Response(JSON.stringify({ message: 'Topic not found' }), { 
         status: 404,
         headers: { 'Content-Type': 'application/json' }
@@ -59,3 +60,14 @@ export const DELETE: RequestHandler = async ({ params }) => {
     });
   }
 };
+
+export async function GET({ params }) {
+  const topic = await getTopic(params.id);
+  return new Response(JSON.stringify(topic));
+}
+
+export async function POST({ params, request }) {
+  const data = await request.json();
+  const newPost = await createPost(params.id, data);
+  return new Response(JSON.stringify(newPost));
+}

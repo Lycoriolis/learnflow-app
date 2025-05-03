@@ -1,0 +1,27 @@
+---
+title: "Exercices: Nombres complexes et trigonométrie"
+tags: ["mpsi-mathematiques","nombres-complexes","trigonometrie"]
+---
+
+# Exercices : Nombres complexes et trigonométrie
+
+## Exercice 3.1 : Vrai – Faux
+
+1. Soit $z\in\mathbb{C}$. On a : $\Re(z^{2})\geq 0$ ou $\Im(z^{2})\geq 0$.  
+2. Soient $z_{1},z_{2}\in\mathbb{C}$. Si $z_{1}+z_{2}\in\mathbb{R}$ et $z_{1}z_{2}\in\mathbb{R}$, alors $z_{1}$ et $z_{2}$ sont réels.  
+3. Soit $z\in\mathbb{C}$ tel que $|z|=1$. Alors il existe $n\in\mathbb{N}^{*}$ tel que $z$ soit une racine $n$-ième de l'unité.  
+4. Soit $z\in\mathbb{C}$. Alors : $e^{z}=-1 \Longrightarrow z=i\pi$.  
+5. Faux. Prenez par exemple les racines carrées de $-1-i$ ou $\frac{1-i\sqrt{3}}{2}$.  
+
+## Exercice 3.2 : Résolution d'équations dans $\mathbb{C}$
+
+1. $z^{2}-z+i=0$.  
+2. $z^{4}-4(1+i)z^{3}+12i z^{2}+8(1-i)z-5=0$.  
+3. $z^{6}+7z^{3}-8=0$.  
+4. $\bigl(\frac{z+i}{z-i}\bigr)^{3}-\bigl(\frac{z+i}{z-i}\bigr)^{2}+\frac{z+i}{z-i}-1=0$.  
+5. $(z+1)^{n}=(z-1)^{n}$, $n\in\mathbb{N}^{*}$.  
+6. $e^{z}=3\sqrt{3}-3i$.  
+7. $z^{5}=-\tfrac{1}{2}+i\tfrac{\sqrt{3}}{2}$.  
+8. $z^{3}-(5+3i)z^{2}+(7+16i)z+3-21i=0$ (indication : chercher d’abord les racines pures imaginaires).  
+9. $z^{3}=-25\overline{z^{7}}$.  
+10. $z^{n}=-1$, $n\in\mathbb{N}^{*}$.  

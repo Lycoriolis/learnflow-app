@@ -2,10 +2,20 @@
   export let title: string;
   export let value: string;
   export let icon: string = 'fa-chart-line';
-  export let color: string = 'blue';
+  export let color: 'blue' | 'green' | 'red' | 'yellow' | 'indigo' | 'purple' | 'gray' = 'blue';
+
+  // Color style mapping types
+  type ColorStyle = {
+    bg: string;
+    text: string;
+  };
+
+  type ColorClasses = {
+    [key in typeof color]: ColorStyle;
+  };
 
   // Map color names to Tailwind CSS classes
-  const colorClasses = {
+  const colorClasses: ColorClasses = {
     blue: {
       bg: 'bg-blue-100 dark:bg-blue-900',
       text: 'text-blue-600 dark:text-blue-300'
@@ -36,8 +46,8 @@
     }
   };
 
-  // Get color classes based on the color prop, default to blue if not found
-  $: colorStyle = colorClasses[color] || colorClasses.blue;
+  // Get color classes based on the color prop
+  $: colorStyle = colorClasses[color];
 </script>
 
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
@@ -50,4 +60,4 @@
       <i class="fas {icon} text-xl"></i>
     </div>
   </div>
-</div> 
+</div>

@@ -139,6 +139,12 @@
     dragOverId = null;
   }
 
+  function handleTaskKeydown(event: KeyboardEvent, taskId: string) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      selectTask(taskId);
+    }
+  }
+
   // UI helper functions
   function getEmergencyColor(level: number) {
     switch(Number(level)) {
@@ -317,13 +323,16 @@
       {:else}
         {#each filteredTodos as task (task.id)}
           <div 
-            class="bg-white dark:bg-gray-800/90 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-indigo-200 dark:hover:border-indigo-700/50 transition-all cursor-pointer relative overflow-hidden {selectedId === task.id ? 'border-l-4 border-l-indigo-500 dark:border-l-indigo-400' : ''} {getTaskStatusClass(task)}"
+            role="button"
+            tabindex="0"
+            class="bg-white dark:bg-gray-800/90 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-indigo-200 dark:hover:border-indigo-700/50 transition-all cursor-pointer relative overflow-hidden {selectedId === task.id ? 'border-l-4 border-l-indigo-500 dark:border-l-indigo-400' : ''} {getTaskStatusClass(task)} focus:outline-none focus:ring-2 focus:ring-indigo-300 dark:focus:ring-indigo-600"
             draggable="true"
             on:dragstart={() => handleDragStart(task.id)}
             on:dragover|preventDefault={() => handleDragOver(task.id)}
             on:drop|preventDefault={handleDrop}
             on:dragend={handleDragEnd}
             on:click={() => selectTask(task.id)}
+            on:keydown={(e) => handleTaskKeydown(e, task.id)}
             in:fly={{ y: 10, duration: 200, delay: 50 }}
             out:fly={{ y: -10, duration: 200 }}
           >

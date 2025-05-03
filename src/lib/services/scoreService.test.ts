@@ -1,17 +1,59 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { calculateUserScore } from './scoreService';
-import * as userService from './userService.server';
-import * as courseService from './courseService';
+import { calculateUserScore } from './scoreService.js'; // Added .js extension
+import * as userService from '$lib/services/userService.server.js'; // Added .js extension
+import * as contentService from '$lib/server/contentService.js'; // Added .js extension and corrected path
 
 // Mock pool.query
-vi.mock('./userService.server', () => ({
+vi.mock('$lib/services/userService.server.js', () => ({ // Added .js extension
   pool: { query: vi.fn() }
 }));
-// Mock getCourseStructure to return consistent 2-lesson modules
-vi.mock('./courseService', () => ({
-  getCourseStructure: vi.fn(async (id: string) => ({
-    modules: [ { lessons: [ { id: 'a' }, { id: 'b' } ] } ]
-  }))
+
+// Mock getAllContentItemsByType
+vi.mock('$lib/server/contentService.js', () => ({ // Added .js extension and corrected mock path
+  getAllContentItemsByType: vi.fn(async (contentType: string, itemType: string) => {
+    if (contentType === 'courses' && itemType === 'course') {
+      // Simulate 2 courses, each with 1 module containing 2 lessons = 4 total lessons
+      return [
+        {
+          id: 'course1',
+          type: 'course',
+          title: 'Course 1',
+          path: 'course1',
+          children: [
+            {
+              id: 'm1',
+              type: 'module',
+              title: 'Module 1',
+              path: 'course1/m1',
+              children: [
+                { id: 'l1a', type: 'lesson', title: 'Lesson 1a', path: 'course1/m1/l1a' },
+                { id: 'l1b', type: 'lesson', title: 'Lesson 1b', path: 'course1/m1/l1b' }
+              ]
+            }
+          ]
+        },
+        {
+          id: 'course2',
+          type: 'course',
+          title: 'Course 2',
+          path: 'course2',
+          children: [
+            {
+              id: 'm2',
+              type: 'module',
+              title: 'Module 2',
+              path: 'course2/m2',
+              children: [
+                { id: 'l2a', type: 'lesson', title: 'Lesson 2a', path: 'course2/m2/l2a' },
+                { id: 'l2b', type: 'lesson', title: 'Lesson 2b', path: 'course2/m2/l2b' }
+              ]
+            }
+          ]
+        }
+      ];
+    }
+    return []; // Default empty array for other types
+  })
 }));
 
 const { pool } = userService as any;
@@ -19,6 +61,50 @@ const { pool } = userService as any;
 describe('calculateUserScore', () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    (contentService.getAllContentItemsByType as any).mockClear();
+    (contentService.getAllContentItemsByType as any).mockImplementation(async (contentType: string, itemType: string) => {
+      if (contentType === 'courses' && itemType === 'course') {
+        return [
+          {
+            id: 'course1',
+            type: 'course',
+            title: 'Course 1',
+            path: 'course1',
+            children: [
+              {
+                id: 'm1',
+                type: 'module',
+                title: 'Module 1',
+                path: 'course1/m1',
+                children: [
+                  { id: 'l1a', type: 'lesson', title: 'Lesson 1a', path: 'course1/m1/l1a' },
+                  { id: 'l1b', type: 'lesson', title: 'Lesson 1b', path: 'course1/m1/l1b' }
+                ]
+              }
+            ]
+          },
+          {
+            id: 'course2',
+            type: 'course',
+            title: 'Course 2',
+            path: 'course2',
+            children: [
+              {
+                id: 'm2',
+                type: 'module',
+                title: 'Module 2',
+                path: 'course2/m2',
+                children: [
+                  { id: 'l2a', type: 'lesson', title: 'Lesson 2a', path: 'course2/m2/l2a' },
+                  { id: 'l2b', type: 'lesson', title: 'Lesson 2b', path: 'course2/m2/l2b' }
+                ]
+              }
+            ]
+          }
+        ];
+      }
+      return [];
+    });
   });
 
   it('returns 0 when no activities recorded', async () => {

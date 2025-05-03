@@ -1,0 +1,31 @@
+---
+title: Espaces vectoriels et applications linéaires
+description: Théorie des espaces vectoriels et étude des applications linéaires
+tags: ["math", "mpsi", "linear-algebra", "vector-spaces"]
+difficulty: advanced
+estimatedTime: 25 hours
+---
+
+# Espaces vectoriels et applications linéaires
+
+## Module: Espaces vectoriels
+### Lesson: Concepts fondamentaux
+- Définition et exemples
+- Sous-espaces vectoriels
+- Familles libres et génératrices
+
+### Lesson: Dimension finie
+- Base et dimension
+- Théorème de la base incomplète
+- Somme directe
+
+## Module: Applications linéaires
+### Lesson: Propriétés générales
+- Définition et exemples
+- Noyau et image
+- Rang et théorème du rang
+
+### Lesson: Matrices et changements de base
+- Matrice d'une application linéaire
+- Changements de base
+- Similitude

@@ -1,14 +1,14 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { getAllTopics, createTopic, updateTopic, deleteTopic, getTopic } from '$lib/services/forumService';
+import { getTopics, createForumTopic, updateTopic, deleteTopic } from '$lib/services/forums/forumService';
 
 export const GET: RequestHandler = async ({ url }) => {
-  const categoryId = url.searchParams.get('category_id');
+  const categoryId = url.searchParams.get('categoryId');
   let topics;
 
   try {
-    topics = await getAllTopics();
+    topics = await getTopics();
     if (categoryId) {
-      topics = topics.filter(t => t.category_id === categoryId);
+      topics = topics.filter(t => t.categoryId === categoryId);
     }
     return new Response(JSON.stringify(topics), { status: 200 });
   } catch (error) {
@@ -18,19 +18,19 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 export const POST: RequestHandler = async ({ request }) => {
-  const { title, category_id, author_id, content } = await request.json();
+  const { title, categoryId, authorId, content } = await request.json();
 
-  if (!title || !category_id || !author_id || !content) {
+  if (!title || !categoryId || !authorId || !content) {
     const missing = [];
     if (!title) missing.push('title');
-    if (!category_id) missing.push('category_id');
-    if (!author_id) missing.push('author_id');
+    if (!categoryId) missing.push('categoryId');
+    if (!authorId) missing.push('authorId');
     if (!content) missing.push('content');
     return new Response(`Missing required fields: ${missing.join(', ')}`, { status: 400 });
   }
 
   try {
-    const newTopic = await createTopic({ title, category_id, author_id, content });
+    const newTopic = await createForumTopic({ title, categoryId, authorId, content });
     return new Response(JSON.stringify(newTopic), { status: 201 });
   } catch (error) {
     console.error('Error creating topic:', error);
@@ -47,7 +47,8 @@ export const PUT: RequestHandler = async ({ request }) => {
 
   try {
     const topic = await updateTopic(id, data);
-    if (!topic) {
+    // Explicitly check for null since updateTopic returns null when topic isn't found
+    if (topic === null) {
       return new Response('Topic not found', { status: 404 });
     }
     return new Response(JSON.stringify(topic), { status: 200 });
@@ -66,7 +67,8 @@ export const DELETE: RequestHandler = async ({ url }) => {
 
   try {
     const result = await deleteTopic(id);
-    if (!result) {
+    // Explicitly check for false as deleteTopic returns a boolean
+    if (result === false) {
       return new Response('Topic not found', { status: 404 });
     }
     return new Response(JSON.stringify({ success: true }), { status: 200 });

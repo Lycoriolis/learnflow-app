@@ -1,0 +1,40 @@
+{
+  "categories": [
+    {
+      "id": "programming",
+      "title": "Programming",
+      "description": "Learn programming fundamentals and techniques",
+      "icon": "fa-code",
+      "type": "course-category",
+      "path": "programming",
+      "courseCount": 1
+    },
+    {
+      "id": "mathematics",
+      "title": "Mathematics",
+      "description": "Advanced mathematics courses for higher education",
+      "icon": "fa-square-root-alt",
+      "type": "course-category",
+      "path": "maths",
+      "courseCount": 1
+    }
+  ],
+  "featuredCourses": [
+    {
+      "id": "intro-python",
+      "title": "Introduction to Python Programming",
+      "description": "Learn the fundamentals of Python programming from scratch",
+      "difficulty": "beginner",
+      "estimatedTime": "6 hours",
+      "tags": ["python", "programming", "beginner"]
+    },
+    {
+      "id": "mpsi-maths",
+      "title": "MPSI - Mathématiques",
+      "description": "Programme complet de mathématiques pour la filière MPSI",
+      "difficulty": "advanced",
+      "estimatedTime": "120 hours",
+      "tags": ["math", "mpsi", "preparation"]
+    }
+  ]
+}

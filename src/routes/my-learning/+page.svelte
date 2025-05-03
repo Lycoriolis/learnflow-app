@@ -1,64 +1,18 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { userProfile, userProfileLoading } from '$lib/stores/userProfileStore.js';
   import { isAuthenticated, loading as authLoading } from '$lib/stores/authStore.js';
-  import { loadContent, type ContentMetadata } from '$lib/services/contentService.js';
   import { goto } from '$app/navigation';
-  import { writable } from 'svelte/store';
+  import type { PageData } from './$types';
 
-  interface Enrollment { id: string; progress: number; lastAccessed: number; }
+  export let data: PageData;
 
-  let coursesData = writable<{ meta: ContentMetadata; enrollment: Enrollment }[]>([]);
-  let loading = false;
-  let error: string | null = null;
   let activeTab: 'in-progress' | 'completed' | 'all' = 'in-progress';
-  let profileUnsub: () => void;
 
   function goToLogin() { goto('/login?redirect=/my-learning'); }
 
-  async function loadCourses() {
-    loading = true;
-    error = null;
-    const profile = $userProfile;
-    if (!profile?.preferences?.enrollments) {
-      coursesData.set([]);
-      loading = false;
-      return;
-    }
-    try {
-      const data = await Promise.all(
-        profile.preferences.enrollments.map(async (e: Enrollment) => ({
-          meta: (await loadContent('course', e.id)) as ContentMetadata,
-          enrollment: e
-        }))
-      );
-      coursesData.set(data);
-    } catch (e: any) {
-      console.error(e);
-      error = 'Failed to load enrolled courses';
-    } finally {
-      loading = false;
-    }
-  }
-
-  onMount(() => {
-    if (!$isAuthenticated) return;
-    // Wait for profile to finish loading
-    profileUnsub = userProfileLoading.subscribe((loadingProfile) => {
-      if (!loadingProfile) {
-        loadCourses();
-      }
-    });
-  });
-
-  onDestroy(() => {
-    if (profileUnsub) profileUnsub();
-  });
-
-  // Derived lists
-  $: myCourses = $coursesData.filter(c => c.enrollment.progress > 0 && c.enrollment.progress < 100);
-  $: completedCourses = $coursesData.filter(c => c.enrollment.progress === 100);
-  $: allCourses = $coursesData;
+  $: enrolledCourses = data.enrolledCourses || [];
+  $: myCourses = enrolledCourses.filter(c => c.enrollment.progress > 0 && c.enrollment.progress < 100);
+  $: completedCourses = enrolledCourses.filter(c => c.enrollment.progress === 100);
+  $: allCourses = enrolledCourses;
   $: suggestion = allCourses.find(c => c.enrollment.progress > 0 && c.enrollment.progress < 100);
 </script>
 
@@ -66,7 +20,7 @@
   <title>My Learning | LearnFlow</title>
 </svelte:head>
 
-{#if $authLoading || $userProfileLoading || loading}
+{#if $authLoading}
   <div class="flex items-center justify-center min-h-[60vh]"><i class="fas fa-spinner fa-spin text-4xl text-indigo-500"></i></div>
 {:else if !$isAuthenticated}
   <div class="flex flex-col items-center justify-center min-h-[60vh]">
@@ -76,8 +30,8 @@
 {:else}
   <div class="max-w-7xl mx-auto px-4 py-6">
     <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">My Learning</h1>
-    {#if error}
-      <div class="text-red-500 mb-4">{error}</div>
+    {#if data.error}
+      <div class="text-red-500 mb-4">{data.error}</div>
     {/if}
     {#if allCourses.length === 0}
       <div class="text-center text-gray-600 dark:text-gray-400 py-20">
@@ -90,7 +44,7 @@
         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow mb-6">
           <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Continue Learning</h2>
           <p class="text-gray-700 dark:text-gray-300">Next: {suggestion.meta.title}</p>
-          <a href={`/courses/${suggestion.meta.id}`} class="mt-4 inline-block text-indigo-600 hover:underline">Go to Course</a>
+          <a href={suggestion.meta.path ? `/courses?path=${suggestion.meta.path}` : `/courses/${suggestion.meta.id}`} class="mt-4 inline-block text-indigo-600 hover:underline">Go to Course</a>
         </div>
       {/if}
       <!-- Tabs -->
@@ -110,7 +64,7 @@
               </div>
               <span class="ml-2 text-sm">{item.enrollment.progress}%</span>
             </div>
-            <a href={`/courses/${item.meta.id}`} class="mt-auto text-indigo-600 hover:underline">View Course</a>
+            <a href={item.meta.path ? `/courses?path=${item.meta.path}` : `/courses/${item.meta.id}`} class="mt-auto text-indigo-600 hover:underline">View Course</a>
           </div>
         {/each}
       </div>

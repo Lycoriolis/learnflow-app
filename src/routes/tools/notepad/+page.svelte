@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { notepadContent } from '$lib/stores/pipStores';
-  import MarkdownRenderer from '$lib/components/MarkdownRenderer.svelte';
-  import { logStart, logEnd, logEvent } from '$lib/services/activityService';
+  import MarkdownRenderer from '$lib/components/MarkdownRendererComponent.svelte';
+  import { logStart, logEnd } from '$lib/services/activityService';
 
   // Bind directly to the persistent store
   let note = '';
@@ -32,16 +32,15 @@
 
   function clearNote() {
     note = '';
-    saveNote();
+    notepadContent.set('');
   }
 
   function handleInput() {
-    logEvent('edit_note', 'notepad', { content: note });
+    saved = false;
   }
 
   function togglePreview() {
     showPreview = !showPreview;
-    logEvent('toggle_preview', 'notepad', { showPreview });
   }
 </script>
 

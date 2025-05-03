@@ -4,6 +4,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   plugins: [sveltekit()],
   server: {
+    host: true,
     fs: {
       // Allow serving files from one level up to the project root
       allow: ['..'],
@@ -14,11 +15,30 @@ export default defineConfig({
       interval: 1000,
     }
   },
-  // Configure proper MIME types for all file types
+  // Fix dependency optimization issues
   optimizeDeps: {
-    exclude: ['@sveltejs/kit']
+    exclude: [
+      'firebase/auth', 
+      'firebase/app', 
+      'firebase/firestore', 
+      'firebase/analytics'
+    ],
+    include: [
+      'marked',
+      'dompurify',
+      'highlight.js',
+      'katex',
+      'clsx',
+      'chart.js',
+      'chartjs-adapter-date-fns',
+      'date-fns/locale'
+    ]
   },
+  // Increase build performance
   build: {
+    target: 'es2015',
+    sourcemap: true,
+    chunkSizeWarningLimit: 1000,
     // Ensure proper font handling
     assetsInlineLimit: 0, // Don't inline any assets
     // Ensure the server build correctly identifies server-only files
@@ -28,4 +48,11 @@ export default defineConfig({
     // Ensure proper CSS source maps
     devSourcemap: true,
   },
+  // Fix potential path aliasing issues
+  resolve: {
+    alias: {
+      $lib: '/src/lib',
+      $components: '/src/lib/components'
+    }
+  }
 });

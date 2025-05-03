@@ -1,8 +1,6 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
-  import { user } from '$lib/stores/authStore.js';
-  import { logStart, logEnd } from '$lib/services/activityService';
 
   // Types
   type CalendarEvent = {
@@ -88,7 +86,6 @@
   let currentView = 'month';
   let currentYear = currentDate.getFullYear();
   let currentMonth = currentDate.getMonth();
-  let calendarEventId: string | null = null;
 
   // Navigation functions
   function prevMonth() {
@@ -226,15 +223,10 @@
 
   let loading = true;
 
-  onMount(async () => {
-    calendarEventId = await logStart('view_calendar', 'calendar');
+  onMount(() => {
     setTimeout(() => {
       loading = false;
     }, 800);
-  });
-
-  onDestroy(() => {
-    if (calendarEventId) logEnd(calendarEventId);
   });
 </script>
 
@@ -496,15 +488,15 @@
 
                     <!-- Actions -->
                     <div class="ml-4 flex-shrink-0 flex space-x-1">
-                      <button class="p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" title="Edit">
+                      <button class="p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" title="Edit" aria-label="Edit">
                         <i class="fas fa-pencil-alt text-xs"></i>
                       </button>
                       {#if !event.completed && (event.type === 'lesson' || event.type === 'assignment')}
-                        <button class="p-1 text-gray-400 hover:text-green-600 dark:text-gray-500 dark:hover:text-green-400" title="Mark as completed">
+                        <button class="p-1 text-gray-400 hover:text-green-600 dark:text-gray-500 dark:hover:text-green-400" title="Mark as completed" aria-label="Mark as completed">
                           <i class="fas fa-check text-xs"></i>
                         </button>
                       {/if}
-                      <button class="p-1 text-gray-400 hover:text-red-600 dark:text-gray-500 dark:hover:text-red-400" title="Delete">
+                      <button class="p-1 text-gray-400 hover:text-red-600 dark:text-gray-500 dark:hover:text-red-400" title="Delete" aria-label="Delete">
                         <i class="fas fa-trash-alt text-xs"></i>
                       </button>
                     </div>
@@ -538,15 +530,6 @@
 </div>
 
 <style>
-  .loader {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-left-color: #4f46e5;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-  }
-
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }

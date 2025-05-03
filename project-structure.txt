@@ -1,0 +1,395 @@
+.
+├── AUTHENTICATION.md
+├── codebase.txt
+├── components
+│   ├── course
+│   │   └── CourseCard.tsx
+│   ├── dashboard
+│   │   └── ProgressTracker.tsx
+│   ├── exercise
+│   │   └── ExerciseCard.tsx
+│   └── form
+│       └── FormHandler.tsx
+├── .env
+├── .env.example
+├── .gitignore
+├── package.json
+├── package-lock.json
+├── pages
+│   └── api
+│       └── recommendations.ts
+├── postcss.config.cjs
+├── PROJECT.md
+├── project-structure.txt
+├── README.md
+├── RECOMMENDATIONS.md
+├── src
+│   ├── app.css
+│   ├── app.d.ts
+│   ├── app.html
+│   ├── contexts
+│   ├── firebase
+│   │   └── client.ts
+│   ├── hooks.server.ts
+│   ├── lib
+│   │   ├── authService.ts
+│   │   ├── components
+│   │   │   ├── ActivityFeed.svelte
+│   │   │   ├── ActivityItem.svelte
+│   │   │   ├── ContentExplorer.svelte
+│   │   │   ├── ContentViewer.svelte
+│   │   │   ├── CourseCard.svelte
+│   │   │   ├── courses
+│   │   │   │   ├── CourseCard.svelte
+│   │   │   │   ├── CourseCarousel.svelte
+│   │   │   │   ├── CourseFlashcardGenerator.svelte
+│   │   │   │   ├── CourseModal.svelte
+│   │   │   │   └── exercise
+│   │   │   │       ├── ExerciseCard.svelte
+│   │   │   │       ├── ExerciseMarkdown.svelte
+│   │   │   │       ├── ExerciseRating.svelte
+│   │   │   │       └── ExercisesSection.svelte
+│   │   │   ├── ExerciseCard.svelte
+│   │   │   ├── ExerciseMarkdown.svelte
+│   │   │   ├── ExerciseRating.svelte
+│   │   │   ├── ExercisesSection.svelte
+│   │   │   ├── FocusTimeChart.svelte
+│   │   │   ├── Footer.svelte
+│   │   │   ├── forums
+│   │   │   │   ├── CreateTopicForm.svelte
+│   │   │   │   ├── ForumFilters.svelte
+│   │   │   │   ├── ForumHeader.svelte
+│   │   │   │   ├── ForumList.svelte
+│   │   │   │   ├── ForumSidebar.svelte
+│   │   │   │   ├── ForumTopic.svelte
+│   │   │   │   └── NewPostForm.svelte
+│   │   │   ├── GeneralWelcome.svelte
+│   │   │   ├── Header.svelte
+│   │   │   ├── Login.svelte
+│   │   │   ├── MarkdownRendererComponent.svelte
+│   │   │   ├── MarkdownRenderer.svelte
+│   │   │   ├── MathContent.svelte
+│   │   │   ├── pip
+│   │   │   │   ├── PipCalculator.svelte
+│   │   │   │   ├── PipDictionary.svelte
+│   │   │   │   ├── PipFlashcards.svelte
+│   │   │   │   ├── PipNotes.svelte
+│   │   │   │   ├── PipTimer.svelte
+│   │   │   │   └── PipTodo.svelte
+│   │   │   ├── PipWidget.svelte
+│   │   │   ├── ProgressMetrics.svelte
+│   │   │   ├── Quotes.svelte
+│   │   │   ├── RecentActivity.svelte
+│   │   │   ├── RecommendationsSection.svelte
+│   │   │   ├── Register.svelte
+│   │   │   ├── ResetPassword.svelte
+│   │   │   ├── ScoreCard.svelte
+│   │   │   ├── shared
+│   │   │   │   ├── ContentViewer.svelte
+│   │   │   │   ├── Draggable.svelte
+│   │   │   │   ├── MarkdownRenderer.svelte
+│   │   │   │   └── MathContent.svelte
+│   │   │   ├── Sidebar.svelte
+│   │   │   ├── StatCard.svelte
+│   │   │   ├── StickyNotes.svelte
+│   │   │   ├── Timer.svelte
+│   │   │   ├── utils
+│   │   │   │   └── Draggable.svelte
+│   │   │   └── WelcomeBanner.svelte
+│   │   ├── firebase
+│   │   │   └── firebase.ts
+│   │   ├── firebase.ts
+│   │   ├── index.ts
+│   │   ├── server
+│   │   │   ├── contentService.ts
+│   │   │   ├── database.ts
+│   │   │   └── firebaseAdmin.ts
+│   │   ├── services
+│   │   │   ├── activityService.ts
+│   │   │   ├── baseService.ts
+│   │   │   ├── contentService.ts
+│   │   │   ├── courses
+│   │   │   │   ├── courseService.ts
+│   │   │   │   └── exerciseService.ts
+│   │   │   ├── exerciseService.ts
+│   │   │   ├── forums
+│   │   │   │   ├── forumService.ts
+│   │   │   │   ├── postService.ts
+│   │   │   │   └── topicService.ts
+│   │   │   ├── forumService.ts
+│   │   │   ├── groupService.ts
+│   │   │   ├── recommendationService.ts
+│   │   │   ├── scoreService.test.ts
+│   │   │   ├── scoreService.ts
+│   │   │   ├── __tests__
+│   │   │   │   └── contentService.test.ts
+│   │   │   ├── userService.server.ts
+│   │   │   └── userService.ts
+│   │   ├── stores
+│   │   │   ├── adminStore.ts
+│   │   │   ├── appStore.ts
+│   │   │   ├── authStore.ts
+│   │   │   ├── courseStore.ts
+│   │   │   ├── forumStore.ts
+│   │   │   ├── persistentStore.js
+│   │   │   ├── persistentStore.ts
+│   │   │   ├── pipStores.ts
+│   │   │   ├── sidebarStore.ts
+│   │   │   └── userProfileStore.ts
+│   │   ├── types
+│   │   │   ├── contentTypes.ts
+│   │   │   ├── forumTypes.ts
+│   │   │   ├── global.d.ts
+│   │   │   ├── mathjax.d.ts
+│   │   │   └── shared.ts
+│   │   └── utils
+│   │       ├── csrf.client.ts
+│   │       ├── csrfProtection.ts
+│   │       ├── csrf.server.ts
+│   │       ├── csrf.types.ts
+│   │       ├── csrfTypes.ts
+│   │       ├── markdown.js
+│   │       ├── markdown.ts
+│   │       ├── navigation.ts
+│   │       └── secureFetch.ts
+│   ├── routes
+│   │   ├── admin
+│   │   │   ├── courses
+│   │   │   │   ├── +page.server.ts
+│   │   │   │   └── +page.svelte
+│   │   │   ├── forums
+│   │   │   │   ├── category
+│   │   │   │   │   └── [id]
+│   │   │   │   │       └── edit
+│   │   │   │   │           ├── +page.server.ts
+│   │   │   │   │           └── +page.svelte
+│   │   │   │   ├── +page.server.ts
+│   │   │   │   ├── +page.svelte
+│   │   │   │   └── topic
+│   │   │   │       └── [id]
+│   │   │   │           └── edit
+│   │   │   │               ├── +page.server.ts
+│   │   │   │               └── +page.svelte
+│   │   │   ├── +layout.server.ts
+│   │   │   ├── +layout.svelte
+│   │   │   ├── +page.svelte
+│   │   │   └── users
+│   │   │       ├── +page.server.ts
+│   │   │       └── +page.svelte
+│   │   ├── adminGuard.ts
+│   │   ├── api
+│   │   │   ├── activities
+│   │   │   │   ├── end
+│   │   │   │   │   └── +server.ts
+│   │   │   │   ├── event
+│   │   │   │   │   └── +server.ts
+│   │   │   │   ├── recent
+│   │   │   │   │   └── +server.ts
+│   │   │   │   ├── +server.ts
+│   │   │   │   └── start
+│   │   │   │       └── +server.ts
+│   │   │   ├── authMiddleware.server.ts
+│   │   │   ├── content
+│   │   │   │   └── list
+│   │   │   │       └── +server.ts
+│   │   │   ├── csrf
+│   │   │   │   ├── init
+│   │   │   │   │   └── +server.ts
+│   │   │   │   └── refresh
+│   │   │   │       └── +server.ts
+│   │   │   ├── csrfMiddleware.server.ts
+│   │   │   ├── csrfMiddleware.ts
+│   │   │   ├── exercises
+│   │   │   │   └── +server.ts
+│   │   │   ├── forum
+│   │   │   │   ├── categories
+│   │   │   │   │   ├── [id]
+│   │   │   │   │   │   └── +server.ts
+│   │   │   │   │   └── +server.ts
+│   │   │   │   ├── posts
+│   │   │   │   │   └── +server.ts
+│   │   │   │   └── topics
+│   │   │   │       ├── [id]
+│   │   │   │       │   ├── +server.ts
+│   │   │   │       │   └── vote
+│   │   │   │       │       └── +server.ts
+│   │   │   │       └── +server.ts
+│   │   │   ├── forums
+│   │   │   │   └── topics
+│   │   │   │       └── [id]
+│   │   │   │           └── +server.ts
+│   │   │   ├── groups
+│   │   │   │   ├── [id]
+│   │   │   │   │   └── +server.ts
+│   │   │   │   ├── join
+│   │   │   │   │   └── +server.ts
+│   │   │   │   ├── leave
+│   │   │   │   │   └── +server.ts
+│   │   │   │   └── +server.ts
+│   │   │   ├── [id]
+│   │   │   │   └── +server.ts
+│   │   │   ├── recommendations
+│   │   │   │   └── +server.ts
+│   │   │   ├── score
+│   │   │   │   └── +server.ts
+│   │   │   └── topic
+│   │   │       └── [id]
+│   │   │           └── +server.ts
+│   │   ├── calendar
+│   │   │   └── +page.svelte
+│   │   ├── category
+│   │   │   └── [slug]
+│   │   │       ├── +page.server.ts
+│   │   │       ├── +page.svelte
+│   │   │       └── +page.ts
+│   │   ├── courses
+│   │   │   ├── maths
+│   │   │   │   └── mpsi-maths
+│   │   │   │       └── +page.svelte
+│   │   │   ├── +page.server.ts
+│   │   │   ├── +page.svelte
+│   │   │   └── [slug]
+│   │   │       ├── +page.server.ts
+│   │   │       └── +page.svelte
+│   │   ├── +error.svelte
+│   │   ├── events
+│   │   │   └── +page.svelte
+│   │   ├── exercises
+│   │   │   ├── [id]
+│   │   │   │   ├── +page.server.ts
+│   │   │   │   └── +page.svelte
+│   │   │   ├── maths
+│   │   │   │   ├── mpsi-maths
+│   │   │   │   │   ├── [exerciseId]
+│   │   │   │   │   │   └── +page.svelte
+│   │   │   │   │   └── +page.svelte
+│   │   │   │   └── +page.svelte
+│   │   │   ├── +page.server.ts
+│   │   │   └── +page.svelte
+│   │   ├── forums
+│   │   │   ├── category
+│   │   │   │   └── [id]
+│   │   │   │       ├── +page.server.ts
+│   │   │   │       └── +page.svelte
+│   │   │   ├── create
+│   │   │   │   └── +page.svelte
+│   │   │   ├── +page.server.ts
+│   │   │   ├── +page.svelte
+│   │   │   ├── tag
+│   │   │   │   └── [tag]
+│   │   │   │       ├── +page.server.ts
+│   │   │   │       └── +page.svelte
+│   │   │   └── topic
+│   │   │       └── [id]
+│   │   │           ├── +page.server.ts
+│   │   │           └── +page.svelte
+│   │   ├── groups
+│   │   │   ├── create
+│   │   │   │   └── +page.svelte
+│   │   │   ├── [id]
+│   │   │   │   └── +page.svelte
+│   │   │   └── +page.svelte
+│   │   ├── help
+│   │   │   └── +page.svelte
+│   │   ├── +layout.server.ts
+│   │   ├── +layout.svelte
+│   │   ├── login
+│   │   │   └── +page.svelte
+│   │   ├── my-learning
+│   │   │   ├── +page.server.ts
+│   │   │   └── +page.svelte
+│   │   ├── +page.server.ts
+│   │   ├── +page.svelte
+│   │   ├── progress
+│   │   │   └── +page.svelte
+│   │   ├── (protected)
+│   │   │   └── +layout.svelte
+│   │   ├── register
+│   │   │   └── +page.svelte
+│   │   ├── reset-password
+│   │   │   └── +page.svelte
+│   │   ├── settings
+│   │   │   └── +page.svelte
+│   │   ├── statistics
+│   │   │   └── +page.svelte
+│   │   └── tools
+│   │       ├── calculator
+│   │       │   └── +page.svelte
+│   │       ├── chat
+│   │       │   └── +page.svelte
+│   │       ├── dictionary
+│   │       │   └── +page.svelte
+│   │       ├── flashcards
+│   │       │   └── +page.svelte
+│   │       ├── notepad
+│   │       │   └── +page.svelte
+│   │       ├── +page.svelte
+│   │       ├── pomodoro
+│   │       │   └── +page.svelte
+│   │       ├── tasks
+│   │       │   └── +page.svelte
+│   │       └── workspace
+│   │           └── +page.svelte
+│   ├── services
+│   │   ├── contentService.ts
+│   │   └── forumService.ts
+│   ├── types
+│   │   ├── content.ts
+│   │   └── forum.ts
+│   └── utils
+│       └── forumUtils.ts
+├── static
+│   ├── content
+│   │   ├── courses
+│   │   │   ├── index.json
+│   │   │   ├── intro-python
+│   │   │   │   └── variables.md
+│   │   │   ├── maths
+│   │   │   │   ├── index.json
+│   │   │   │   └── mpsi-maths
+│   │   │   │       ├── calculs_algebriques.md
+│   │   │   │       ├── equations-differentielles.md
+│   │   │   │       ├── espaces-vectoriels-applications-lineaires.md
+│   │   │   │       ├── groupes-symetriques-et-determinants.md
+│   │   │   │       ├── index.json
+│   │   │   │       ├── integration-espaces-produits.md
+│   │   │   │       ├── nombres-complexes-trigonometrie.md
+│   │   │   │       ├── raisonnement-et-vocabulaire-ensembliste.md
+│   │   │   │       ├── series-numeriques.md
+│   │   │   │       └── structures-algebriques.md
+│   │   │   └── mpsi-maths
+│   │   │       └── index.json
+│   │   └── exercises
+│   │       ├── index.json
+│   │       ├── maths
+│   │       │   ├── index.json
+│   │       │   └── mpsi-maths
+│   │       │       ├── arithmetique.md
+│   │       │       ├── calculs-algebriques.md
+│   │       │       ├── espaces-prehilbertiens.md
+│   │       │       ├── espaces-vectoriels-applications-lineaires.md
+│   │       │       ├── groupes-symetriques-et-determinants.md
+│   │       │       ├── groupe-symetrique-et-determinant.md
+│   │       │       ├── index.json
+│   │       │       ├── integration-espaces-produits.md
+│   │       │       ├── nombres-complexes-trigonometrie.md
+│   │       │       ├── polynomes.md
+│   │       │       ├── raisonnement-et-vocabulaire-ensembliste.md
+│   │       │       ├── series-numeriques.md
+│   │       │       └── structures-algebriques.md
+│   │       └── programming
+│   │           └── index.json
+│   └── favicon.ico
+├── svelte.config.js
+├── tailwind.config.cjs
+├── TECHNICAL_EXPLANATION.md
+├── tests
+│   └── utils
+│       └── forumUtils.test.ts
+├── tsconfig.json
+├── types
+│   └── content.ts
+├── update-project-structure.sh
+└── vite.config.ts
+
+128 directories, 264 files

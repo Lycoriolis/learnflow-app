@@ -1,0 +1,51 @@
+---
+title: "Exercices: Groupes symétriques et déterminants"
+tags: ["mpsi-mathematiques","groupes-symetriques","determinants"]
+---
+
+# Exercices : Groupes symétriques et déterminants
+
+## Exercice 16.1 : Groupes symétriques
+
+1. **Ordre du groupe symétrique** : Montrer que l'ordre du groupe symétrique $S_n$ est $n!$.
+2. **Cycle et transposition** : Décomposer la permutation $\sigma = (1,3,5,2,4)$ en produit de cycles à supports disjoints.
+3. **Signature d'une permutation** : Calculer la signature de la permutation $\sigma = (1,3,5,2,4)$.
+4. **Permutation paire et impaire** : Montrer que toute permutation peut être écrite comme produit de transpositions et déterminer si elle est paire ou impaire.
+5. **Groupe alterné** : Montrer que le groupe alterné $A_n$ est un sous-groupe de $S_n$ pour tout $n \geq 2$.
+6. **Exercice difficile** : Montrer que le nombre de permutations paires dans $S_n$ est $n!/2$.
+
+## Exercice 16.2 : Déterminants
+
+1. **Déterminant d'une matrice $2 \times 2$** : Calculer le déterminant de la matrice $A = \begin{pmatrix}a & b \\ c & d\end{pmatrix}$.
+2. **Déterminant d'une matrice $3 \times 3$** : Calculer le déterminant de la matrice $A = \begin{pmatrix}1 & 2 & 3 \\ 0 & 1 & 4 \\ 0 & 0 & 1\end{pmatrix}$.
+3. **Déterminant et produit de matrices** : Montrer que $\det(AB) = \det(A)\det(B)$ pour toutes matrices carrées $A$ et $B$.
+4. **Déterminant et transposée** : Montrer que $\det(A^T) = \det(A)$ pour toute matrice carrée $A$.
+5. **Déterminant et inverse** : Montrer que $\det(A^{-1}) = 1/\det(A)$ pour toute matrice inversible $A$.
+6. **Exercice difficile** : Montrer que le déterminant d'une matrice antisymétrique d'ordre impair est nul.
+
+## Exercice 16.3 : Déterminants et systèmes linéaires
+
+1. **Système linéaire homogène** : Résoudre le système linéaire homogène $Ax = 0$ où $A = \begin{pmatrix}1 & 2 \\ 3 & 4\end{pmatrix}$.
+2. **Système linéaire non homogène** : Résoudre le système linéaire non homogène $Ax = b$ où $A = \begin{pmatrix}1 & 2 \\ 3 & 4\end{pmatrix}$ et $b = \begin{pmatrix}1 \\ 1\end{pmatrix}$.
+3. **Déterminant et rang** : Montrer que le rang d'une matrice $A$ est égal à l'ordre du plus grand déterminant non nul d'une sous-matrice de $A$.
+4. **Déterminant et nullité** : Montrer que si $\det(A) = 0$, alors le système linéaire $Ax = b$ a une infinité de solutions ou aucune solution.
+5. **Déterminant et inversibilité** : Montrer qu'une matrice $A$ est inversible si et seulement si $\det(A) \neq 0$.
+6. **Exercice difficile** : Soit $A \in M_n(\mathbb{R})$ telle que $A^k = 0$ pour un certain $k \geq 1$. Montrer que $\det(A) = 0$.
+
+## Exercice 16.4 : Déterminants et applications linéaires
+
+1. **Déterminant d'une application linéaire** : Montrer que le déterminant d'une application linéaire $T : V \to V$ est bien défini si et seulement si $V$ est de dimension finie.
+2. **Déterminant et trace** : Montrer que $\det(e^A) = e^{\mathrm{tr}(A)}$ pour toute matrice carrée $A$.
+3. **Déterminant et valeurs propres** : Montrer que le déterminant d'une matrice $A$ est le produit de ses valeurs propres.
+4. **Déterminant et polynôme caractéristique** : Montrer que le polynôme caractéristique de $A$ est $\det(A - \lambda I) = 0$.
+5. **Déterminant et endomorphisme** : Montrer que si $T : V \to V$ est un endomorphisme, alors $\det(T) = \det(T^*)$, où $T^*$ est l'adjoint de $T$.
+6. **Exercice difficile** : Montrer que si $A$ est une matrice réelle orthogonale, alors $\det(A) = \pm 1$.
+
+## Exercice 16.5 : Déterminants et géométrie
+
+1. **Déterminant et aire d'un parallélogramme** : Montrer que l'aire d'un parallélogramme formé par les vecteurs $u$ et $v$ est donnée par $|\det(u, v)|$.
+2. **Déterminant et volume d'un parallélépipède** : Montrer que le volume d'un parallélépipède formé par les vecteurs $u, v, w$ est donné par $|\det(u, v, w)|$.
+3. **Déterminant et orientation** : Montrer que le déterminant d'une matrice $A$ est positif si et seulement si $A$ préserve l'orientation.
+4. **Déterminant et produit vectoriel** : Montrer que le produit vectoriel de deux vecteurs $u$ et $v$ est donné par $u \times v = \det(u, v, e_3) e_3$, où $e_3$ est le vecteur unité orthogonal à $u$ et $v$.
+5. **Déterminant et produit mixte** : Montrer que le produit mixte de trois vecteurs $u, v, w$ est donné par $\det(u, v, w)$.
+6. **Exercice difficile** : Montrer que le volume d'un simplexe de $\mathbb{R}^n$ de sommets $A_0, \ldots, A_n$ est $\frac{1}{n!} |\det(A_1-A_0, \ldots, A_n-A_0)|$.

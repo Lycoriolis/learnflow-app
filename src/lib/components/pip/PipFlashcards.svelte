@@ -1,7 +1,6 @@
-<!-- filepath: /home/linux/learnflow-app/learnflow-app/src/lib/components/pip/PipFlashcards.svelte -->
 <script lang="ts">
-  import { writable } from 'svelte/store';
   import { persistentStore } from '../../stores/persistentStore';
+  import { browser } from '$app/environment';
 
   interface Flashcard {
     id: string;
@@ -29,8 +28,13 @@
   function addCard() {
     if (!newCardFront.trim() || !newCardBack.trim()) return;
     
+    // Generate UUID in a browser-safe way
+    const id = browser && window.crypto ? 
+      crypto.randomUUID() : 
+      `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    
     const card: Flashcard = {
-      id: crypto.randomUUID(),
+      id,
       front: newCardFront,
       back: newCardBack,
       level: 0
@@ -62,26 +66,36 @@
       1000 * 60 * 60 * 24 * 14  // 2 weeks
     ];
 
-    flashcards.update(cards => 
-      cards.map(card => 
-        card.id === currentCard.id 
-          ? {
-              ...card,
-              level: nextLevel,
-              lastReviewed: now,
-              nextReview: now + intervals[nextLevel]
-            }
-          : card
-      )
-    );
+    // Fix: Safely access currentCard properties with null check
+    const cardId = currentCard?.id;
+    if (cardId) {
+      flashcards.update(cards => 
+        cards.map(card => 
+          card.id === cardId 
+            ? {
+                ...card,
+                level: nextLevel,
+                lastReviewed: now,
+                nextReview: now + intervals[nextLevel]
+              }
+            : card
+        )
+      );
+    }
 
     // Move to next card
     currentCard = getNextCard();
     showingFront = true;
   }
 
-  // Start reviewing
-  $: if (!currentCard) {
+  function handleCardKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      flipCard();
+    }
+  }
+
+  // Start reviewing only in browser environment
+  $: if (browser && !currentCard && $flashcards.length > 0) {
     currentCard = getNextCard();
   }
 </script>
@@ -119,8 +133,11 @@
     {#if currentCard}
       <div class="p-4">
         <div
-          class="min-h-[120px] p-4 bg-gray-800 rounded-lg shadow-inner flex items-center justify-center cursor-pointer transition-transform hover:scale-[1.02] select-none"
+          role="button"
+          tabindex="0"
+          class="min-h-[120px] p-4 bg-gray-800 rounded-lg shadow-inner flex items-center justify-center cursor-pointer transition-transform hover:scale-[1.02] select-none focus:outline-none focus:ring-2 focus:ring-orange-500"
           on:click={flipCard}
+          on:keydown={handleCardKeydown}
         >
           <p class="text-gray-100 text-center">
             {showingFront ? currentCard.front : currentCard.back}
@@ -131,12 +148,14 @@
           <button
             on:click={() => reviewCard(false)}
             class="px-4 py-2 bg-red-600 text-white rounded font-medium hover:bg-red-700 transition"
+            aria-label="Mark card as difficult"
           >
             Again
           </button>
           <button
             on:click={() => reviewCard(true)}
             class="px-4 py-2 bg-green-600 text-white rounded font-medium hover:bg-green-700 transition"
+            aria-label="Mark card as known"
           >
             Good
           </button>
