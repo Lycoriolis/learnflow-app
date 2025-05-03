@@ -1,75 +1,146 @@
 <script lang="ts">
-  import { fade } from 'svelte/transition';
-  import { user } from '$lib/stores/authStore.js';
-  import { subscribedTopics } from '$lib/stores/forumStore.js';
-  import ForumHeader from '$lib/components/forums/ForumHeader.svelte';
-  import ForumList from '$lib/components/forums/ForumList.svelte';
-  import ForumSidebar from '$lib/components/forums/ForumSidebar.svelte';
+  import { onMount } from 'svelte';
+  import { page } from '$app/stores';
+  import { categories, topics, loadCategories, loadTopics, isLoading, error, getCategoryById } from '$lib/stores/forumStore';
   import CreateTopicForm from '$lib/components/forums/CreateTopicForm.svelte';
-  // Removing PageData type import due to module resolution
-  export let data: any;
-
-  let topics = data.topics;
-  let categories = data.categories;
-  let selectedCategory = data.selectedCategory;
-  let showCreateTopic = false;
-  let showSubscriptions = false;
-
-  function handleNewTopicClick() {
-    showCreateTopic = true;
+  import Icon from '@iconify/svelte';
+  
+  let categoryId = $page.params.id;
+  let searchQuery = '';
+  let filteredTopics: typeof $topics = [];
+  let showCreateForm = false;
+  let category: ReturnType<typeof getCategoryById>;
+  
+  $: {
+    // Filter topics based on search query
+    filteredTopics = searchQuery ? 
+      $topics.filter(topic => 
+        topic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        topic.content.toLowerCase().includes(searchQuery.toLowerCase())
+      ) : 
+      $topics;
   }
-  function handleToggleSubscriptions() {
-    showSubscriptions = !showSubscriptions;
+  
+  $: {
+    category = getCategoryById(categoryId);
   }
-  function handleTopicCreated(event: CustomEvent) {
-    topics = [event.detail, ...topics];
-  }
-  function handleSubscribe(id: string) {
-    if (!$subscribedTopics.includes(id)) subscribedTopics.update((ids: string[]) => [...ids, id]);
-  }
-  function handleUnsubscribe(id: string) {
-    subscribedTopics.update((ids: string[]) => ids.filter(i => i !== id));
-  }
-  function handleVote(id: string, type: 'up' | 'down') {
-    // Redirect to the vote API
-    fetch(`/api/forum/topics/${id}/vote`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user_id: $user?.uid, vote_type: type === 'up' ? 1 : -1 })
-    }).then(res => {
-      if (!res.ok) throw new Error('Vote failed');
-    }).catch(console.error);
+  
+  onMount(async () => {
+    await loadCategories();
+    await loadTopics(categoryId);
+  });
+  
+  function toggleCreateForm() {
+    showCreateForm = !showCreateForm;
   }
 </script>
 
-<svelte:head>
-  <title>Category: {selectedCategory} | LearnFlow Forums</title>
-</svelte:head>
-
-<div class="container mx-auto px-4 py-8 max-w-7xl">
-  <ForumHeader on:newTopic={handleNewTopicClick} on:toggleSubscriptions={handleToggleSubscriptions} />
-
-  {#if showCreateTopic}
-    <div class="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg relative">
-        <button class="absolute top-2 right-2" on:click={() => showCreateTopic = false}>&times;</button>
-        <CreateTopicForm categories={categories} on:topicCreated={handleTopicCreated} />
-      </div>
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-6">
+    <a href="/forums" class="inline-flex items-center text-cherry-600 dark:text-cherry-400 hover:underline mb-4">
+      <Icon icon="mdi:arrow-left" class="w-5 h-5 mr-1" />
+      Back to Forums
+    </a>
+    
+    {#if category}
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{category.name}</h1>
+      <p class="text-gray-600 dark:text-gray-400 mt-2">{category.description}</p>
+    {:else if !$isLoading}
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Category</h1>
+      <p class="text-gray-600 dark:text-gray-400 mt-2">Loading category details...</p>
+    {/if}
+  </div>
+  
+  <div class="flex justify-between items-center mb-6">
+    <div class="relative">
+      <input
+        type="text"
+        bind:value={searchQuery}
+        placeholder="Search topics..."
+        class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-cherry-500 focus:border-cherry-500 dark:focus:ring-cherry-400 dark:focus:border-cherry-400"
+      />
+      <Icon icon="mdi:magnify" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+    </div>
+    
+    <button 
+      on:click={toggleCreateForm}
+      class="px-4 py-2 bg-cherry-600 text-white rounded-md hover:bg-cherry-700 dark:bg-cherry-500 dark:hover:bg-cherry-600 transition-colors"
+    >
+      {showCreateForm ? 'Cancel' : 'Create New Topic'}
+    </button>
+  </div>
+  
+  {#if showCreateForm}
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+      <CreateTopicForm {categoryId} />
     </div>
   {/if}
-
-  <div in:fade={{ duration: 300 }} class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-    <div class="lg:col-span-9">
-      <h2 class="text-2xl font-bold mb-4">Category: {selectedCategory}</h2>
-      <ForumList
-        topics={topics}
-        categories={categories}
-        on:subscribe={({ detail }) => handleSubscribe(detail)}
-        on:unsubscribe={({ detail }) => handleUnsubscribe(detail)}
-        on:vote={({ detail }) => handleVote(detail.id, detail.type)}
-      />
+  
+  {#if $isLoading}
+    <div class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cherry-500"></div>
     </div>
-    <div class="lg:col-span-3">
-      <ForumSidebar categories={categories} filterCategory={selectedCategory} />
+  {:else if $error}
+    <div class="bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 p-4 rounded-md mb-6">
+      <p>{$error}</p>
     </div>
-  </div>
+  {:else if filteredTopics.length === 0}
+    <div class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+      <Icon icon="mdi:forum-outline" class="w-16 h-16 mx-auto text-gray-400 mb-4" />
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No topics found</h3>
+      {#if searchQuery}
+        <p class="text-gray-600 dark:text-gray-400">No topics match your search criteria.</p>
+      {:else}
+        <p class="text-gray-600 dark:text-gray-400">There are no topics in this category yet. Be the first to create one!</p>
+      {/if}
+    </div>
+  {:else}
+    <div class="space-y-4">
+      {#each filteredTopics as topic}
+        <a href="/forums/topic/{topic.id}" class="block">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow {topic.isPinned ? 'border-l-4 border-cherry-500 dark:border-cherry-400' : ''}">
+            <div class="p-4">
+              <div class="flex items-start">
+                {#if topic.isPinned}
+                  <div class="flex-shrink-0 mr-3">
+                    <Icon icon="mdi:pin" class="w-5 h-5 text-cherry-600 dark:text-cherry-400" />
+                  </div>
+                {/if}
+                
+                <div class="flex-1">
+                  <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-1">{topic.title}</h4>
+                  
+                  <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    <span>{topic.authorName || 'Unknown'}</span>
+                    <span class="mx-2">•</span>
+                    <span>{new Date(topic.createdAt).toLocaleDateString()}</span>
+                    <span class="mx-2">•</span>
+                    <span class="flex items-center">
+                      <Icon icon="mdi:eye-outline" class="w-4 h-4 mr-1" />
+                      {topic.viewCount}
+                    </span>
+                    <span class="mx-2">•</span>
+                    <span class="flex items-center">
+                      <Icon icon="mdi:comment-outline" class="w-4 h-4 mr-1" />
+                      {topic.replyCount}
+                    </span>
+                  </div>
+                  
+                  {#if topic.tags && topic.tags.length > 0}
+                    <div class="flex flex-wrap gap-2">
+                      {#each topic.tags as tag}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300">
+                          {tag}
+                        </span>
+                      {/each}
+                    </div>
+                  {/if}
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      {/each}
+    </div>
+  {/if}
 </div>

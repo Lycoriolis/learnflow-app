@@ -4,16 +4,17 @@
   sidebarCollapsed.subscribe(v => collapsed = v);
   import '../app.css';
   import '@splidejs/splide/dist/css/splide.min.css';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import Sidebar from '$lib/components/Sidebar.svelte';
   import Header from '$lib/components/Header.svelte';
   import PipWidget from '$lib/components/PipWidget.svelte';
-  import CourseModal from '$lib/components/CourseModal.svelte';
+  import CourseModal from '$lib/components/courses/CourseModal.svelte';
   import Footer from '$lib/components/Footer.svelte';
   import { pipVisible } from '$lib/stores/pipStores.js';
-  import { initAuth } from '$lib/authService.js';
+  import { initAuth, cleanupAuth } from '$lib/authService.js';
   import { isAuthenticated, user } from '$lib/stores/authStore.js';
   import { storeCsrfToken } from '$lib/utils/csrf.client.js';
+  import ActivityTracker from '$lib/components/user/ActivityTracker.svelte';
 
   export let data;
 
@@ -25,22 +26,31 @@
       storeCsrfToken(data.csrfToken);
     }
     
-    // Initialize Firebase authentication
-    initAuth();
-    
-    // Set up subscription to auth state for debugging
-    const unsubAuth = isAuthenticated.subscribe(value => {
-      console.log('Auth state changed in root layout:', value ? 'Authenticated' : 'Not authenticated');
-    });
+    try {
+      // Initialize Firebase authentication with error handling
+      initAuth();
+      
+      // Set up subscription to auth state for debugging
+      const unsubAuth = isAuthenticated.subscribe(value => {
+        console.log('Auth state changed in root layout:', value ? 'Authenticated' : 'Not authenticated');
+      });
 
-    const unsubUser = user.subscribe(u => {
-      if (u) console.log('User state changed in root layout:', u);
-    });
+      const unsubUser = user.subscribe(u => {
+        if (u) console.log('User state changed in root layout:', u);
+      });
 
-    return () => {
-      unsubAuth();
-      unsubUser();
-    };
+      return () => {
+        unsubAuth();
+        unsubUser();
+      };
+    } catch (error) {
+      console.error('Error during auth initialization:', error);
+    }
+  });
+  
+  onDestroy(() => {
+    // Clean up auth listener when component is destroyed
+    cleanupAuth();
   });
 
   function togglePip() {
@@ -98,6 +108,7 @@
     <Header onTogglePip={togglePip} />
     
     <main>
+      <ActivityTracker />
       <slot />
     </main>
     

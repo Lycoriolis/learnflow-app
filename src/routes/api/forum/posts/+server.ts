@@ -1,5 +1,7 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { getPostsByTopicId, createPost, updatePost, deletePost } from '$lib/services/forumService';
+import { getPostsByTopicId, createPost, updatePost, deletePost } from '$lib/services/forums/forumService';
+
+// Placeholder for posts API route
 
 export const GET: RequestHandler = async ({ url }) => {
   const topicId = url.searchParams.get('topic_id');
@@ -42,7 +44,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 
   try {
     const post = await updatePost(id, content);
-    if (!post) {
+    if (post === null) {
       return new Response('Post not found', { status: 404 });
     }
     return new Response(JSON.stringify(post), { status: 200 });
@@ -61,7 +63,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 
   try {
     const result = await deletePost(id);
-    if (!result) {
+    if (result === false) {
       return new Response('Post not found', { status: 404 });
     }
     return new Response(JSON.stringify({ success: true }), { status: 200 });

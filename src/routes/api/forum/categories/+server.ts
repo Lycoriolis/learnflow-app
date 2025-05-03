@@ -1,9 +1,9 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { createCategory, getAllCategories, updateCategory, deleteCategory } from '$lib/services/forumService';
+import { createCategory, getCategories, updateCategory, deleteCategory } from '$lib/services/forums/forumService';
 
 export const GET: RequestHandler = async () => {
   try {
-    const categories = await getAllCategories();
+    const categories = await getCategories();
     return new Response(JSON.stringify(categories), { status: 200 });
   } catch (error) {
     console.error('Error fetching categories:', error);
@@ -36,7 +36,8 @@ export const PUT: RequestHandler = async ({ request }) => {
 
   try {
     const updated = await updateCategory(id, data);
-    if (!updated) {
+    // Handle the possibility that the category might not be found
+    if (updated === null) {
       return new Response('Category not found', { status: 404 });
     }
     return new Response(JSON.stringify(updated), { status: 200 });
@@ -55,7 +56,8 @@ export const DELETE: RequestHandler = async ({ url }) => {
 
   try {
     const result = await deleteCategory(id);
-    if (!result) {
+    // Explicitly check for boolean value
+    if (result === false) {
       return new Response('Category not found', { status: 404 });
     }
     return new Response(JSON.stringify({ success: true }), { status: 200 });

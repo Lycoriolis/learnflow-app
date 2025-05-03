@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
-  import { getRecommendations } from '$lib/services/recommendationService.js';
   import type { Recommendation } from '$lib/services/recommendationService.js';
   import { user } from '$lib/stores/authStore.js';
+  import { secureFetch } from '$lib/utils/secureFetch'; // Assuming secureFetch handles auth/CSRF
 
   export let limit: number = 5;
 
@@ -14,8 +14,17 @@
   onMount(async () => {
     try {
       const currentUser = get(user);
-      if (!currentUser?.uid) throw new Error('User not authenticated');
-      recommendations = await getRecommendations(currentUser.uid, limit);
+      if (!currentUser?.uid) {
+        // Don't throw an error, just show no recommendations for guests
+        loading = false;
+        return;
+      }
+      // Fetch from the new API endpoint
+      const response = await secureFetch(`/api/recommendations?limit=${limit}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      recommendations = await response.json();
     } catch (e:any) {
       console.error('Error fetching recommendations', e);
       error = e.message || 'Failed to load recommendations.';
@@ -27,16 +36,20 @@
   function getLink(rec: Recommendation): string {
     switch(rec.type) {
       case 'next_lesson':
-        return `/courses/${rec.metadata?.courseId}/${rec.referenceId}`;
+        // Ensure metadata and path exist
+        return rec.metadata?.path ? `/courses/${rec.metadata.path}` : '#'; 
       case 'review_flashcards':
         return `/tools/flashcards`;
       case 'view_courses':
         return `/courses`;
       case 'course':
-        return `/courses/${rec.referenceId}`;
+         // Ensure metadata and path exist
+        return rec.metadata?.path ? `/courses/${rec.metadata.path}` : '#';
       case 'exercise':
-        return `/exercises/${rec.referenceId}`;
+         // Ensure metadata and path exist
+        return rec.metadata?.path ? `/exercises/${rec.metadata.path}` : '#';
       default:
+        console.warn(`Unknown recommendation type: ${rec.type}`);
         return '#';
     }
   }

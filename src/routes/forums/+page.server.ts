@@ -1,11 +1,11 @@
-import { getAllTopics, getAllCategories } from '$lib/services/forumService';
+import { getTopics, getCategories } from '$lib/services/forums/forumService';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
   try {
     const [topics, categories] = await Promise.all([
-      getAllTopics(),
-      getAllCategories()
+      getTopics(),
+      getCategories()
     ]);
     return {
       topics,

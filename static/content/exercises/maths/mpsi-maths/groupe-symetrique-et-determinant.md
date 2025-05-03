@@ -1,0 +1,61 @@
+---
+title: "Exercices: Groupe symétrique et déterminant"
+tags: ["mpsi-mathematiques","groupe-symetrique","determinant"]
+---
+
+# Exercices : Groupe symétrique et déterminant
+
+## Exercice 8.1 : Groupe symétrique
+
+### Cycle et transposition
+
+1. Décomposer la permutation suivante en produit de cycles à supports disjoints :
+   $$
+   \sigma = (1\ 2\ 3\ 4\ 5\ 6\ 7\ 8\ 9\ 3\ 1\ 5\ 7\ 2\ 4\ 6\ 8\ 9)
+   $$
+2. Décomposer la permutation suivante en produit de transpositions :
+   $$
+   \tau = (1\ 2\ 3\ 4\ 5\ 6\ 7\ 8\ 9\ 2\ 3\ 1\ 5\ 4\ 7\ 6\ 9\ 8)
+   $$
+
+### Signature d'une permutation
+
+3. Calculer la signature des permutations suivantes :
+   $$
+   \alpha = (1\ 2\ 3\ 4\ 5\ 6\ 7\ 8\ 9\ 5\ 6\ 7\ 8\ 9\ 1\ 2\ 3\ 4)
+   $$
+   $$
+   \beta = (1\ 2\ 3\ 4\ 5\ 6\ 7\ 8\ 9\ 9\ 8\ 7\ 6\ 5\ 4\ 3\ 2\ 1)
+   $$
+4. Montrer que toute permutation de $S_n$ peut être écrite comme produit de $(n-1)$ transpositions.
+5. Montrer que toute permutation paire de $S_n$ peut être écrite comme produit de $2k$ transpositions, où $k\in\mathbb{N}$.
+
+## Exercice 8.2 : Déterminants
+
+### Généralités. Définitions
+
+1. Calculer le déterminant de la matrice suivante :
+   $$
+   A = \begin{pmatrix} 1 & 2 & 3 \\ 0 & 1 & 4 \\ 0 & 0 & 1 \end{pmatrix}
+   $$
+2. Montrer que si $A$ est une matrice carrée d'ordre $n$ et si $A^T$ est la transposée de $A$, alors $\det(A) = \det(A^T)$.
+3. Montrer que si $A$ et $B$ sont deux matrices carrées d'ordre $n$, alors $\det(AB) = \det(A)\det(B)$.
+4. Montrer que si $A$ est une matrice carrée d'ordre $n$ et si $c\in\mathbb{R}$, alors $\det(cA) = c^n\det(A)$.
+5. Montrer que si $A$ est une matrice carrée d'ordre $n$ et si $A^T$ est sa transposée, alors $\det(A^T) = \det(A)$.
+
+### Compléments: déterminants et géométrie euclidienne
+
+6. Soient $A,B,C$ trois points du plan euclidien. Montrer que l'aire du triangle $ABC$ est donnée par :
+   $$
+   \mathrm{Aire}(ABC) = \frac{1}{2} \left| \det\begin{pmatrix} x_B - x_A & x_C - x_A \\ y_B - y_A & y_C - y_A \end{pmatrix} \right|
+   $$
+   où $(x_A, y_A), (x_B, y_B), (x_C, y_C)$ sont les coordonnées des points $A,B,C$ respectivement.
+
+7. Soient $A,B,C,D$ quatre points du plan euclidien. Montrer que les points $A,B,C,D$ sont cocycliques (c'est-à-dire qu'ils appartiennent à un même cercle) si et seulement si :
+   $$
+   \det\begin{pmatrix}
+   x_B-x_A & x_C-x_A & x_D-x_A \\
+   y_B-y_A & y_C-y_A & y_D-y_A \\
+   (x_B-x_A)^2+(y_B-y_A)^2 & (x_C-x_A)^2+(y_C-y_A)^2 & (x_D-x_A)^2+(y_D-y_A)^2
+   \end{pmatrix} = 0
+   $$

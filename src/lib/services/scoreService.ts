@@ -1,7 +1,13 @@
 // src/lib/services/scoreService.ts
 import { pool } from './userService.server.js';
-import { getCourse } from './courseService.js';
-import type { CourseStructure } from './courseService.js';
+// Import the new server-side content service and necessary types
+import { getAllContentItemsByType } from '$lib/server/contentService';
+import type { ContentManifestItem } from '$lib/server/contentService'; 
+
+// Define a type similar to the old CourseStructure based on ContentManifestItem
+interface CourseStructureLike extends ContentManifestItem {
+  modules: ContentManifestItem[]; // Assuming modules are children of type 'module'
+}
 
 /**
  * Calculates a user score on a 0–5 scale.
@@ -16,7 +22,7 @@ export async function calculateUserScore(userId: string): Promise<number> {
         `SELECT COUNT(DISTINCT reference_id) AS viewed FROM activities WHERE user_id=$1 AND event_type='view_lesson'`,
         [userId]
       ),
-      
+
       // 2. Exercise completion query
       pool.query(
         `SELECT
@@ -26,7 +32,7 @@ export async function calculateUserScore(userId: string): Promise<number> {
          WHERE user_id=$1`,
         [userId]
       ),
-      
+
       // 3. Flashcard success query
       pool.query(
         `SELECT
@@ -36,18 +42,27 @@ export async function calculateUserScore(userId: string): Promise<number> {
          WHERE user_id=$1`,
         [userId]
       ),
-      
-      // 4. Load course structures
-      getAllCourseStructures()
+
+      // 4. Load course structures using the new helper
+      getAllCourseStructuresLike()
     ]);
 
     // Extract and calculate course ratio
     const viewedLessons = Number(lessonResults.rows[0]?.viewed || 0);
-    const courses = Object.values(courseStructures) as CourseStructure[];
-    const totalLessons = courses.reduce(
-      (sum, course) => sum + course.modules.reduce((mSum, m) => mSum + m.lessons.length, 0), 
-      0
-    );
+    const courses = Object.values(courseStructures) as CourseStructureLike[];
+
+    // Calculate total lessons based on the new structure (assuming lessons are children of modules)
+    const totalLessons = courses.reduce((courseSum, course) => {
+        // Find module children
+        const modules = course.children?.filter(child => child.type === 'module') || [];
+        // Sum lessons within each module
+        const lessonsInCourse = modules.reduce((moduleSum, module) => {
+            const lessons = module.children?.filter(child => child.type === 'lesson') || [];
+            return moduleSum + lessons.length;
+        }, 0);
+        return courseSum + lessonsInCourse;
+    }, 0);
+
     const courseRatio = totalLessons ? viewedLessons / totalLessons : 0;
 
     // Extract and calculate exercise ratio
@@ -63,8 +78,8 @@ export async function calculateUserScore(userId: string): Promise<number> {
     // Calculate weighted score
     const weights = { course: 0.6, exercise: 0.2, flashcard: 0.2 };
     const rawScore = (
-      courseRatio * weights.course + 
-      exerciseRatio * weights.exercise + 
+      courseRatio * weights.course +
+      exerciseRatio * weights.exercise +
       flashcardRatio * weights.flashcard
     );
 
@@ -76,27 +91,35 @@ export async function calculateUserScore(userId: string): Promise<number> {
   }
 }
 
-/**
- * Helper: load all course structures
- */
-async function getAllCourseStructures(): Promise<Record<string, CourseStructure>> {
-  // Use memoization to cache course structures
-  if (!getAllCourseStructures.cache) {
-    const courseIds = ['web-development-101', 'mpsi-mathematiques', 'intro-python'];
-    const raw = await Promise.all(courseIds.map(id => getCourse(id)));
-    // filter out nulls
-    const structures = raw.filter((c): c is CourseStructure => c !== null);
-
-    getAllCourseStructures.cache = structures.reduce<Record<string, CourseStructure>>((acc, course) => {
-      acc[course.id] = course;
-      return acc;
-    }, {});
-  }
-  
-  return getAllCourseStructures.cache;
+// Create namespace for the function to allow for caching
+interface GetAllCourseStructuresLike {
+  (this: void): Promise<Record<string, CourseStructureLike>>;
+  cache?: Record<string, CourseStructureLike>;
 }
 
-// Add type for the cache property
-declare namespace getAllCourseStructures {
-  var cache: Record<string, CourseStructure> | undefined;
+/**
+ * Helper: load all course structures using the new contentService.
+ */
+const getAllCourseStructuresLike: GetAllCourseStructuresLike = async function(): Promise<Record<string, CourseStructureLike>> {
+  // Use memoization to cache course structures
+  if (!getAllCourseStructuresLike.cache) {
+      try {
+          // Fetch all items of type 'course' from the 'courses' manifest
+          const courses = await getAllContentItemsByType('courses', 'course');
+
+          // Transform ContentManifestItem[] to the required Record<string, CourseStructureLike>
+          getAllCourseStructuresLike.cache = courses.reduce<Record<string, CourseStructureLike>>((acc, course) => {
+              acc[course.id] = {
+                  ...course,
+                  modules: course.children?.filter(child => child.type === 'module') || []
+              };
+              return acc;
+          }, {});
+      } catch (error) {
+          console.error("Failed to load course structures using contentService:", error);
+          getAllCourseStructuresLike.cache = {}; // Return empty object on error
+      }
+  }
+
+  return getAllCourseStructuresLike.cache;
 }

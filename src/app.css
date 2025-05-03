@@ -1,3 +1,14 @@
+/* Import fonts */
+@import '@fontsource/plus-jakarta-sans/400.css';
+@import '@fontsource/plus-jakarta-sans/500.css';
+@import '@fontsource/plus-jakarta-sans/600.css';
+@import '@fontsource/plus-jakarta-sans/700.css';
+@import '@fontsource/manrope/400.css';
+@import '@fontsource/manrope/500.css';
+@import '@fontsource/manrope/600.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
 
@@ -17,21 +28,12 @@
   --surface: #1e1e2e; /* Dark surface color */
 }
 
-/* Dark mode variables - REMOVED */
-/*
-.dark {
-  --primary: #6366f1;
-  --primary-light: #818cf8;
-  --secondary: #38bdf8;
-  --tertiary: #34d399;
-  --dark: #f8fafc;
-  --light: #1e293b;
-  --gray: #94a3b8;
-  --surface: #1e1e2e;
-}
-*/
-
 @layer base {
+  :root {
+    font-family: theme('fontFamily.manrope');
+    @apply text-gray-900 bg-surface dark:text-gray-100 dark:bg-surface-dark;
+  }
+
   html {
     @apply scroll-smooth;
   }
@@ -41,7 +43,44 @@
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-manrope font-bold text-gray-100 tracking-tight;
+    font-family: theme('fontFamily.jakarta');
+    @apply font-semibold tracking-tight;
+  }
+
+  /* Math-specific styles */
+  .math-display {
+    @apply my-4 px-4 py-2 bg-math-bg dark:bg-math-bg-dark rounded-lg shadow-math overflow-x-auto;
+  }
+
+  .math-inline {
+    @apply bg-math-bg dark:bg-math-bg-dark px-1 rounded;
+  }
+
+  /* Exercise content styles */
+  .exercise-content {
+    @apply prose prose-lg dark:prose-invert max-w-none;
+    @apply prose-headings:font-jakarta prose-headings:text-primary-900 dark:prose-headings:text-primary-100;
+    @apply prose-p:text-gray-700 dark:prose-p:text-gray-300;
+    @apply prose-strong:text-primary-700 dark:prose-strong:text-primary-300;
+    @apply prose-em:text-secondary-600 dark:prose-em:text-secondary-400;
+    @apply prose-code:text-primary-600 dark:prose-code:text-primary-400;
+    @apply prose-blockquote:border-l-4 prose-blockquote:border-secondary-500;
+    @apply prose-blockquote:bg-secondary-50 dark:prose-blockquote:bg-secondary-900/20;
+    @apply prose-a:text-primary-600 hover:prose-a:text-primary-700;
+    @apply dark:prose-a:text-primary-400 dark:hover:prose-a:text-primary-300;
+  }
+
+  /* Card styles */
+  .enhanced-card {
+    @apply bg-white dark:bg-surface-dark rounded-squircle shadow-card;
+    @apply border border-gray-100 dark:border-gray-800;
+    @apply transition-shadow duration-200 hover:shadow-soft;
+  }
+
+  /* Glass effect */
+  .glass-effect {
+    @apply bg-white/80 dark:bg-surface-dark/80 backdrop-blur-sm;
+    @apply border border-white/20 dark:border-gray-800/20;
   }
 }
 
@@ -169,20 +208,19 @@
 
 /* Enhanced scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  @apply w-2 h-2;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  @apply bg-transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+  @apply bg-gray-300 dark:bg-gray-700 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.3);
+  @apply bg-gray-400 dark:bg-gray-600;
 }
 
 /* Line clamp utility */
@@ -214,45 +252,8 @@
 
 /* Glass effect for some elements */
 .glass-effect {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  @apply bg-white/80 dark:bg-surface-dark/80 backdrop-blur-sm;
+  @apply border border-white/20 dark:border-gray-800/20;
 }
-
-/* Dark mode specific styles - REMOVED */
-/* 
-.dark .card, 
-.dark .bg-white {
-  @apply bg-gray-800 text-gray-100;
-}
-
-.dark .text-gray-800 {
-  @apply text-gray-100;
-}
-
-.dark .text-gray-700 {
-  @apply text-gray-200;
-}
-
-.dark .text-gray-600 {
-  @apply text-gray-300;
-}
-
-.dark .text-gray-500 {
-  @apply text-gray-400;
-}
-
-.dark .border-gray-200,
-.dark .border-gray-300 {
-  @apply border-gray-700;
-}
-
-.dark .shadow-sm {
-  --tw-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-}
-*/
 
 /* Custom styles can go here */

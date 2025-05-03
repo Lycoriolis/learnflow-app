@@ -1,79 +1,118 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { logStart, logEnd } from '$lib/services/activityService.js';
-  import CourseCard from '$lib/components/CourseCard.svelte';
-  import { listCourses, type CourseStructure } from '$lib/services/courseService.js';
+  import { onMount } from 'svelte';
+  import { fade } from 'svelte/transition';
+  import type { CourseStructure } from '$lib/types/shared';
+  import type { ServiceResponse } from '$lib/types/service';
+  import CourseCard from '$lib/components/courses/CourseCard.svelte';
+  import LoadingSpinner from '$lib/components/shared/LoadingSpinner.svelte';
+  import ErrorMessage from '$lib/components/shared/ErrorMessage.svelte';
+  import SearchBar from '$lib/components/shared/SearchBar.svelte';
+  import FilterDropdown from '$lib/components/shared/FilterDropdown.svelte';
+  import { fetchCourses } from '$lib/services/courses/courseService';
 
   let courses: CourseStructure[] = [];
   let loading = true;
   let error: string | null = null;
-  let viewId: string | null = null;
+  let searchQuery = '';
+  let selectedCategory: string | null = null;
+  let selectedDifficulty: string | null = null;
 
-  // Function to get gradient colors based on course category/type
-  function getCourseGradient(course: CourseStructure) {
-    if (course.id.includes('math')) {
-      return { from: 'blue-500', to: 'blue-400' };
-    } else if (course.id.includes('python')) {
-      return { from: 'green-500', to: 'green-400' };
-    }
-    // Default gradient
-    return { from: 'indigo-500', to: 'indigo-400' };
-  }
+  const difficulties = ['Beginner', 'Intermediate', 'Advanced'];
+  let categories: string[] = [];
 
   onMount(async () => {
     try {
-      console.log('Courses page mounted - fetching courses');
-      viewId = await logStart('view_courses', 'courses');
-      courses = await listCourses();
-      console.log('Courses fetched:', courses);
+      loading = true;
+      error = null;
+      const response = await fetchCourses();
+      
+      if (response.error) {
+        error = response.error.message;
+        return;
+      }
+
+      if (response.data) {
+        courses = response.data;
+        categories = [...new Set(courses
+          .map(course => course.category)
+          .filter((category): category is string => category !== undefined)
+        )];
+      }
     } catch (err) {
-      console.error("Error loading courses:", err);
-      error = "Failed to load courses. Please try again later.";
+      console.error('Error loading courses:', err);
+      error = err instanceof Error ? err.message : 'Failed to load courses';
     } finally {
       loading = false;
-      console.log('Courses loading complete:', { loading, error, coursesCount: courses.length });
     }
   });
 
-  onDestroy(() => {
-    if (viewId) logEnd(viewId);
+  $: filteredCourses = courses.filter(course => {
+    const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = !selectedCategory || course.category === selectedCategory;
+    const matchesDifficulty = !selectedDifficulty || course.difficulty === selectedDifficulty;
+    return matchesSearch && matchesCategory && matchesDifficulty;
   });
+
+  function handleSearch(event: CustomEvent<string>) {
+    searchQuery = event.detail;
+  }
+
+  function handleCategoryChange(event: CustomEvent<string | null>) {
+    selectedCategory = event.detail;
+  }
+
+  function handleDifficultyChange(event: CustomEvent<string | null>) {
+    selectedDifficulty = event.detail;
+  }
 </script>
 
-<svelte:head>
-  <title>Courses | LearnFlow</title>
-</svelte:head>
-
-<div class="max-w-7xl mx-auto px-4 py-8">
-  <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Courses</h1>
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">Courses</h1>
 
   {#if loading}
-    <div class="flex justify-center items-center py-12">
-      <div class="w-12 h-12 border-4 border-t-indigo-500 border-indigo-200 rounded-full animate-spin"></div>
+    <div class="flex justify-center items-center min-h-[400px]" transition:fade>
+      <LoadingSpinner size="lg" />
     </div>
   {:else if error}
-    <div class="bg-red-50 dark:bg-red-900 p-4 rounded-lg">
-      <p class="text-red-600 dark:text-red-200">{error}</p>
-    </div>
-  {:else if courses.length === 0}
-    <div class="text-center py-12">
-      <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
-        <i class="fas fa-book text-2xl text-gray-400"></i>
-      </div>
-      <p class="text-gray-500 dark:text-gray-400">No courses available at the moment.</p>
+    <div class="my-8" transition:fade>
+      <ErrorMessage message={error} type="error" />
     </div>
   {:else}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {#each courses as course}
-        <CourseCard course={{
-          id: course.id,
-          title: course.title || course.id,
-          description: course.description,
-          progress: course.progress,
-          icon: 'fa-book',
-          gradient: getCourseGradient(course)
-        }} />
-      {/each}
+    <div class="mb-8 space-y-4 sm:space-y-0 sm:flex sm:items-center sm:space-x-4">
+      <div class="flex-1">
+        <SearchBar
+          placeholder="Search courses..."
+          value={searchQuery}
+          on:search={handleSearch}
+        />
+      </div>
+      <div class="flex space-x-4">
+        <FilterDropdown
+          options={categories}
+          selected={selectedCategory}
+          placeholder="All Categories"
+          on:change={handleCategoryChange}
+        />
+        <FilterDropdown
+          options={difficulties}
+          selected={selectedDifficulty}
+          placeholder="All Difficulties"
+          on:change={handleDifficultyChange}
+        />
+      </div>
     </div>
+
+    {#if filteredCourses.length === 0}
+      <div class="text-center py-12" transition:fade>
+        <p class="text-gray-600 dark:text-gray-400">No courses found matching your criteria.</p>
+      </div>
+    {:else}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" transition:fade>
+        {#each filteredCourses as course (course.id)}
+          <CourseCard {course} />
+        {/each}
+      </div>
+    {/if}
   {/if}
 </div>

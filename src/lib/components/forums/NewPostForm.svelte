@@ -5,6 +5,7 @@
   const dispatch = createEventDispatcher();
 
   // Track current user for conditional rendering
+  // Use $user to access the store value reactively
   $: currentUser = $user;
 
   function submit() {
@@ -35,3 +36,5 @@
     You must be <a href="/login" class="text-indigo-600 hover:underline">logged in</a> to post a reply.
   </p>
 {/if}
+
+<!-- Placeholder for NewPostForm.svelte -->

@@ -1,42 +1,73 @@
 <script lang="ts">
-  import { todos, type TodoItem } from '$lib/stores/pipStores.js';
+  import { todos, type TodoItem } from '$lib/stores/pipStores';
   import { flip } from 'svelte/animate';
   import { fade } from 'svelte/transition';
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
 
   let newTodoText = '';
+  let isInitialized = false;
+
+  // Generate a unique ID safely (works both client and server side)
+  function generateUniqueId(): string {
+    try {
+      if (browser && window.crypto && 'randomUUID' in window.crypto) {
+        return crypto.randomUUID();
+      }
+    } catch (err) {
+      console.error('Error generating UUID:', err);
+    }
+    
+    // Fallback for server-side rendering or if crypto API fails
+    return `todo_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 9)}`;
+  }
 
   function addTodo() {
-    console.log('[PipTodo] addTodo function called.');
+    if (!browser || !isInitialized) return;
+    
     const text = newTodoText.trim();
-    if (!text) {
-      console.log('[PipTodo] addTodo: No text entered.');
-      return;
+    if (!text) return;
+    
+    try {
+      const newTodo: TodoItem = {
+        id: generateUniqueId(),
+        text: text,
+        completed: false,
+        createdAt: Date.now()
+      };
+      
+      todos.update(currentTodos => {
+        return [...currentTodos, newTodo];
+      });
+      
+      newTodoText = ''; // Clear input after successful add
+    } catch (err) {
+      console.error('Error adding todo:', err);
     }
-    const newTodo: TodoItem = {
-      id: crypto.randomUUID(),
-      text: text,
-      completed: false,
-      createdAt: Date.now()
-    };
-    console.log('[PipTodo] Adding new todo:', newTodo);
-    todos.update(currentTodos => {
-      const updatedTodos = [...currentTodos, newTodo];
-      console.log('[PipTodo] Updated todos store:', updatedTodos);
-      return updatedTodos;
-    });
-    newTodoText = ''; // Clear input
   }
 
   function toggleTodo(id: string) {
-    todos.update(currentTodos =>
-      currentTodos.map(todo =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
+    if (!browser || !isInitialized) return;
+    
+    try {
+      todos.update(currentTodos =>
+        currentTodos.map(todo =>
+          todo.id === id ? { ...todo, completed: !todo.completed } : todo
+        )
+      );
+    } catch (err) {
+      console.error(`Error toggling todo ${id}:`, err);
+    }
   }
 
   function deleteTodo(id: string) {
+    if (!browser || !isInitialized) return;
+    
+    try {
       todos.update(currentTodos => currentTodos.filter(todo => todo.id !== id));
+    } catch (err) {
+      console.error(`Error deleting todo ${id}:`, err);
+    }
   }
 
   // Handle Enter key press in input
@@ -45,7 +76,11 @@
       addTodo();
     }
   }
-
+  
+  // Ensure store operations only happen after component is mounted
+  onMount(() => {
+    isInitialized = true;
+  });
 </script>
 
 <div class="bg-gray-700 p-2 rounded-lg">
@@ -65,7 +100,8 @@
       Add
     </button>
   </div>
-  {#if $todos.length > 0}
+  
+  {#if browser && $todos.length > 0}
     <ul class="space-y-1 max-h-40 overflow-y-auto pr-1">
       {#each $todos.sort((a, b) => a.createdAt - b.createdAt) as todo (todo.id)}
         <li
@@ -75,7 +111,7 @@
         >
           <input
             type="checkbox"
-            bind:checked={todo.completed}
+            checked={todo.completed}
             on:change={() => toggleTodo(todo.id)}
             class="mr-2 h-4 w-4 form-checkbox bg-gray-500 border-gray-400 text-green-500 focus:ring-green-400 focus:ring-offset-gray-600 rounded"
             aria-labelledby="todo-text-{todo.id}"
@@ -97,6 +133,8 @@
       {/each}
     </ul>
   {:else}
-    <p class="text-gray-400 text-xs italic text-center py-2">No tasks yet. Add one above!</p>
+    <p class="text-gray-400 text-xs italic text-center py-2">
+      {browser && $todos.length === 0 ? 'No tasks yet. Add one above!' : 'Loading tasks...'}
+    </p>
   {/if}
 </div>

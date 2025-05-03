@@ -1,19 +1,16 @@
 <script lang="ts">
-  import { writable } from 'svelte/store';
   import { persistentStore } from '$lib/stores/persistentStore';
-  import { fade, fly } from 'svelte/transition';
-  import { quintOut } from 'svelte/easing';
-  import { onMount, onDestroy } from 'svelte';
-  import { logStart, logEnd, logEvent } from '$lib/services/activityService';
+  import { fade } from 'svelte/transition';
 
   interface Flashcard {
     id: string;
     front: string;
     back: string;
+    tags: string[];
     lastReviewed?: number;
     nextReview?: number;
     level: number;
-    tags: string[];
+    createdAt: number;
   }
 
   const flashcards = persistentStore<Flashcard[]>('learnflow-flashcards', []);
@@ -24,9 +21,6 @@
   let newCardTags = '';
   let filterTag = '';
   let sortBy: 'nextReview' | 'level' | 'created' = 'nextReview';
-  let showStats = false;
-
-  let flashcardsViewEventId: string | null = null;
 
   $: filteredCards = filterTag 
     ? $flashcards.filter(card => card.tags.includes(filterTag))
@@ -38,7 +32,7 @@
     } else if (sortBy === 'level') {
       return b.level - a.level;
     } else {
-      return (a.lastReviewed || 0) - (b.lastReviewed || 0);
+      return (a.createdAt || 0) - (b.createdAt || 0);
     }
   });
 
@@ -66,7 +60,8 @@
       front: newCardFront,
       back: newCardBack,
       level: 0,
-      tags: newCardTags.split(',').map(t => t.trim()).filter(t => t)
+      tags: newCardTags.split(',').map(t => t.trim()).filter(t => t),
+      createdAt: Date.now()
     };
     
     flashcards.update(cards => [...cards, card]);
@@ -86,14 +81,13 @@
     let nextLevel = success ? currentCard.level + 1 : Math.max(0, currentCard.level - 1);
     nextLevel = Math.min(5, nextLevel);
     
-    // Calculate next review time using spaced repetition
     const intervals = [
-      1000 * 60 * 30,        // 30 minutes
-      1000 * 60 * 60 * 4,    // 4 hours
-      1000 * 60 * 60 * 24,   // 1 day
-      1000 * 60 * 60 * 24 * 3,  // 3 days
-      1000 * 60 * 60 * 24 * 7,  // 1 week
-      1000 * 60 * 60 * 24 * 14  // 2 weeks
+      1000 * 60 * 30,
+      1000 * 60 * 60 * 4,
+      1000 * 60 * 60 * 24,
+      1000 * 60 * 60 * 24 * 3,
+      1000 * 60 * 60 * 24 * 7,
+      1000 * 60 * 60 * 24 * 14
     ];
 
     flashcards.update(cards => 
@@ -109,8 +103,6 @@
       )
     );
 
-    await logEvent('flashcard_review', currentCard.id, { success });
-
     currentCard = getNextCard();
     showingFront = true;
   }
@@ -124,21 +116,17 @@
     }
   }
 
-  // Get all unique tags
+  function handleCardKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      flipCard();
+    }
+  }
+
   $: uniqueTags = Array.from(new Set($flashcards.flatMap(c => c.tags)));
 
-  // Start reviewing
   $: if (!currentCard) {
     currentCard = getNextCard();
   }
-
-  onMount(async () => {
-    flashcardsViewEventId = await logStart('view_flashcards', 'flashcards');
-  });
-
-  onDestroy(() => {
-    if (flashcardsViewEventId) logEnd(flashcardsViewEventId);
-  });
 </script>
 
 <svelte:head>
@@ -153,39 +141,8 @@
       </h1>
       <p class="text-gray-600 dark:text-gray-400">Study smarter with spaced repetition flashcards</p>
     </div>
-    <button 
-      class="text-sm px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-      on:click={() => showStats = !showStats}
-    >
-      <i class="fas fa-chart-bar mr-2"></i> Stats
-    </button>
   </div>
 
-  {#if showStats}
-    <div 
-      class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8"
-      transition:fade
-    >
-      <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-        <div class="text-sm text-gray-500 dark:text-gray-400">Total Cards</div>
-        <div class="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</div>
-      </div>
-      <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-        <div class="text-sm text-gray-500 dark:text-gray-400">Mastered</div>
-        <div class="text-2xl font-bold text-green-600">{stats.mastered}</div>
-      </div>
-      <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-        <div class="text-sm text-gray-500 dark:text-gray-400">Due Today</div>
-        <div class="text-2xl font-bold text-orange-500">{stats.dueToday}</div>
-      </div>
-      <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-        <div class="text-sm text-gray-500 dark:text-gray-400">Average Level</div>
-        <div class="text-2xl font-bold text-indigo-500">{stats.avgLevel}</div>
-      </div>
-    </div>
-  {/if}
-
-  <!-- Controls -->
   <div class="flex flex-wrap gap-4 mb-8">
     <select
       bind:value={filterTag}
@@ -208,7 +165,6 @@
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
-    <!-- Study Area -->
     <div class="lg:col-span-3">
       {#if currentCard}
         <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
@@ -224,8 +180,11 @@
           </div>
 
           <div
-            class="min-h-[200px] p-6 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-inner flex items-center justify-center cursor-pointer select-none mb-6"
+            role="button"
+            tabindex="0"
+            class="min-h-[200px] p-6 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-inner flex items-center justify-center cursor-pointer select-none mb-6 focus:outline-none focus:ring-2 focus:ring-orange-500"
             on:click={flipCard}
+            on:keydown={handleCardKeydown}
             transition:fade
           >
             <div class="prose dark:prose-invert max-w-none text-center">
@@ -263,7 +222,6 @@
       {/if}
     </div>
 
-    <!-- Add New Card -->
     <div class="lg:col-span-2">
       <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
         <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Add New Card</h3>

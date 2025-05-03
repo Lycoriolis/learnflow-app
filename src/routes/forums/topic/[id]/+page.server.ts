@@ -1,9 +1,9 @@
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
-import { getTopicById, getPostsByTopicId } from '$lib/services/forumService';
+import { getTopic, getPostsByTopicId } from '$lib/services/forums/forumService';
 
 export const load: PageServerLoad = async ({ params }) => {
-  const topic = await getTopicById(params.id);
+  const topic = await getTopic(params.id);
   if (!topic) {
     throw error(404, 'Topic not found');
   }

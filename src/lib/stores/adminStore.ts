@@ -1,10 +1,58 @@
-import { derived } from 'svelte/store';
-import { user } from './authStore.js';
-import { env } from '$env/dynamic/public';
+import { writable } from 'svelte/store';
+import { isUserAdmin } from '$lib/services/adminService';
+import { browser } from '$app/environment';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
-const ADMIN_EMAILS = (env.PUBLIC_VITE_ADMIN_EMAILS || '').split(',').map(email => email.trim());
+// Create admin store
+function createAdminStore() {
+  const { subscribe, set, update } = writable({
+    isAdmin: false,
+    checkingStatus: true,
+    user: null
+  });
 
-export const isAdmin = derived(user, $user => {
-    if (!$user || !$user.email) return false;
-    return ADMIN_EMAILS.includes($user.email);
-});
+  return {
+    subscribe,
+    
+    // Initialize admin status based on current auth state
+    init: () => {
+      if (!browser) return;
+      
+      const auth = getAuth();
+      
+      // Listen for auth state changes
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          // Check if the user is an admin
+          const adminStatus = await isUserAdmin(user.uid);
+          
+          update(state => ({
+            ...state,
+            isAdmin: adminStatus,
+            checkingStatus: false,
+            user: adminStatus ? user : null
+          }));
+        } else {
+          // No user is signed in
+          set({
+            isAdmin: false,
+            checkingStatus: false,
+            user: null
+          });
+        }
+      });
+    },
+    
+    // Reset the admin store
+    reset: () => {
+      set({
+        isAdmin: false,
+        checkingStatus: false,
+        user: null
+      });
+    }
+  };
+}
+
+// Export the admin store
+export const adminStore = createAdminStore();

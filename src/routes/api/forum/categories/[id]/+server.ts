@@ -1,8 +1,18 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { updateCategory, deleteCategory } from '$lib/services/forumService';
+import { updateCategory, deleteCategory } from '$lib/services/forums/forumService';
+
+// Placeholder for categories API route
 
 export const PUT: RequestHandler = async ({ request, params }) => {
   const categoryId = params.id;
+  
+  if (!categoryId) {
+    return new Response(JSON.stringify({ message: 'Category ID is required' }), { 
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  
   const data = await request.json();
   
   try {
@@ -35,6 +45,13 @@ export const PUT: RequestHandler = async ({ request, params }) => {
 
 export const DELETE: RequestHandler = async ({ params }) => {
   const categoryId = params.id;
+  
+  if (!categoryId) {
+    return new Response(JSON.stringify({ message: 'Category ID is required' }), { 
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
   
   try {
     const success = await deleteCategory(categoryId);

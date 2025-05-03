@@ -1,0 +1,51 @@
+---
+title: "Exercices: Polynômes"
+tags: ["mpsi-mathematiques","polynomes"]
+---
+
+# Exercices : Polynômes
+
+## Exercice 13.1 : Polynômes irréductibles
+
+1. **Polynôme cyclotomique** : Montrer que le polynôme cyclotomique $\Phi_n(x) = \prod_{1 \leq k \leq n,\ \gcd(k,n)=1} (x - e^{2\pi i k/n})$ est irréductible dans $\mathbb{Q}[x]$ pour tout $n \in \mathbb{N}^*$. 
+2. **Polynôme de Chebyshev** : Montrer que le polynôme de Chebyshev $T_n(x) = \cos(n \arccos x)$ est irréductible dans $\mathbb{R}[x]$ pour tout $n \in \mathbb{N}^*$. 
+3. **Polynôme de Legendre** : Montrer que le polynôme de Legendre $P_n(x) = \frac{1}{2^n n!} \frac{d^n}{dx^n} (x^2-1)^n$ est irréductible dans $\mathbb{R}[x]$ pour tout $n \in \mathbb{N}^*$. 
+4. **Polynôme de Laguerre** : Montrer que le polynôme de Laguerre $L_n(x) = \frac{e^x}{n!} \frac{d^n}{dx^n}(x^n e^{-x})$ est irréductible dans $\mathbb{R}[x]$ pour tout $n \in \mathbb{N}^*$. 
+5. **Polynôme de Hermite** : Montrer que le polynôme de Hermite $H_n(x) = (-1)^n e^{x^2} \frac{d^n}{dx^n} e^{-x^2}$ est irréductible dans $\mathbb{R}[x]$ pour tout $n \in \mathbb{N}^*$. 
+6. **Exercice difficile** : Montrer que pour tout $n \geq 5$, il existe un polynôme irréductible de degré $n$ dans $\mathbb{Q}[x]$ qui n'est pas un polynôme cyclotomique.
+
+## Exercice 13.2 : Racines multiples
+
+1. **Racines doubles** : Montrer que le polynôme $P(x) = x^4 - 4x^2 + 4$ a des racines doubles et les trouver explicitement.
+2. **Racines triples** : Montrer que le polynôme $P(x) = x^5 - 5x^3 + 4x$ a une racine triple et la trouver.
+3. **Racines multiples et dérivée** : Montrer que si $P(x)$ a une racine multiple $r$, alors $P'(r) = 0$.
+4. **Polynôme avec racines multiples** : Trouver un polynôme de degré $6$ ayant les racines $1$ (multiplicité $2$), $2$ (multiplicité $1$), $3$ (multiplicité $3$).
+5. **Polynôme de Wilkinson** : Montrer que le polynôme de Wilkinson $P(x) = \prod_{i=1}^n (x-i)$ a des racines multiples pour certaines valeurs de $n$ (donner un exemple explicite).
+6. **Exercice difficile** : Soit $Q(x) = x^6 - 3x^5 + 3x^4 - x^3$. Montrer que $Q(x)$ a une racine d'ordre au moins $3$ et déterminer toutes ses racines et leurs multiplicités.
+
+## Exercice 13.3 : Polynômes symétriques
+
+1. **Fonctions symétriques élémentaires** : Exprimer les fonctions symétriques élémentaires $S_1 = x_1 + x_2 + x_3$, $S_2 = x_1x_2 + x_1x_3 + x_2x_3$, $S_3 = x_1x_2x_3$ en termes des racines du polynôme $P(x) = x^3 + a x^2 + b x + c$.
+2. **Polynôme symétrique** : Montrer que le polynôme $P(x_1, x_2, x_3) = x_1^2 + x_2^2 + x_3^2$ est symétrique.
+3. **Polynôme symétrique et discriminant** : Montrer que le discriminant $\Delta$ d'un polynôme $P(x) = x^3 + a x^2 + b x + c$ peut s'exprimer en fonction des $S_1, S_2, S_3$.
+4. **Polynôme symétrique et racines** : Montrer que si $P(x_1, x_2, x_3)$ est un polynôme symétrique, alors $P(x_1, x_2, x_3) = P(x_2, x_1, x_3)$.
+5. **Polynôme symétrique et permutation** : Montrer que si $P(x_1, x_2, x_3)$ est un polynôme symétrique, alors $P(x_1, x_2, x_3) = P(x_3, x_2, x_1)$.
+6. **Exercice difficile** : Montrer que tout polynôme symétrique en $n$ variables à coefficients dans $\mathbb{Q}$ peut s'exprimer comme polynôme en les fonctions symétriques élémentaires.
+
+## Exercice 13.4 : Polynômes orthogonaux
+
+1. **Polynômes de Legendre** : Montrer que les polynômes de Legendre $P_n(x)$ sont orthogonaux sur $[-1,1]$ avec le produit scalaire $\langle f, g \rangle = \int_{-1}^1 f(x)g(x)\,dx$.
+2. **Polynômes de Chebyshev** : Montrer que les polynômes de Chebyshev $T_n(x)$ sont orthogonaux sur $[-1,1]$ avec le produit scalaire $\langle f, g \rangle = \int_{-1}^1 \frac{f(x)g(x)}{\sqrt{1-x^2}}\,dx$.
+3. **Polynômes de Hermite** : Montrer que les polynômes de Hermite $H_n(x)$ sont orthogonaux sur $\mathbb{R}$ avec le produit scalaire $\langle f, g \rangle = \int_{-\infty}^{+\infty} f(x)g(x)e^{-x^2}\,dx$.
+4. **Polynômes de Laguerre** : Montrer que les polynômes de Laguerre $L_n(x)$ sont orthogonaux sur $[0, +\infty[$ avec le produit scalaire $\langle f, g \rangle = \int_0^{+\infty} f(x)g(x)e^{-x}\,dx$.
+5. **Polynômes de Jacobi** : Montrer que les polynômes de Jacobi $P_n^{(\alpha,\beta)}(x)$ sont orthogonaux sur $[-1,1]$ avec le produit scalaire $\langle f, g \rangle = \int_{-1}^1 f(x)g(x)(1-x)^{\alpha}(1+x)^{\beta}\,dx$.
+6. **Exercice difficile** : Montrer que si $\{P_n(x)\}$ est une famille de polynômes orthogonaux sur $[a,b]$ pour un certain produit scalaire, alors il existe une mesure positive $\mu$ sur $[a,b]$ telle que $\langle f, g \rangle = \int_a^b f(x)g(x) d\mu(x)$.
+
+## Exercice 13.5 : Polynômes et fractions rationnelles
+
+1. **Décomposition en éléments simples** : Décomposer la fraction rationnelle $\frac{1}{x^3-6x^2+11x-6}$ en éléments simples.
+2. **Décomposition en fractions partielles** : Décomposer la fraction rationnelle $\frac{x^2+3x+2}{x^3-x^2-x+1}$ en fractions partielles.
+3. **Décomposition en fractions partielles complexes** : Décomposer la fraction rationnelle $\frac{1}{x^4+4}$ en fractions partielles complexes.
+4. **Décomposition en fractions partielles réelles** : Décomposer la fraction rationnelle $\frac{x^2+1}{x^4+1}$ en fractions partielles réelles.
+5. **Décomposition en fractions partielles avec racines multiples** : Décomposer la fraction rationnelle $\frac{1}{(x-1)^3(x+2)}$ en fractions partielles.
+6. **Exercice difficile** : Décomposer la fraction rationnelle $\frac{x^5+2x^3+1}{(x^2+1)^3}$ en éléments simples sur $\mathbb{R}$ et sur $\mathbb{C}$.

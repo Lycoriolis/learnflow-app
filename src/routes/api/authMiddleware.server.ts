@@ -1,14 +1,19 @@
 // Firebase authentication middleware for API routes
 import type { Handle, RequestEvent } from '@sveltejs/kit';
-import { admin } from '$lib/firebase.js';
+// Import adminAuth from the correct server-side file
+import { adminAuth } from '$lib/server/firebaseAdmin';
 import type { DecodedIdToken } from 'firebase-admin/auth';
+
+// Define the proper Locals interface
+interface Locals {
+  user?: DecodedIdToken;
+  csrfToken?: string;
+  isAuthenticated?: boolean;
+}
 
 // Type for request event with decoded user
 interface RequestEventWithAuth extends RequestEvent {
-  locals: {
-    user?: DecodedIdToken;
-    csrfToken?: string;
-  };
+  locals: Locals;
 }
 
 // Middleware that adds decoded Firebase token to `locals.user` if available
@@ -19,7 +24,7 @@ export const authMiddleware: Handle = async ({ event, resolve }) => {
     const token = authHeader.slice(7);
     try {
       // Verify and decode the Firebase token
-      const decodedToken = await admin.auth().verifyIdToken(token);
+      const decodedToken = await adminAuth.verifyIdToken(token);
       // Add the decoded token to locals
       event.locals.user = decodedToken;
       console.log(`User authenticated: ${decodedToken.uid}`);

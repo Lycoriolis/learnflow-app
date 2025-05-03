@@ -5,6 +5,7 @@
   import { goto } from '$app/navigation';
   import StatCard from '$lib/components/StatCard.svelte';
   import FocusTimeChart from '$lib/components/FocusTimeChart.svelte';
+  import type { UserPreferences } from '$lib/services/userService';
 
   // Chart unit
   let unit: 'day' | 'week' | 'month' = 'week';
@@ -31,8 +32,11 @@
     longestSession = sessions.reduce((max, s) => Math.max(max, s.duration / 60), 0);
     tasksDone = $todos.filter(t => t.completed).length;
     exercisesCompleted = $exerciseSessions.filter(es => es.completed).length;
-    const enroll = $userProfile.preferences.enrollments || [];
-    enrollmentsCount = enroll.filter(e => e.progress > 0 && e.progress < 100).length;
+    
+    // Safe access to preferences with proper type checking
+    const preferences: UserPreferences = $userProfile.preferences || {};
+    const enrollments = preferences.enrollments || [];
+    enrollmentsCount = enrollments.filter(e => e.progress > 0 && e.progress < 100).length;
   }
 </script>
 
