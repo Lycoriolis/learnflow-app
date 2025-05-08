@@ -1,0 +1,117 @@
+import { writable } from 'svelte/store';
+import { persistentStore } from './persistentStore.js';
+
+// State for the PiP widget itself
+export const pipVisible = writable(false);
+export const pipMinimized = writable(false);
+export const activePipTool = persistentStore('learnflow-active-pip-tool', null); // Persist active tool
+
+// Currently active tool in the PIP widget
+export const activeTool = writable('timer');
+
+// --- Timer Store --- (Types defined inline for simplicity, move to $types later if needed)
+export interface TimerMode {
+	type: 'work' | 'shortBreak' | 'longBreak';
+}
+
+export interface TimerState {
+	mode: TimerMode;
+	timeLeft: number;
+	isRunning: boolean;
+	cycle: number; // Number of work cycles completed
+}
+
+export interface TimerSettings {
+	workDuration: number;        // in seconds
+	shortBreakDuration: number;  // in seconds
+	longBreakDuration: number;   // in seconds
+	longBreakInterval: number;   // number of work sessions before long break
+}
+
+const initialTimerState: TimerState = {
+	mode: { type: 'work' },
+	timeLeft: 25 * 60, // Default 25 mins work
+	isRunning: false,
+	cycle: 0
+};
+
+// Active timer state (persistent)
+export const timerState = persistentStore<TimerState>('learnflow-timer-state', initialTimerState);
+
+// Timer settings with default values
+export const timerSettings = persistentStore<TimerSettings>('learnflow-timer-settings', {
+	workDuration: 25 * 60,        // 25 minutes
+	shortBreakDuration: 5 * 60,   // 5 minutes
+	longBreakDuration: 15 * 60,   // 15 minutes
+	longBreakInterval: 4          // Long break after 4 work sessions
+});
+
+// --- Todo Store ---
+export interface TodoItem {
+	id: string;
+	text: string;
+	completed: boolean;
+	createdAt: number;
+	description?: string;
+	deadline?: string; // ISO date string
+	emergency?: number; // 1-5 scale
+	tag?: string;
+}
+export const todos = persistentStore<TodoItem[]>('learnflow-todos', []);
+
+// --- Notes Store ---
+export interface NoteItem {
+	id: string;
+	title: string;
+	content: string; // Markdown content
+	createdAt: number;
+	updatedAt: number;
+}
+export const notes = persistentStore<NoteItem[]>('learnflow-notes', []);
+
+// --- Notepad Content Store ---
+export const notepadContent = persistentStore<string>('learnflow-notepad-content', '');
+
+// --- Focus Session Store ---
+export interface FocusSession {
+	timestamp: number; // When the session ended (Date.now())
+	duration: number;  // Duration in seconds
+}
+
+// Store an array of completed focus sessions (persistent)
+export const focusSessions = persistentStore<FocusSession[]>('learnflow-focus-sessions', []);
+
+// --- Exercise Sessions Store ---
+export interface ExerciseSession {
+  exerciseId: string;
+  timestamp: number;
+  completed: boolean;
+}
+// Store an array of completed exercise sessions (persistent)
+export const exerciseSessions = persistentStore<ExerciseSession[]>('learnflow-exercise-sessions', []);
+
+// --- Flashcards Store ---
+export interface Flashcard {
+  id: string;
+  front: string;
+  back: string;
+  lastReviewed?: number;
+  nextReview?: number;
+  level: number; // 0-5 for spaced repetition
+  tags: string[];
+}
+
+export const flashcards = persistentStore<Flashcard[]>('learnflow-flashcards', []);
+export const flashcardStats = writable({
+  totalReviews: 0,
+  correctReviews: 0,
+  streakDays: 0,
+  lastReviewDate: null as number | null
+});
+
+// --- Calculator Store --- (Transient state)
+export const calcDisplay = writable('0');
+export const calcCurrentInput = writable('');
+export const calcOperator = writable<string | null>(null);
+export const calcPreviousValue = writable<number | null>(null);
+export const calcWaitingForSecondOperand = writable(false);
