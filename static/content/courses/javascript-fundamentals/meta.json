@@ -1,0 +1,24 @@
+{
+  "id": "javascript-fundamentals",
+  "title": "JavaScript Fundamentals",
+  "description": "A comprehensive course on JavaScript programming fundamentals for beginners",
+  "icon": "fa-js",
+  "gradient": {
+    "from": "yellow-500",
+    "to": "yellow-400"
+  },
+  "tags": ["javascript", "web development", "programming"],
+  "difficulty": "beginner",
+  "estimatedTime": "8 hours",
+  "prerequisites": ["Basic HTML knowledge"],
+  "modules": [
+    "01-intro",
+    "02-variables",
+    "03-functions",
+    "04-objects"
+  ],
+  "version": "1.0.0",
+  "created": "2025-05-01T00:00:00Z",
+  "updated": "2025-05-09T00:00:00Z",
+  "author": "LearnFlow Team"
+}

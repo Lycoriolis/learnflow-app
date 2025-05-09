@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- **Routing Conflicts & Structure Improvements**:
+    - Fixed SvelteKit reserved file naming conflicts by renaming test files (from `+page.test.ts` to `Page.test.ts`)
+    - Removed duplicate and conflicting route files (`.new` and `.n` variants)
+    - Removed outdated direct lesson route (`/courses/[slug]/[lessonId]`) that conflicted with module-based structure
+    - Established consistent hierarchical routing for courses, modules, and lessons
+    - Added comprehensive documentation for routing structure in `/docs/routing-structure.md`
+
+- **TypeScript Error Resolution**:
+    - Fixed CourseStructure type reference in course pages (replaced with ContentMetadata)
+    - Updated MarkdownRenderer mock implementation in tests
+    - Implemented missing ExerciseRating component with proper TypeScript typing
+    - Updated authService references in progressService (replaced getUser with getCurrentUser)
+    - Fixed test implementations for proper component mocking
+    - Ensured consistent test IDs for loading spinners across components
+
 - **Svelte Warning Resolution (Accessibility, Styling, and Syntax)**:
     - Addressed various Svelte warnings across multiple components to improve accessibility, ensure correct styling application, and fix syntax issues.
     - **`src/routes/tools/tasks/+page.svelte`**:
@@ -84,9 +99,25 @@ All notable changes to this project will be documented in this file.
         - Ensured `$userProfile` is not null before calling `loadCourses` in `onMount`.
         - Corrected type predicate in `coursesDataResults.filter` to align with `ContentItem` (though this was part of an intermediate step and might be superseded by further fixes based on `npm run check` output).
 
+### Added
+- **Enhanced Content Structure & Services:**
+    - Refactored `enhancedContentService.ts` (`listCourses` function) to dynamically discover courses by listing directory contents and fetching `meta.json` for each, instead of using a hardcoded list.
+    - Updated `enhancedContentService.ts` to include `frontmatter` in `Lesson` and `LessonMetadata` types and populate it during `loadLesson` and `loadCourseStructure`.
+    - Ensured all tests in `src/lib/services/enhancedContentService.test.ts` are passing after refactoring and addition of `frontmatter` (including tests for `loadLesson`).
+- **Lesson Display Page UI (`src/routes/courses/[slug]/[moduleId]/[lessonId]/+page.svelte`):**
+    - Implemented basic structure for displaying lesson content.
+    - Added display of learning objectives from `lesson.frontmatter.objectives`.
+
 ### Next Steps
-- **[ ] Create `TECHNICAL_COMPONENTS.md`**: Document key Svelte components, their purpose, props, events, and interactions.
+- **[X] Install `@testing-library/svelte` for component testing.**
+- **[X] Write component tests for Lesson Display Page (`src/routes/courses/[slug]/[moduleId]/[lessonId]/+page.svelte`).**
+- **[ ] Run and debug tests for Lesson Display Page.**
 - **[ ] Resume Svelte Warning Resolution**: Systematically address the remaining Svelte warnings (currently 41 warnings in 19 files) reported by `npm run check`, focusing on accessibility and unused code.
+- **[ ] Implement Exercises Hub Page (`src/routes/exercises/+page.svelte`)**
+- **[ ] Implement Individual Exercise Page (`src/routes/exercises/[category]/[slug]/+page.svelte`)**
+- **[ ] Enhance `MarkdownRenderer.svelte` for custom markdown extensions.**
+- **[ ] Implement Navigation & Routing for new content pages.**
+- **[ ] Apply Styling & UX improvements to new pages.**
 
 ### TODO - Codebase Optimization Plan
 

@@ -1,0 +1,20 @@
+{
+  "id": "intro-js",
+  "title": "Introduction to JavaScript",
+  "description": "Learn the fundamentals of JavaScript programming language",
+  "icon": "fa-js",
+  "gradient": {
+    "from": "yellow-500",
+    "to": "yellow-400"
+  },
+  "tags": ["javascript", "web development", "programming"],
+  "difficulty": "beginner",
+  "estimatedTime": "2 hours",
+  "modules": [
+    "01-javascript-fundamentals",
+    "02-functions-control-flow",
+    "03-arrays-objects",
+    "04-dom-manipulation",
+    "05-event-handling"
+  ]
+}

@@ -1,8 +1,18 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [sveltekit()],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    include: ['src/**/*.{test,spec}.{js,ts}'],
+    setupFiles: ['src/vitest-setup.ts'], // Added setup file for jest-dom matchers
+    css: true, // Enable CSS processing for tests
+  },
+  resolve: { // Added to prefer browser conditions for Svelte during testing
+    conditions: ['browser'],
+  },
   server: {
     fs: {
       // Allow serving files from one level up to the project root

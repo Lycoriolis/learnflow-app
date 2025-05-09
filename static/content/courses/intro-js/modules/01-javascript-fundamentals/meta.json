@@ -1,0 +1,12 @@
+{
+  "id": "01-javascript-fundamentals",
+  "title": "JavaScript Fundamentals",
+  "description": "Learn about variables, data types, and basic operations",
+  "order": 1,
+  "lessons": [
+    "01-introduction.md",
+    "02-variables.md", 
+    "03-data-types.md",
+    "04-operators.md"
+  ]
+}

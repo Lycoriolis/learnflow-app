@@ -2,15 +2,15 @@
   import { onMount, onDestroy } from 'svelte';
   import { logStart, logEnd } from '$lib/services/activityService.js';
   import CourseCard from '$lib/components/CourseCard.svelte';
-  import { listCourses, type CourseStructure } from '$lib/services/courseService.js';
+  import { listCourses, type ContentMetadata } from '$lib/services/enhancedContentService.js';
 
-  let courses: CourseStructure[] = [];
+  let courses: ContentMetadata[] = [];
   let loading = true;
   let error: string | null = null;
   let viewId: string | null = null;
 
   // Function to get gradient colors based on course category/type
-  function getCourseGradient(course: CourseStructure) {
+  function getCourseGradient(course: ContentMetadata) {
     if (course.id.includes('math')) {
       return { from: 'blue-500', to: 'blue-400' };
     } else if (course.id.includes('python')) {
@@ -68,10 +68,10 @@
         <CourseCard course={{
           id: course.id,
           title: course.title || course.id,
-          description: course.description,
-          progress: course.progress,
-          icon: 'fa-book',
-          gradient: getCourseGradient(course)
+          description: course.description || '',
+          progress: Math.floor(Math.random() * 100), // Mock progress - would be loaded from user data in real app
+          icon: course.icon || 'fa-book',
+          gradient: course.gradient || getCourseGradient(course)
         }} />
       {/each}
     </div>

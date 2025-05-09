@@ -1,0 +1,11 @@
+{
+  "id": "03-functions",
+  "title": "Functions in JavaScript",
+  "description": "Learn how to define and use functions in JavaScript",
+  "order": 3,
+  "lessons": [
+    "01-function-basics.md",
+    "02-arrow-functions.md",
+    "03-closures.md"
+  ]
+}

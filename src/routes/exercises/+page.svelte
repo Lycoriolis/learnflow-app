@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { logStart, logEnd } from '$lib/services/activityService';
   import ExerciseCard from '$lib/components/ExerciseCard.svelte';
-  import { listContent, type ContentMetadata } from '$lib/services/contentService';
+  import { listExercises, type ContentMetadata } from '$lib/services/enhancedContentService.js';
 
   let exercises: ContentMetadata[] = [];
   let loading = true;
@@ -13,7 +13,7 @@
     try {
       console.log('Exercises page mounted - fetching exercises');
       viewId = await logStart('view_exercises', 'exercises');
-      exercises = await listContent('exercise');
+      exercises = await listExercises();
       console.log('Exercises fetched:', exercises);
     } catch (err) {
       console.error("Error loading exercises:", err);
