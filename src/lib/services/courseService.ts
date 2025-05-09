@@ -13,6 +13,8 @@ export interface CourseStructure {
   title?: string;
   description: string; // Added description
   progress: number; // Added progress
+  icon: string; // Added icon
+  gradient: { from: string; to: string }; // Added gradient
   modules: Module[];
 }
 
@@ -26,6 +28,8 @@ mockCourses['mpsi-mathematiques'] = {
   title: 'MPSI - Mathématiques (Classes Préparatoires)',
   description: 'Comprehensive mathematics course covering the MPSI curriculum.', // Added description
   progress: Math.floor(Math.random() * 101), // Added placeholder progress
+  icon: 'fa-calculator', // Added icon
+  gradient: { from: 'blue-500', to: 'blue-400' }, // Added gradient
   modules: [
     {
       id: 'semestre-1',
@@ -75,11 +79,42 @@ mockCourses['mpsi-mathematiques'] = {
 };
 
 // Add another mock course for demonstration
+mockCourses['web-development-101'] = {
+  id: 'web-development-101',
+  title: 'Web Development 101',
+  description: 'Learn the basics of web development including HTML, CSS, and JavaScript.', // Added description
+  progress: Math.floor(Math.random() * 101), // Added placeholder progress
+  icon: 'fa-code', // Added icon
+  gradient: { from: 'purple-500', to: 'purple-400' }, // Added gradient
+  modules: [
+    {
+      id: 'html-css',
+      title: 'HTML and CSS',
+      lessons: [
+        { id: 'html-basics', title: 'HTML Basics' },
+        { id: 'css-basics', title: 'CSS Basics' },
+        { id: 'responsive-design', title: 'Responsive Design' },
+      ]
+    },
+    {
+      id: 'javascript',
+      title: 'JavaScript',
+      lessons: [
+        { id: 'js-basics', title: 'JavaScript Basics' },
+        { id: 'dom-manipulation', title: 'DOM Manipulation' },
+        { id: 'event-handling', title: 'Event Handling' },
+      ]
+    }
+  ]
+};
+
 mockCourses['intro-python'] = {
   id: 'intro-python',
   title: 'Introduction to Python Programming',
-  description: 'Learn the fundamentals of Python programming from scratch.', // Added description
+  description: 'A beginner-friendly introduction to Python programming.', // Added description
   progress: Math.floor(Math.random() * 101), // Added placeholder progress
+  icon: 'fa-python', // Assuming you have a Python brand icon, or use a generic one like 'fa-laptop-code'
+  gradient: { from: 'green-500', to: 'green-400' }, // Added gradient
   modules: [
     {
       id: 'basics',

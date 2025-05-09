@@ -1,11 +1,13 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import CourseCard from './CourseCard.svelte';
-  import { listCourses, type CourseStructure } from '$lib/services/courseService.js';
+  import { type ContentMetadata } from '$lib/services/contentService.js';
   import { logStart, logEnd } from '$lib/services/activityService.js';
   import '@splidejs/splide/dist/css/splide.min.css';
 
-  let courses: CourseStructure[] = [];
+  export let title: string;
+  export let items: ContentMetadata[];
+
   let viewId: string | null = null;
 
   let splideElement: HTMLElement;
@@ -34,7 +36,7 @@
   // Function to initialize Splide
   const initSplide = () => {
     // Check if window.Splide exists and the element is available
-    if (typeof window !== 'undefined' && window.Splide && splideElement) {
+    if (typeof window !== 'undefined' && (window as any).Splide && splideElement) {
       // Destroy existing instance if it exists (prevents errors on hot reload)
       if (splideInstance) {
           splideInstance.destroy(true);
@@ -51,7 +53,7 @@
         if (document.querySelector('script[src*="@splidejs/splide"]')) {
             // If Splide might already be loaded but not yet available on window, wait briefly
             const checkSplide = setInterval(() => {
-                if (window.Splide) {
+                if ((window as any).Splide) {
                     clearInterval(checkSplide);
                     resolve();
                 }
@@ -59,7 +61,7 @@
             // Add a timeout to prevent infinite loop
             setTimeout(() => {
                 clearInterval(checkSplide);
-                if (!window.Splide) reject(new Error("Splide failed to load"));
+                if (!(window as any).Splide) reject(new Error("Splide failed to load"));
             }, 5000); // 5 second timeout
             return;
         }
@@ -74,17 +76,32 @@
   };
 
   onMount(async () => {
-    viewId = await logStart('view_continuing_learning', 'courses');
-    courses = await listCourses();
-    initSplide();
+    viewId = await logStart('view_course_carousel', title.toLowerCase().replace(/\s+/g, '_'));
+    
+    // Initialize Splide. If items can be dynamic, this might need to be reactive.
+    // For now, assuming items are passed on initial render.
+    if (items && items.length > 0) {
+      await loadSplideScript(); // Ensure Splide is loaded
+      initSplide();
+    }
   });
+
+  // Reactive statement to re-initialize Splide if items change
+  $: if (items && splideElement && (window as any).Splide) {
+    initSplide();
+  }
+
   onDestroy(() => {
     if (viewId) logEnd(viewId);
     if (splideInstance) splideInstance.destroy(true);
   });
 </script>
 
-<div class="course-carousel-container mb-8 py-4" style="--carousel-bg-rgb: 17, 24, 39;"> <div class="container mx-auto px-4"> <div class="flex justify-between items-center mb-6"> <h2 class="text-xl font-semibold text-gray-100">Continue Learning</h2> <a
+<div class="course-carousel-container mb-8 py-4" style="--carousel-bg-rgb: 17, 24, 39;">
+  <div class="container mx-auto px-4">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-xl font-semibold text-gray-100">{title}</h2>
+      <a
         href="/courses"
         class="text-sm text-indigo-400 hover:text-indigo-200 font-medium transition-colors duration-200 ease-in-out"
       >
@@ -92,17 +109,21 @@
       </a>
     </div>
 
-    <div class="splide" bind:this={splideElement}>
-      <div class="splide__track">
-        <ul class="splide__list">
-          {#each courses as course (course.id)}
-            <li class="splide__slide">
-              <CourseCard {course} />
-            </li>
-          {/each}
-        </ul>
+    {#if items && items.length > 0}
+      <div class="splide" bind:this={splideElement}>
+        <div class="splide__track">
+          <ul class="splide__list">
+            {#each items as item (item.id)}
+              <li class="splide__slide">
+                <CourseCard course={item} />
+              </li>
+            {/each}
+          </ul>
+        </div>
       </div>
-       </div>
+    {:else}
+      <p class="text-gray-400 text-center">No courses to display in this section.</p>
+    {/if}
   </div>
 </div>
 
@@ -112,6 +133,9 @@
     width: 100%;
     overflow: hidden; /* Prevents fade extending beyond container */
     position: relative; /* Needed for positioning arrows relative to this container */
+    background: linear-gradient(to bottom, rgba(var(--carousel-bg-rgb), 0.9), rgba(var(--carousel-bg-rgb), 1));
+    border-radius: 0.5rem; /* Optional: if you want rounded corners for the container */
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); /* Optional: shadow for depth */
   }
 
   /* Splide track positioning for pseudo-elements */
@@ -124,7 +148,6 @@
     margin-left: -0.5rem; /* Counteract padding for alignment */
     margin-right: -0.5rem;
   }
-
 
   /* --- Refined Fade Effect --- */
   :global(.splide__track::before),
@@ -157,7 +180,6 @@
       rgba(var(--carousel-bg-rgb, 17, 24, 39), 0) 100%
     );
   }
-
 
   /* --- Refined Arrow Styling --- */
   :global(.splide__arrow) {
@@ -211,5 +233,6 @@
     background: transparent;
     border: none;
     padding: 0.25rem; /* Add slight padding around cards if needed */
+    padding-bottom: 1rem; /* Add some padding if cards have shadows or hover effects */
   }
 </style>

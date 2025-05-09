@@ -45,18 +45,33 @@
   }
   
   // Draggable functionality
-  function handleMouseDown(e: MouseEvent) {
+  function handleMouseDown(e: MouseEvent | KeyboardEvent) { 
     // Only drag via the header (check if the event target is within the header)
     const header = widgetElement.querySelector('.pip-header');
-    if (!header || !header.contains(e.target as Node)) return;
+    // Ensure e.target is a Node and is contained within the header
+    if (!header || !(e.target instanceof Node) || !header.contains(e.target)) {
+      return;
+    }
 
     // Prevent dragging if clicking on buttons inside the header
-    if (e.target instanceof Element && e.target.closest('button')) return; 
+    // Ensure e.target is an Element before calling closest
+    if (e.target instanceof Element && e.target.closest('button')) {
+      return;
+    }
 
     isDragging = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    const rect = widgetElement.getBoundingClientRect();
+    const rect = widgetElement.getBoundingClientRect(); // Used by both paths
+
+    if (e instanceof MouseEvent) {
+      startX = e.clientX;
+      startY = e.clientY;
+    } else { // It's a KeyboardEvent
+      // For keyboard-initiated drag, use the element's center as the "click" point.
+      // Subsequent mouse movement will use these as the starting reference.
+      startX = rect.left + rect.width / 2;
+      startY = rect.top + rect.height / 2;
+    }
+    
     initialLeft = rect.left;
     initialTop = rect.top;
 

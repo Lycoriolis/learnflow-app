@@ -4,6 +4,13 @@ import { updateTopic, deleteTopic } from '$lib/services/forumService';
 export const PUT: RequestHandler = async ({ request, params }) => {
   const topicId = params.id;
   const data = await request.json();
+
+  if (!topicId) {
+    return new Response(JSON.stringify({ message: 'Topic ID is required' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
   
   try {
     const updatedTopic = await updateTopic(topicId, {
@@ -36,6 +43,13 @@ export const PUT: RequestHandler = async ({ request, params }) => {
 
 export const DELETE: RequestHandler = async ({ params }) => {
   const topicId = params.id;
+
+  if (!topicId) {
+    return new Response(JSON.stringify({ message: 'Topic ID is required' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
   
   try {
     const success = await deleteTopic(topicId);

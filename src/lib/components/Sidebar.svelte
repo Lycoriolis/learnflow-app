@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { slide } from 'svelte/transition';
   import { isAuthenticated, user, loading } from '$lib/stores/authStore.js';
-  import { login } from '$lib/authService.js';
+  import { login } from '$lib/services/authService.js';
   import { sidebarCollapsed } from '$lib/stores/sidebarStore.js';
 
   type NavItem = {
@@ -149,7 +149,7 @@
                 <li>
                   <a
                     href={item.href}
-                    sveltekit:prefetch
+                    data-sveltekit-prefetch
                     aria-label={item.name}
                     class="flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out {path.startsWith(item.href) ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-700 dark:text-indigo-100' : 'text-gray-600 dark:text-gray-300'}"
                   >

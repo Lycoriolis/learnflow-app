@@ -1,5 +1,9 @@
 <script lang="ts">
-  export let data: { topics: import('$lib/services/forumService').getAllTopics extends (...args:any)=>Promise<infer R> ? R : any, categories: import('$lib/services/forumService').getAllCategories extends (...args:any)=>Promise<infer R> ? R : any };
+  import type { getAllTopics as getAllTopicsFn, getAllCategories as getAllCategoriesFn } from '$lib/services/forumService';
+  export let data: {
+    topics: ReturnType<typeof getAllTopicsFn> extends Promise<infer R> ? R : any,
+    categories: ReturnType<typeof getAllCategoriesFn> extends Promise<infer R> ? R : any
+  };
   import { fade } from 'svelte/transition';
   import { goto } from '$app/navigation';
   import { secureFetch } from '$lib/utils/secureFetch';
@@ -56,7 +60,7 @@
       showFeedback('Topic deleted successfully', 'success');
     } catch (error) {
       console.error('Error deleting topic:', error);
-      showFeedback(error.message || 'Error deleting topic', 'error');
+      showFeedback((error as Error).message || 'Error deleting topic', 'error');
     }
   }
   
@@ -78,7 +82,7 @@
       showFeedback('Category deleted successfully', 'success');
     } catch (error) {
       console.error('Error deleting category:', error);
-      showFeedback(error.message || 'Error deleting category', 'error');
+      showFeedback((error as Error).message || 'Error deleting category', 'error');
     }
   }
   
@@ -95,7 +99,10 @@
       
       const category = await secureFetch('/api/forum/categories', {
         method: 'POST',
-        body: newCategory
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newCategory)
       });
       
       categories = [...categories, category];
@@ -103,7 +110,7 @@
       resetNewCategoryForm();
     } catch (error) {
       console.error('Error creating category:', error);
-      showFeedback(error.message || 'An unexpected error occurred', 'error');
+      showFeedback((error as Error).message || 'An unexpected error occurred', 'error');
     } finally {
       saving = false;
     }
@@ -137,7 +144,7 @@
   {#if errorMessage}
     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 relative">
       <span class="block sm:inline">{errorMessage}</span>
-      <button class="absolute top-0 right-0 px-4 py-3" on:click={() => errorMessage = ''}>
+      <button class="absolute top-0 right-0 px-4 py-3" on:click={() => errorMessage = ''} aria-label="Close error message">
         <i class="fas fa-times"></i>
       </button>
     </div>
@@ -146,7 +153,7 @@
   {#if successMessage}
     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 relative">
       <span class="block sm:inline">{successMessage}</span>
-      <button class="absolute top-0 right-0 px-4 py-3" on:click={() => successMessage = ''}>
+      <button class="absolute top-0 right-0 px-4 py-3" on:click={() => successMessage = ''} aria-label="Close success message">
         <i class="fas fa-times"></i>
       </button>
     </div>

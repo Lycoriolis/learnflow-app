@@ -287,7 +287,7 @@
       {#if showCreateTopic}
         <div class="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg relative">
-            <button class="absolute top-2 right-2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" on:click={() => showCreateTopic = false}>
+            <button class="absolute top-2 right-2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" on:click={() => showCreateTopic = false} aria-label="Close create topic form">
               <i class="fas fa-times"></i>
             </button>
             <CreateTopicForm categories={categories} on:topicCreated={handleTopicCreated} />

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { pipVisible } from '$lib/stores/pipStores.js';
   import { isAuthenticated, user, loading } from '$lib/stores/authStore.js';
-  import { logout } from '$lib/authService.js';
+  import { logout } from '$lib/services/authService.js';
   import { slide } from 'svelte/transition';
   import { goto } from '$app/navigation';
 

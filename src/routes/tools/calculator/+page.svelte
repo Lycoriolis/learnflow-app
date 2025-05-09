@@ -251,6 +251,7 @@
             class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
             on:click={() => { logCalc('copy'); copyToClipboard(); }}
             title="Copy to clipboard"
+            aria-label="Copy to clipboard"
           >
             <i class="fas fa-copy"></i>
           </button>

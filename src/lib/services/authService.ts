@@ -12,9 +12,9 @@ import {
 	type AuthError,
 	type Auth
 } from 'firebase/auth';
-import { auth } from './firebase.js';
-import { isAuthenticated, user, loading, authError } from './stores/authStore.js';
-import { loadUserProfile } from './stores/userProfileStore.js';
+import { auth } from '../firebase';
+import { isAuthenticated, user, loading, authError } from '../stores/authStore';
+import { loadUserProfile } from '../stores/userProfileStore';
 
 // Flag to track if auth initialization has completed
 let authInitialized = false;

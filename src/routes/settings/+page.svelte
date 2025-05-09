@@ -1,85 +1,156 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { isAuthenticated, user, loading as authLoading, logout } from '$lib/stores/authStore.js';
+  import { onMount, onDestroy } from 'svelte'; // Import onDestroy
   import { goto } from '$app/navigation';
-  import type { UserProfile } from '$lib/services/userService.js';
-  import { userProfile, userProfileLoading, updateUserProfile } from '$lib/stores/userProfileStore.js';
-  import { getCurrentUser, updateProfile as firebaseUpdateProfile } from '$lib/authService.js';
-  import type { TimerSettings } from '$lib/stores/pipStores.js';
+  import { user, isAuthenticated, loading as authLoading, authError } from '$lib/stores/authStore.js';
+  import { 
+    userProfile, 
+    userProfileLoading, 
+    userProfileError, 
+    loadUserProfile, 
+    updateUserProfile as serviceUpdateUserProfile // Aliased to avoid conflict
+  } from '$lib/stores/userProfileStore.js';
   import { timerSettings } from '$lib/stores/pipStores.js';
+  import type { User } from 'firebase/auth';
+  import { getCurrentUser, updateProfile as firebaseUpdateProfile } from '$lib/services/authService.js'; // Corrected path
+  import type { UserProfile, UserPreferences } from '$lib/services/userService.js';
+  import type { TimerSettings } from '$lib/stores/pipStores.js'; // Ensure this type is correctly defined/exported
 
-  // Local form state
+  let currentUser: User | null = null;
+  let localProfile: UserProfile | null = null;
+  let localPreferences: UserPreferences | null = null; // Stays UserPreferences | null
+  let localTimerSettings: TimerSettings | null = null;
+
   let displayName = '';
-  let email = '';
-  let theme = 'auto';
-  let durations = { work: 25, shortBreak: 5, longBreak: 15, interval: 4 };
-  let saving = false;
+  let email = ''; // Email is usually not changed directly via profile update in Firebase Auth
+  let photoURL = '';
+  
+  let theme = 'system'; // Default theme
+  let notifications = {
+    email: true,
+    inApp: true,
+  };
+  let focusDuration = 25;
+  let shortBreakDuration = 5;
+  let longBreakDuration = 15;
+  let focusSessionsBeforeLongBreak = 4;
+
+  let isLoading = false;
   let error: string | null = null;
+  let successMessage: string | null = null;
 
-  let unsubProfile: () => void;
-  let unsubTimer: () => void;
+  let unsubProfile: (() => void) | null = null;
+  let unsubTimer: (() => void) | null = null;
 
-  onMount(() => {
-    unsubProfile = userProfile.subscribe((profile: UserProfile | null) => {
+  onMount(async () => {
+    if (!$authLoading && $user) {
+      currentUser = getCurrentUser();
+      if (currentUser) {
+        if (!$userProfileLoading && $userProfile) {
+          localProfile = $userProfile;
+          displayName = $userProfile.displayName || '';
+          email = $userProfile.email || '';
+          photoURL = $userProfile.photoURL || '';
+          localPreferences = $userProfile.preferences ?? null;
+          theme = $userProfile.preferences?.theme || 'system';
+          notifications = {
+            email: $userProfile.preferences?.notifications?.email !== undefined ? $userProfile.preferences.notifications.email : true,
+            inApp: $userProfile.preferences?.notifications?.inApp !== undefined ? $userProfile.preferences.notifications.inApp : true,
+          };
+        } else if (!$userProfileLoading) {
+          await loadUserProfile(currentUser.uid, currentUser.email || '', currentUser.displayName || undefined);
+        }
+      }
+    }
+
+    unsubProfile = userProfile.subscribe(profile => {
       if (profile) {
+        localProfile = profile;
         displayName = profile.displayName || '';
-        email = profile.email;
-        // load theme if stored
-        theme = profile.preferences?.theme || 'auto';
+        email = profile.email || '';
+        photoURL = profile.photoURL || '';
+        localPreferences = profile.preferences ?? null;
+        theme = profile.preferences?.theme || 'system';
+        notifications = {
+          email: profile.preferences?.notifications?.email !== undefined ? profile.preferences.notifications.email : true,
+          inApp: profile.preferences?.notifications?.inApp !== undefined ? profile.preferences.notifications.inApp : true,
+        };
       }
     });
-    // load timer settings store
-    unsubTimer = timerSettings.subscribe((s: TimerSettings) => {
-      durations = { 
-        work: Math.round(s.workDuration/60), 
-        shortBreak: Math.round(s.shortBreakDuration/60), 
-        longBreak: Math.round(s.longBreakDuration/60), 
-        interval: s.longBreakInterval
-      };
+
+    unsubTimer = timerSettings.subscribe(settings => {
+      if (settings) {
+        localTimerSettings = settings;
+        focusDuration = settings.workDuration;
+        shortBreakDuration = settings.shortBreakDuration;
+        longBreakDuration = settings.longBreakDuration;
+        focusSessionsBeforeLongBreak = settings.longBreakInterval;
+      }
     });
-    return () => { 
-      if (unsubProfile) unsubProfile();
-      if (unsubTimer) unsubTimer();
-    };
   });
 
-  async function saveSettings() {
-    saving = true;
+  onDestroy(() => {
+    if (unsubProfile) {
+      unsubProfile();
+    }
+    if (unsubTimer) {
+      unsubTimer();
+    }
+  });
+
+  async function handleProfileUpdate() {
+    if (!currentUser || !localProfile) return;
+    isLoading = true;
     error = null;
+    successMessage = null;
+
     try {
-      // Update Firebase auth displayName
-      const currentUser = getCurrentUser();
-      if (currentUser && displayName !== currentUser.displayName) {
-        await firebaseUpdateProfile(currentUser, { displayName });
-      }
-      // Update preferences in Firestore
-      if (currentUser) {
-        await updateUserProfile(currentUser.uid, { 
-          displayName, 
-          preferences: { 
-            theme,
-            // preserve other preferences
-            ...($userProfile?.preferences || {})
-          }
-        });
-      }
-      // Update Pomodoro durations store
-      timerSettings.set({
-        workDuration: durations.work * 60,
-        shortBreakDuration: durations.shortBreak * 60,
-        longBreakDuration: durations.longBreak * 60,
-        longBreakInterval: durations.interval
-      });
-    } catch (e:any) {
-      console.error(e);
-      error = e.message;
+      // Update Firebase Auth profile (displayName, photoURL)
+      await firebaseUpdateProfile(currentUser, { displayName, photoURL });
+
+      // Update Firestore profile (additional preferences)
+      const updatedProfileData: Partial<UserProfile> = {
+        ...localProfile,
+        displayName, // Ensure displayName is part of the update to Firestore as well
+        photoURL,    // Ensure photoURL is part of the update to Firestore as well
+        preferences: {
+          ...(localProfile.preferences || {}),
+          theme,
+          notifications,
+        }
+      };
+      await serviceUpdateUserProfile(currentUser.uid, updatedProfileData);
+      
+      successMessage = 'Profile updated successfully!';
+    } catch (err: any) {
+      error = err.message;
     } finally {
-      saving = false;
+      isLoading = false;
     }
   }
 
-  function goToLogin() {
-    goto('/login?redirect=/settings');
+  async function handleTimerSettingsUpdate() {
+    isLoading = true;
+    error = null;
+    successMessage = null;
+    try {
+      timerSettings.set({
+        workDuration: focusDuration, // Fix: Map to workDuration
+        shortBreakDuration,
+        longBreakDuration,
+        longBreakInterval: focusSessionsBeforeLongBreak // Fix: Map to longBreakInterval
+      });
+      successMessage = 'Timer settings saved!';
+    } catch (err:any) {
+      error = err.message;
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  function handleLogout() {
+    // Placeholder for actual logout logic, likely from authService
+    console.log("Logout initiated");
+    // import('$lib/services/authService.js').then(auth => auth.logout().then(() => goto('/login')));
   }
 </script>
 
@@ -96,6 +167,9 @@
     <h1 class="text-2xl font-bold mb-4">Account Settings</h1>
     {#if error}
       <div class="text-red-500 mb-4">{error}</div>
+    {/if}
+    {#if successMessage}
+      <div class="text-green-500 mb-4">{successMessage}</div>
     {/if}
     <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 space-y-6">
       <!-- Profile Info -->
@@ -120,7 +194,7 @@
           <div>
             <label for="theme" class="block text-sm font-medium mb-1">Theme</label>
             <select id="theme" bind:value={theme} class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700">
-              <option value="auto">Auto</option>
+              <option value="system">System</option>
               <option value="light">Light</option>
               <option value="dark">Dark</option>
             </select>
@@ -130,20 +204,20 @@
               <legend class="text-sm font-medium mb-1">Pomodoro Durations (minutes)</legend>
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <label for="work-duration" class="block text-sm text-gray-500">Work Duration</label>
-                  <input type="number" id="work-duration" min="1" bind:value={durations.work} class="w-full rounded border-gray-300 dark:border-gray-600 p-2" />
+                  <label for="focus-duration" class="block text-sm text-gray-500">Focus Duration</label>
+                  <input type="number" id="focus-duration" min="1" bind:value={focusDuration} class="w-full rounded border-gray-300 dark:border-gray-600 p-2" />
                 </div>
                 <div>
                   <label for="short-break" class="block text-sm text-gray-500">Short Break</label>
-                  <input type="number" id="short-break" min="1" bind:value={durations.shortBreak} class="w-full rounded border-gray-300 dark:border-gray-600 p-2" />
+                  <input type="number" id="short-break" min="1" bind:value={shortBreakDuration} class="w-full rounded border-gray-300 dark:border-gray-600 p-2" />
                 </div>
                 <div>
                   <label for="long-break" class="block text-sm text-gray-500">Long Break</label>
-                  <input type="number" id="long-break" min="1" bind:value={durations.longBreak} class="w-full rounded border-gray-300 dark:border-gray-600 p-2" />
+                  <input type="number" id="long-break" min="1" bind:value={longBreakDuration} class="w-full rounded border-gray-300 dark:border-gray-600 p-2" />
                 </div>
                 <div>
-                  <label for="interval" class="block text-sm text-gray-500">Sessions Before Long Break</label>
-                  <input type="number" id="interval" min="1" bind:value={durations.interval} class="w-full rounded border-gray-300 dark:border-gray-600 p-2" />
+                  <label for="sessions-before-long-break" class="block text-sm text-gray-500">Sessions Before Long Break</label>
+                  <input type="number" id="sessions-before-long-break" min="1" bind:value={focusSessionsBeforeLongBreak} class="w-full rounded border-gray-300 dark:border-gray-600 p-2" />
                 </div>
               </div>
             </fieldset>
@@ -152,16 +226,19 @@
       </div>
 
       <div class="flex justify-end space-x-2">
-        <button class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" on:click={() => logout()}>Sign Out</button>
-        <button class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700" on:click={saveSettings} disabled={saving}>
-          {saving ? 'Saving...' : 'Save Changes'}
+        <button class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" on:click={handleLogout}>Sign Out</button>
+        <button class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700" on:click={handleProfileUpdate} disabled={isLoading}>
+          {isLoading ? 'Saving...' : 'Save Changes'}
+        </button>
+        <button class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700" on:click={handleTimerSettingsUpdate} disabled={isLoading}>
+          {isLoading ? 'Saving...' : 'Save Timer Settings'}
         </button>
       </div>
     </div>
   {:else}
     <div class="text-center py-20">
       <p class="text-lg text-gray-600 dark:text-gray-300 mb-4">Please log in to manage your settings.</p>
-      <button class="px-6 py-2 bg-indigo-600 text-white rounded" on:click={goToLogin}>Log In</button>
+      <button class="px-6 py-2 bg-indigo-600 text-white rounded" on:click={() => goto('/login?redirect=/settings')}>Log In</button>
     </div>
   {/if}
 </div>

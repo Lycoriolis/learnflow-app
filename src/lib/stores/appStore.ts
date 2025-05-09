@@ -1,10 +1,11 @@
 import { writable } from 'svelte/store';
 import { persistentStore } from './persistentStore.js';
+import type { CourseStructure } from '$lib/services/courseService';
 
 // UI State
 export const sidebarOpen = writable(false);
 export const courseModalOpen = writable(false);
-export const currentCourse = writable(null);
+export const currentCourse = writable<CourseStructure | null>(null);
 
 // User-related State
 export const user = writable({

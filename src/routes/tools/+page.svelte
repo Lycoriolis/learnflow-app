@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { logStart, logEnd, logEvent } from '$lib/services/activityService';
 
@@ -12,7 +12,7 @@
     { name: 'Dictionary', path: '/tools/dictionary', icon: 'fa-book' }
   ];
 
-  let toolsViewId = null;
+  let toolsViewId: string | null = null;
 
   onMount(async () => {
     toolsViewId = await logStart('view_tools', 'toolsOverview');
@@ -21,7 +21,7 @@
     if (toolsViewId) logEnd(toolsViewId);
   });
 
-  function selectTool(path) {
+  function selectTool(path: string) {
     logEvent('view_tool', path);
   }
 </script>

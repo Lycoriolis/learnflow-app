@@ -21,7 +21,7 @@ export interface TimerState {
 	cycle: number; // Number of work cycles completed
 }
 
-export interface TimerSettings {
+export interface TimerSettings { // Ensure this is exported if imported as a type elsewhere
 	workDuration: number;        // in seconds
 	shortBreakDuration: number;  // in seconds
 	longBreakDuration: number;   // in seconds

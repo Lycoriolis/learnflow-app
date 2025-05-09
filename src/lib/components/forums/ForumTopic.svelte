@@ -101,7 +101,7 @@
     <ul class="space-y-4">
       {#each paginatedPosts as post}
         <li class="post p-3 border rounded bg-white dark:bg-gray-700 shadow-sm">
-          <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">By {post.author_name || post.author} on {new Date(post.created_at || post.createdAt).toLocaleString()}</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">By {post.author_name} on {new Date(post.created_at || 0).toLocaleString()}</p>
           <div class="post-content">
             <MarkdownRenderer content={post.content} />
           </div>

@@ -1,19 +1,20 @@
 /// <reference types="@sveltejs/kit" />
 
-import type { User } from 'firebase/auth';
+import type { DecodedIdToken } from 'firebase-admin/auth'; // Server-side Firebase Admin user
 
 declare global {
     namespace App {
         interface Locals {
-            user: User | null;
+            user: DecodedIdToken | null; // Updated to DecodedIdToken
             isAuthenticated: boolean;
-            [key: string]: User | null | boolean | undefined;
+            csrfToken?: string; // csrfToken is optional
         }
     }
 
-    // Add Splide to the Window interface
+    // Add Splide and marked to the Window interface
     interface Window {
         Splide: any; // Use 'any' for simplicity, or install @splidejs/splide types
+        marked: any; // For the dynamically loaded marked library
     }
 }
 

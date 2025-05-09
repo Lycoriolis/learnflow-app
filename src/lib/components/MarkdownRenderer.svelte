@@ -1,7 +1,7 @@
-/// <reference lib="dom" />
+/// <reference lib="dom"></reference>
 <script lang="ts">
   import { onMount, afterUpdate } from 'svelte';
-  import { marked } from 'marked';
+  import { marked, type MarkedOptions } from 'marked';
   import { browser } from '$app/environment';
 
   // Static import of highlight.js core and styles
@@ -52,8 +52,10 @@
       return;
     }
     try {
-      marked.setOptions({ gfm: true, breaks: true, smartLists: true, smartypants: true });
-      renderedContent = marked(content);
+      // Removed smartLists and smartypants as they are not in MarkedOptions type
+      // Cast the result of marked(content) to string
+      marked.setOptions({ gfm: true, breaks: true } as MarkedOptions);
+      renderedContent = marked(content) as string;
     } catch (e) {
       console.error('Error rendering markdown:', e);
       renderedContent = `<p class="text-red-500">Error rendering markdown content</p>`;
@@ -65,8 +67,10 @@
   afterUpdate(() => {
     if (browser && markdownContainer) {
       // highlight code blocks
-      markdownContainer.querySelectorAll('pre code').forEach((block: HTMLElement) => {
-        hljs.highlightElement(block);
+      markdownContainer.querySelectorAll('pre code').forEach((block: Element) => {
+        if (block instanceof HTMLElement) {
+          hljs.highlightElement(block);
+        }
       });
       enhanceContent();
     }
@@ -75,19 +79,21 @@
   function enhanceContent() {
     if (!markdownContainer) return;
     // external links
-    markdownContainer.querySelectorAll('a').forEach((link: HTMLAnchorElement) => {
-      if (link.hostname !== window.location.hostname) {
+    markdownContainer.querySelectorAll('a').forEach((link: Element) => {
+      if (link instanceof HTMLAnchorElement && link.hostname !== window.location.hostname) {
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
       }
     });
     // responsive images
-    markdownContainer.querySelectorAll('img').forEach((img: HTMLImageElement) => {
-      img.classList.add('max-w-full', 'h-auto', 'rounded-lg', 'my-4');
+    markdownContainer.querySelectorAll('img').forEach((img: Element) => {
+      if (img instanceof HTMLImageElement) {
+        img.classList.add('max-w-full', 'h-auto', 'rounded-lg', 'my-4');
+      }
     });
     // code copy button
-    markdownContainer.querySelectorAll('pre').forEach((pre: HTMLElement) => {
-      if (!pre.querySelector('.copy-btn')) {
+    markdownContainer.querySelectorAll('pre').forEach((pre: Element) => {
+      if (pre instanceof HTMLElement && !pre.querySelector('.copy-btn')) {
         const btn = document.createElement('button');
         btn.className = 'copy-btn absolute top-2 right-2 p-1 rounded bg-gray-700 text-gray-200 text-xs hover:bg-gray-600';
         btn.innerHTML = '<i class="fas fa-copy"></i>';

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { timerState, timerSettings, focusSessions, type FocusSession } from '$lib/stores/pipStores.js';
+  import { timerState, timerSettings, focusSessions, type FocusSession, type TimerMode } from '$lib/stores/pipStores.js';
   import { onDestroy } from 'svelte';
 
   let intervalId: ReturnType<typeof setInterval> | null = null;
@@ -38,7 +38,7 @@
     pauseTimer();
     timerState.update(state => ({
       ...state,
-      mode: 'work',
+      mode: { type: 'work' },
       timeLeft: $timerSettings.workDuration,
       cycle: 0
     }));
@@ -47,8 +47,8 @@
   function nextPhase() {
       pauseTimer(); // Stop current interval
 
-      // --- Record completed work session --- 
-      if ($timerState.mode === 'work') {
+      // --- Record completed work session ---
+      if ($timerState.mode.type === 'work') {
         const completedSession: FocusSession = {
           timestamp: Date.now(),
           duration: $timerSettings.workDuration // Record the planned duration
@@ -56,36 +56,36 @@
         focusSessions.update(sessions => [...sessions, completedSession]);
         console.log('Recorded focus session:', completedSession); // Optional logging
       }
-      // --- End recording --- 
+      // --- End recording ---
 
-      let nextMode: typeof $timerState.mode = 'work';
+      let nextModeType: TimerMode['type'] = 'work';
       let nextTimeLeft = $timerSettings.workDuration;
       let nextCycle = $timerState.cycle;
 
-      if ($timerState.mode === 'work') {
+      if ($timerState.mode.type === 'work') {
           nextCycle++;
           if (nextCycle % $timerSettings.longBreakInterval === 0) {
-              nextMode = 'longBreak';
+              nextModeType = 'longBreak';
               nextTimeLeft = $timerSettings.longBreakDuration;
           } else {
-              nextMode = 'shortBreak';
+              nextModeType = 'shortBreak';
               nextTimeLeft = $timerSettings.shortBreakDuration;
           }
       } else { // If current mode is shortBreak or longBreak
-          nextMode = 'work';
+          nextModeType = 'work';
           nextTimeLeft = $timerSettings.workDuration;
       }
 
       timerState.set({
-          mode: nextMode,
+          mode: { type: nextModeType },
           timeLeft: nextTimeLeft,
           isRunning: false, // Start paused in the new phase
           cycle: nextCycle
       });
-      
+
       // Optional: Auto-start the next phase?
-      // startTimer(); 
-      
+      // startTimer();
+
       // Optional: Notify user (e.g., with a sound)
       // new Audio('/path/to/notification.mp3').play();
   }
@@ -98,7 +98,7 @@
 </script>
 
 <div class="text-center p-2 bg-gray-700 rounded-lg">
-  <div class="text-xs font-medium text-indigo-300 uppercase mb-1">{$timerState.mode.replace('B', ' B')}</div>
+  <div class="text-xs font-medium text-indigo-300 uppercase mb-1">{$timerState.mode.type.replace('B', ' B')}</div>
   <div class="text-3xl font-bold mb-3 text-gray-100 tracking-wider">{formattedTime}</div>
   <div class="flex justify-center space-x-2">
     {#if !$timerState.isRunning}

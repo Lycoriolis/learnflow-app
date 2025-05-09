@@ -52,11 +52,18 @@
     loading = true;
     error = '';
     const selected = modes.find(m => m.id === mode);
+
+    if (!selected) {
+      error = 'Invalid chat mode selected.';
+      loading = false;
+      return;
+    }
+
     try {
       // Build request with full chat history for context (memory)
       // Include full history and enable streaming
       const body = {
-        model: selected.model,
+        model: selected.model, // Now 'selected' is guaranteed to be defined here
         stream: true,
         messages: messages.map(msg => ({ role: msg.role, content: [{ type: 'text', text: msg.text }] }))
       };
@@ -71,10 +78,15 @@
         body: JSON.stringify(body)
       });
       if (!res.ok) throw new Error(await res.text());
+
+      if (!res.body) { // Check if res.body is null
+        throw new Error('Response body is null.');
+      }
+
       // Prepare streaming of assistant reply
       messages = [...messages, { role: 'assistant', text: '' }];
       const assistantIndex = messages.length - 1;
-      const reader = res.body.getReader();
+      const reader = res.body.getReader(); // Now 'res.body' is guaranteed to be non-null
       const decoder = new TextDecoder();
       let buffer = '';
       let done = false;

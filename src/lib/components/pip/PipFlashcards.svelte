@@ -1,6 +1,5 @@
-<!-- filepath: /home/linux/learnflow-app/learnflow-app/src/lib/components/pip/PipFlashcards.svelte -->
 <script lang="ts">
-  import { writable } from 'svelte/store';
+  import { writable } from 'svelte/store'; // Ensure 'writable' is imported only once
   import { persistentStore } from '../../stores/persistentStore';
 
   interface Flashcard {
@@ -47,9 +46,11 @@
 
   function reviewCard(success: boolean) {
     if (!currentCard) return;
-    
+    const cardToReview = currentCard; // Use a local const after null check
+
     const now = Date.now();
-    let nextLevel = success ? currentCard.level + 1 : Math.max(0, currentCard.level - 1);
+    // Use cardToReview for level calculation
+    let nextLevel = success ? cardToReview.level + 1 : Math.max(0, cardToReview.level - 1);
     nextLevel = Math.min(5, nextLevel);
     
     // Calculate next review time using spaced repetition
@@ -64,7 +65,7 @@
 
     flashcards.update(cards => 
       cards.map(card => 
-        card.id === currentCard.id 
+        card.id === cardToReview.id // Use cardToReview here
           ? {
               ...card,
               level: nextLevel,
@@ -118,14 +119,16 @@
     <!-- Review interface -->
     {#if currentCard}
       <div class="p-4">
-        <div
-          class="min-h-[120px] p-4 bg-gray-800 rounded-lg shadow-inner flex items-center justify-center cursor-pointer transition-transform hover:scale-[1.02] select-none"
+        <button
+          type="button"
+          class="min-h-[120px] p-4 bg-gray-800 rounded-lg shadow-inner flex items-center justify-center cursor-pointer transition-transform hover:scale-[1.02] select-none w-full text-left"
           on:click={flipCard}
+          aria-label="Flip card"
         >
           <p class="text-gray-100 text-center">
             {showingFront ? currentCard.front : currentCard.back}
           </p>
-        </div>
+        </button>
         
         <div class="flex justify-between mt-4">
           <button

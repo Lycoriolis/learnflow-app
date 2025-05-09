@@ -36,19 +36,26 @@
   $: selectedTask = allTodos.find(t => t.id === selectedId) || null;
   $: filteredTodos = allTodos.filter(task => {
     if (filterTag && task.tag !== filterTag) return false;
-    if (filterEmergency !== 'all' && String(task.emergency) !== filterEmergency) return false;
+    if (filterEmergency !== 'all' && String(task.emergency ?? 3) !== filterEmergency) return false;
     if (searchTerm && !task.text.toLowerCase().includes(searchTerm.toLowerCase())) return false;
     return true;
   }).sort((a, b) => {
     let aVal = sortBy === 'deadline' ? (a.deadline ? new Date(a.deadline).getTime() : Infinity) :
-              sortBy === 'emergency' ? a.emergency : 
+              sortBy === 'emergency' ? (a.emergency ?? 3) : 
               a.createdAt;
     
     let bVal = sortBy === 'deadline' ? (b.deadline ? new Date(b.deadline).getTime() : Infinity) :
-              sortBy === 'emergency' ? b.emergency : 
+              sortBy === 'emergency' ? (b.emergency ?? 3) : 
               b.createdAt;
               
-    return sortDir === 'asc' ? aVal - bVal : bVal - aVal;
+    const numAVal = Number(aVal);
+    const numBVal = Number(bVal);
+
+    if (isNaN(numAVal) || isNaN(numBVal)) {
+      return 0; 
+    }
+
+    return sortDir === 'asc' ? numAVal - numBVal : numBVal - numAVal;
   });
 
   $: uniqueTags = [...new Set(allTodos.map(t => t.tag).filter(Boolean))];
@@ -72,8 +79,8 @@
   }
 
   function saveEdit() {
-    if (!editTask) return;
-    todos.update(ts => ts.map(t => t.id === editTask!.id ? { ...editTask } : t));
+    if (!editTask || !editTask.id) return;
+    todos.update(ts => ts.map(t => t.id === editTask!.id ? { ...editTask } as TodoItem : t));
     editing = false;
     editTask = null;
   }
@@ -140,8 +147,8 @@
   }
 
   // UI helper functions
-  function getEmergencyColor(level: number) {
-    switch(Number(level)) {
+  function getEmergencyColor(level: number | undefined) {
+    switch(Number(level ?? 3)) {
       case 1: return 'bg-green-50 dark:bg-green-950 text-green-600 dark:text-green-300 border-green-200 dark:border-green-800';
       case 2: return 'bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-300 border-blue-200 dark:border-blue-800';
       case 3: return 'bg-yellow-50 dark:bg-yellow-950 text-yellow-600 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800';
@@ -151,8 +158,8 @@
     }
   }
 
-  function getEmergencyLabel(level: number) {
-    switch(Number(level)) {
+  function getEmergencyLabel(level: number | undefined) {
+    switch(Number(level ?? 3)) {
       case 1: return 'Low';
       case 2: return 'Medium-Low';
       case 3: return 'Medium';
@@ -297,6 +304,7 @@
               class="h-7 w-7 flex items-center justify-center bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md"
               on:click={() => sortDir = sortDir === 'asc' ? 'desc' : 'asc'}
               title={sortDir === 'asc' ? 'Sort Ascending' : 'Sort Descending'}
+              aria-label={sortDir === 'asc' ? 'Sort Ascending' : 'Sort Descending'}
             >
               <i class="fas fa-sort-{sortDir === 'asc' ? 'up' : 'down'} text-gray-500"></i>
             </button>
@@ -319,11 +327,14 @@
           <div 
             class="bg-white dark:bg-gray-800/90 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-indigo-200 dark:hover:border-indigo-700/50 transition-all cursor-pointer relative overflow-hidden {selectedId === task.id ? 'border-l-4 border-l-indigo-500 dark:border-l-indigo-400' : ''} {getTaskStatusClass(task)}"
             draggable="true"
+            role="button"
+            tabindex="0"
             on:dragstart={() => handleDragStart(task.id)}
             on:dragover|preventDefault={() => handleDragOver(task.id)}
             on:drop|preventDefault={handleDrop}
             on:dragend={handleDragEnd}
             on:click={() => selectTask(task.id)}
+            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') selectTask(task.id) }}
             in:fly={{ y: 10, duration: 200, delay: 50 }}
             out:fly={{ y: -10, duration: 200 }}
           >
@@ -407,6 +418,7 @@
           <button 
             class="h-8 w-8 flex md:hidden items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
             on:click={() => showAddPanel = false}
+            aria-label="Close add task panel"
           >
             <i class="fas fa-times"></i>
           </button>
@@ -474,7 +486,7 @@
               />
               <datalist id="tag-options">
                 {#each uniqueTags as tag}
-                  <option value={tag} />
+                  <option value={tag}></option>
                 {/each}
               </datalist>
               <i class="fas fa-tag absolute right-4 top-3 text-gray-400"></i>
@@ -504,6 +516,7 @@
             <button 
               class="h-8 w-8 md:hidden flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
               on:click={() => selectedId = null}
+              aria-label="Close task details"
             >
               <i class="fas fa-arrow-left"></i>
             </button>
@@ -514,6 +527,7 @@
               class="h-9 w-9 flex items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-800/30 transition"
               on:click={() => startEdit(selectedTask)}
               title="Edit task"
+              aria-label="Edit task"
             >
               <i class="fas fa-edit"></i>
             </button>
@@ -521,6 +535,7 @@
               class="h-9 w-9 flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-800/30 transition"
               on:click={() => deleteTask(selectedTask.id)}
               title="Delete task"
+              aria-label="Delete task"
             >
               <i class="fas fa-trash-alt"></i>
             </button>
@@ -592,7 +607,7 @@
                 />
                 <datalist id="edit-tag-options">
                   {#each uniqueTags as tag}
-                    <option value={tag} />
+                    <option value={tag}></option>
                   {/each}
                 </datalist>
                 <i class="fas fa-tag absolute right-4 top-3 text-gray-400"></i>
@@ -693,7 +708,7 @@
   </div>
 </div>
 
-<style>
+<style lang="postcss">
   .bg-striped {
     background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
     background-size: 1rem 1rem;

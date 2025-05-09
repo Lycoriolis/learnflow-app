@@ -7,7 +7,7 @@
   <!-- Example:
   <button
     class="mt-6 px-6 py-3 bg-white text-indigo-600 font-semibold rounded-lg shadow hover:bg-gray-100 transition duration-200"
-    on:click={() => import('$lib/authService.js').then(auth => auth.login())}
+    on:click={() => import('$lib/services/authService.js').then(auth => auth.login())}
   >
     Get Started
   </button>
@@ -27,4 +27,4 @@
     <h2 class="text-2xl font-semibold mb-3 text-gray-900 dark:text-white">Track Progress</h2>
     <p class="text-gray-600 dark:text-gray-300">Log in to monitor your learning journey and achievements.</p>
   </div>
-</div> 
+</div>

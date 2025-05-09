@@ -69,7 +69,18 @@
           placeholder="Your note here..."
         ></textarea>
         <div class="flex justify-end mt-2">
-          <button on:click={() => deleteNote(note.id)} class="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700">
+          <button 
+            on:click={() => updateNote(note.id, note.content)} 
+            class="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 mr-1"
+            aria-label="Edit note"
+          >
+            <i class="fas fa-edit"></i>
+          </button>
+          <button 
+            on:click={() => deleteNote(note.id)} 
+            class="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
+            aria-label="Delete note"
+          >
             <i class="fas fa-trash"></i>
           </button>
         </div>

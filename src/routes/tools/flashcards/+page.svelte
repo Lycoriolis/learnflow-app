@@ -98,7 +98,7 @@
 
     flashcards.update(cards => 
       cards.map(card => 
-        card.id === currentCard.id 
+        card.id === currentCard!.id 
           ? {
               ...card,
               level: nextLevel,
@@ -226,6 +226,9 @@
           <div
             class="min-h-[200px] p-6 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-inner flex items-center justify-center cursor-pointer select-none mb-6"
             on:click={flipCard}
+            role="button"
+            tabindex="0"
+            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') flipCard() }}
             transition:fade
           >
             <div class="prose dark:prose-invert max-w-none text-center">
@@ -241,8 +244,9 @@
               <i class="fas fa-times mr-2"></i> Again
             </button>
             <button
-              on:click={() => deleteCard(currentCard.id)}
+              on:click={() => deleteCard(currentCard!.id)}
               class="px-6 py-3 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition"
+              aria-label="Delete card"
             >
               <i class="fas fa-trash-alt"></i>
             </button>
@@ -269,8 +273,9 @@
         <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Add New Card</h3>
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Front</label>
+            <label for="newCardFront" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Front</label>
             <textarea
+              id="newCardFront"
               bind:value={newCardFront}
               rows="3"
               class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg"
@@ -278,8 +283,9 @@
             ></textarea>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Back</label>
+            <label for="newCardBack" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Back</label>
             <textarea
+              id="newCardBack"
               bind:value={newCardBack}
               rows="3"
               class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg"
@@ -287,8 +293,9 @@
             ></textarea>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tags</label>
+            <label for="newCardTags" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tags</label>
             <input
+              id="newCardTags"
               type="text"
               bind:value={newCardTags}
               class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg"

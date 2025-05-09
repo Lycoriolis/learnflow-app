@@ -70,18 +70,27 @@
     chartInstance.data.datasets[0].data = dataPoints;
 
     // Adjust x-axis time unit
-     chartInstance.options.scales!.x!.time!.unit = timeUnit;
-     // Optional: Adjust tooltip/label formats based on unit
-     if (timeUnit === 'day') {
-         chartInstance.options.scales!.x!.time!.tooltipFormat = 'MMM d, yyyy';
-         chartInstance.options.scales!.x!.time!.displayFormats = { day: 'MMM d' };
-     } else if (timeUnit === 'week') {
-         chartInstance.options.scales!.x!.time!.tooltipFormat = '\'Week of\' MMM d, yyyy';
-          chartInstance.options.scales!.x!.time!.displayFormats = { week: 'MMM d' };
-     } else { // month
-          chartInstance.options.scales!.x!.time!.tooltipFormat = 'MMM yyyy';
-          chartInstance.options.scales!.x!.time!.displayFormats = { month: 'MMM yyyy' };
-     }
+    const xScale = chartInstance.options.scales?.x as import('chart.js').TimeScaleOptions | undefined;
+
+    if (xScale?.time) {
+      xScale.time.unit = timeUnit;
+      
+      // Ensure displayFormats object exists before assigning to its properties
+      if (!xScale.time.displayFormats) {
+        xScale.time.displayFormats = {};
+      }
+
+      if (timeUnit === 'day') {
+        xScale.time.tooltipFormat = 'MMM d, yyyy';
+        xScale.time.displayFormats.day = 'MMM d';
+      } else if (timeUnit === 'week') {
+        xScale.time.tooltipFormat = '\'Week of\' MMM d, yyyy';
+        xScale.time.displayFormats.week = 'MMM d';
+      } else { // month
+        xScale.time.tooltipFormat = 'MMM yyyy';
+        xScale.time.displayFormats.month = 'MMM yyyy';
+      }
+    }
 
     chartInstance.update();
   }
@@ -168,4 +177,4 @@
 
 <div class="chart-container" style="position: relative; height:300px;">
   <canvas bind:this={canvasElement}></canvas>
-</div> 
+</div>

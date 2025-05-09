@@ -1,1 +1,29 @@
 node_modules
+
+# SvelteKit build artifacts
+.svelte-kit/
+build/
+
+# IDE and editor directories
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Optional SvelteKit files
+dev.db
+dev.db-journal
+
+# Operating System files
+.DS_Store
+Thumbs.db

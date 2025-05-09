@@ -29,7 +29,8 @@ export async function loadUserProfile(uid: string, email: string, displayName?: 
           focusSessions: [],
           tasks: [],
           notes: ''
-        }
+        },
+        progress: {} // Initialize progress as an empty object
       };
       await createUserProfile(profile);
     }

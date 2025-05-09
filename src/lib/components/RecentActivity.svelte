@@ -61,7 +61,7 @@
     activities = data.map(a => ({
       ...a,
       title: mapEventTypeToTitle(a.eventType, a.metadata),
-      content: a.referenceId,
+      content: String(a.referenceId || ''), // Ensure content is always a string
       timeAgo: formatTimeAgo(a.timestampStart),
       icon: eventTypeIcon(a.eventType),
       color: eventTypeColor(a.eventType)

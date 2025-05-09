@@ -4,20 +4,20 @@
   sidebarCollapsed.subscribe(v => collapsed = v);
   import '../app.css';
   import '@splidejs/splide/dist/css/splide.min.css';
-  import { onMount } from 'svelte';
+  import { onMount } from 'svelte'; // Ensure this is the only onMount-related import
   import Sidebar from '$lib/components/Sidebar.svelte';
   import Header from '$lib/components/Header.svelte';
   import PipWidget from '$lib/components/PipWidget.svelte';
   import CourseModal from '$lib/components/CourseModal.svelte';
   import Footer from '$lib/components/Footer.svelte';
   import { pipVisible } from '$lib/stores/pipStores.js';
-  import { initAuth } from '$lib/authService.js';
+  import { initAuth } from '$lib/services/authService.js';
   import { isAuthenticated, user } from '$lib/stores/authStore.js';
   import { storeCsrfToken } from '$lib/utils/csrf.client.js';
 
   export let data;
 
-  onMount(async () => {
+  onMount(() => {
     console.log('Root layout mounted - initializing authentication and CSRF protection');
     
     // Store CSRF token from server

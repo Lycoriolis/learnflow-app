@@ -2,13 +2,14 @@
   import { onMount, onDestroy } from 'svelte';
   import { userProfile, userProfileLoading } from '$lib/stores/userProfileStore.js';
   import { isAuthenticated, loading as authLoading } from '$lib/stores/authStore.js';
-  import { loadContent, type ContentMetadata } from '$lib/services/contentService.js';
+  import { loadContent, type ContentMetadata, type ContentItem } from '$lib/services/contentService.js';
+  import type { UserProfile } from '$lib/services/userService.js';
   import { goto } from '$app/navigation';
   import { writable } from 'svelte/store';
 
   interface Enrollment { id: string; progress: number; lastAccessed: number; }
 
-  let coursesData = writable<{ meta: ContentMetadata; enrollment: Enrollment }[]>([]);
+  let coursesData = writable<{ meta: ContentItem; enrollment: Enrollment }[]>([]);
   let loading = false;
   let error: string | null = null;
   let activeTab: 'in-progress' | 'completed' | 'all' = 'in-progress';
@@ -16,37 +17,43 @@
 
   function goToLogin() { goto('/login?redirect=/my-learning'); }
 
-  async function loadCourses() {
+  async function loadCourses(profile: UserProfile | null) {
     loading = true;
     error = null;
-    const profile = $userProfile;
-    if (!profile?.preferences?.enrollments) {
-      coursesData.set([]);
-      loading = false;
-      return;
-    }
-    try {
-      const data = await Promise.all(
-        profile.preferences.enrollments.map(async (e: Enrollment) => ({
-          meta: (await loadContent('course', e.id)) as ContentMetadata,
-          enrollment: e
-        }))
+
+    if (profile && profile.preferences && profile.preferences.enrollments && profile.preferences.enrollments.length > 0) {
+      const coursesDataPromises = profile.preferences.enrollments.map(
+        async (enrollmentId: string) => {
+          const meta = await loadContent('course', enrollmentId);
+          if (!meta) {
+            console.warn(`Metadata not found for course ID: ${enrollmentId}`);
+            return null;
+          }
+
+          const courseProgressData = profile.progress?.[enrollmentId];
+          const enrollment: Enrollment = {
+            id: enrollmentId,
+            progress: courseProgressData?.overallProgress ?? 0,
+            lastAccessed: courseProgressData?.lastAccessed ?? 0
+          };
+          return { meta, enrollment };
+        }
       );
-      coursesData.set(data);
-    } catch (e: any) {
-      console.error(e);
-      error = 'Failed to load enrolled courses';
-    } finally {
-      loading = false;
+      const coursesDataResults = await Promise.all(coursesDataPromises);
+      coursesData.set(coursesDataResults.filter(
+        (course): course is { meta: ContentItem; enrollment: Enrollment } => course !== null && course.meta !== null
+      ));
+    } else {
+      coursesData.set([]);
     }
+    loading = false;
   }
 
   onMount(() => {
     if (!$isAuthenticated) return;
-    // Wait for profile to finish loading
     profileUnsub = userProfileLoading.subscribe((loadingProfile) => {
-      if (!loadingProfile) {
-        loadCourses();
+      if (!loadingProfile && $userProfile) {
+        loadCourses($userProfile);
       }
     });
   });

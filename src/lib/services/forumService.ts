@@ -514,7 +514,7 @@ export async function handleTopicVote(topicId: string, userId: string, voteType:
       [topicId, userId]
     );
 
-    let userVote = voteType;
+    let userVote: (1 | -1) | null = voteType;
     if (existing.rows.length) {
       if (existing.rows[0].vote_type === voteType) {
         // Toggle off (remove vote)

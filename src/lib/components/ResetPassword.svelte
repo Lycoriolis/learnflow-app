@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { resetPassword } from '$lib/authService.js';
+  import { resetPassword } from '$lib/services/authService.js';
   import { loading, authError } from '$lib/stores/authStore.js';
   
   let email = '';
@@ -78,4 +78,4 @@
       Back to login
     </a>
   </div>
-</div> 
+</div>

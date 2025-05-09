@@ -1,7 +1,12 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import { user } from '$lib/stores/authStore.js';
-  export let categories = [];
+
+  interface Category {
+    id: string; // Or number, depending on your data model
+    name: string;
+  }
+  export let categories: Category[] = [];
 
   let title = '';
   let content = '';

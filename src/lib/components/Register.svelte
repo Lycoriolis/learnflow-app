@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { register, loginWithGoogle } from '$lib/authService.js';
+  import { register, loginWithGoogle } from '$lib/services/authService.js';
   import { loading, authError } from '$lib/stores/authStore.js';
   
   let displayName = '';
@@ -142,4 +142,4 @@
       </a>
     </p>
   </div>
-</div> 
+</div>

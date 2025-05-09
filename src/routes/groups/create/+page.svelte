@@ -48,20 +48,20 @@
   <h1 class="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Create a New Group</h1>
   <form on:submit|preventDefault={createGroup} class="space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
     <div>
-      <label class="block text-sm font-medium mb-1">Group Name</label>
-      <input class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" bind:value={name} required />
+      <label for="groupName" class="block text-sm font-medium mb-1">Group Name</label>
+      <input id="groupName" class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" bind:value={name} required />
     </div>
     <div>
-      <label class="block text-sm font-medium mb-1">Description</label>
-      <textarea class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" bind:value={description} rows="3" required></textarea>
+      <label for="groupDescription" class="block text-sm font-medium mb-1">Description</label>
+      <textarea id="groupDescription" class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" bind:value={description} rows="3" required></textarea>
     </div>
     <div>
-      <label class="block text-sm font-medium mb-1">Topic</label>
-      <input class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" bind:value={topic} required />
+      <label for="groupTopic" class="block text-sm font-medium mb-1">Topic</label>
+      <input id="groupTopic" class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" bind:value={topic} required />
     </div>
     <div>
-      <label class="block text-sm font-medium mb-1">Image URL (optional)</label>
-      <input class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" bind:value={image} />
+      <label for="groupImage" class="block text-sm font-medium mb-1">Image URL (optional)</label>
+      <input id="groupImage" class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" bind:value={image} />
     </div>
     <div class="flex items-center gap-2">
       <input type="checkbox" id="isPublic" bind:checked={isPublic} />

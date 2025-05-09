@@ -31,8 +31,12 @@
     longestSession = sessions.reduce((max, s) => Math.max(max, s.duration / 60), 0);
     tasksDone = $todos.filter(t => t.completed).length;
     exercisesCompleted = $exerciseSessions.filter(es => es.completed).length;
-    const enroll = $userProfile.preferences.enrollments || [];
-    enrollmentsCount = enroll.filter(e => e.progress > 0 && e.progress < 100).length;
+    const enroll = $userProfile.preferences?.enrollments || [];
+    enrollmentsCount = enroll.filter(
+      e => e && typeof e === 'object' && 
+           typeof (e as any).progress === 'number' && 
+           (e as any).progress > 0 && (e as any).progress < 100
+    ).length;
   }
 </script>
 
@@ -63,8 +67,8 @@
     </div>
     <div class="space-y-4">
       <div class="flex items-center space-x-4">
-        <label class="font-medium">View by:</label>
-        <select bind:value={unit} class="rounded border-gray-300 p-2 bg-white dark:bg-gray-800">
+        <label for="statsViewBy" class="font-medium">View by:</label>
+        <select id="statsViewBy" bind:value={unit} class="rounded border-gray-300 p-2 bg-white dark:bg-gray-800">
           <option value="day">Daily</option>
           <option value="week">Weekly</option>
           <option value="month">Monthly</option>

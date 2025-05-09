@@ -4,6 +4,13 @@ import { updateCategory, deleteCategory } from '$lib/services/forumService';
 export const PUT: RequestHandler = async ({ request, params }) => {
   const categoryId = params.id;
   const data = await request.json();
+
+  if (!categoryId) {
+    return new Response(JSON.stringify({ message: 'Category ID is required' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
   
   try {
     const updatedCategory = await updateCategory(categoryId, {
@@ -35,6 +42,13 @@ export const PUT: RequestHandler = async ({ request, params }) => {
 
 export const DELETE: RequestHandler = async ({ params }) => {
   const categoryId = params.id;
+
+  if (!categoryId) {
+    return new Response(JSON.stringify({ message: 'Category ID is required' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
   
   try {
     const success = await deleteCategory(categoryId);

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { login, loginWithGoogle } from '$lib/authService.js';
+  import { login, loginWithGoogle } from '$lib/services/authService.js';
   import { loading, authError } from '$lib/stores/authStore.js';
   
   // Accept redirect parameter to forward users after login
@@ -164,4 +164,4 @@
       </a>
     </p>
   </div>
-</div> 
+</div>

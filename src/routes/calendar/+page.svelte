@@ -496,15 +496,15 @@
 
                     <!-- Actions -->
                     <div class="ml-4 flex-shrink-0 flex space-x-1">
-                      <button class="p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" title="Edit">
+                      <button class="p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" title="Edit" aria-label="Edit event">
                         <i class="fas fa-pencil-alt text-xs"></i>
                       </button>
                       {#if !event.completed && (event.type === 'lesson' || event.type === 'assignment')}
-                        <button class="p-1 text-gray-400 hover:text-green-600 dark:text-gray-500 dark:hover:text-green-400" title="Mark as completed">
+                        <button class="p-1 text-gray-400 hover:text-green-600 dark:text-gray-500 dark:hover:text-green-400" title="Mark as completed" aria-label="Mark event as completed">
                           <i class="fas fa-check text-xs"></i>
                         </button>
                       {/if}
-                      <button class="p-1 text-gray-400 hover:text-red-600 dark:text-gray-500 dark:hover:text-red-400" title="Delete">
+                      <button class="p-1 text-gray-400 hover:text-red-600 dark:text-gray-500 dark:hover:text-red-400" title="Delete" aria-label="Delete event">
                         <i class="fas fa-trash-alt text-xs"></i>
                       </button>
                     </div>

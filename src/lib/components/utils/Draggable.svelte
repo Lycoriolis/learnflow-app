@@ -140,9 +140,9 @@
 
 <style>
   /* Optional: Indicate dragging state */
-  .dragging {
+  :global(.dragging) {
     /* Example: slightly reduced opacity or different border */
     opacity: 0.9;
     z-index: 1000; /* Ensure it stays on top */
   }
-</style> 
+</style>

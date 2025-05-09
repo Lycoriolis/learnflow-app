@@ -56,11 +56,11 @@
       try {
         const thesaurusResponse = await fetch(`https://api.datamuse.com/words?rel_syn=${encodeURIComponent(term)}`);
         const synData = await thesaurusResponse.json();
-        synonyms = synData.slice(0, 5).map(s => s.word);
+        synonyms = synData.slice(0, 5).map((s: { word: string }) => s.word);
         
         const antonymResponse = await fetch(`https://api.datamuse.com/words?rel_ant=${encodeURIComponent(term)}`);
         const antData = await antonymResponse.json();
-        antonyms = antData.slice(0, 5).map(a => a.word);
+        antonyms = antData.slice(0, 5).map((a: { word: string }) => a.word);
       } catch (e) {
         console.error('Error fetching synonyms/antonyms:', e);
       }
@@ -175,6 +175,7 @@
                     on:click={playAudio}
                     class="p-2 text-cyan-600 hover:text-cyan-700 transition"
                     title="Listen to pronunciation"
+                    aria-label="Listen to pronunciation"
                   >
                     <i class="fas fa-volume-up"></i>
                   </button>

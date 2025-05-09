@@ -85,8 +85,8 @@
     </div>
     {#if showPreview}
       <div>
-        <label class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200 block">Live Preview</label>
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 h-64 overflow-auto shadow-inner prose dark:prose-invert">
+        <label for="livePreviewOutput" class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200 block">Live Preview</label>
+        <div id="livePreviewOutput" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 h-64 overflow-auto shadow-inner prose dark:prose-invert">
           <MarkdownRenderer content={note} />
         </div>
       </div>

@@ -1,6 +1,7 @@
 <script>
   import { isAuthenticated, loading } from '$lib/stores/authStore.js';
-  import { login } from '$lib/authService.js';
+  import { login } from '$lib/services/authService.js'; // Keep this import
+  import { goto } from '$app/navigation'; // Import goto for navigation
 </script>
 
 <svelte:head>
@@ -21,10 +22,10 @@
       <p class="text-xl text-gray-600 dark:text-gray-300 mb-4">Please log in to view your progress.</p>
       <button 
         class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md transition duration-150"
-        on:click={login}
+        on:click={() => goto('/login?redirect=/progress')}
       >
         Log In
       </button>
     </div>
   {/if}
-</div> 
+</div>
