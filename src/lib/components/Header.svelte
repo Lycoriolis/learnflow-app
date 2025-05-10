@@ -4,11 +4,17 @@
   import { logout } from '$lib/services/authService.js';
   import { slide } from 'svelte/transition';
   import { goto } from '$app/navigation';
+  import SearchBox from './search/SearchBox.svelte';
+  import { performSearch } from '$lib/services/searchService';
 
   export let onTogglePip = () => pipVisible.update((v: boolean) => !v);
   
   function navigateToLogin() {
     goto('/login');
+  }
+  
+  function handleSearch(query: string) {
+    goto(`/search?q=${encodeURIComponent(query)}`);
   }
 </script>
 
@@ -16,14 +22,12 @@
   <div class="max-w-full mx-auto px-4 py-3 sm:px-6 lg:px-8 flex justify-between items-center">
     <div class="flex-1">
       <div class="relative max-w-lg">
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <i class="fas fa-search text-gray-400"></i>
-        </div>
-        <input 
-          type="text" 
-          class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-          placeholder="Search courses, exercises..."
-        >
+        <SearchBox 
+          placeholder="Search courses, exercises..." 
+          onSearch={handleSearch} 
+          minQueryLength={2}
+          compact={true}
+        />
       </div>
     </div>
 

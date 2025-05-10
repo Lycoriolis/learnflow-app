@@ -654,3 +654,28 @@ export function clearCaches() {
 if (browser) {
   console.log('Enhanced Content Service Initialized');
 }
+
+/**
+ * Get exercise by ID
+ */
+export const getExerciseById = async (id: string, courseId?: string): Promise<ContentItem | undefined> => {
+  if (!browser) return undefined;
+
+  if (id.includes('/')) {
+    // Assume id is 'category/exerciseId', e.g., "javascript/array-manipulation"
+    const exercise = await loadExercise(id); // loadExercise returns ContentItem | null
+    return exercise || undefined;
+  } else {
+    // id is simple, e.g., "array-manipulation". We need to find its category.
+    const categories = await getExerciseCategories(); // Defined in this file, returns string[]
+    for (const category of categories) {
+      const exercise = await loadExercise(category, id); // loadExercise(category, exerciseId)
+      if (exercise) {
+        return exercise; // Found
+      }
+    }
+    // If not found in any category
+    console.warn(`[enhancedContentService] Exercise with ID '${id}' not found in any known categories. Searched in: ${categories.join(', ')}.`);
+    return undefined;
+  }
+};

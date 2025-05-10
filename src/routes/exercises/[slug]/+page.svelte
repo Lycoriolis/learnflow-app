@@ -3,23 +3,64 @@
   import { onMount, onDestroy } from 'svelte';
   import { logStart, logEnd } from '$lib/services/activityService.js';
   import MarkdownRenderer from '$lib/components/MarkdownRenderer.svelte';
-  import { loadExercise, type ContentItem } from '$lib/services/enhancedContentService.js';
   import ExerciseRating from '$lib/components/ExerciseRating.svelte';
+  import ExerciseComponent from '$lib/components/exercises/ExerciseComponent.svelte';
+  import RelatedContent from '$lib/components/content/RelatedContent.svelte';
+  import LearningPath from '$lib/components/content/LearningPath.svelte';
+  import PrerequisiteIndicator from '$lib/components/content/PrerequisiteIndicator.svelte';
+  import { updateExerciseProgress } from '$lib/services/progressService';
+  import { user } from '$lib/stores/authStore';
+  import { fade } from 'svelte/transition';
 
-  let exercise: ContentItem | null = null;
-  let loading = true;
+  export let data;
+
   let viewId: string | null = null;
-  $: slug = $page.params.slug;
-
+  let exercise = data.exercise;
+  let progress = data.progress;
+  let relatedContent = data.relatedContent || [];
+  let prerequisites = data.prerequisites || [];
+  let loading = !exercise;
+  let showLearningPath = false;
+  
+  // Handle progress tracking
   onMount(async () => {
-    viewId = await logStart('view_exercise', slug);
-    exercise = await loadExercise(slug);
-    loading = false;
+    const exerciseIdFromParam = $page.params.slug; // This is the slug from URL, likely category/id
+    viewId = await logStart('view_exercise', exerciseIdFromParam);
+    
+    // Mark as started if authenticated
+    if ($user && exercise && exercise.slug) { // Ensure exercise and exercise.slug exist
+      await updateExerciseProgress(exercise.slug, { // Use exercise.slug as the key
+        started: true,
+        lastViewed: new Date().toISOString()
+      });
+    }
   });
   
   onDestroy(() => {
     if (viewId) logEnd(viewId);
   });
+  
+  // Handle completion of exercise
+  async function handleExerciseComplete(event) {
+    if (!$user || !exercise || !exercise.slug) return; // Ensure exercise and exercise.slug exist
+    
+    const { score, maxScore } = event.detail;
+    const percentage = maxScore > 0 ? Math.round((score / maxScore) * 100) : 100;
+    
+    await updateExerciseProgress(exercise.slug, { // Use exercise.slug as the key
+      completed: true,
+      score: percentage,
+      lastCompleted: new Date().toISOString()
+    });
+    
+    // Refresh progress data
+    progress = {
+      ...progress,
+      completed: true,
+      score: percentage,
+      lastCompleted: new Date().toISOString()
+    };
+  }
 </script>
 
 <svelte:head>
@@ -48,6 +89,11 @@
       </div>
       
       <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">{exercise.title}</h1>
+      
+      <!-- Prerequisites indicator -->
+      {#if exercise.id}
+        <PrerequisiteIndicator contentId={exercise.id} contentType="exercise" />
+      {/if}
       
       <div class="flex flex-wrap gap-4 mb-4">
         {#if exercise.difficulty}
@@ -97,6 +143,11 @@
       <ExerciseRating exerciseId={exercise.id} />
     </div>
     
+    <!-- Related Content -->
+    {#if exercise.id}
+      <RelatedContent contentId={exercise.id} contentType="exercise" />
+    {/if}
+    
     <div class="flex justify-between mt-8">
       <a 
         href="/exercises" 
@@ -107,10 +158,20 @@
       
       <button 
         class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-        on:click={() => alert('Exercise completed! This would typically save your progress.')}
+        on:click={() => {
+          updateExerciseProgress(exercise.id);
+          showLearningPath = true;
+        }}
       >
         Mark as Complete <i class="fas fa-check ml-2"></i>
       </button>
     </div>
+    
+    <!-- Learning Path - displayed after exercise completion -->
+    {#if showLearningPath && exercise.id}
+      <div class="mt-8" transition:fade={{ duration: 300 }}>
+        <LearningPath startContentId={exercise.id} title="What to learn next" />
+      </div>
+    {/if}
   {/if}
 </div>

@@ -23,14 +23,14 @@
 </script>
 
 <a
-  href={`/exercises/${exercise.id}`}
+  href={`/exercises/${exercise.slug || exercise.id}`}
   on:click|preventDefault={async () => {
     try {
       await logEvent('start_exercise', exercise.id);
     } catch (err) {
       console.error('Error logging start_exercise', err);
     }
-    goto(`/exercises/${exercise.id}`);
+    goto(`/exercises/${exercise.slug || exercise.id}`);
   }}
   class="bg-gray-700 border border-orange-500 p-5 rounded-2xl shadow-sm squircle-sm card-hover h-full block"
 >

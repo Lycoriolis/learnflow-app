@@ -4,6 +4,8 @@
   import { logStart, logEnd } from '$lib/services/activityService.js';
   import MarkdownRenderer from '$lib/components/MarkdownRenderer.svelte';
   import { loadCourseStructure, type CourseStructure } from '$lib/services/enhancedContentService.js';
+  import RelatedContent from '$lib/components/content/RelatedContent.svelte';
+  import PrerequisiteIndicator from '$lib/components/content/PrerequisiteIndicator.svelte';
   
   let course: CourseStructure | null = null;
   let loading = true;
@@ -48,6 +50,9 @@
       </div>
       
       <p class="text-gray-700 dark:text-gray-300 mb-4">{course.description}</p>
+      
+      <!-- Prerequisites indicator -->
+      <PrerequisiteIndicator contentId={courseId} contentType="course" />
       
       {#if course.tags && course.tags.length > 0}
         <div class="flex flex-wrap gap-2 mb-4">
@@ -120,5 +125,12 @@
         </div>
       {/each}
     </div>
+    
+    <!-- Related Courses Section -->
+    {#if courseId}
+      <div class="mt-8">
+        <RelatedContent contentId={courseId} contentType="course" maxItems={3} showTags={true} />
+      </div>
+    {/if}
   {/if}
 </div>

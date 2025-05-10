@@ -75,7 +75,7 @@
           <div class="flex justify-between items-center">
             <span class="text-xs px-2 py-1 bg-indigo-800 text-indigo-100 rounded">{exercise.category}</span>
             <a
-              href="/exercises/{exercise.id}"
+              href="/exercises/{exercise.slug || exercise.id}"
               class="text-sm text-indigo-300 hover:text-indigo-100 font-medium"
               on:click|preventDefault={async () => {
                 try {
@@ -83,7 +83,7 @@
                 } catch (err) {
                   console.error('Error logging start_exercise', err);
                 }
-                goto(`/exercises/${exercise.id}`);
+                goto(`/exercises/${exercise.slug || exercise.id}`);
               }}
             >Start</a>
           </div>

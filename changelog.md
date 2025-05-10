@@ -4,6 +4,72 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed - May 2025
+- **Routing Conflict Resolution**:
+  - Resolved routing conflict between `/exercises/[id]` and `/exercises/[slug]` routes by consolidating to a single `/exercises/[slug]` route
+  - Updated all components that link to exercise pages to use `exercise.slug || exercise.id` for URLs
+  - Improved the server-side load function in `/exercises/[slug]/+page.server.ts` to handle both slug and ID-based lookups
+  - Removed redundant `/exercises/[id]` route after making backups of the implementation
+  - Updated RelatedContent, LearningPath, and other components to use the consistent slug-based routing pattern
+
+- **Service Implementation Fixes**:
+  - Added missing `getExerciseById` function to `enhancedContentService.ts` with support for both simple IDs and category/ID patterns
+  - Implemented `updateExerciseProgress` function in `progressService.ts` with proper typing and error handling
+  - Added missing `getUserProgress` export in `progressService.ts` to fix import errors
+  
+- **Build and Type Error Fixes**:
+  - Fixed invalid HTML comments in server-side TypeScript files that were causing ECMAScript module errors
+  - Resolved class directive issues in `MultipleChoiceExercise.svelte` component by using a single class attribute with conditionals
+  - Fixed various compiler warnings and errors to ensure successful builds
+
+### Planned Enhancements - May 2025
+- **Enhanced Search Functionality**:
+  - Implement content indexing system for faster searches
+  - Add debouncing for search inputs to improve performance
+  - Implement pagination for large result sets
+  - Add search result highlighting
+
+- **Advanced Exercise Filtering**:
+  - Add filters for completion status, recently viewed, and popularity
+  - Create reusable filtering component with persistent preferences
+  - Implement sorting options (newest, highest rated, most completed)
+  - Store filter preferences in localStorage
+
+- **Related Content System**:
+  - ✅ Create tag-based relationship system between exercises and lessons
+  - ✅ Implement content similarity recommendations
+  - ✅ Add "Related Exercises" section at the end of lessons
+  - ✅ Create "Learning Paths" to connect related content
+  - ✅ Add prerequisite indicators for exercises
+
+- **Expanded Exercise Types**:
+  - Extend frontmatter schema to include exercise type
+  - Add specialized components for each exercise type (multiple-choice, coding, written)
+  - Implement validation and submission handling
+  - Create interactive code execution for coding exercises
+  - Add auto-grading capabilities
+
+- **Enhanced Feedback Mechanism**:
+  - Improve ExerciseRating component with detailed feedback options
+  - Add specific aspect rating (content quality, difficulty, clarity)
+  - Implement feedback dashboard for instructors
+  - Add ability to attach screenshots or examples
+  - Create anonymous feedback option
+
+- **Responsive Design Improvements**:
+  - Optimize all exercise interfaces for mobile devices
+  - Create specialized mobile layouts for complex exercises
+  - Implement touch-friendly interactions
+  - Add responsive testing to CI pipeline
+
+- **Accessibility Enhancements**:
+  - Perform comprehensive accessibility audit
+  - Improve keyboard navigation for exercise interfaces
+  - Add ARIA attributes to all exercise components
+  - Ensure proper color contrast for visual elements
+  - Add screen reader support for exercise content
+  - Implement focus management for interactive exercises
+
 ### Fixed
 - **Routing Conflicts & Structure Improvements**:
     - Fixed SvelteKit reserved file naming conflicts by renaming test files (from `+page.test.ts` to `Page.test.ts`)
@@ -111,13 +177,39 @@ All notable changes to this project will be documented in this file.
 ### Next Steps
 - **[X] Install `@testing-library/svelte` for component testing.**
 - **[X] Write component tests for Lesson Display Page (`src/routes/courses/[slug]/[moduleId]/[lessonId]/+page.svelte`).**
-- **[ ] Run and debug tests for Lesson Display Page.**
-- **[ ] Resume Svelte Warning Resolution**: Systematically address the remaining Svelte warnings (currently 41 warnings in 19 files) reported by `npm run check`, focusing on accessibility and unused code.
-- **[ ] Implement Exercises Hub Page (`src/routes/exercises/+page.svelte`)**
-- **[ ] Implement Individual Exercise Page (`src/routes/exercises/[category]/[slug]/+page.svelte`)**
-- **[ ] Enhance `MarkdownRenderer.svelte` for custom markdown extensions.**
-- **[ ] Implement Navigation & Routing for new content pages.**
-- **[ ] Apply Styling & UX improvements to new pages.**
+- **[X] Consolidate exercise routes to resolve routing conflicts.**
+- **[X] Fix build errors related to service implementations and TypeScript issues.**
+
+- **[ ] Implement Exercise Content Loading**:
+  - **[ ] Enhance exercise data model to include more metadata (difficulty levels, estimated completion time, prerequisites)**
+  - **[ ] Create proper data loaders for different exercise types (multiple-choice, coding, written)**
+  - **[ ] Implement content discovery system to automatically detect new exercises**
+  - **[ ] Add validation for exercise content structure**
+
+- **[ ] Improve Exercise UI Components**:
+  - **[ ] Enhance the Exercises Hub Page (`src/routes/exercises/+page.svelte`) with proper filtering and sorting**
+  - **[ ] Add pagination support for large collections of exercises**
+  - **[ ] Create specialized rendering for different exercise types**
+  - **[ ] Add progress tracking indicators to exercise cards**
+
+- **[ ] Enhance Progress Tracking**:
+  - **[ ] Implement more detailed progress metrics (completion time, attempts, score trends)**
+  - **[ ] Create visualization components for progress data**
+  - **[ ] Add streak tracking and gamification elements**
+  - **[ ] Implement progress synchronization with backend/Firebase**
+
+- **[ ] User Experience Improvements**:
+  - **[ ] Add exercise bookmarking functionality**
+  - **[ ] Implement personalized recommendations based on user progress and interests**
+  - **[ ] Create interactive tutorials for first-time users**
+  - **[ ] Add keyboard shortcuts for common exercise actions**
+
+- **[ ] Technical Improvements**:
+  - **[ ] Resume Svelte Warning Resolution**: Systematically address the remaining Svelte warnings reported by `npm run check`
+  - **[ ] Enhance `MarkdownRenderer.svelte` for custom markdown extensions specific to exercises**
+  - **[ ] Implement service worker for offline exercise access**
+  - **[ ] Add comprehensive error handling for exercise submission and progress tracking**
+  - **[ ] Create a test suite for exercise components and services**
 
 ### TODO - Codebase Optimization Plan
 

@@ -13,6 +13,22 @@ export const userProgress = writable<{
   exercises: {}
 });
 
+/**
+ * Get user progress data by user ID
+ */
+export const getUserProgress = async (userId: string) => {
+  if (!browser) return { courses: {}, exercises: {} };
+  
+  try {
+    // This would typically fetch from a database or API
+    // For now, return the current progress store value
+    return get(userProgress);
+  } catch (error) {
+    console.error('Failed to get user progress:', error);
+    return { courses: {}, exercises: {} };
+  }
+};
+
 // Progress types
 export interface CourseProgress {
   courseId: string;
@@ -50,13 +66,23 @@ export interface QuizProgress {
 
 export interface ExerciseProgress {
   exerciseId: string;
-  category: string;
-  startedAt: string;
+  category: string; // Added category here as it's used in trackExerciseView and likely key structure
+  startedAt?: string; // Optional: may not be started yet
   lastAccessedAt: string;
   completedAt?: string;
   completed: boolean;
   attempts: number;
   solution?: string;
+}
+
+// Add this type definition
+export interface ExerciseProgressUpdateData {
+  started?: boolean;
+  completed?: boolean;
+  lastViewed?: string; // ISO string, maps to lastAccessedAt
+  score?: number; // Example: if exercises have scores
+  attempts?: number; // To explicitly set or increment attempts
+  solution?: string; // To store user's solution
 }
 
 // Local storage key
@@ -373,6 +399,81 @@ export function completeExercise(category: string, exerciseId: string, solution?
 
   userProgress.set(progress);
   saveProgress();
+}
+
+/**
+ * Update exercise progress for a user.
+ * Merges new progress data with existing progress.
+ * The exerciseKey here is expected to be the key used in the progress.exercises object,
+ * which is typically `category/exerciseId`.
+ */
+export async function updateExerciseProgress(
+  exerciseKey: string, // e.g., "javascript/array-manipulation"
+  progressUpdate: Partial<ExerciseProgressUpdateData>
+): Promise<void> {
+  if (!browser) return;
+
+  const user = getCurrentUser(); // Use imported authService function
+  if (!user) {
+    console.warn('[progressService] User not logged in, cannot update exercise progress.');
+    return;
+  }
+
+  const currentProgress = get(userProgress); 
+
+  if (!currentProgress.exercises) {
+    currentProgress.exercises = {};
+  }
+
+  const existingExerciseProgress: Partial<ExerciseProgress> = currentProgress.exercises[exerciseKey] || {};
+  
+  const now = new Date().toISOString();
+
+  // Build the updated exercise progress object
+  const updatedData: ExerciseProgress = {
+    exerciseId: existingExerciseProgress.exerciseId || exerciseKey.split('/')[1] || exerciseKey,
+    category: existingExerciseProgress.category || exerciseKey.split('/')[0] || '',
+    startedAt: existingExerciseProgress.startedAt,
+    lastAccessedAt: progressUpdate.lastViewed || now, // Prioritize lastViewed from update, else now
+    completed: progressUpdate.completed !== undefined ? progressUpdate.completed : (existingExerciseProgress.completed || false),
+    completedAt: existingExerciseProgress.completedAt,
+    attempts: progressUpdate.attempts !== undefined ? progressUpdate.attempts : (existingExerciseProgress.attempts || 0),
+    solution: progressUpdate.solution !== undefined ? progressUpdate.solution : existingExerciseProgress.solution,
+  };
+
+  // Handle 'started' logic
+  if (progressUpdate.started === true && !updatedData.startedAt) {
+    updatedData.startedAt = now;
+    // If just starting, and attempts not explicitly set, consider this the first attempt or increment
+    if (progressUpdate.attempts === undefined) {
+        updatedData.attempts = (existingExerciseProgress.attempts || 0) + 1;
+    }
+  } else if (progressUpdate.started === false) {
+    // If explicitly un-starting, clear startedAt. This is less common.
+    // updatedData.startedAt = undefined; // Uncomment if un-starting is a feature
+  }
+
+  // Handle 'completed' logic
+  if (updatedData.completed && !updatedData.completedAt) {
+    updatedData.completedAt = now;
+    // If completing, ensure it's also marked as started
+    if (!updatedData.startedAt) {
+      updatedData.startedAt = now;
+      // If just starting due to completion, and attempts not explicitly set, consider this the first attempt or increment
+      if (progressUpdate.attempts === undefined && (existingExerciseProgress.attempts === undefined || existingExerciseProgress.attempts === 0) ) {
+         updatedData.attempts = (existingExerciseProgress.attempts || 0) + 1;
+      }
+    }
+  } else if (updatedData.completed === false && updatedData.completedAt) {
+    // If un-completing, clear completedAt
+    updatedData.completedAt = undefined;
+  }
+
+  currentProgress.exercises[exerciseKey] = updatedData;
+
+  userProgress.set(currentProgress);
+  saveProgress(); // This function saves the entire userProgress object
+  console.log(`[progressService] Updated progress for ${exerciseKey}:`, currentProgress.exercises[exerciseKey]);
 }
 
 /**

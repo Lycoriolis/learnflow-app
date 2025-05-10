@@ -59,7 +59,8 @@ The course routes follow a hierarchical structure:
 - `/exercises/[slug]` - Individual exercise page
   - Displays exercise content and interactive elements
   - Parameters:
-    - `slug`: Unique exercise identifier
+    - `slug`: Unique exercise identifier (can be a simple ID or a category/id pattern)
+  - Note: The previously used `/exercises/[id]` route has been removed to avoid routing conflicts
 
 ## Route Implementation Notes
 
@@ -69,22 +70,8 @@ The course routes follow a hierarchical structure:
 
 2. **Dynamic Parameters**:
    - `[slug]`: Typically a URL-friendly version of the content name
-   - `[moduleId]` and `[lessonId]`: Unique identifiers for modules and lessons
-
-3. **Route Guards**:
-   - Protected routes use the authentication guard in `(protected)/+layout.server.ts`
-   - Admin routes use the `adminGuard.ts` for authorization checks
-
-## Best Practices
-
-1. **Component Testing**:
-   - Test files should be named without the `+` prefix (e.g., `Page.test.ts`)
-   - Use the appropriate mocks for components and services
-
-2. **Route Parameters**:
-   - Always validate route parameters before using them
-   - Handle cases where content for the given parameters doesn't exist
-
-3. **Navigation**:
-   - Use SvelteKit's `goto` function for programmatic navigation
-   - Use the `<a>` element with `href` for declarative navigation
+   
+3. **Exercise Routing**:
+   - All exercises are accessed via the `/exercises/[slug]` route
+   - The route handler supports both simple IDs and slug patterns
+   - Components linking to exercises should use `exercise.slug || exercise.id` to ensure proper navigation

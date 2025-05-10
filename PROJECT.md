@@ -16,6 +16,12 @@ This file documents all changes and features implemented so far to facilitate re
   - `logStart`, `logEnd`, `logEvent`, `fetchRecentActivities`
 - **`recommendationService.ts`**
   - `getRecommendations(userId, limit)` stub mapping recent activities to placeholder recommendations
+- **`enhancedContentService.ts`**
+  - `getExerciseById(id, courseId)`: Added to retrieve exercises by ID or slug
+  - `loadExercise(slug)`: Loads exercise content by slug
+- **`progressService.ts`**
+  - `updateExerciseProgress(exerciseId, data)`: Updates progress for a specific exercise
+  - `getUserProgress(userId)`: Retrieves user progress data
 
 ## 3. API Endpoints
 - **`/api/activities/start`**: POST → start activity session
@@ -43,8 +49,27 @@ Instrumented pages to call `logStart`/`logEnd` and `logEvent`:
 - Integrated **RecommendationsSection.svelte** below Quick Actions
 - Updated **RecentActivity.svelte** to fetch real activities
 
-## 6. Documentation
+## 6. Routing & Architecture Improvements
+- **Exercise Route Consolidation**:
+  - Resolved routing conflict between `/exercises/[id]` and `/exercises/[slug]` by using only the slug-based route
+  - Updated all components to use `exercise.slug || exercise.id` for consistent navigation
+  - Enhanced the server-side load function to handle both ID and slug-based lookups
+  - Created a detailed routing structure documentation in `/docs/routing-structure.md`
+  
+- **Component Updates**:
+  - Updated `ExerciseCard.svelte`, `ExercisesSection.svelte`, and other components to use the slug route
+  - Fixed various components that link to exercise pages including `RelatedContent.svelte`, `LearningPath.svelte`, and `PrerequisiteIndicator.svelte`
+  - Improved MultipleChoiceExercise.svelte component to use proper class handling for dark mode support
+
+- **Build Process Improvements**:
+  - Fixed HTML comment syntax in server-side TypeScript files
+  - Corrected class attribute issues in Svelte components
+  - Added missing function implementations and exports
+
+## 7. Documentation
 - **RECOMMENDATIONS.md**: API design, data model, service logic, future enhancements
+- **routing-structure.md**: Comprehensive routing documentation with best practices
+- **changelog.md**: Updated with recent fixes and future development plans
 
 ---
-*Implementation log as of 24 April 2025.*
+*Implementation log as of 10 May 2025.*

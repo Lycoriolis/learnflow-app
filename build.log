@@ -1,0 +1,65 @@
+
+> linux@1.2.0 build
+> vite build
+
+06:01:56 [vite-plugin-svelte] WARNING: The following packages have a svelte field in their package.json but no exports condition for svelte.
+
+@splidejs/splide@4.1.4
+
+Please see https://github.com/sveltejs/vite-plugin-svelte/blob/main/docs/faq.md#missing-exports-condition for details.
+vite v6.3.5 building SSR bundle for production...
+transforming...
+06:01:57 [vite-plugin-svelte] src/routes/admin/+layout.svelte:3:13 Component has unused export property 'data'. If it is for external reference only, please consider using `export const data`
+https://svelte.dev/e/export_let_unused
+1: <script lang="ts">
+2:   import type { LayoutData } from './$types';
+3:   export let data: LayoutData;
+                                ^
+4: </script>
+5: 
+06:01:59 [vite-plugin-svelte] src/lib/components/content/RelatedContent.svelte:8:13 Component has unused export property 'contentType'. If it is for external reference only, please consider using `export const contentType`
+https://svelte.dev/e/export_let_unused
+ 6: 
+ 7:   export let contentId: string;
+ 8:   export let contentType: 'exercise' | 'course' | 'lesson' = 'exercise';
+                                                              ^
+ 9:   export let maxItems: number = 4;
+10:   export let showTags: boolean = true;
+06:01:59 [vite-plugin-svelte] src/lib/components/content/PrerequisiteIndicator.svelte:7:13 Component has unused export property 'contentType'. If it is for external reference only, please consider using `export const contentType`
+https://svelte.dev/e/export_let_unused
+ 5: 
+ 6:   export let contentId: string;
+ 7:   export let contentType: 'exercise' | 'course' | 'lesson' = 'exercise';
+                                                              ^
+ 8:   export let compact: boolean = false;
+ 9: 
+06:02:01 [vite-plugin-svelte] src/lib/components/RelatedContent.svelte:8:13 Component has unused export property 'contentType'. If it is for external reference only, please consider using `export const contentType`
+https://svelte.dev/e/export_let_unused
+ 6:   
+ 7:   export let contentId: string;
+ 8:   export let contentType: 'course' | 'exercise' | 'lesson' = 'exercise';
+                                                              ^
+ 9:   export let title = 'Related Content';
+10:   export let showPrerequisites = true;
+✓ 346 modules transformed.
+✗ Build failed in 5.45s
+error during build:
+src/lib/services/exerciseFilterService.ts (5:9): "getUserProgress" is not exported by "src/lib/services/progressService.ts", imported by "src/lib/services/exerciseFilterService.ts".
+file: /home/linux/learnflow-app/learnflow-app/src/lib/services/exerciseFilterService.ts:5:9
+
+3: import type { Writable, Readable } from 'svelte/store';
+4: import { user } from '$lib/stores/authStore';
+5: import { getUserProgress } from '$lib/services/progressService';
+            ^
+6: import { browser } from '$app/environment';
+
+    at getRollupError (file:///home/linux/learnflow-app/learnflow-app/node_modules/rollup/dist/es/shared/parseAst.js:397:41)
+    at error (file:///home/linux/learnflow-app/learnflow-app/node_modules/rollup/dist/es/shared/parseAst.js:393:42)
+    at Module.error (file:///home/linux/learnflow-app/learnflow-app/node_modules/rollup/dist/es/shared/node-entry.js:16759:16)
+    at Module.traceVariable (file:///home/linux/learnflow-app/learnflow-app/node_modules/rollup/dist/es/shared/node-entry.js:17208:29)
+    at ModuleScope.findVariable (file:///home/linux/learnflow-app/learnflow-app/node_modules/rollup/dist/es/shared/node-entry.js:14864:39)
+    at FunctionScope.findVariable (file:///home/linux/learnflow-app/learnflow-app/node_modules/rollup/dist/es/shared/node-entry.js:5582:38)
+    at FunctionBodyScope.findVariable (file:///home/linux/learnflow-app/learnflow-app/node_modules/rollup/dist/es/shared/node-entry.js:5582:38)
+    at BlockScope.findVariable (file:///home/linux/learnflow-app/learnflow-app/node_modules/rollup/dist/es/shared/node-entry.js:5582:38)
+    at Identifier.bind (file:///home/linux/learnflow-app/learnflow-app/node_modules/rollup/dist/es/shared/node-entry.js:5356:40)
+    at CallExpression.bind (file:///home/linux/learnflow-app/learnflow-app/node_modules/rollup/dist/es/shared/node-entry.js:2783:23)
