@@ -1,4 +1,7 @@
 // File: /home/linux/learnflow-app/learnflow-app/src/lib/server/firebaseAdmin.ts
+import dotenv from 'dotenv';
+dotenv.config();
+
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';

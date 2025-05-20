@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
-import { verifyAdminServer } from '$lib/services/adminService';
+import { verifyAdminServer } from '$lib/services/adminService.server';
 
 /**
  * Server-side guard for admin routes

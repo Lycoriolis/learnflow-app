@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { UserActivityService } from '$lib/services/user/userActivityService';
-  import { user } from '$lib/stores/auth';
+  import { user } from '$lib/stores/authStore';
 
   const activityService = UserActivityService.getInstance();
   let activityInterval: NodeJS.Timeout;
@@ -42,4 +42,4 @@
       }
     });
   </script>
-</svelte:head> 
+</svelte:head>
