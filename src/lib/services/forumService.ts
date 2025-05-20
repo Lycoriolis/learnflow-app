@@ -43,14 +43,13 @@ export const getCategoryById = async (id: string): Promise<ForumCategory> => {
 
 export const createCategory = async (category: Omit<ForumCategory, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> => {
   try {
-    const now = new Date();
     const categoriesRef = collection(db, 'forumCategories');
     
     const newCategory = {
       ...category,
       topicCount: 0,
-      createdAt: now,
-      updatedAt: now
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
     };
     
     const docRef = await addDoc(categoriesRef, newCategory);
@@ -67,7 +66,7 @@ export const updateCategory = async (id: string, category: Partial<Omit<ForumCat
     
     await updateDoc(docRef, {
       ...category,
-      updatedAt: new Date()
+      updatedAt: serverTimestamp()
     });
   } catch (err) {
     console.error(`Error updating forum category ${id}:`, err);
@@ -131,16 +130,15 @@ export const getTopicById = async (id: string): Promise<ForumTopic> => {
 
 export const createTopic = async (topic: Omit<ForumTopic, 'id' | 'postCount' | 'viewCount' | 'lastPostAt' | 'createdAt' | 'updatedAt'>): Promise<string> => {
   try {
-    const now = new Date();
     const topicsRef = collection(db, 'forumTopics');
     
     const newTopic = {
       ...topic,
       postCount: 0,
       viewCount: 0,
-      lastPostAt: now,
-      createdAt: now,
-      updatedAt: now
+      lastPostAt: serverTimestamp(),
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
     };
     
     const docRef = await addDoc(topicsRef, newTopic);
@@ -157,7 +155,7 @@ export const updateTopic = async (id: string, topic: Partial<Omit<ForumTopic, 'i
     
     await updateDoc(docRef, {
       ...topic,
-      updatedAt: new Date()
+      updatedAt: serverTimestamp()
     });
   } catch (err) {
     console.error(`Error updating forum topic ${id}:`, err);
@@ -199,14 +197,13 @@ export const getPostsByTopicId = async (topicId: string): Promise<ForumPost[]> =
 
 export const createPost = async (post: Omit<ForumPost, 'id' | 'likes' | 'created_at' | 'updated_at'>): Promise<string> => {
   try {
-    const now = new Date();
     const postsRef = collection(db, 'forumPosts');
     
     const newPost = {
       ...post,
       likes: 0,
-      created_at: now,
-      updated_at: now
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp()
     };
     
     const docRef = await addDoc(postsRef, newPost);
@@ -214,7 +211,7 @@ export const createPost = async (post: Omit<ForumPost, 'id' | 'likes' | 'created
     // Update the lastPostAt field in the parent topic
     const topicRef = doc(db, 'forumTopics', post.topic_id);
     await updateDoc(topicRef, {
-      lastPostAt: now
+      lastPostAt: serverTimestamp()
     });
     
     return docRef.id;
@@ -228,11 +225,10 @@ export const updatePost = async (id: string, post: Partial<Omit<ForumPost, 'id' 
   try {
     const docRef = doc(db, 'forumPosts', id);
     
-    const now = new Date();
     await updateDoc(docRef, {
       ...post,
-      updatedAt: now,
-      editedAt: now
+      updatedAt: serverTimestamp(),
+      editedAt: serverTimestamp()
     });
   } catch (err) {
     console.error(`Error updating forum post ${id}:`, err);
@@ -270,7 +266,7 @@ export const toggleLike = async (postId: string, userId: string): Promise<boolea
       await setDoc(likeRef, {
         postId,
         userId,
-        createdAt: new Date()
+        createdAt: serverTimestamp()
       });
       const postRef = doc(db, 'forumPosts', postId);
       await updateDoc(postRef, {
