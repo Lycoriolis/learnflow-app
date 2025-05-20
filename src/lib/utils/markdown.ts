@@ -23,6 +23,8 @@ const md: MarkdownIt = new MarkdownIt({
         }</code></pre>`;
       } catch (err) {
         console.error('Highlight.js error:', err);
+        // Return the original code, escaped, but with an error message or indication
+        return `<pre class="hljs hljs-error"><code class="language-${lang}">${md.utils.escapeHtml(str)}</code></pre>`;
       }
     }
     
@@ -89,8 +91,7 @@ export function renderMarkdown(content: string): string {
     if (browser && DOMPurify) {
       return DOMPurify.sanitize(html, {
         USE_PROFILES: { html: true },
-        ADD_ATTR: ['target', 'rel'],
-        ADD_TAGS: ['math', 'mrow', 'mi', 'mo', 'mn', 'msup', 'sub', 'sup']
+        ADD_ATTR: ['target', 'rel']
       });
     }
     
