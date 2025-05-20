@@ -21,7 +21,7 @@ marked.setOptions({
 	breaks: true, // Convert line breaks to <br>
 	headerIds: true, // Add IDs to headers
 	mangle: false, // Don't mangle header IDs
-	sanitize: false, // Don't sanitize HTML
+	sanitize: true, // Sanitize HTML
 	smartLists: true, // Use smart list behavior
 	smartypants: true, // Use smart typography
 	xhtml: true // Use XHTML-compatible tags
@@ -111,23 +111,25 @@ export async function getContentNodeByIdentifier(
 
 	// Load markdown content if it's a content node
 	let markdownContent = '';
-	let contentLoadingError: string | undefined;
+	// contentLoadingError remains on the type for now, but will be undefined if successful
+	let contentLoadingError: string | undefined; 
 
 	if (node.type === 'course' || node.type === 'lesson' || node.type === 'module') {
 		try {
 			const contentPath = join(process.cwd(), 'static', 'content', type, node.path || `${node.id}.md`);
 			const content = await readFile(contentPath, 'utf-8');
-			markdownContent = marked(content);
-		} catch (error) {
-			console.error(`Error loading content for ${identifier}:`, error);
-			contentLoadingError = error instanceof Error ? error.message : 'Failed to load content';
+			markdownContent = marked(content); // Ensure marked() is called *before* potential throw
+		} catch (e: any) { // Explicitly type e or use unknown
+			console.error(`Error loading or parsing content for ${identifier}:`, e);
+			// Re-throw a new error or the original error
+			throw error(500, `Failed to load content for ${identifier}: ${e.message}`); // Using SvelteKit's error helper
 		}
 	}
 
 	const contentNode: ContentNode = {
 		...node,
-		markdownContent,
-		contentLoadingError
+		markdownContent, // contentLoadingError field is no longer needed on ContentNode if we throw
+		contentLoadingError // This will be undefined if successful
 	};
 
 	contentCache[cacheKey] = contentNode;

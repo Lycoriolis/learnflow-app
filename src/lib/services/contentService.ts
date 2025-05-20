@@ -65,6 +65,14 @@ let courseCache: Record<string, ContentNode[]> = {};
 let exerciseCache: Record<string, ContentNode[]> = {};
 let categoryCache: Record<string, Category[]> = {};
 
+// Cache for content data by ID
+let courseIdCache: Record<string, ContentNode> = {};
+let exerciseIdCache: Record<string, ContentNode> = {};
+
+// Cache for content data by slug
+let courseSlugCache: Record<string, ContentNode> = {};
+let exerciseSlugCache: Record<string, ContentNode> = {};
+
 /**
  * Fetches content from the specified path
  */
@@ -109,7 +117,7 @@ export async function fetchContent(type: 'courses' | 'exercises', path?: string)
     return result;
   } catch (error) {
     console.error(`Error fetching ${type}:`, error);
-    return [];
+    throw error;
   }
 }
 
@@ -132,7 +140,7 @@ export async function fetchCategories(type: 'courses' | 'exercises'): Promise<Ca
     return data;
   } catch (error) {
     console.error(`Error fetching ${type} categories:`, error);
-    return [];
+    throw error;
   }
 }
 
@@ -140,16 +148,31 @@ export async function fetchCategories(type: 'courses' | 'exercises'): Promise<Ca
  * Fetches a specific content item by ID
  */
 export async function fetchContentById(type: 'courses' | 'exercises', id: string): Promise<ContentNode | null> {
+  // Check cache first
+  if (type === 'courses' && courseIdCache[id]) {
+    return courseIdCache[id];
+  }
+  if (type === 'exercises' && exerciseIdCache[id]) {
+    return exerciseIdCache[id];
+  }
+
   try {
     const response = await fetch(`/content/${type}/${id}.json`);
     if (!response.ok) {
-      throw new Error(`Failed to fetch content: ${response.statusText}`);
+      throw new Error(`Failed to fetch content by ID: ${id}, Status: ${response.statusText}`);
     }
-    
-    return await response.json();
+    const data = await response.json() as ContentNode;
+
+    // Cache the result
+    if (type === 'courses') {
+      courseIdCache[id] = data;
+    } else {
+      exerciseIdCache[id] = data;
+    }
+    return data;
   } catch (error) {
-    console.error(`Error fetching ${type} by ID:`, error);
-    return null;
+    console.error(`Error fetching ${type} by ID (${id}):`, error);
+    throw error;
   }
 }
 
@@ -157,26 +180,47 @@ export async function fetchContentById(type: 'courses' | 'exercises', id: string
  * Fetches a specific content item by slug
  */
 export async function fetchContentBySlug(type: 'courses' | 'exercises', slug: string): Promise<ContentNode | null> {
+  // Check cache first
+  if (type === 'courses' && courseSlugCache[slug]) {
+    return courseSlugCache[slug];
+  }
+  if (type === 'exercises' && exerciseSlugCache[slug]) {
+    return exerciseSlugCache[slug];
+  }
+
   try {
-    // First get all items
+    // Try fetching directly by slug first
+    const directResponse = await fetch(`/content/${type}/by-slug/${slug}.json`);
+    if (directResponse.ok) {
+      const data = await directResponse.json() as ContentNode;
+      // Cache the result
+      if (type === 'courses') {
+        courseSlugCache[slug] = data;
+      } else {
+        exerciseSlugCache[slug] = data;
+      }
+      return data;
+    }
+
+    // If direct fetch fails (e.g., 404), fall back to fetching all items
     const items = await fetchContent(type);
-    
-    // Find the item with matching slug
     const item = items.find(item => item.slug === slug);
+
     if (item) {
+      // Cache the result
+      if (type === 'courses') {
+        courseSlugCache[slug] = item;
+      } else {
+        exerciseSlugCache[slug] = item;
+      }
       return item;
     }
     
-    // If not found in the main list, try fetching directly
-    const response = await fetch(`/content/${type}/by-slug/${slug}.json`);
-    if (!response.ok) {
-      return null;
-    }
-    
-    return await response.json();
+    // If not found after all attempts
+    return null; 
   } catch (error) {
-    console.error(`Error fetching ${type} by slug:`, error);
-    return null;
+    console.error(`Error fetching ${type} by slug (${slug}):`, error);
+    throw error; 
   }
 }
 
@@ -187,6 +231,10 @@ export function clearContentCache() {
   courseCache = {};
   exerciseCache = {};
   categoryCache = {};
+  courseIdCache = {};
+  exerciseIdCache = {};
+  courseSlugCache = {};
+  exerciseSlugCache = {};
 }
 
 /**

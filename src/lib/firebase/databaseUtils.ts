@@ -13,7 +13,8 @@ import {
   orderBy, 
   limit,
   addDoc,
-  serverTimestamp
+  serverTimestamp,
+  type WhereFilterOp
 } from 'firebase/firestore';
 
 /**
@@ -115,7 +116,7 @@ export async function deleteDocument(collectionName: string, id: string) {
  */
 export async function queryDocuments(
   collectionName: string, 
-  conditions: Array<{field: string, operator: string, value: any}> = [],
+  conditions: Array<{field: string, operator: WhereFilterOp, value: any}> = [],
   orderByField?: string,
   orderDirection: 'asc' | 'desc' = 'asc',
   limitCount?: number
@@ -128,7 +129,7 @@ export async function queryDocuments(
     
     // Add where clauses
     for (const condition of conditions) {
-      queryConstraints.push(where(condition.field, condition.operator as any, condition.value));
+      queryConstraints.push(where(condition.field, condition.operator, condition.value));
     }
     
     // Add order by
