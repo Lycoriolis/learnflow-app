@@ -17,14 +17,18 @@
 				'Formule du binôme de Newton', 'Factorisations remarquables',
 				'Structure affine de l’ensemble des solutions',
 				'Méthode du pivot de Gauss',
-				"Développement d\\'\\'\\'un produit de sommes :" // Escaped for JS string
+				"Développement d\\\'\\\'\\\'un produit de sommes :" // Preserving original string from file
 			], 
 			class: 'callout-generic-emphasis' 
 		}
 	];
 
 	function getParagraphMarkup(text: string) {
-		const strongContentMatch = text.match(/^<strong>(.*?)<\\/strong>(.*)/s);
+		if (typeof text !== 'string') { // This check is now more of a safeguard
+			console.warn('getParagraphMarkup unexpectedly received non-string text:', text);
+			return { html: '<p><!-- Non-string content in getParagraphMarkup --></p>' };
+		}
+		const strongContentMatch = text.match(/^<strong>([\s\S]*?)<\/strong>([\s\S]*)/);
 		let strongText = '';
 		
 		if (strongContentMatch) {
@@ -45,11 +49,26 @@
 	}
 
 	const customRenderer = new marked.Renderer();
-	customRenderer.paragraph = (text: string) => {
+	customRenderer.paragraph = (text: any) => { // Allow 'any' to acknowledge the actual type being received sometimes
+		if (typeof text !== 'string') {
+			console.warn(
+				'Custom paragraph renderer received non-string text. Type:', 
+				typeof text, 
+				'. Value:', text,
+				// Attempt to get more details if it's an object
+				(typeof text === 'object' && text !== null) ? `Keys: ${Object.keys(text).join(', ')}` : ''
+			);
+			// Replace [object Object] with an empty paragraph containing an HTML comment
+			return '<p><!-- Paragraph content was not a string --></p>'; 
+		}
+		// If text is a string, proceed with existing logic
 		return getParagraphMarkup(text).html;
 	};
 
-	marked.use(markedKatex({ throwOnError: false, nonStandard: true }), { renderer: customRenderer });
+	// Correctly register KaTeX extension first
+	marked.use(markedKatex({ throwOnError: false, nonStandard: true }));
+	// Then, register the custom renderer
+	marked.use({ renderer: customRenderer });
 	// --- End Custom Marked Renderer ---
 
 	export let data: PageData; // Data specific to this lesson page
@@ -89,7 +108,6 @@
 	// $: console.log('Lesson Page Data:', data);
 	// $: console.log('Layout Data on Lesson Page:', layoutData);
 	// $: console.log('Prev:', prevLesson, 'Next:', nextLesson, 'CurrentIndex:', currentIndex);
-
 </script>
 
 <div class="lesson-content-wrapper">
@@ -97,8 +115,8 @@
 		<article class="content-article">
 			<header class="content-header">
 				<!-- Main Page Title - styled separately from prose h1 -->
-				<h1 class="text-4xl font-extrabold text-gray-800 mb-2">{data.contentItem.title || 'Untitled Content'}</h1>
-				<p class="meta-info text-sm text-gray-600">
+				<h1 class="text-4xl font-extrabold text-gray-800 mb-3">{data.contentItem.title || 'Untitled Content'}</h1>
+				<p class="meta-info text-sm text-gray-600 mt-1 mb-6">
 					{#if data.contentItem.difficulty}<span>Difficulty: {data.contentItem.difficulty}</span>{/if}
 					{#if data.contentItem.estimatedTime}<span class="ml-4">Time: {data.contentItem.estimatedTime}</span>{/if}
 				</p>
@@ -152,11 +170,8 @@
 </div>
 
 <style lang="postcss">
-	/* Ensure this component's styles can use @apply or Tailwind directives */
-	/* If not, these styles might need to go into a global app.css processed by Tailwind */
-
 	.lesson-content-wrapper {
-		@apply max-w-4xl mx-auto px-4 py-8; /* Example: Constrain width and center */
+		@apply max-w-4xl mx-auto px-4 py-8;
 	}
 	.content-article {
 		@apply bg-white shadow-lg rounded-lg p-6 md:p-10;
@@ -164,18 +179,21 @@
 	.content-header {
 		@apply mb-8 border-b border-gray-200 pb-6;
 	}
-	.content-header h1 { /* Styles for the main page title passed via data */
-		@apply text-4xl font-bold text-gray-800 tracking-tight;
+	.content-header h1 { 
+		@apply text-4xl font-bold text-gray-800 tracking-tight mb-3;
 	}
+	.meta-info {
+        @apply mt-1 mb-6;
+    }
 	.meta-info span {
 		@apply mr-4 text-sm text-gray-500;
 	}
-	.content-description { /* Styles for the description from frontmatter */
-		@apply text-lg text-gray-700 italic my-6 p-4 bg-slate-50 rounded-md border-l-4 border-slate-300;
+	.content-description { 
+		@apply text-lg text-gray-700 italic my-6 p-4 bg-gray-50 rounded-md border-l-4 border-gray-300;
 	}
 
 	/* Callout Styles */
-	:global(.callout) { /* Use :global as these classes are injected by marked */
+	:global(.callout) { 
 		@apply p-4 my-6 rounded-md border-l-4 shadow-sm;
 	}
 	:global(.callout-definition) {
@@ -200,35 +218,33 @@
 		@apply text-amber-700;
 	}
 	:global(.callout-note), :global(.callout-remark) {
-		@apply bg-slate-100 border-slate-400 text-slate-800; /* Darker than description bg */
+		@apply bg-gray-100 border-gray-400 text-gray-800;
 	}
 	:global(.callout-note p strong:first-child),
 	:global(.callout-remark p strong:first-child) {
-		@apply text-slate-700;
+		@apply text-gray-700;
 	}
 	:global(.callout-generic-emphasis) {
 		@apply bg-indigo-50 border-indigo-400 text-indigo-800;
 	}
-	:global(.callout-generic-emphasis p strong:first-child) { /* For lines that are just bold titles */
-		@apply block mb-0 font-semibold text-lg text-indigo-700; /* No extra margin if it's the only content */
+	:global(.callout-generic-emphasis p strong:first-child) { 
+		@apply block mb-0 font-semibold text-lg text-indigo-700;
 	}
-	/* General styling for the bolded term within any callout if it's the start of the paragraph */
 	:global(.callout > p > strong:first-child) {
-		@apply block mb-2 font-semibold text-lg; /* Default styling for the "title" of the callout */
+		@apply block mb-2 font-semibold text-lg;
 	}
-
 
 	/* Prose Overrides and Enhancements */
-	:global(.prose) { /* Targeting the .prose class on the section */
+	:global(.prose) { 
 		@apply text-gray-700;
 	}
-	:global(.prose h1) { /* Chapter/Top-level heading in MDX content */
-		@apply text-3xl font-bold mt-0 mb-8 pb-3 border-b border-gray-300 text-gray-800; /* mt-0 if it's the first thing */
+	:global(.prose h1) { 
+		@apply text-3xl font-bold mt-0 mb-8 pb-3 border-b border-gray-300 text-gray-800;
 	}
-	:global(.prose h2) { /* Section headings */
+	:global(.prose h2) { 
 		@apply text-2xl font-semibold mt-10 mb-6 pb-2 border-b border-gray-200 text-gray-700;
 	}
-	:global(.prose h3) { /* Sub-section headings */
+	:global(.prose h3) { 
 		@apply text-xl font-semibold mt-8 mb-4 text-gray-700;
 	}
 	:global(.prose h4) {
@@ -251,92 +267,59 @@
 		@apply text-blue-600 hover:text-blue-700 hover:underline font-medium;
 	}
 	:global(.prose strong) {
-		@apply font-semibold text-gray-800; /* Slightly darker strong text */
+		@apply font-semibold text-gray-800;
 	}
-	:global(.prose code) { /* Inline code */
-		@apply bg-gray-100 text-red-600 px-1 py-0.5 rounded-md text-sm font-mono;
+	:global(.prose code) { 
+		@apply bg-sky-50 text-sky-700 px-1.5 py-1 rounded-md text-sm font-mono shadow-sm;
 	}
-	:global(.prose pre) { /* Code blocks */
+	:global(.prose pre) { 
 		@apply bg-gray-800 text-gray-100 p-4 rounded-md shadow-md overflow-x-auto;
 	}
 	:global(.prose blockquote) {
 		@apply border-l-4 border-gray-300 pl-4 italic text-gray-600 my-6;
 	}
 	:global(.prose hr) {
-		@apply my-8 border-gray-200;
+		@apply my-10 border-gray-200;
 	}
 
 	/* Block Math Styles */
-	:global(.prose .katex-display > .katex) { /* KaTeX block math */
-		@apply bg-slate-50 p-4 rounded-md overflow-x-auto my-6 shadow text-base; /* text-base to reset prose font scaling if any */
+	:global(.prose .katex-display > .katex) { 
+		@apply bg-gray-50 p-4 rounded-md overflow-x-auto my-6 shadow text-base;
 	}
-	:global(.prose .katex-display > .katex .mtable) { /* Ensure tables within KaTeX are not too wide */
+	:global(.prose .katex-display > .katex .mtable) { 
 		@apply max-w-full overflow-x-auto;
 	}
-	/* Inline Math - KaTeX default is usually fine, but can be tweaked if needed */
 	:global(.prose .katex) {
-		@apply text-sm; /* Match inline code font size, or adjust as preferred */
+		@apply text-sm;
 	}
-
-
-	/* Styles for lesson-content-wrapper, content-article, content-header, etc. are mostly inherited or defined in previous steps */
-	/* Ensure .prose styles are applied for MDX content */
-	/* .lesson-content-wrapper { */
-		/* Max-width and basic padding is now handled by the layout's .course-main-content */
-		/* Or by the new .lesson-content-wrapper styles above */
-	/* } */
 
 	.lesson-pagination {
-		display: flex;
-		justify-content: space-between;
-		margin-top: 3rem;
-		padding-top: 1.5rem;
-		border-top: 1px solid var(--border-color-soft, #E5E7EB);
+		@apply flex justify-between items-stretch mt-12 pt-6 border-t border-gray-200;
 	}
 	.pagination-link {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		padding: 0.75rem 1.25rem;
-		border: 1px solid var(--border-color-medium, #D1D5DB);
-		border-radius: 0.5rem;
-		text-decoration: none;
-		color: var(--primary-color, #3B82F6); /* Ensure this var is defined or replace */
-		transition: background-color 0.2s, border-color 0.2s;
-		max-width: 48%; /* Ensure they don't overlap if titles are long */
+		@apply flex flex-col items-start gap-1 p-4 border border-gray-300 rounded-lg text-left w-[calc(50%-0.5rem)];
+        @apply hover:bg-gray-50 hover:border-gray-400 transition-colors duration-150 ease-in-out;
 	}
-	.pagination-link:hover {
-		background-color: var(--bg-color-light, #F9FAFB); /* Ensure this var is defined or replace */
-		border-color: var(--primary-color, #3B82F6); /* Ensure this var is defined or replace */
-	}
-	.pagination-link.disabled {
-		visibility: hidden; /* Keep space but hide */
-	}
-	.pagination-link .text {
-		display: flex;
-		flex-direction: column;
-	}
-	.pagination-link.next .text {
-		align-items: flex-end;
-	}
-	.pagination-link .label {
-		font-size: 0.8rem;
-		color: var(--text-color-muted, #6B7280); /* Ensure this var is defined or replace */
-		margin-bottom: 0.1rem;
-	}
-	.pagination-link .title {
-		font-weight: 500;
-		color: var(--primary-color, #3B82F6); /* Ensure this var is defined or replace */
-		font-size: 1rem;
-		line-height: 1.3;
-		/* Truncate long titles if necessary */
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		max-width: 200px; /* Adjust as needed */
-	}
+    .pagination-link.prev {
+        @apply items-start;
+    }
+    .pagination-link.next {
+        @apply items-end text-right;
+    }
+
 	.pagination-link .arrow {
-		font-size: 1.5rem;
-		line-height: 1;
+		@apply text-xl text-blue-600 font-semibold;
 	}
+
+    .pagination-link .text .label {
+        @apply block text-xs text-gray-500 mb-0.5;
+    }
+    .pagination-link .text .title {
+        @apply block text-base font-semibold text-gray-700 hover:text-blue-600;
+    }
+
+    .pagination-link.disabled {
+        @apply opacity-0 pointer-events-none; 
+    }
+
 </style>

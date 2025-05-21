@@ -191,6 +191,54 @@ export async function getExerciseById(id: string): Promise<ServerContentNode | n
     return exercises.find(ex => ex.id === id) || null;
 }
 
+export async function getExerciseBySlug(slug: string): Promise<ServerContentNode | null> {
+    console.log(`[contentService] getExerciseBySlug: Attempting to find exercise with raw slug: '${slug}'`);
+    const exercises = await getAllExercises();
+    if (!Array.isArray(exercises) || exercises.length === 0) {
+        console.warn(`[contentService] getExerciseBySlug: No exercises available from getAllExercises.`);
+        return null;
+    }
+
+    // Normalize the incoming slug: remove leading/trailing slashes
+    const normalizedSlug = slug.replace(/^\/+/, '').replace(/\/+$/, '');
+    console.log(`[contentService] getExerciseBySlug: Normalized slug: '${normalizedSlug}'`);
+
+    const foundExercise = exercises.find(ex => {
+        if (ex && ex.contentPath) {
+            // Normalize ex.contentPath: remove /exercises prefix and leading/trailing slashes
+            const exerciseSpecificPath = ex.contentPath.replace(/^\/exercises\/?/, '').replace(/^\/+/, '').replace(/\/+$/, '');
+            
+            console.log(`[contentService] getExerciseBySlug: Comparing normalized slug '${normalizedSlug}' with exercise specific path '${exerciseSpecificPath}' (from contentPath '${ex.contentPath}')`);
+            
+            // Direct match of normalized paths
+            if (exerciseSpecificPath === normalizedSlug) {
+                return true;
+            }
+            // Match if the exercise ID is the slug (for non-nested exercises)
+            if (ex.id === normalizedSlug && !normalizedSlug.includes('/')) {
+                 console.log(`[contentService] getExerciseBySlug: Matched by ID: '${ex.id}' === '${normalizedSlug}'`);
+                 return true;
+            }
+        }
+        return false;
+    });
+
+    if (foundExercise) {
+        console.log(`[contentService] getExerciseBySlug: Found exercise: '${foundExercise.title}' for slug: '${slug}' with contentPath: '${foundExercise.contentPath}'`);
+    } else {
+        console.warn(`[contentService] getExerciseBySlug: Exercise with slug: '${slug}' (normalized: '${normalizedSlug}') NOT FOUND.`);
+        // Fallback: try to find by ID if slug doesn't contain '/' (might be a direct ID)
+        if (!normalizedSlug.includes('/')) {
+            const byId = exercises.find(ex => ex.id === normalizedSlug);
+            if (byId) {
+                console.log(`[contentService] getExerciseBySlug: Found exercise by ID fallback: '${byId.title}' for slug/ID: '${normalizedSlug}'`);
+                return byId;
+            }
+        }
+    }
+    return foundExercise || null;
+}
+
 export async function getExerciseCategories(): Promise<any[]> {
     const now = Date.now();
     if (exerciseCategoriesCache.data && (now - exerciseCategoriesCache.timestamp < exerciseCategoriesCache.expiry)) {

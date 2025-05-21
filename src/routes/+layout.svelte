@@ -2,7 +2,7 @@
   import { sidebarCollapsed } from '$lib/stores/sidebarStore.js';
   let collapsed = false;
   sidebarCollapsed.subscribe(v => collapsed = v);
-  import '../app.css';
+  import '../app.css'; // Re-enabled CSS import
   import '@splidejs/splide/dist/css/splide.min.css';
   import { onMount, onDestroy } from 'svelte';
   import Sidebar from '$lib/components/Sidebar.svelte';
