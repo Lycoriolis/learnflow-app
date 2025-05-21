@@ -1,0 +1,35 @@
+---
+title: "Mathematics"
+description: "Explore various branches of mathematics, from foundational algebra to advanced calculus."
+id: "maths_index" # Explicit ID, follows parentDirName_index pattern
+order: 2 # Assuming 'Programming Fundamentals' was order 1
+# 'type' is more generic, 'contentType' is specific to our system's handling
+contentType: "theme_overview" # This is an overview for the "Mathematics" theme
+childContentType: "course_overview" # Its children are course overviews (like mpsi-maths/_index.mdx)
+
+# List of courses under the "Mathematics" theme.
+# The 'id' here should match the 'id' in the frontmatter of the course's _index.mdx file.
+children:
+  - id: "mpsi-maths_index" # ID of the MPSI Maths course overview
+    title: "MPSI - Mathématiques" 
+    description: "Programme complet de mathématiques pour la filière MPSI."
+    # thumbnail: "/images/thumbnails/mpsi-maths-overview.png"
+  - id: "algebra_index" # Assuming algebra/_index.mdx will have id: "algebra_index" or similar
+    title: "Algèbre"
+    description: "Explore fundamental and advanced algebraic concepts."
+    # thumbnail: "/images/courses/algebra-thumb.png"
+  - id: "calculus_index" # Assuming calculus/_index.mdx will have id: "calculus_index" or similar
+    title: "Calculus"
+    description: "Dive into differential and integral calculus."
+    # thumbnail: "/images/courses/calculus-thumb.png"
+  # Add other courses under the "Mathematics" theme here as they are created
+
+# Optional: Add a thumbnail for the Mathematics theme itself if it's listed somewhere
+thumbnail: "/images/themes/mathematics-theme.png"
+---
+
+Welcome to the Mathematics theme!
+
+Dive into the world of numbers, structures, space, and change. This section offers courses designed to build your mathematical understanding and problem-solving skills.
+
+Select a course from the list below or use the sidebar to begin your mathematical journey.

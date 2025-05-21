@@ -3,6 +3,11 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [sveltekit()],
+  test: { // Added test configuration
+    globals: true,
+    environment: 'jsdom', // Or 'happy-dom'
+    include: ['src/**/*.{test,spec}.{js,ts}', 'tests/**/*.{test,spec}.{js,ts}'],
+  },
   server: {
     host: true,
     fs: {

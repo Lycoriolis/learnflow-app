@@ -1,10 +1,10 @@
-import { vi, describe, it, expect, beforeEach, SpyInstance } from 'vitest';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { 
   createCategory, 
   updateCategory, 
   createTopic, 
-  updateTopic, 
-  createPost, 
+  updateTopic, // Added missing import
+  createPost, // Added missing import
   updatePost, 
   toggleLike 
 } from '../forumService'; // Adjust path as needed
@@ -29,18 +29,18 @@ vi.mock('firebase/firestore', async (importOriginal) => {
 });
 
 // Helper to get the mocked functions with correct types
-const mockAddDoc = vi.mocked(await import('firebase/firestore').then(mod => mod.addDoc));
-const mockUpdateDoc = vi.mocked(await import('firebase/firestore').then(mod => mod.updateDoc));
-const mockSetDoc = vi.mocked(await import('firebase/firestore').then(mod => mod.setDoc));
-const mockGetDoc = vi.mocked(await import('firebase/firestore').then(mod => mod.getDoc));
-const mockDeleteDoc = vi.mocked(await import('firebase/firestore').then(mod => mod.deleteDoc));
+const mockAddDoc = vi.mocked((await import('firebase/firestore')).addDoc);
+const mockUpdateDoc = vi.mocked((await import('firebase/firestore')).updateDoc);
+const mockSetDoc = vi.mocked((await import('firebase/firestore')).setDoc);
+const mockGetDoc = vi.mocked((await import('firebase/firestore')).getDoc);
+const mockDeleteDoc = vi.mocked((await import('firebase/firestore')).deleteDoc);
 
 describe('forumService', () => {
-  beforeEach(() => {
+  beforeEach(async () => { // Make beforeEach async
     vi.clearAllMocks();
     // Setup default mock implementations if needed, e.g., for doc() or collection()
-    vi.mocked(await import('firebase/firestore').then(mod => mod.doc)).mockReturnValue({ id: 'mockDocRef' } as any);
-    vi.mocked(await import('firebase/firestore').then(mod => mod.collection)).mockReturnValue({ id: 'mockCollectionRef' } as any);
+    vi.mocked((await import('firebase/firestore')).doc).mockReturnValue({ id: 'mockDocRef' } as any);
+    vi.mocked((await import('firebase/firestore')).collection).mockReturnValue({ id: 'mockCollectionRef' } as any);
 
   });
 
@@ -75,7 +75,8 @@ describe('forumService', () => {
 
     it('createTopic should use serverTimestamp for lastPostAt, createdAt, and updatedAt', async () => {
       mockAddDoc.mockResolvedValueOnce({ id: 'newTopicId' } as any);
-      const topicData = { categoryId: 'cat1', title: 'Test Topic', authorId: 'user1' };
+      // Corrected property names from categoryId to category_id and authorId to author_id
+      const topicData = { category_id: 'cat1', title: 'Test Topic', author_id: 'user1' }; 
       await createTopic(topicData);
 
       expect(mockAddDoc).toHaveBeenCalledTimes(1);

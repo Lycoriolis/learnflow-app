@@ -1,0 +1,129 @@
+---
+title: "Raisonnement et vocabulaire ensembliste"
+id: "raisonnement-et-vocabulaire-ensembliste"
+order: 7
+contentType: "lesson_content"
+description: "Introduction à la logique, aux ensembles et au raisonnement mathématique."
+tags: ["mpsi-mathematiques", "logique", "ensembles", "cours"]
+difficulty: "beginner"
+estimatedTime: "8 heures"
+---
+
+# Chapitre 1 : Raisonnement et vocabulaire ensembliste
+
+## Logique et raisonnement
+
+### Assertions
+
+Une assertion (ou proposition) est un assemblage de mots dont la construction obéit à une certaine syntaxe et à laquelle on peut donner une valeur de vérité : vraie (V) ou fausse (F).
+
+**Exemples :**
+- « 3 est un nombre impair » est une assertion vraie.
+- « 102=101 » est une assertion fausse.
+- « 2=3+ » n'est pas une assertion.
+
+### Connecteurs élémentaires
+
+- **Non P** : Vraie si P est fausse, et fausse sinon.
+- **P et Q** : Vraie si les deux assertions P et Q sont vraies, et fausse sinon.
+- **P ou Q** : Vraie si au moins une des deux assertions est vraie, et fausse sinon.
+
+| P | Q | P et Q | P ou Q |
+|---|---|--------|--------|
+| V | V |   V    |   V    |
+| V | F |   F    |   V    |
+| F | V |   F    |   V    |
+| F | F |   F    |   F    |
+
+### Implication, équivalence
+
+- **P ⇒ Q** : Vraie si P est fausse ou si Q est vraie.
+- **P ⇔ Q** : Vraie si P et Q sont logiquement équivalentes.
+
+| P | Q | P ⇒ Q | P ⇔ Q |
+|---|---|-------|-------|
+| V | V |   V   |   V   |
+| V | F |   F   |   F   |
+| F | V |   V   |   F   |
+| F | F |   V   |   V   |
+
+### Raisonnements pour montrer que P ⇒ Q
+
+- **Raisonnement direct** : On suppose que P est vraie et on montre que Q est vraie.
+- **Raisonnement par contraposée** : On suppose que ¬Q est vraie et on montre que ¬P est vraie.
+- **Raisonnement par l'absurde** : On suppose que P est vraie, et on suppose « par l'absurde » que ¬Q est vraie. On cherche alors une contradiction.
+
+### Raisonnement par récurrence
+
+- **Théorème de récurrence** : Soit P une propriété définie sur $\mathbb{N}$. Si :
+    - $P(0)$ est vraie,
+    - Pour tout $n \in \mathbb{N}$, ($P(n)$ vraie $\Rightarrow P(n+1)$ vraie),
+  alors $P(n)$ est vraie pour tout $n \in \mathbb{N}$.
+
+- **Corollaire** : Soit P une propriété définie sur $\{n_0, n_0+1, \ldots\}$ avec $n_0 \in \mathbb{Z}$. Si :
+    - $P(n_0)$ est vraie,
+    - Pour tout entier $n \geq n_0$, ($P(n)$ vraie $\Rightarrow P(n+1)$ vraie),
+  alors $P(n)$ est vraie pour tout $n \geq n_0$.
+
+## Ensembles, fonctions et relations binaires
+
+### Notation et opérations de base
+
+- **Définition d'un ensemble** : Un ensemble est une collection d'objets distincts, appelés éléments.
+- **Appartenance** : $x \in E$ signifie que $x$ appartient à l'ensemble $E$ ; sa négation est notée $x \notin E$.
+- **Ensemble vide** : Noté $\varnothing$, il n'a aucun élément.
+- **Inclusion** : $A \subset B$ signifie que tout élément de $A$ appartient à $B$.
+- **Union** : $A \cup B = \{x \mid x \in A \text{ ou } x \in B\}$
+- **Intersection** : $A \cap B = \{x \mid x \in A \text{ et } x \in B\}$
+- **Complémentaire** : $A^c = \{x \mid x \notin A\}$
+- **Différence** : $A \setminus B = \{x \in A \mid x \notin B\}$
+- **Produit cartésien** : $A \times B = \{(a, b) \mid a \in A, b \in B\}$
+
+### Quantificateurs
+
+- **Quantificateur universel ($\forall$)** : Se lit « pour tout » ou « quel que soit ».
+- **Quantificateur existentiel ($\exists$)** : Se lit « il existe au moins un élément ».
+- **Quantificateur d'unicité ($\exists!$)** : Se lit « il existe un et un seul élément ».
+
+#### Négation d'une phrase quantifiée
+
+- $\neg(\forall x \in E, P(x)) \iff \exists x \in E, \neg P(x)$
+- $\neg(\exists x \in E, P(x)) \iff \forall x \in E, \neg P(x)$
+
+### Applications et relations
+
+- **Application (fonction)** : Une relation qui associe à chaque élément d'un ensemble un élément d'un autre ensemble.
+- **Relation binaire** : Une correspondance entre les éléments de deux ensembles.
+- **Injection, surjection, bijection** :
+    - $f : E \to F$ est injective si $f(x) = f(y) \Rightarrow x = y$.
+    - $f$ est surjective si $\forall y \in F, \exists x \in E, f(x) = y$.
+    - $f$ est bijective si elle est injective et surjective.
+- **Relation d'équivalence** : Réflexive, symétrique, transitive.
+- **Relation d'ordre** : Réflexive, antisymétrique, transitive.
+
+## Limite d’une suite réelle
+
+Soit $(x_n)_{n \geq 0}$ une suite réelle. On dit que $l \in \mathbb{R}$ est limite de $(x_n)_{n \geq 0}$ lorsque :
+$$\forall \varepsilon > 0, \exists p \in \mathbb{N}, \forall n \in \mathbb{N}, n \geq p \Rightarrow |x_n - l| \leq \varepsilon.$$
+
+La phrase exprimant qu’un réel $l$ n’est pas limite de $(x_n)_{n \geq 0}$ est alors :
+$$\exists \varepsilon > 0, \forall p \in \mathbb{N}, \exists n \in \mathbb{N}, n \geq p \text{ et } |x_n - l| > \varepsilon.$$
+
+## Continuité
+
+Une application $f : \mathbb{R} \to \mathbb{R}$ est continue en $a \in \mathbb{R}$ lorsque :
+$$\forall \varepsilon > 0, \exists \eta > 0, \forall x \in \mathbb{R}, |x - a| < \eta \Rightarrow |f(x) - f(a)| \leq \varepsilon.$$
+
+La phrase exprimant que $f$ n’est pas continue en $a$ est alors :
+$$\exists \varepsilon > 0, \forall \eta > 0, \exists x \in \mathbb{R}, |x - a| < \eta \text{ et } |f(x) - f(a)| > \varepsilon.$$
+
+## Exercices avancés
+
+1. **Logique avancée** : Montrer que la négation de $P \Rightarrow Q$ est $P \wedge \neg Q$.
+2. **Ensembles infinis** : Montrer que l'ensemble $\mathbb{Q}$ des rationnels est dénombrable, mais $\mathbb{R}$ ne l'est pas.
+3. **Récurrence forte** : Montrer que tout entier $n \geq 2$ s'écrit comme produit de nombres premiers (unicité non demandée).
+4. **Fonctions sur des ensembles infinis** : Existe-t-il une bijection entre $\mathbb{N}$ et $\mathbb{N} \times \mathbb{N}$ ? La construire.
+5. **Relations d'équivalence** : Montrer que la relation « $x \sim y$ si $x-y \in \mathbb{Z}$ » sur $\mathbb{R}$ est une relation d'équivalence.
+6. **Exercice difficile** : Soit $E$ un ensemble infini. Montrer qu'il existe une injection de $E$ dans $E \times E$.
+7. **Exercice difficile** : Montrer que tout ordre total sur $\mathbb{N}$ est isomorphe à l'ordre usuel.
+

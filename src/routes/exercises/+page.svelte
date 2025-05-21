@@ -1,157 +1,152 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { fade } from 'svelte/transition';
-  import type { Exercise } from '$lib/types/shared';
-  import type { ServiceResponse } from '$lib/types/service';
-  import ExerciseCard from '$lib/components/exercises/ExerciseCard.svelte';
-  import LoadingSpinner from '$lib/components/shared/LoadingSpinner.svelte';
-  import ErrorMessage from '$lib/components/shared/ErrorMessage.svelte';
-  import SearchBar from '$lib/components/shared/SearchBar.svelte';
-  import FilterDropdown from '$lib/components/shared/FilterDropdown.svelte';
-  import { getAllExercises } from '$lib/services/courses/exerciseService';
+	import type { PageData } from './$types';
+	import ExerciseCard from '$lib/components/courses/exercise/ExerciseCard.svelte';
 
-  let exercises: Exercise[] = [];
-  let loading = true;
-  let error: string | null = null;
-  let searchQuery = '';
-  let selectedCategory: string | null = null;
-  let selectedDifficulty: string | null = null;
-  let selectedTags: string[] = [];
-
-  const difficulties = ['Beginner', 'Intermediate', 'Advanced'];
-  let categories: string[] = [];
-  let tags: string[] = [];
-
-  onMount(async () => {
-    try {
-      loading = true;
-      error = null;
-      const response = await getAllExercises();
-      
-      if (response.error) {
-        error = response.error.message;
-        return;
-      }
-
-      if (response.data) {
-        exercises = response.data;
-        categories = [...new Set(exercises
-          .map(exercise => exercise.category)
-          .filter((category): category is string => category !== undefined)
-        )];
-        tags = [...new Set(exercises
-          .flatMap(exercise => exercise.tags || [])
-          .filter((tag): tag is string => tag !== undefined)
-        )];
-      }
-    } catch (err) {
-      console.error('Error loading exercises:', err);
-      error = err instanceof Error ? err.message : 'Failed to load exercises';
-    } finally {
-      loading = false;
-    }
-  });
-
-  $: filteredExercises = exercises.filter(exercise => {
-    const matchesSearch = exercise.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      exercise.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = !selectedCategory || exercise.category === selectedCategory;
-    const matchesDifficulty = !selectedDifficulty || exercise.difficulty === selectedDifficulty;
-    const exerciseTags = exercise.tags || [];
-    const matchesTags = selectedTags.length === 0 || 
-      selectedTags.every(tag => exerciseTags.includes(tag));
-    return matchesSearch && matchesCategory && matchesDifficulty && matchesTags;
-  });
-
-  function handleSearch(event: CustomEvent<string>) {
-    searchQuery = event.detail;
-  }
-
-  function handleCategoryChange(event: CustomEvent<string | null>) {
-    selectedCategory = event.detail;
-  }
-
-  function handleDifficultyChange(event: CustomEvent<string | null>) {
-    selectedDifficulty = event.detail;
-  }
-
-  function handleTagChange(event: CustomEvent<string | null>) {
-    const tag = event.detail;
-    if (tag) {
-      selectedTags = selectedTags.includes(tag)
-        ? selectedTags.filter(t => t !== tag)
-        : [...selectedTags, tag];
-    } else {
-      selectedTags = [];
-    }
-  }
+	export let data: PageData;
 </script>
 
-<svelte:head>
-  <title>Exercises | LearnFlow</title>
-  <meta name="description" content="Practice and improve your skills with our interactive exercises" />
-</svelte:head>
+<div class="page-container exercises-overview-page">
+	<header class="page-header">
+		<h1>Explore Exercises</h1>
+		<p class="page-subtitle">Challenge yourself and reinforce your learning with our collection of exercises.</p>
+		{#if data.error}
+			<p class="error-message">{data.error}</p>
+		{/if}
+	</header>
 
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-      <div>
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Exercises</h1>
-        <p class="mt-2 text-gray-600 dark:text-gray-400">
-          Practice and improve your skills with our interactive exercises
-        </p>
-      </div>
+	{#if data.categories && data.categories.length > 0}
+		<section class="categories-section">
+			<h2>Filter by Category</h2>
+			<div class="categories-grid">
+				{#each data.categories as category (category.id)}
+					<a href={category.path} class="category-button">
+						{category.title} <span class="count">({category.exerciseCount})</span>
+					</a>
+				{/each}
+			</div>
+		</section>
+	{/if}
 
-      <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-        <SearchBar
-          placeholder="Search exercises..."
-          value={searchQuery}
-          on:search={handleSearch}
-        />
+	{#if data.exercises && data.exercises.length > 0}
+		<section class="exercise-list-section">
+			<h2>Featured Exercises</h2>
+			<div class="content-grid">
+				{#each data.exercises as exercise (exercise.id)}
+					<ExerciseCard {exercise} />
+				{/each}
+			</div>
+		</section>
+	{/if}
 
-        <div class="flex space-x-4">
-          <FilterDropdown
-            options={categories}
-            selected={selectedCategory}
-            placeholder="All Categories"
-            on:change={handleCategoryChange}
-          />
-          <FilterDropdown
-            options={difficulties}
-            selected={selectedDifficulty}
-            placeholder="All Difficulties"
-            on:change={handleDifficultyChange}
-          />
-          <FilterDropdown
-            options={tags}
-            selected={null}
-            placeholder="Filter by Tags"
-            on:change={handleTagChange}
-          />
-        </div>
-      </div>
-    </div>
-
-    {#if loading}
-      <div class="flex justify-center items-center min-h-[400px]" transition:fade>
-        <LoadingSpinner size="lg" />
-      </div>
-    {:else if error}
-      <div class="my-8" transition:fade>
-        <ErrorMessage message={error} type="error" />
-      </div>
-    {:else}
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" transition:fade>
-        {#each filteredExercises as exercise (exercise.id)}
-          <ExerciseCard {exercise} />
-        {/each}
-      </div>
-
-      {#if filteredExercises.length === 0}
-        <div class="text-center py-12" transition:fade>
-          <p class="text-gray-600 dark:text-gray-400">No exercises found matching your criteria.</p>
-        </div>
-      {/if}
-    {/if}
-  </div>
+	{#if (!data.categories || data.categories.length === 0) && (!data.exercises || data.exercises.length === 0) && !data.error}
+			<p class="empty-state-message">No exercises available at the moment. Check back soon!</p>
+	{/if}
 </div>
+
+<style>
+	/* Ensure :root variables are defined globally (e.g., in app.html or a global CSS file) */
+	/* For example, in a global.css or layout component:
+	:root {
+		--page-font-family: 'Inter', sans-serif;
+		--heading-font-family: 'Lexend Deca', sans-serif;
+		--primary-color: #3B82F6; // Example blue
+		--text-color-primary: #1F2937;
+		--text-color-secondary: #4B5563;
+		--bg-color-light: #F9FAFB;
+		--border-color-soft: #E5E7EB;
+	}
+	*/
+
+	.page-container {
+		font-family: var(--page-font-family, 'Inter', sans-serif);
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 2rem 1.5rem; /* More padding */
+	}
+
+	.page-header {
+		text-align: center;
+		margin-bottom: 3rem;
+	}
+
+	.page-header h1 {
+		font-family: var(--heading-font-family, 'Lexend Deca', sans-serif);
+		font-size: 2.5rem; /* Larger title */
+		font-weight: 700;
+		color: var(--text-color-primary, #1F2937);
+		margin-bottom: 0.5rem;
+	}
+
+	.page-subtitle {
+		font-size: 1.125rem;
+		color: var(--text-color-secondary, #4B5563);
+		max-width: 600px;
+		margin: 0 auto 1rem;
+		line-height: 1.6;
+	}
+
+	.categories-section {
+		margin-bottom: 3rem;
+	}
+
+	.categories-section h2, .exercise-list-section h2 {
+		font-family: var(--heading-font-family, 'Lexend Deca', sans-serif);
+		font-size: 1.75rem;
+		font-weight: 600;
+		color: var(--text-color-primary, #1F2937);
+		margin-bottom: 1.5rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 2px solid var(--primary-color, #3B82F6);
+		display: inline-block;
+	}
+	
+	.categories-grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
+
+	.category-button {
+		background-color: var(--bg-color-light, #F9FAFB);
+		color: var(--primary-color, #3B82F6);
+		border: 1px solid var(--border-color-soft, #E5E7EB);
+		padding: 0.6rem 1.2rem;
+		border-radius: 0.5rem; /* 8px */
+		text-decoration: none;
+		font-weight: 500;
+		font-size: 0.9rem;
+		transition: all 0.2s ease-in-out;
+	}
+	.category-button:hover {
+		background-color: var(--primary-color, #3B82F6);
+		color: white;
+		border-color: var(--primary-color, #3B82F6);
+		transform: translateY(-2px);
+		box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+	}
+	.category-button .count {
+		font-size: 0.8em;
+		opacity: 0.8;
+		margin-left: 0.3rem;
+	}
+
+	.content-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		gap: 1.5rem; /* Increased gap */
+	}
+
+	.error-message, .empty-state-message {
+		text-align: center;
+		padding: 2rem;
+		background-color: var(--bg-color-light, #F9FAFB);
+		border: 1px dashed var(--border-color-soft, #E5E7EB);
+		border-radius: 0.5rem;
+		color: var(--text-color-secondary, #4B5563);
+	}
+	.error-message {
+		color: #D9534F; /* Error red */
+		background-color: #F2DEDE;
+		border-color: #EBCCD1;
+	}
+</style>

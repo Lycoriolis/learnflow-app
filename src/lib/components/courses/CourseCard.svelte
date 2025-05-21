@@ -1,104 +1,166 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  import Icon from '@iconify/svelte';
-  import type { CourseStructure } from '$lib/types/shared';
-  import { navigateToCourse } from '$lib/utils/navigation';
+	export let course: any; // Replace 'any' with a specific Course type/interface later
 
-  export let course: CourseStructure;
-  export let className = '';
-  export let isSelected: boolean = false;
-  export let isCompleted: boolean = false;
-  export let progress: number = 0;
-  
-  const dispatch = createEventDispatcher<{
-    select: { course: CourseStructure };
-  }>();
-  
-  function handleSelect() {
-    dispatch('select', { course });
-  }
-  
-  function handleViewDetails(event: MouseEvent) {
-    event.stopPropagation(); // Prevent triggering the card's click event
-    if (course.id) {
-      navigateToCourse(course.id);
-    }
-  }
-  
-  function handleKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      handleSelect();
-    }
-  }
-  
-  $: statusClass = isCompleted ? 
-    'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 
-    progress > 0 ? 
-      'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400' : 
-      'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-400';
-  
-  $: statusText = isCompleted ? 
-    'Completed' : 
-    progress > 0 ? 
-      `In Progress (${Math.round(progress)}%)` : 
-      'Not Started';
+	// Fallback for missing images, or you can use a placeholder service
+	const placeholderImage = "https://via.placeholder.com/300x180.png?text=Course+Preview";
 </script>
 
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 {className}">
-  <div class="relative h-48">
-    {#if course.thumbnail}
-      <img
-        src={course.thumbnail}
-        alt={course.title}
-        class="w-full h-full object-cover"
-      />
-    {:else}
-      <div class="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-        <Icon icon="mdi:book-open-variant" class="h-12 w-12 text-gray-400" />
-      </div>
-    {/if}
-    <div class="absolute top-2 right-2">
-      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
-        {course.difficulty}
-      </span>
-    </div>
-  </div>
-  
-  <div class="p-4">
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-      {course.title}
-    </h3>
-    <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
-      {course.description}
-    </p>
-    
-    <div class="flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <Icon icon="mdi:clock-outline" class="h-4 w-4 text-gray-400" />
-        <span class="text-sm text-gray-500 dark:text-gray-400">
-          {course.totalDuration} min
-        </span>
-      </div>
-      
-      <div class="flex items-center space-x-2">
-        <Icon icon="mdi:account-group" class="h-4 w-4 text-gray-400" />
-        <span class="text-sm text-gray-500 dark:text-gray-400">
-          {course.enrolledCount} enrolled
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
+<a href={course.contentPath || '#'} class="course-card-link">
+	<article class="course-card">
+		<div class="card-image-container">
+			<img src={course.thumbnail || placeholderImage} alt={course.title || 'Course image'} class="card-image" />
+		</div>
+		<div class="card-content">
+			<h3 class="card-title">{course.title || 'Untitled Course'}</h3>
+			<p class="card-description">{course.description || 'No description available.'}</p>
+			<div class="card-meta">
+				{#if course.category}
+					<span class="meta-item category-tag">{course.category}</span>
+				{/if}
+				{#if course.difficulty}
+					<span class="meta-item difficulty-tag difficulty-{String(course.difficulty).toLowerCase()}">
+						{course.difficulty}
+					</span>
+				{/if}
+				{#if course.estimatedTime}
+					<span class="meta-item time-tag">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="icon"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd" /></svg>
+						{course.estimatedTime}
+					</span>
+				{/if}
+			</div>
+			{#if course.tags && course.tags.length > 0}
+				<div class="card-tags">
+					{#each course.tags as tag}
+						<span class="tag">{tag}</span>
+					{/each}
+				</div>
+			{/if}
+		</div>
+	</article>
+</a>
 
 <style>
-  /* Use standard CSS with line-clamp */
-  :global(.line-clamp-2) {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-clamp: 2;  /* Standard property for future compatibility */
-  }
+	:root {
+		--card-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+		--card-title-font-family: 'Lexend Deca', var(--card-font-family);
+		--card-bg: #ffffff;
+		--card-border-color: #e2e8f0;
+		--card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+		--card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+		--card-title-color: #1a202c;
+		--card-text-color: #4a5568;
+		--card-meta-color: #718096;
+		--tag-bg: #edf2f7;
+		--tag-text-color: #4a5568;
+		--primary-color: #4299e1; /* Example primary color */
+	}
+
+	.course-card-link {
+		text-decoration: none;
+		color: inherit;
+		display: block;
+		border-radius: 0.75rem; /* 12px */
+		overflow: hidden;
+		transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+	}
+
+	.course-card-link:hover {
+		transform: translateY(-4px);
+		box-shadow: var(--card-hover-shadow);
+	}
+
+	.course-card {
+		background-color: var(--card-bg);
+		border: 1px solid var(--card-border-color);
+		box-shadow: var(--card-shadow);
+		display: flex;
+		flex-direction: column;
+		height: 100%; /* Ensure cards in a grid take same height if needed */
+	}
+	
+	.card-image-container {
+		width: 100%;
+		aspect-ratio: 16 / 9; /* Maintain aspect ratio for images */
+		overflow: hidden;
+		background-color: #f0f0f0; /* Placeholder bg */
+	}
+
+	.card-image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover; /* Cover the container, might crop */
+		transition: transform 0.3s ease;
+	}
+
+	.course-card-link:hover .card-image {
+		transform: scale(1.05);
+	}
+
+	.card-content {
+		padding: 1rem 1.25rem; /* 16px 20px */
+		font-family: var(--card-font-family);
+		flex-grow: 1; /* Allows content to fill space if card heights are matched */
+		display: flex;
+		flex-direction: column;
+	}
+
+	.card-title {
+		font-family: var(--card-title-font-family);
+		font-size: 1.25rem; /* 20px */
+		font-weight: 600;
+		color: var(--card-title-color);
+		margin: 0 0 0.5rem;
+		line-height: 1.3;
+	}
+
+	.card-description {
+		font-size: 0.9rem; /* 14.4px */
+		color: var(--card-text-color);
+		line-height: 1.6;
+		margin-bottom: 0.75rem;
+		flex-grow: 1; /* Pushes meta and tags down */
+	}
+
+	.card-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		font-size: 0.8rem; /* 12.8px */
+		color: var(--card-meta-color);
+		margin-bottom: 0.75rem;
+		align-items: center;
+	}
+	.meta-item {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem; /* Space between icon and text */
+		padding: 0.2rem 0.5rem;
+		border-radius: 0.25rem; /* 4px */
+		background-color: var(--tag-bg);
+	}
+	.icon {
+		width: 0.9em; /* 14.4px */
+		height: 0.9em;
+	}
+	.difficulty-beginner { background-color: #c6f6d5; color: #2f855a; }
+	.difficulty-intermediate { background-color: #faf089; color: #b7791f; }
+	.difficulty-advanced { background-color: #fed7d7; color: #c53030; }
+
+
+	.card-tags {
+		margin-top: auto; /* Pushes tags to the bottom if description doesn't fill space */
+		padding-top: 0.5rem;
+	}
+	.tag {
+		display: inline-block;
+		background-color: var(--tag-bg);
+		color: var(--tag-text-color);
+		padding: 0.25rem 0.6rem;
+		border-radius: 9999px; /* Pill shape */
+		font-size: 0.75rem; /* 12px */
+		margin-right: 0.3rem;
+		margin-bottom: 0.3rem;
+		font-weight: 500;
+	}
 </style>

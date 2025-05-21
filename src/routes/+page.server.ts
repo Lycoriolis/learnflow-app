@@ -1,42 +1,25 @@
-import { getSuggestedContentItems } from '$lib/server/contentService';
 import type { PageServerLoad } from './$types';
-import { error } from '@sveltejs/kit'; // Import error helper
+// Ensure this path is correct and the function is properly exported from contentService
+import { getSuggestedContentItems } from '$lib/server/contentService';
 
-export const load: PageServerLoad = async (event) => {
-    const { parent } = event;
-    // Get parent data with a proper fallback in case userProfile is missing
-    const parentData = await parent();
-    const userProfile = parentData.userProfile || null;
-
-    // Ensure data can be accessed safely even if userProfile is undefined
-    const enrolledCourseIds = userProfile?.preferences?.enrollments?.map((e: any) => e.id) || [];
-    // Assuming similar structure for exercise progress/enrollment if applicable
-    // If not, adjust accordingly or pass an empty array
-    const completedExerciseIds = userProfile?.progress?.exercises?.map((ex: any) => ex.id) || []; // Example structure
-
+export const load: PageServerLoad = async ({ locals }) => {
     try {
-        // Fetch suggested courses and exercises using the new service function
-        const [suggestedCourses, suggestedExercises] = await Promise.all([
-            getSuggestedContentItems('courses', 'course', enrolledCourseIds),
-            getSuggestedContentItems('exercises', 'exercise', completedExerciseIds) // Use relevant IDs for exercises
-        ]);
+        const userId = locals.user?.id; 
+        // The error "TypeError: (0 , __vite_ssr_import_0__.getSuggestedContentItems) is not a function"
+        // suggests an issue with how getSuggestedContentItems is being resolved.
+        // Let's ensure the call is direct and the import is solid.
+        const suggestedContent = await getSuggestedContentItems(userId);
 
         return {
-            suggestedCourses,
-            suggestedExercises,
-            userProfile // Pass userProfile through for the client component
+            suggestedContent,
         };
-    } catch (err: any) {
-        console.error("Error loading dashboard data:", err);
-
-        // Re-throw SvelteKit errors or throw a generic 500
-        if (err.status) {
-            throw err; // Re-throw the error caught from contentService
-        }
-        // Throw a generic 500 error for other unexpected issues
-        error(500, 'Failed to load dashboard data. Please try again later.');
-
-        // SvelteKit's error function halts execution, but for type safety:
-        // return { suggestedCourses: [], suggestedExercises: [] };
+    } catch (error) {
+        console.error('Error loading dashboard data in /+page.server.ts:', error);
+        return {
+            suggestedContent: {
+                featuredExercises: [],
+            },
+            error: 'Failed to load dashboard content. Please try again later.'
+        };
     }
 };

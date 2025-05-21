@@ -6,10 +6,8 @@
   import '@splidejs/splide/dist/css/splide.min.css';
   import { onMount, onDestroy } from 'svelte';
   import Sidebar from '$lib/components/Sidebar.svelte';
-  import Header from '$lib/components/Header.svelte';
   import PipWidget from '$lib/components/PipWidget.svelte';
   import CourseModal from '$lib/components/courses/CourseModal.svelte';
-  import Footer from '$lib/components/Footer.svelte';
   import { pipVisible } from '$lib/stores/pipStores.js';
   import { initAuth, cleanupAuth } from '$lib/authService.js';
   import { isAuthenticated, user } from '$lib/stores/authStore.js';
@@ -102,24 +100,52 @@
   />
 </svelte:head>
 
-<div class="min-h-screen flex">
-  <Sidebar />
-  <div class={`flex-1 transition-all duration-300 ${collapsed ? 'lg:ml-0' : 'lg:ml-64'}`}>
-    <Header onTogglePip={togglePip} />
+<div class="app-container">
+  <div class="main-app-content">
+    <Sidebar />
+    <div class={`flex-1 transition-all duration-300 ${collapsed ? 'lg:ml-0' : 'lg:ml-64'}`}>
+      <main>
+        <ActivityTracker />
+        <slot />
+      </main>
+    </div>
     
-    <main>
-      <ActivityTracker />
-      <slot />
-    </main>
-    
-    <Footer />
+    <PipWidget />
+    <CourseModal />
   </div>
-  
-  <PipWidget />
-  <CourseModal />
 </div>
 
 <style>
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .main-app-content {
+    flex-grow: 1;
+    /* This area will contain the content from nested layouts/pages */
+    /* The body background is set in app.html, so this can be transparent or have its own */
+  }
+
+  /* Optional: Global styles can go here or in a separate app.css */
+  :global(body) {
+    background-color: #f4f6f8; /* Ensure this is set from previous step or here */
+    color: #333;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    line-height: 1.6;
+  }
+
+  :global(a) {
+    /* color: #007bff; */ /* Example global link color, can be overridden */
+    /* text-decoration: none; */
+  }
+
+  :global(a:hover) {
+    /* text-decoration: underline; */
+  }
+
   /* Basic styles to ensure things are working */
   :global(body) {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;

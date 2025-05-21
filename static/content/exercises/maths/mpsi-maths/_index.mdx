@@ -1,0 +1,71 @@
+---
+title: "MPSI - Mathématiques"
+description: "Programme complet de mathématiques pour la filière MPSI. Ce curriculum couvre un large éventail de sujets, des fondements logiques à l'algèbre avancée et à l'analyse."
+id: "mpsi-maths_index" # Explicit ID, follows parentDirName_index pattern
+order: 1 
+type: "course" # This 'type' can still be 'course' for listing purposes
+contentType: "course_overview" # Explicitly an overview
+childContentType: "lesson" # Its children are lessons
+
+# startLearningLink: "/courses/maths/mpsi-maths/raisonnement-et-vocabulaire-ensembliste" # Can be derived or kept
+# startLearningText: "Commencer par Raisonnement et Vocabulaire Ensembliste"
+# prevLessonLink: "/courses/maths" # This might be handled by breadcrumbs or layout
+# prevLessonTitle: "Thème: Mathématiques"
+
+tags: ["mathématiques", "mpsi", "classes préparatoires", "programme complet"]
+difficulty: "advanced" 
+estimatedTime: "Plusieurs centaines d'heures" 
+thumbnail: "/images/thumbnails/mpsi-maths-overview.png" # Example thumbnail path
+
+# Explicit list of children (lessons)
+# The 'id' here should match the 'id' in the frontmatter of the lesson's .mdx file,
+# or its filename (without .mdx) if the lesson file has no 'id'.
+children:
+  - id: "raisonnement-et-vocabulaire-ensembliste"
+    title: "Raisonnement et vocabulaire ensembliste" # Optional: title override for this list
+    description: "Introduction aux concepts fondamentaux de la théorie des ensembles." # Optional
+    # estimatedTime: "10 heures" # Optional: can be pulled from child's frontmatter
+    # difficulty: "intermédiaire" # Optional
+  - id: "calculs_algebriques" # Assuming filename is calculs_algebriques.mdx or id is 'calculs_algebriques'
+    title: "Calculs algébriques"
+    description: "Maîtrise des techniques de calcul et des opérations algébriques."
+  - id: "nombres-complexes-trigonometrie"
+    title: "Nombres complexes et trigonométrie"
+    description: "Étude approfondie des nombres complexes et de leurs applications en trigonométrie."
+  - id: "structures-algebriques"
+    title: "Structures algébriques usuelles"
+    description: "Introduction aux groupes, anneaux et corps."
+  - id: "espaces-vectoriels-applications-lineaires"
+    title: "Espaces vectoriels et applications linéaires"
+    description: "Théorie des espaces vectoriels et étude des applications linéaires."
+  - id: "groupes-symetriques-et-determinants"
+    title: "Groupes symétriques et déterminants"
+    description: "Étude des permutations et calcul des déterminants."
+  - id: "series-numeriques"
+    title: "Séries numériques"
+    description: "Théorie des séries et critères de convergence."
+  - id: "integration-espaces-produits" # Assuming filename or id
+    title: "Intégration sur les espaces produits"
+    description: "Théorie de l'intégration multiple et applications."
+  - id: "equations-differentielles"
+    title: "Équations différentielles"
+    description: "Résolution et étude qualitative des équations différentielles."
+---
+
+Bienvenue dans le programme de **Mathématiques pour la filière MPSI (Mathématiques, Physique, et Sciences de l'Ingénieur)**.
+
+Ce curriculum complet est conçu pour fournir aux étudiants une base solide et approfondie dans les divers domaines des mathématiques, indispensable pour la réussite aux concours d'entrée des grandes écoles d'ingénieurs et pour les études scientifiques supérieures.
+
+## Structure du Programme :
+
+Le programme de mathématiques en MPSI est exigeant et couvre un large spectre de concepts. Les modules listés ci-dessous constituent le cœur de ce programme. Vous pouvez naviguer vers chaque leçon pour une étude détaillée.
+
+<!-- 
+The explicit list of lessons that was previously here can be removed, 
+as this information is now in the frontmatter's 'children' array and will be
+rendered dynamically by the Svelte component responsible for displaying course overviews.
+-->
+
+*(Note: Le module "MPSI - Mathématiques (Vue d'ensemble)" listé dans le JSON source est représenté par cette page même.)*
+
+Chaque section est conçue pour être étudiée de manière séquentielle, bien que certains concepts puissent être abordés en parallèle. Utilisez la barre de navigation latérale (si implémentée dans le layout) ou les liens ci-dessus (qui seront générés à partir du frontmatter) pour explorer les différents modules et leçons.

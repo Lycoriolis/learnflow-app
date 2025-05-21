@@ -9,8 +9,9 @@ export function validateTopicData(topic: Partial<Topic>): topic is Topic {
     return !!(
         topic.id &&
         topic.title &&
+        topic.content !== undefined &&
         topic.categoryId &&
-        topic.createdAt
+        topic.createdAt !== undefined // Changed to check for undefined
         // ...other required fields...
     );
 }
