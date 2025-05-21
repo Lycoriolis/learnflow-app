@@ -1,22 +1,16 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
-  import { marked } from 'marked';
-  import markedKatexExtension from 'marked-katex-extension'; // Changed import
+  import UnifiedRenderer from '$lib/components/UnifiedRenderer.svelte';
 
   export let data;
 
   let exerciseTitle = '';
   let exerciseDescription = '';
-  let contentHtml = '';
   let breadcrumbItems = [];
   let errorMessage = null;
   let isLoading = true;
 
-  // Initialize marked with KaTeX extension
-  marked.use(markedKatexExtension({ throwOnError: false, output: 'html' })); // Changed usage
-
-  // Reactive block to update variables when `data` or `page` store changes
   $: {
     if ($page.data.error) {
       errorMessage = $page.data.error.message || 'Failed to load exercise.';
@@ -24,26 +18,13 @@
     } else if (data && data.exercise) {
       exerciseTitle = data.exercise.frontmatter?.title || data.exercise.title || 'Exercise';
       exerciseDescription = data.exercise.frontmatter?.description || '';
-      
-      if (data.exercise.rawMdxContent) {
-        try {
-          contentHtml = marked.parse(data.exercise.rawMdxContent) as string;
-        } catch (e) {
-          console.error("Error parsing markdown for exercise:", e);
-          contentHtml = "<p>Error rendering content.</p>";
-        }
-      } else {
-        contentHtml = "<p><em>No content available for this exercise.</em></p>";
-      }
       isLoading = false;
       errorMessage = null;
     } else {
-      // Still loading or data.exercise is null without an error explicitly set in $page.data.error
       isLoading = true; 
-      errorMessage = null; // Clear previous errors if any
+      errorMessage = null;
     }
 
-    // Update breadcrumbs reactively
     const baseBreadcrumbs = [
       { label: 'Accueil', href: '/' },
       { label: 'Exercices', href: '/exercises' },
@@ -73,14 +54,16 @@
       {#if exerciseDescription}
         <p>{exerciseDescription}</p>
       {/if}
-      {@html contentHtml}
+      {#if data.exercise.rawMdxContent}
+        <UnifiedRenderer content={data.exercise.rawMdxContent} type="exercise" />
+      {:else}
+        <p><em>No content available for this exercise.</em></p>
+      {/if}
     </article>
   {:else}
     <div>
       <p>Exercise not found or an unexpected error occurred.</p>
-       <p>Slug: {$page.params.slug}</p>
+      <p>Slug: {$page.params.slug}</p>
     </div>
   {/if}
 </div>
-
-<!-- Styles removed for debugging -->

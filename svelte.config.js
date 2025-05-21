@@ -17,15 +17,22 @@ const config = {
                 remarkMath, // Process math blocks
             ],
             rehypePlugins: [
-                rehypeKatex, // Render math with KaTeX
+                [rehypeKatex, {
+                    // Add KaTeX options for better rendering
+                    throwOnError: false,
+                    strict: false,
+                    output: 'htmlAndMathml',
+                    trust: true,
+                    macros: {
+                        // Common math macros
+                        "\\R": "\\mathbb{R}",
+                        "\\N": "\\mathbb{N}",
+                        "\\Z": "\\mathbb{Z}",
+                        "\\Q": "\\mathbb{Q}",
+                        "\\C": "\\mathbb{C}"
+                    }
+                }], // Enhanced KaTeX configuration
             ],
-            // Optional: Define global layouts for MDX files
-            // layout: {
-            //    // Default layout for all MDX files
-            //    // _: './src/lib/components/layouts/MdxPageLayout.svelte', 
-            //    // Layout for specific MDX files based on frontmatter (e.g., type: 'lesson')
-            //    // lesson: './src/lib/components/layouts/LessonLayout.svelte',
-            // },
         })
     ],
 

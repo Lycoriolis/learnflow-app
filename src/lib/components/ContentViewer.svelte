@@ -1,9 +1,7 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
   import { onMount } from 'svelte';
-  import MarkdownRenderer from './MarkdownRendererComponent.svelte';
-  import ExerciseMarkdown from './ExerciseMarkdown.svelte';
-  import MathContent from './MathContent.svelte';
+  import UnifiedRenderer from './UnifiedRenderer.svelte';
   import ExerciseRating from './ExerciseRating.svelte';
   import type { ContentNode } from '$lib/services/contentService';
   import { getAuth } from 'firebase/auth';
@@ -30,6 +28,7 @@
   let solutionBlurLevel = 5;
   let checkedHints: string[] = [];
   let hintsArray: string[] = [];
+  let loadingSolutionState = true;
 
   let startTime: Date | null = null;
   let timeSpent = 0;
@@ -42,6 +41,7 @@
         startTime = new Date();
         timerInterval = window.setInterval(updateTimeSpent, 1000);
         await loadUserProgress();
+        loadingSolutionState = false;
       }
     })();
 
@@ -82,6 +82,11 @@
         userNotes = data.notes || '';
         lastAttemptDate = data.lastAttemptDate?.toDate() || null;
         checkedHints = data.checkedHints || [];
+        
+        if (data.solutionVisible) {
+          showSolution = true;
+          solutionRevealProgress = 100;
+        }
       }
     } catch (err) {
       console.error('Error loading user progress:', err);
@@ -129,7 +134,8 @@
         timeSpent: timeSpent + (getTimeSpentSoFar() || 0),
         lastAttemptDate: new Date(),
         notes: userNotes,
-        checkedHints: checkedHints
+        checkedHints: checkedHints,
+        solutionVisible: showSolution
       }, { merge: true });
 
     } catch (err) {
@@ -207,11 +213,17 @@
         if (solutionRevealProgress >= 100) {
           clearInterval(interval);
           showSolution = true;
+          if (item) {
+            saveUserProgress(isCompleted ? 'completed' : 'inProgress');
+          }
         }
       }, 100);
     } else {
       showSolution = false;
       solutionRevealProgress = 0;
+      if (item) {
+        saveUserProgress(isCompleted ? 'completed' : 'inProgress');
+      }
     }
   }
 
@@ -287,7 +299,7 @@
 
     <div class="flex-grow overflow-y-auto prose dark:prose-invert prose-cherry lg:prose-lg scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent pr-2 -mr-2">
       {#if type === 'exercise'}
-        <ExerciseMarkdown markdown={sections.content || sections.main} />
+        <UnifiedRenderer content={sections.content || sections.main} type="exercise" />
         
         {#if hintsArray && hintsArray.length > 0}
           <div class="mt-6 border-t border-gray-200 dark:border-gray-700 pt-4">
@@ -305,7 +317,7 @@
                   
                   {#if checkedHints.includes(`hint-${i}`)}
                     <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-md mt-1" transition:slide>
-                      <MarkdownRenderer content={hint} />
+                      <UnifiedRenderer content={hint} />
                     </div>
                   {/if}
                 </div>
@@ -318,12 +330,18 @@
           <div class="mt-6 border-t border-gray-200 dark:border-gray-700 pt-4">
             <div class="flex justify-between items-center mb-3">
               <h3 class="text-lg font-semibold">Solution</h3>
-              <button 
-                on:click={handleToggleSolution}
-                class="px-3 py-1.5 text-sm font-medium rounded-md bg-cherry-100 dark:bg-cherry-900/30 text-cherry-700 dark:text-cherry-400 hover:bg-cherry-200 dark:hover:bg-cherry-800/50 transition-colors"
-              >
-                {showSolution ? 'Hide Solution' : 'Show Solution'}
-              </button>
+              <div class="flex items-center gap-2">
+                {#if loadingSolutionState}
+                  <div class="w-5 h-5 border-2 border-cherry-500 border-t-transparent rounded-full animate-spin"></div>
+                {/if}
+                <button 
+                  on:click={handleToggleSolution}
+                  class="px-3 py-1.5 text-sm font-medium rounded-md bg-cherry-100 dark:bg-cherry-900/30 text-cherry-700 dark:text-cherry-400 hover:bg-cherry-200 dark:hover:bg-cherry-800/50 transition-colors"
+                  disabled={loadingSolutionState}
+                >
+                  {showSolution ? 'Hide Solution' : 'Show Solution'}
+                </button>
+              </div>
             </div>
             
             {#if solutionRevealProgress > 0 && !showSolution}
@@ -334,19 +352,19 @@
             
             {#if showSolution}
               <div transition:slide>
-                <MarkdownRenderer content={sections.solution} />
+                <UnifiedRenderer content={sections.solution} />
               </div>
             {:else if solutionRevealProgress > 0}
               <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-md" style="filter: blur({solutionBlurLevel - (solutionBlurLevel * solutionRevealProgress / 100)}px);">
-                <MarkdownRenderer content={sections.solution} />
+                <UnifiedRenderer content={sections.solution} />
               </div>
             {/if}
           </div>
         {/if}
       {:else if type === 'course'}
-        <MarkdownRenderer content={sections.content || sections.main} />
+        <UnifiedRenderer content={sections.content || sections.main} />
       {:else}
-        <MarkdownRenderer content={sections.content || sections.main} />
+        <UnifiedRenderer content={sections.content || sections.main} />
       {/if}
     </div>
 
@@ -403,7 +421,7 @@
           {:else}
             <div class="mt-2 p-3 border border-gray-200 dark:border-gray-700 rounded-md min-h-[50px] bg-gray-50 dark:bg-gray-800">
               {#if userNotes}
-                <MarkdownRenderer content={userNotes} />
+                <UnifiedRenderer content={userNotes} />
               {:else}
                 <p class="text-gray-500 dark:text-gray-400 italic">No notes yet. Click "Edit" to add notes.</p>
               {/if}

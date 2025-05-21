@@ -3,19 +3,25 @@
   import katex from 'katex';
   import 'katex/dist/katex.min.css';
   import { browser } from '$app/environment';
+  import { fade } from 'svelte/transition';
 
   export let content: string = '';
   export let displayMode: boolean = false;
   export let errorColor: string = '';
   export let fallback: string = '';
+  export let className: string = '';
 
   let element: HTMLElement;
   let isRendered = false;
   let renderError: Error | null = null;
+  let isVisible = false;
 
   onMount(() => {
     if (browser) {
-      renderMath();
+      setTimeout(() => {
+        renderMath();
+        isVisible = true;
+      }, 10); // Small delay to ensure DOM is ready
     }
   });
 
@@ -33,7 +39,14 @@
         throwOnError: false,
         errorColor: errorColor || '#cc0000',
         trust: true,
-        strict: false
+        strict: false,
+        macros: {
+          "\\R": "\\mathbb{R}",
+          "\\N": "\\mathbb{N}",
+          "\\Z": "\\mathbb{Z}",
+          "\\Q": "\\mathbb{Q}",
+          "\\C": "\\mathbb{C}"
+        }
       });
       isRendered = true;
       renderError = null;
@@ -54,26 +67,36 @@
 {#if browser}
   <span 
     bind:this={element} 
-    class={displayMode ? 'math-block' : 'math-inline'}
+    class={`math-content ${displayMode ? 'math-block' : 'math-inline'} ${className}`}
     aria-label={displayMode ? 'Math equation, block display' : 'Math equation, inline display'}
+    in:fade={{ duration: 200, delay: 50 }}
   ></span>
 {:else}
   <!-- Server-side placeholder -->
-  <span class={displayMode ? 'math-block math-placeholder' : 'math-inline math-placeholder'}>
+  <span class={`math-content ${displayMode ? 'math-block math-placeholder' : 'math-inline math-placeholder'}`}>
     {content}
   </span>
 {/if}
 
 <style>
+  .math-content {
+    font-size: 1.05em;
+  }
+
   .math-block {
     display: block;
-    margin: 1em 0;
-    text-align: center;
+    margin: 1.5em 0;
+    padding: 0.75em;
+    background-color: rgba(245, 247, 250, 0.7);
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   }
 
   .math-inline {
     display: inline-block;
     vertical-align: middle;
+    padding: 0 0.2em;
   }
   
   .math-placeholder {
@@ -81,6 +104,17 @@
     color: #666;
     background-color: #f5f5f5;
     padding: 0.25em 0.5em;
-    border-radius: 4px;
+    border-radius: 0.25rem;
+  }
+  
+  /* Dark mode styles */
+  :global(.dark) .math-block {
+    background-color: rgba(30, 41, 59, 0.7);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+  
+  :global(.dark) .math-placeholder {
+    color: #ccc;
+    background-color: #2d3748;
   }
 </style>

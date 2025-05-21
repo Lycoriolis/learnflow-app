@@ -2,6 +2,7 @@
 	import type { PageData } from './$types';
 	// import CourseCard from '$lib/components/courses/CourseCard.svelte'; 
 	import { marked } from 'marked'; 
+	import UnifiedRenderer from '$lib/components/UnifiedRenderer.svelte';
 
 	export let data: PageData;
 
@@ -64,7 +65,7 @@
 			
 			<section class="main-content prose lg:prose-xl">
 				{#if data.courseData.rawMdxContent}
-					{@html marked(data.courseData.rawMdxContent)}
+					<UnifiedRenderer content={data.courseData.rawMdxContent} type="course" />
 				{:else}
 					<p>Course overview content could not be loaded.</p>
 				{/if}

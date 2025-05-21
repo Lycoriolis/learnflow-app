@@ -2,6 +2,7 @@
 	import type { PageData } from './$types';
 	import ExerciseCard from '$lib/components/courses/exercise/ExerciseCard.svelte';
 	import { marked } from 'marked'; // Or your MDX rendering solution
+	import UnifiedRenderer from '$lib/components/UnifiedRenderer.svelte';
 
 	export let data: PageData;
 
@@ -65,7 +66,7 @@
 			<section class="content">
 				<h2>Exercise Content</h2>
 				{#if data.exerciseData.rawMdxContent}
-					{@html marked(data.exerciseData.rawMdxContent)}
+					<UnifiedRenderer content={data.exerciseData.rawMdxContent} type="exercise" />
 				{:else}
 					<p>Exercise content could not be loaded.</p>
 				{/if}
