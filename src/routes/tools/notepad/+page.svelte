@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { notepadContent } from '$lib/stores/pipStores';
-  import MarkdownRenderer from '$lib/components/MarkdownRendererComponent.svelte';
+  import EnhancedMarkdownRenderer from '$lib/components/EnhancedMarkdownRenderer.svelte';
   import { logStart, logEnd } from '$lib/services/activityService';
 
   // Bind directly to the persistent store
@@ -86,7 +86,7 @@
       <div>
         <label class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200 block">Live Preview</label>
         <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 h-64 overflow-auto shadow-inner prose dark:prose-invert">
-          <MarkdownRenderer content={note} />
+          <EnhancedMarkdownRenderer content={note} />
         </div>
       </div>
     {/if}

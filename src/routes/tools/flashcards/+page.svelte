@@ -233,6 +233,7 @@
               rows="3"
               class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg"
               placeholder="Question or term..."
+              aria-label="Flashcard front side content"
             ></textarea>
           </div>
           <div>
@@ -242,6 +243,7 @@
               rows="3"
               class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg"
               placeholder="Answer or definition..."
+              aria-label="Flashcard back side content"
             ></textarea>
           </div>
           <div>

@@ -29,7 +29,7 @@
   function configureParsers() {
     // Configure marked for markdown parsing
     marked.setOptions({
-      highlight: function(code, lang) {
+      highlight: (code: string, lang: string): string => {
         if (lang && hljs.getLanguage(lang)) {
           return hljs.highlight(code, { language: lang }).value;
         }

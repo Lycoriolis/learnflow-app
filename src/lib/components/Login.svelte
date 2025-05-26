@@ -53,7 +53,7 @@
     if (field === 'password') hasFocusedPassword = true;
   }
   
-  async function handleLogin(e: SubmitEvent) {
+  async function handleLogin(e: CustomEvent<SubmitEvent>) {
     if (!browser) return;
     
     e.preventDefault();

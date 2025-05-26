@@ -16,7 +16,10 @@
   import type { PageData } from './$types';
 
   export let data: PageData;
-  $: suggestedCourses = data.suggestedCourses || [];
+  // Initialize suggested courses from data or default to empty array
+  $: suggestedContent = data.suggestedContent || [];
+  $: safeSuggestedContent = Array.isArray(suggestedContent) ? suggestedContent : [];
+  $: suggestedCourses = safeSuggestedContent.filter((item: any) => item.type === 'course') || [];
 
   type Metric = { title: string; value: string; icon: string; color: string };
   let metrics: Metric[] = [];
@@ -68,39 +71,55 @@
   <meta name="description" content="Your personalized learning dashboard on LearnFlow." />
 </svelte:head>
 
-<div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+<div class="p-6 sm:p-8 md:p-10 text-slate-100">
   {#if $authLoading || $userProfileLoading}
-    <div class="flex justify-center items-center min-h-[60vh]"><i class="fas fa-spinner fa-spin text-4xl text-indigo-500"></i></div>
+    <div class="flex justify-center items-center min-h-[60vh]"><i class="fas fa-spinner fa-spin text-4xl text-cyan-500"></i></div>
   {:else if $isAuthenticated && $userProfile}
     <WelcomeBanner username={$user ? ($user.displayName ?? $user.email ?? '') : ''} />
 
     <ProgressMetrics {metrics} />
 
-    <div class="mb-8">
-      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Focus Time Log</h2>
-      <FocusTimeChart sessions={$focusSessions} timeUnit="day" />
+    <div class="mb-10">
+      <h2 class="text-2xl sm:text-3xl font-semibold text-slate-100 mb-6 pb-2 border-b-2 border-cyan-500/30">Focus Time Log</h2>
+      <div class="bg-slate-800/70 p-4 sm:p-6 rounded-xl border border-slate-700 shadow-xl">
+        <FocusTimeChart sessions={$focusSessions} timeUnit="day" />
+      </div>
     </div>
 
-    <div class="mb-8">
-      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h2>
-      <div class="flex flex-col gap-4 w-full">
-        <CourseCarousel title="Suggested Courses" items={suggestedCourses} />
-        <ExercisesSection limit={5} />
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow min-h-[140px] flex flex-col items-center justify-center text-center transition hover:shadow-xl hover:ring-2 hover:ring-indigo-300 w-full">
-          <h3 class="text-lg font-semibold mb-2">Your Tasks</h3>
-          <p class="text-gray-600 dark:text-gray-300">Manage your study tasks.</p>
+    <div class="mb-10">
+      <h2 class="text-2xl sm:text-3xl font-semibold text-slate-100 mb-6 pb-2 border-b-2 border-sky-500/30">Quick Actions & Overview</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+        
+        <div class="bg-slate-800/70 rounded-xl border border-slate-700 shadow-xl p-5 group hover:border-slate-600/80 transition-all duration-300">
+          <CourseCarousel title="Suggested Courses" courses={suggestedCourses} />
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow min-h-[140px] flex flex-col items-center justify-center text-center transition hover:shadow-xl hover:ring-2 hover:ring-indigo-300 w-full">
-          <h3 class="text-lg font-semibold mb-2">Your Notes</h3>
-          <p class="text-gray-600 dark:text-gray-300">Jot down quick thoughts.</p>
+
+        <div class="bg-slate-800/70 rounded-xl border border-slate-700 shadow-xl p-5 group hover:border-slate-600/80 transition-all duration-300">
+          <ExercisesSection limit={3} /> 
+        </div>
+
+        <div class="bg-slate-800/70 rounded-xl border border-slate-700 shadow-xl p-6 flex flex-col items-center justify-center text-center group hover:border-slate-600/80 transition-all duration-300 min-h-[180px]">
+          <h3 class="text-xl font-semibold mb-2 text-slate-100 group-hover:text-cyan-400 transition-colors">Your Tasks</h3>
+          <p class="text-slate-400 mb-4">Manage your study tasks efficiently.</p>
+          <a href="/todos" class="mt-auto px-4 py-2 text-sm font-medium rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white transition-colors duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-opacity-50">View Tasks</a>
+        </div>
+
+        <div class="bg-slate-800/70 rounded-xl border border-slate-700 shadow-xl p-6 flex flex-col items-center justify-center text-center group hover:border-slate-600/80 transition-all duration-300 min-h-[180px]">
+          <h3 class="text-xl font-semibold mb-2 text-slate-100 group-hover:text-sky-400 transition-colors">Your Notes</h3>
+          <p class="text-slate-400 mb-4">Jot down quick thoughts and ideas.</p>
+          <a href="/notes" class="mt-auto px-4 py-2 text-sm font-medium rounded-lg bg-sky-600 hover:bg-sky-500 text-white transition-colors duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-opacity-50">View Notes</a>
         </div>
       </div>
     </div>
 
-    <ScoreCard />
+    <div class="mb-10">
+      <ScoreCard />
+    </div>
 
-    <RecommendationsSection limit={5} />
-
+    <div class="mb-10">
+      <RecommendationsSection limit={4} />
+    </div>
+    
     <RecentActivity />
 
   {:else}

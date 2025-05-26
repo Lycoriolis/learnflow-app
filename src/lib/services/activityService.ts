@@ -1,5 +1,5 @@
 // src/lib/services/activityService.ts
-import { collection, addDoc, query, where, orderBy, limit as firestoreLimit, getDocs, doc, updateDoc, type DocumentData } from 'firebase/firestore';
+import { collection, addDoc, query, where, orderBy, limit as firestoreLimit, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase.js';
 import { get } from 'svelte/store';
 import { user } from '../stores/authStore.js';

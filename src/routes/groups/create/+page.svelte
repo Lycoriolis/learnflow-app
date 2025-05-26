@@ -48,19 +48,39 @@
   <form on:submit|preventDefault={createGroup} class="space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
     <div>
       <label class="block text-sm font-medium mb-1">Group Name</label>
-      <input class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" bind:value={name} required />
+      <input 
+        class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" 
+        bind:value={name} 
+        required 
+        aria-label="Group name"
+      />
     </div>
     <div>
       <label class="block text-sm font-medium mb-1">Description</label>
-      <textarea class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" bind:value={description} rows="3" required></textarea>
+      <textarea 
+        class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" 
+        bind:value={description} 
+        rows="3" 
+        required
+        aria-label="Group description"
+      ></textarea>
     </div>
     <div>
       <label class="block text-sm font-medium mb-1">Topic</label>
-      <input class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" bind:value={topic} required />
+      <input 
+        class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" 
+        bind:value={topic} 
+        required 
+        aria-label="Group topic"
+      />
     </div>
     <div>
       <label class="block text-sm font-medium mb-1">Image URL (optional)</label>
-      <input class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" bind:value={image} />
+      <input 
+        class="w-full rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" 
+        bind:value={image} 
+        aria-label="Group image URL"
+      />
     </div>
     <div class="flex items-center gap-2">
       <input type="checkbox" id="isPublic" bind:checked={isPublic} />

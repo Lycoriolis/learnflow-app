@@ -4,7 +4,7 @@
 import { getCsrfToken, updateCsrfTokenFromResponse } from './csrf.client.js';
 import { CSRF_HEADER } from './csrf.types.js';
 import { get } from 'svelte/store';
-import { isAuthenticated, user } from '../stores/authStore.js';
+import { isAuthenticated } from '../stores/authStore.js';
 import { auth } from '../firebase.js';
 
 export interface ApiResponse<T = any> {

@@ -1,13 +1,12 @@
-const { initializeApp, cert } = require('firebase-admin/app');
+const { initializeApp } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
 const { getAuth } = require('firebase-admin/auth');
 
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}');
-const app = initializeApp({
-  credential: cert(serviceAccount)
-});
-const db = getFirestore(app);
-const auth = getAuth(app);
+// Initialize Firebase Admin SDK (relies on GOOGLE_APPLICATION_CREDENTIALS)
+initializeApp();
+
+const db = getFirestore();
+const auth = getAuth();
 
 async function initializeUserProgress(userId) {
   const userProgress = {
@@ -49,4 +48,4 @@ async function main() {
   }
 }
 
-main(); 
+main();

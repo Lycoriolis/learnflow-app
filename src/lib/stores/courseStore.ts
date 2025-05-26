@@ -1,7 +1,8 @@
 import { writable, derived } from 'svelte/store';
-import type { ContentNode } from '$lib/services/courses/courseService';
-import { fetchCourses, fetchCourseCategories } from '$lib/services/courses/courseService';
+import type { ContentNode } from '$lib/services/courses/courseService'; // Corrected path
 import { browser } from '$app/environment';
+// Import fetchCourses and fetchCourseCategories instead of CourseContentService
+import { fetchCourses, fetchCourseCategories } from '$lib/services/courses/courseService'; 
 
 // Create stores
 export const courseItems = writable<ContentNode[]>([]);
@@ -18,13 +19,24 @@ export async function initCourseStore() {
   error.set(null);
   
   try {
-    const [courses, categories] = await Promise.all([
-      fetchCourses(),
-      fetchCourseCategories()
-    ]);
+    // Use the imported functions directly
+    const coursesResponse = await fetchCourses();
+    const categoriesResponse = await fetchCourseCategories();
     
-    courseItems.set(courses);
-    courseCategories.set(categories);
+    if (coursesResponse.data) { // Check data directly
+      courseItems.set(coursesResponse.data);
+    } else if (coursesResponse.error) {
+      console.error('Error fetching courses:', coursesResponse.error);
+      error.set('Failed to load courses. Please try again later.');
+    }
+
+    if (categoriesResponse.data) { // Check data directly
+      courseCategories.set(categoriesResponse.data);
+    } else if (categoriesResponse.error) {
+      console.error('Error fetching categories:', categoriesResponse.error);
+      // Optionally set a different error or append to existing
+      error.set('Failed to load course categories. Please try again later.');
+    }
   } catch (err) {
     console.error('Error initializing course store:', err);
     error.set('Failed to load courses. Please try again later.');

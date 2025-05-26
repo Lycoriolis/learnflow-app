@@ -1,67 +1,121 @@
 // Content-related type definitions for the LearnFlow app
 
-// Base interface for timestamps
+// Timestamped interface
 export interface Timestamped {
-  createdAt?: any; // FirebaseFirestore.Timestamp
-  updatedAt?: any; // FirebaseFirestore.Timestamp
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Base interface for all content items
+export interface BaseContent {
+  id: string;
+  title: string;
+  description: string;
+  createdAt: Date;
+  updatedAt: Date;
+  authorId: string;
+  isPublished: boolean;
+  order?: number;
+  metadata?: {
+    version?: string;
+    lastModifiedBy?: string;
+    tags?: string[];
+  };
 }
 
 // Course interface
-export interface Course extends Timestamped {
-  id?: string;
-  title: string;
-  description: string;
+export interface Course extends BaseContent {
   category: string;
   level: 'beginner' | 'intermediate' | 'advanced';
   featured?: boolean;
   imageUrl?: string;
-  duration?: number; // in minutes
-  authorId: string;
-  tags?: string[];
-  lessons?: string[]; // IDs of lessons
-  enrollmentCount?: number;
+  duration: number; // in minutes
+  modules: string[]; // IDs of modules
+  enrollmentCount: number;
   rating?: number;
-  published?: boolean;
+  prerequisites?: string[]; // IDs of prerequisite courses
+  tags: string[];
+  slug: string;
+}
+
+// Module interface
+export interface Module extends BaseContent {
+  courseId: string;
+  lessons: string[]; // IDs of lessons
+  duration: number; // in minutes
+  prerequisites?: string[]; // IDs of prerequisite modules
 }
 
 // Lesson interface
-export interface Lesson extends Timestamped {
-  id?: string;
-  courseId: string;
-  title: string;
-  content: string;
-  order: number;
-  duration?: number; // in minutes
-  videoUrl?: string;
-  attachments?: Attachment[];
-  quizzes?: string[]; // IDs of quizzes
+export interface Lesson extends BaseContent {
+  moduleId: string;
+  courseId: string; // Denormalized for easier querying
+  contentType: 'mdx' | 'video' | 'quiz';
+  contentPath?: string; // For MDX content
+  videoUrl?: string; // For video content
+  duration: number; // in minutes
+  exercises: string[]; // IDs of exercises
+  prerequisites?: string[]; // IDs of prerequisite lessons
 }
 
 // Exercise interface
-export interface Exercise extends Timestamped {
-  id?: string;
-  title: string;
-  description: string;
-  lessonId?: string;
+export interface Exercise extends BaseContent {
+  lessonId: string;
+  moduleId: string; // Denormalized for easier querying
+  courseId: string; // Denormalized for easier querying
+  type: 'multiple-choice' | 'coding' | 'fill-in-the-blanks';
+  question: string;
+  options?: string[]; // For multiple-choice
+  correctAnswer: string | string[];
+  points: number;
   difficulty: 'easy' | 'medium' | 'hard';
-  type: 'multiple-choice' | 'code' | 'written';
-  content: string;
-  solution?: string;
-  hints?: string[];
-  points?: number;
 }
 
-// User Progress interface
-export interface UserProgress extends Timestamped {
-  id?: string;
+// User progress tracking
+export interface UserProgress {
   userId: string;
-  courseId: string;
-  completedLessons: string[]; // IDs of completed lessons
-  completedExercises: string[]; // IDs of completed exercises
-  progress: number; // Percentage completed (0-100)
-  lastActivity: any; // FirebaseFirestore.Timestamp
-  quizScores?: { [quizId: string]: number };
-  certificationEarned?: boolean;
+  itemId: string; // Can be courseId, moduleId, lessonId, or exerciseId
+  itemType: 'course' | 'module' | 'lesson' | 'exercise';
+  status: 'not-started' | 'in-progress' | 'completed';
+  score?: number; // For exercises/quizzes
+  lastAccessedAt: Date;
+  completedAt?: Date;
+  attempts?: number;
+  metadata?: {
+    timeSpent?: number; // in minutes
+    lastScore?: number;
+    notes?: string;
+  };
+}
+
+// User activity tracking
+export interface UserActivity {
+  userId: string;
+  activityType: 'view_lesson' | 'attempt_exercise' | 'complete_course' | 'post_forum_reply';
+  itemId: string;
+  itemType: 'course' | 'module' | 'lesson' | 'exercise' | 'forum_post';
+  timestamp: Date;
+  details: {
+    score?: number;
+    duration?: number;
+    success?: boolean;
+    [key: string]: any; // For additional activity-specific data
+  };
+}
+
+// Category interface
+export interface Category {
+  id: string;
+  title: string;
+  description?: string;
+  slug: string;
+  parentId?: string;
+  order?: number;
+  courseCount: number;
+  metadata?: {
+    icon?: string;
+    color?: string;
+  };
 }
 
 // Attachment interface

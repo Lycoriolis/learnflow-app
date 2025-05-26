@@ -16,8 +16,9 @@
     dispatch('select', { course });
   }
   
-  function handleKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Enter' || event.key === ' ') {
+  function handleKeyDown(event: CustomEvent<KeyboardEvent>) {
+    const keyboardEvent = event.detail;
+    if (keyboardEvent.key === 'Enter' || keyboardEvent.key === ' ') {
       event.preventDefault();
       dispatch('select', { course });
     }

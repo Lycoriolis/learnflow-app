@@ -1,81 +1,21 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { marked } from 'marked';
 	import { page, navigating, updated } from '$app/stores';
-	import markedKatex from "marked-katex-extension";
-
-	// --- Custom Marked Renderer for Callouts ---
-	const calloutConfig = [
-		{ type: 'definition', keywords: ['Définition'], class: 'callout-definition' },
-		{ type: 'proposition', keywords: ['Proposition', 'Théorème', 'Lemme', 'Corollaire'], class: 'callout-proposition' },
-		{ type: 'example', keywords: ['Exemple'], class: 'callout-example' },
-		{ type: 'note', keywords: ['Note', 'Remarque'], class: 'callout-note' },
-		{ 
-			type: 'emphasis', 
-			keywords: [
-				'Sommes géométriques', 'Sommes télescopiques', 'Combinaisons',
-				'Formule du binôme de Newton', 'Factorisations remarquables',
-				'Structure affine de l’ensemble des solutions',
-				'Méthode du pivot de Gauss',
-				"Développement d\\\'\\\'\\\'un produit de sommes :" // Preserving original string from file
-			], 
-			class: 'callout-generic-emphasis' 
-		}
-	];
-
-	function getParagraphMarkup(text: string) {
-		if (typeof text !== 'string') { // This check is now more of a safeguard
-			console.warn('getParagraphMarkup unexpectedly received non-string text:', text);
-			return { html: '<p><!-- Non-string content in getParagraphMarkup --></p>' };
-		}
-		const strongContentMatch = text.match(/^<strong>([\s\S]*?)<\/strong>([\s\S]*)/);
-		let strongText = '';
-		
-		if (strongContentMatch) {
-			strongText = strongContentMatch[1];
-			const trailingText = strongContentMatch[2];
-			const isStrongOnlyLine = !trailingText || trailingText.trim() === '';
-
-			for (const config of calloutConfig) {
-				if (config.keywords.some(kw => strongText.startsWith(kw))) {
-					if (config.type === 'emphasis' && !isStrongOnlyLine) {
-						continue; // Don't apply emphasis callout if there's more text after the bold part
-					}
-					return { html: `<div class="callout ${config.class}"><p>${text}</p></div>` };
-				}
-			}
-		}
-		return { html: `<p>${text}</p>` }; // Default paragraph
-	}
-
-	const customRenderer = new marked.Renderer();
-	customRenderer.paragraph = (text: any) => { // Allow 'any' to acknowledge the actual type being received sometimes
-		if (typeof text !== 'string') {
-			console.warn(
-				'Custom paragraph renderer received non-string text. Type:', 
-				typeof text, 
-				'. Value:', text,
-				// Attempt to get more details if it's an object
-				(typeof text === 'object' && text !== null) ? `Keys: ${Object.keys(text).join(', ')}` : ''
-			);
-			// Replace [object Object] with an empty paragraph containing an HTML comment
-			return '<p><!-- Paragraph content was not a string --></p>'; 
-		}
-		// If text is a string, proceed with existing logic
-		return getParagraphMarkup(text).html;
-	};
-
-	// Correctly register KaTeX extension first
-	marked.use(markedKatex({ throwOnError: false, nonStandard: true }));
-	// Then, register the custom renderer
-	marked.use({ renderer: customRenderer });
-	// --- End Custom Marked Renderer ---
+	import EnhancedMarkdownRenderer from '$lib/components/EnhancedMarkdownRenderer.svelte';
+	import { processCourseCallouts } from '$lib/utils/markdown.ts';
 
 	export let data: PageData; // Data specific to this lesson page
 	
+	// Create a type for layout data
+	interface LayoutData {
+		siblingLessons?: any[];
+		courseData?: any;
+		// Add other properties as needed
+	}
+	
 	// Access layout data via $page store
-	let layoutData: App.LayoutData;
-	$: layoutData = $page.data.layoutData;
+	let layoutData: LayoutData;
+	$: layoutData = $page.data.layoutData || {};
 
 	let currentIndex = -1;
 	let prevLesson: any = null;
@@ -105,6 +45,9 @@
 		nextLesson = null;
 	}
 
+	// Process the content to convert legacy callouts to enhanced format
+	$: processedContent = data.contentItem?.rawMdxContent ? processCourseCallouts(data.contentItem.rawMdxContent) : '';
+
 	// $: console.log('Lesson Page Data:', data);
 	// $: console.log('Layout Data on Lesson Page:', layoutData);
 	// $: console.log('Prev:', prevLesson, 'Next:', nextLesson, 'CurrentIndex:', currentIndex);
@@ -129,8 +72,8 @@
 			{/if}
 			
 			<section class="main-content prose lg:prose-xl max-w-none"> <!-- Added max-w-none to allow prose to fill container -->
-				{#if data.contentItem.rawMdxContent}
-					{@html marked(data.contentItem.rawMdxContent)}
+				{#if processedContent}
+					<EnhancedMarkdownRenderer content={processedContent} />
 				{:else}
 					<p>Content could not be loaded.</p>
 				{/if}

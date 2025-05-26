@@ -1,8 +1,9 @@
 // src/lib/services/courses/courseService.ts
-import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
-import type { CourseStructure, Lesson, Module, ServiceResponse } from '../../types/shared';
+import { collection, query, where, getDocs, doc, getDoc, orderBy } from 'firebase/firestore';
+import type { Course, Module, Lesson, Exercise, Category } from '../../types/content';
+import type { ServiceResponse } from '../../types/shared';
 import { BaseService } from '../baseService';
-import { db, auth } from '../../../lib/firebase'; // Import the initialized Firebase instances
+import { db } from '../../../lib/firebase'; // Import the initialized Firebase instances
 
 // Define the ContentNode type which represents courses and exercises
 export interface ContentNode {
@@ -13,7 +14,7 @@ export interface ContentNode {
   tags?: string[];
   content?: string;
   level?: 'beginner' | 'intermediate' | 'advanced';
-  duration?: string;
+  duration?: string | number; // Allow number or string for duration
   author?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -27,57 +28,26 @@ export interface ContentNode {
 }
 
 // Cache for courses
-const courseCache: Record<string, CourseStructure> = {};
-const categoryCache: Record<string, any[]> = {};
+const courseCache: Record<string, Course> = {};
+const categoryCache: Record<string, Category[]> = {};
 
 export class CourseService extends BaseService {
   private db = db; // Use the already initialized Firestore instance
-  private auth = auth; // Use the already initialized Auth instance
 
-  async fetchCourses(): Promise<ServiceResponse<CourseStructure[]>> {
+  async fetchCourses(): Promise<ServiceResponse<Course[]>> {
     return this.handleRequest(async () => {
       const coursesRef = collection(this.db, 'courses');
-      const snapshot = await getDocs(coursesRef);
+      const q = query(coursesRef, orderBy('order', 'asc'));
+      const snapshot = await getDocs(q);
       
       return snapshot.docs.map(doc => ({
-        id: doc.id,
-        title: doc.data().title,
-        description: doc.data().description,
-        thumbnail: doc.data().thumbnail,
-        difficulty: doc.data().difficulty,
-        totalDuration: doc.data().totalDuration || 0,
-        enrolledCount: doc.data().enrolledCount || 0,
-        category: doc.data().category,
-        tags: doc.data().tags || [],
-        modules: doc.data().modules || [],
-        metadata: {
-          createdAt: doc.data().metadata?.createdAt?.toDate() || new Date(),
-          updatedAt: doc.data().metadata?.updatedAt?.toDate() || new Date(),
-          author: doc.data().metadata?.author || 'System'
-        }
-      }));
+        ...doc.data(),
+        id: doc.id
+      } as Course));
     });
   }
 
-  async fetchCourseCategories(): Promise<ServiceResponse<any[]>> {
-    return this.handleRequest(async () => {
-      if (categoryCache['all']) {
-        return categoryCache['all'];
-      }
-
-      const categoriesRef = collection(this.db, 'courseCategories');
-      const snapshot = await getDocs(categoriesRef);
-      const categories = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-
-      categoryCache['all'] = categories;
-      return categories;
-    });
-  }
-
-  async fetchCourseById(id: string): Promise<ServiceResponse<CourseStructure>> {
+  async fetchCourseById(id: string): Promise<ServiceResponse<Course>> {
     return this.handleRequest(async () => {
       const courseRef = doc(this.db, 'courses', id);
       const docSnap = await getDoc(courseRef);
@@ -86,28 +56,14 @@ export class CourseService extends BaseService {
         throw new Error('Course not found');
       }
 
-      const data = docSnap.data();
       return {
-        id: docSnap.id,
-        title: data.title,
-        description: data.description,
-        thumbnail: data.thumbnail,
-        difficulty: data.difficulty,
-        totalDuration: data.totalDuration || 0,
-        enrolledCount: data.enrolledCount || 0,
-        category: data.category,
-        tags: data.tags || [],
-        modules: data.modules || [],
-        metadata: {
-          createdAt: data.metadata?.createdAt?.toDate() || new Date(),
-          updatedAt: data.metadata?.updatedAt?.toDate() || new Date(),
-          author: data.metadata?.author || 'System'
-        }
-      };
+        ...docSnap.data(),
+        id: docSnap.id
+      } as Course;
     });
   }
 
-  async fetchCourseBySlug(slug: string): Promise<ServiceResponse<CourseStructure>> {
+  async fetchCourseBySlug(slug: string): Promise<ServiceResponse<Course>> {
     return this.handleRequest(async () => {
       const coursesRef = collection(this.db, 'courses');
       const q = query(coursesRef, where('slug', '==', slug));
@@ -118,207 +74,144 @@ export class CourseService extends BaseService {
       }
 
       const doc = snapshot.docs[0];
-      const data = doc.data();
       return {
-        id: doc.id,
-        title: data.title,
-        description: data.description,
-        thumbnail: data.thumbnail,
-        difficulty: data.difficulty,
-        totalDuration: data.totalDuration || 0,
-        enrolledCount: data.enrolledCount || 0,
-        category: data.category,
-        tags: data.tags || [],
-        modules: data.modules || [],
-        metadata: {
-          createdAt: data.metadata?.createdAt?.toDate() || new Date(),
-          updatedAt: data.metadata?.updatedAt?.toDate() || new Date(),
-          author: data.metadata?.author || 'System'
-        }
-      };
+        ...doc.data(),
+        id: doc.id
+      } as Course;
     });
   }
 
-  clearCourseCache(): void {
+  async fetchCourseModules(courseId: string): Promise<ServiceResponse<Module[]>> {
+    return this.handleRequest(async () => {
+      const modulesRef = collection(this.db, 'modules');
+      const q = query(
+        modulesRef,
+        where('courseId', '==', courseId),
+        orderBy('order', 'asc')
+      );
+      const snapshot = await getDocs(q);
+      
+      return snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      } as Module));
+    });
+  }
+
+  async fetchModuleLessons(moduleId: string): Promise<ServiceResponse<Lesson[]>> {
+    return this.handleRequest(async () => {
+      const lessonsRef = collection(this.db, 'lessons');
+      const q = query(
+        lessonsRef,
+        where('moduleId', '==', moduleId),
+        orderBy('order', 'asc')
+      );
+      const snapshot = await getDocs(q);
+      
+      return snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      } as Lesson));
+    });
+  }
+
+  async fetchLessonExercises(lessonId: string): Promise<ServiceResponse<Exercise[]>> {
+    return this.handleRequest(async () => {
+      const exercisesRef = collection(this.db, 'exercises');
+      const q = query(
+        exercisesRef,
+        where('lessonId', '==', lessonId),
+        orderBy('order', 'asc')
+      );
+      const snapshot = await getDocs(q);
+      
+      return snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      } as Exercise));
+    });
+  }
+
+  async fetchCourseCategories(): Promise<ServiceResponse<Category[]>> {
+    return this.handleRequest(async () => {
+      if (categoryCache['all']) {
+        return categoryCache['all'];
+      }
+
+      const categoriesRef = collection(this.db, 'categories');
+      const q = query(categoriesRef, orderBy('order', 'asc'));
+      const snapshot = await getDocs(q);
+      
+      const categories = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      } as Category));
+
+      categoryCache['all'] = categories;
+      return categories;
+    });
+  }
+
+  async fetchCoursesByCategory(categoryId: string): Promise<ServiceResponse<Course[]>> {
+    return this.handleRequest(async () => {
+      const coursesRef = collection(this.db, 'courses');
+      const q = query(
+        coursesRef,
+        where('category', '==', categoryId),
+        orderBy('order', 'asc')
+      );
+      const snapshot = await getDocs(q);
+      
+      return snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      } as Course));
+    });
+  }
+
+  clearCache(): void {
     Object.keys(courseCache).forEach(key => delete courseCache[key]);
     Object.keys(categoryCache).forEach(key => delete categoryCache[key]);
   }
-
-  async listCourses(): Promise<ServiceResponse<CourseStructure[]>> {
-    return this.handleRequest(async () => {
-      const { data: courses, error } = await this.fetchCourses();
-      if (error) {
-        throw error;
-      }
-
-      if (!courses) {
-        return [];
-      }
-
-      return courses.map(course => ({
-        ...course,
-        id: course.id,
-        title: course.title,
-        description: course.description,
-        thumbnail: course.thumbnail,
-        difficulty: course.difficulty,
-        totalDuration: course.totalDuration,
-        enrolledCount: course.enrolledCount || 0,
-        category: course.category,
-        tags: course.tags || [],
-        modules: course.modules.map(module => ({
-          id: module.id,
-          title: module.title,
-          description: module.description,
-          lessons: module.lessons.map(lesson => ({
-            id: lesson.id,
-            title: lesson.title,
-            content: lesson.content,
-            duration: lesson.duration,
-            order: lesson.order,
-            exercises: lesson.exercises,
-            prerequisites: lesson.prerequisites,
-            metadata: lesson.metadata
-          })),
-          order: module.order,
-          duration: module.duration,
-          prerequisites: module.prerequisites,
-          metadata: module.metadata
-        })),
-        metadata: course.metadata
-      }));
-    });
-  }
-
-  extractModulesFromContent(content: string): Module[] {
-    const modules: Module[] = [];
-    const moduleRegex = /^#\s+(.+)$/gm;
-    const lessonRegex = /^##\s+(.+)$/gm;
-    let currentModule: Module | null = null;
-    let currentLesson: Lesson | null = null;
-    let moduleContent = '';
-    let lessonContent = '';
-
-    const lines = content.split('\n');
-    for (const line of lines) {
-      const moduleMatch = line.match(moduleRegex);
-      const lessonMatch = line.match(lessonRegex);
-
-      if (moduleMatch) {
-        if (currentModule) {
-          if (currentLesson) {
-            currentModule.lessons.push(currentLesson);
-          }
-          modules.push(currentModule);
-        }
-
-        currentModule = {
-          id: moduleMatch[1].toLowerCase().replace(/\s+/g, '-'),
-          title: moduleMatch[1],
-          description: '',
-          lessons: [],
-          order: modules.length + 1,
-          duration: 0,
-          prerequisites: [],
-          metadata: {
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            author: 'System'
-          }
-        };
-        currentLesson = null;
-        moduleContent = '';
-      } else if (lessonMatch && currentModule) {
-        if (currentLesson) {
-          currentModule.lessons.push(currentLesson);
-        }
-
-        currentLesson = {
-          id: lessonMatch[1].toLowerCase().replace(/\s+/g, '-'),
-          title: lessonMatch[1],
-          content: '',
-          duration: 0,
-          order: currentModule.lessons.length + 1,
-          exercises: [],
-          prerequisites: [],
-          metadata: {
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            author: 'System'
-          }
-        };
-        lessonContent = '';
-      } else if (currentLesson) {
-        lessonContent += line + '\n';
-        currentLesson.content = lessonContent.trim();
-      } else if (currentModule) {
-        moduleContent += line + '\n';
-        currentModule.description = moduleContent.trim();
-      }
-    }
-
-    if (currentModule) {
-      if (currentLesson) {
-        currentModule.lessons.push(currentLesson);
-      }
-      modules.push(currentModule);
-    }
-
-    return modules;
-  }
-
-  getCourseGradient(title: string, id: string, tags: string[] = []): string {
-    const lowerTitle = title.toLowerCase();
-    const lowerId = id.toLowerCase();
-    const lowerTags = tags.map(tag => tag.toLowerCase());
-
-    if (
-      lowerTitle.includes('programming') ||
-      lowerTitle.includes('code') ||
-      lowerTitle.includes('developer') ||
-      lowerTags.includes('programming') ||
-      lowerTags.includes('code') ||
-      lowerTags.includes('developer')
-    ) {
-      return 'from-blue-500 to-purple-600';
-    }
-
-    if (
-      lowerTitle.includes('physics') ||
-      lowerTitle.includes('science') ||
-      lowerTags.includes('physics') ||
-      lowerTags.includes('science')
-    ) {
-      return 'from-green-500 to-teal-600';
-    }
-
-    if (
-      lowerTitle.includes('language') ||
-      lowerTitle.includes('linguistics') ||
-      lowerTags.includes('language') ||
-      lowerTags.includes('linguistics')
-    ) {
-      return 'from-yellow-500 to-orange-600';
-    }
-
-    return 'from-gray-500 to-gray-700';
-  }
 }
 
-// Export the fetchCourses function for direct use
-export const fetchCourses = async (): Promise<ServiceResponse<CourseStructure[]>> => {
+// Export standalone functions for direct use
+export const fetchCourses = async (): Promise<ServiceResponse<Course[]>> => {
   const service = new CourseService();
   return service.fetchCourses();
 };
 
-// Export the fetchCourseCategories function for direct use
-export const fetchCourseCategories = async (): Promise<ServiceResponse<any[]>> => {
+export const fetchCourseById = async (id: string): Promise<ServiceResponse<Course>> => {
+  const service = new CourseService();
+  return service.fetchCourseById(id);
+};
+
+export const fetchCourseBySlug = async (slug: string): Promise<ServiceResponse<Course>> => {
+  const service = new CourseService();
+  return service.fetchCourseBySlug(slug);
+};
+
+export const fetchCourseModules = async (courseId: string): Promise<ServiceResponse<Module[]>> => {
+  const service = new CourseService();
+  return service.fetchCourseModules(courseId);
+};
+
+export const fetchModuleLessons = async (moduleId: string): Promise<ServiceResponse<Lesson[]>> => {
+  const service = new CourseService();
+  return service.fetchModuleLessons(moduleId);
+};
+
+export const fetchLessonExercises = async (lessonId: string): Promise<ServiceResponse<Exercise[]>> => {
+  const service = new CourseService();
+  return service.fetchLessonExercises(lessonId);
+};
+
+export const fetchCourseCategories = async (): Promise<ServiceResponse<Category[]>> => {
   const service = new CourseService();
   return service.fetchCourseCategories();
 };
 
-// Export the fetchCourseBySlug function for direct use
-export const fetchCourseBySlug = async (slug: string): Promise<ServiceResponse<CourseStructure>> => {
+export const fetchCoursesByCategory = async (categoryId: string): Promise<ServiceResponse<Course[]>> => {
   const service = new CourseService();
-  return service.fetchCourseBySlug(slug);
+  return service.fetchCoursesByCategory(categoryId);
 };

@@ -1,3 +1,9 @@
+<!-- 
+  @deprecated This component has been superseded by EnhancedMathContent.
+  Please migrate to EnhancedMathContent for improved math rendering and error handling.
+  This component will be removed in a future version.
+-->
+
 <script lang="ts">
   import { onMount } from 'svelte';
   import katex from 'katex';

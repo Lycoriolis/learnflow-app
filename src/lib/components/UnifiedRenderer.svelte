@@ -1,21 +1,23 @@
 <script lang="ts">
-  import MarkdownRenderer from './MarkdownRendererComponent.svelte';
-  import MathContent from './MathContent.svelte';
+  import EnhancedMarkdownRenderer from './EnhancedMarkdownRenderer.svelte';
 
   export let content: string = '';
-  export let type: 'markdown' | 'exercise' | 'math' | 'auto' = 'auto';
+  export let type: 'markdown' | 'exercise' | 'math' | 'auto' | 'course' = 'auto';
+  export const isNested: boolean = false;
   
   // Auto-detect content type if not specified
   $: contentType = type === 'auto' ? detectContentType(content) : type;
   
   function detectContentType(text: string): 'markdown' | 'exercise' | 'math' {
     // Check if content contains math expressions
-    if (text.includes('$$') || text.includes('\\begin{') || text.match(/\$[^$]+\$/)) {
+    if (text.includes('$$') || text.includes('\\begin{') || text.match(/\$[^$]+\$/) || 
+        text.includes('\\mathbb{') || text.includes('\\frac{') || text.includes('\\sum') || 
+        text.includes('\\int') || text.includes('\\lim') || text.includes('\\cdot')) {
       return 'math';
     }
     
     // Check if content looks like an exercise
-    if (text.match(/^##\s+(Problem|Exercise|Solution)/mi)) {
+    if (text.match(/^##\s+(Problem|Exercise|Solution|Exercice)/mi)) {
       return 'exercise';
     }
     
@@ -54,12 +56,8 @@
 </script>
 
 <div class={contentType === 'exercise' ? 'exercise-markdown' : ''}>
-  {#if contentType === 'math'}
-    <MathContent content={content} />
-  {:else}
-    <!-- Use MarkdownRenderer for both regular markdown and processed exercise content -->
-    <MarkdownRenderer content={processedContent} />
-  {/if}
+  <!-- Use EnhancedMarkdownRenderer for all content types as it handles math automatically -->
+  <EnhancedMarkdownRenderer content={processedContent} />
 </div>
 
 <style>

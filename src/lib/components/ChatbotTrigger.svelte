@@ -4,8 +4,9 @@
     export let context: Record<string, any> = {}; // e.g., { pageTitle: 'Variables', pageType: 'lesson' }
 
     let chatOpen = false;
-    let messages = [
-        { id: 1, text: "Hello! How can I help you today regarding: " + (context.pageTitle || 'this page') + "?", sender: 'bot' }
+    interface ChatMessage { id: string; text: string; sender: 'user' | 'bot'; }
+    let messages: ChatMessage[] = [
+        { id: crypto.randomUUID(), text: `Hello! How can I help you today regarding: ${context.pageTitle || 'this page'}?`, sender: 'bot' }
     ];
     let userInput = '';
 
@@ -13,9 +14,11 @@
         chatOpen = !chatOpen;
         if (chatOpen) {
             // Reset messages or add context-specific greeting
-            messages = [
-                { id: crypto.randomUUID(), text: "Hello! How can I help you with '" + (context.pageTitle || 'this topic') + "'?", sender: 'bot' }
-            ];
+            messages = [{
+                id: crypto.randomUUID(),
+                text: `Hello! How can I help you with '${context.pageTitle || 'this topic'}'?`,
+                sender: 'bot'
+            }];
             userInput = '';
         }
     }
@@ -47,8 +50,19 @@
                 {/each}
             </div>
             <div class="chat-input-area">
-                <input type="text" bind:value={userInput} placeholder="Type your message..." on:keypress={(e) => e.key === 'Enter' && sendMessage()} />
-                <button on:click={sendMessage}>Send</button>
+                <input 
+                  type="text" 
+                  bind:value={userInput} 
+                  placeholder="Type your message..." 
+                  on:keypress={(e: KeyboardEvent) => e.key === 'Enter' && sendMessage()}
+                  aria-label="Type your message"
+                />
+                <button 
+                  on:click={sendMessage}
+                  aria-label="Send message"
+                >
+                  Send
+                </button>
             </div>
         </div>
     {/if}

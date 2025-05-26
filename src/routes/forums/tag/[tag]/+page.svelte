@@ -50,23 +50,21 @@
         <a href="/forums/topic/{topic.id}" class="block">
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
             <div class="p-4">
-              <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-1">{topic.title}</h4>
-              
-              <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-2">
-                <span>{topic.authorName || 'Unknown'}</span>
-                <span class="mx-2">•</span>
-                <span>{new Date(topic.createdAt).toLocaleDateString()}</span>
-                <span class="mx-2">•</span>
-                <span class="flex items-center">
-                  <Icon icon="mdi:eye-outline" class="w-4 h-4 mr-1" />
-                  {topic.viewCount}
-                </span>
-                <span class="mx-2">•</span>
-                <span class="flex items-center">
-                  <Icon icon="mdi:comment-outline" class="w-4 h-4 mr-1" />
-                  {topic.replyCount}
-                </span>
-              </div>
+              <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-1">{topic.title}</h4>                      <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-2">
+                        <span>{topic.author?.name || 'Unknown'}</span>
+                        <span class="mx-2">•</span>
+                        <span>{new Date(topic.created_at || Date.now()).toLocaleDateString()}</span>
+                        <span class="mx-2">•</span>
+                        <span class="flex items-center">
+                          <Icon icon="mdi:eye-outline" class="w-4 h-4 mr-1" />
+                          {topic.views || 0}
+                        </span>
+                        <span class="mx-2">•</span>
+                        <span class="flex items-center">
+                          <Icon icon="mdi:comment-outline" class="w-4 h-4 mr-1" />
+                          {topic.post_count || 0}
+                        </span>
+                      </div>
               
               <div class="flex flex-wrap gap-2">
                 {#each topic.tags || [] as topicTag}

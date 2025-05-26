@@ -1,10 +1,8 @@
-import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
-import { getAuth, connectAuthEmulator, type Auth } from 'firebase/auth';
-import { getAnalytics, type Analytics } from 'firebase/analytics';
-import { getFirestore, type Firestore } from 'firebase/firestore';
-import { browser } from '$app/environment';
+import { FirebaseApp, getApps, initializeApp } from 'firebase/app';
+import { Auth, getAuth } from 'firebase/auth';
+import { Firestore, getFirestore } from 'firebase/firestore';
+import { Analytics, getAnalytics, isSupported } from 'firebase/analytics';
 
-// Firebase configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -15,70 +13,66 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-// For debugging - only log in development
-const isDev = import.meta.env.DEV;
-const logDebug = (message: string, data?: any) => {
-  if (isDev && browser) {
-    console.log(message, data);
-  }
-};
+let app: FirebaseApp;
+let auth: Auth;
+let db: Firestore;
+let analytics: Analytics | undefined;
+let analyticsInitialized = false; // Flag to track analytics initialization
+let firebaseInitialized = false; // Flag to track core Firebase initialization
 
-// Initialize Firebase only if it hasn't been initialized already
-function getFirebase() {
-  // Store Firebase services
-  let app: FirebaseApp;
-  let auth: Auth;
-  let analytics: Analytics | null = null;
-  let db: Firestore;
-
-  // Only initialize Firebase in the browser environment
-  if (browser) {
+async function _initializeAnalytics(currentApp: FirebaseApp) {
+  if (!analyticsInitialized && typeof window !== 'undefined' && await isSupported()) {
     try {
-      // Check if Firebase app has already been initialized
-      if (!getApps().length) {
-        logDebug('Initializing Firebase app');
-        app = initializeApp(firebaseConfig);
-        logDebug('Firebase app initialized successfully');
-      } else {
-        logDebug('Using existing Firebase app');
-        app = getApps()[0];
-      }
-      
-      // Initialize Firebase Authentication
-      auth = getAuth(app);
-      
-      // Initialize Firestore
-      db = getFirestore(app);
-      
-      // Use auth emulator if in development
-      if (isDev && import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true') {
-        logDebug('Connecting to Firebase Auth emulator');
-        connectAuthEmulator(auth, 'http://localhost:9099');
-      }
-
-      // Initialize Analytics (only in browser)
-      try {
-        analytics = getAnalytics(app);
-        logDebug('Firebase analytics initialized');
-      } catch (error) {
-        if (isDev) {
-          console.warn('Failed to initialize Firebase Analytics:', error);
-        }
-      }
-      
-    } catch (error) {
-      console.error('Error initializing Firebase:', error);
+      analytics = getAnalytics(currentApp);
+      analyticsInitialized = true;
+      console.log('Firebase Analytics initialized.');
+    } catch (e) {
+      console.error('Error initializing Firebase Analytics', e);
     }
-  } else {
-    // Create empty mock instances for SSR
-    app = {} as FirebaseApp;
-    auth = {} as Auth;
-    db = {} as Firestore;
-    analytics = null;
+  }
+}
+
+function _initializeCoreFirebase() {
+  if (firebaseInitialized) {
+    return;
   }
 
+  if (typeof window !== 'undefined') { // Ensure running in a browser environment
+    if (!getApps().length) {
+      try {
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+        firebaseInitialized = true;
+        console.log('Firebase core services initialized (new app).');
+        // Initialize analytics asynchronously
+        _initializeAnalytics(app).catch(e => console.error("Error during async analytics initialization", e));
+      } catch (e) {
+        console.error('Error initializing Firebase on client (new app)', e);
+      }
+    } else {
+      app = getApps()[0]; // Get existing app
+      // Ensure auth and db are set from the existing app
+      auth = getAuth(app); // Safe to call multiple times
+      db = getFirestore(app); // Safe to call multiple times
+      firebaseInitialized = true;
+      console.log('Firebase core services initialized (existing app).');
+      // Ensure analytics is initialized if not already
+      _initializeAnalytics(app).catch(e => console.error("Error during async analytics initialization on app reuse", e));
+    }
+  }
+}
+
+// Automatically initialize Firebase core services when this module is loaded on the client side.
+// This ensures that `auth` and `db` are populated when imported by other modules.
+_initializeCoreFirebase();
+
+// Exported function to allow explicit initialization or to get instances.
+export function initializeFirebase() {
+  _initializeCoreFirebase(); // Ensures initialization logic runs
   return { app, auth, db, analytics };
 }
 
-// Export Firebase services (singleton pattern)
-export const { app, auth, db, analytics } = getFirebase();
+// Export the initialized instances.
+// These will be populated by _initializeCoreFirebase() when the module loads on the client.
+export { app, auth, db, analytics };

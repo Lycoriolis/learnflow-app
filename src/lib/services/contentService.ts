@@ -1,7 +1,20 @@
 import type { Timestamp } from 'firebase/firestore';
-import type { ContentMetadata, ContentManifestItem, CourseStructure } from '$lib/types/contentTypes';
+import type { ContentManifestItem as CMItem, CourseStructure as CStruct } from '$lib/types/contentTypes'; // Aliased imports
 
-export { ContentMetadata, ContentManifestItem, CourseStructure };
+// Define ContentMetadata locally if it's different from the one in contentTypes.ts
+// or ensure the imported one matches the usage here.
+// For now, assuming it's intended to be distinct or there was a naming conflict.
+interface ContentMetadata {
+    id: string;
+    title: string;
+    type: string; // e.g., 'course', 'lesson', 'exercise'
+    category?: string;
+    tags?: string[];
+    filePath?: string; 
+    // Add other relevant fields
+}
+
+export { type CMItem as ContentManifestItem, type CStruct as CourseStructure, type ContentMetadata }; // Export with aliases and local definition
 
 // Define the ContentNode type which represents courses and exercises
 export interface ContentNode {
@@ -25,6 +38,7 @@ export interface ContentNode {
   children?: ContentNode[];
   parentId?: string;
   slug?: string;
+  contentPath?: string; // Added contentPath property
   metadata?: {
     dateAdded?: Timestamp;
     popularity?: number;
@@ -33,20 +47,6 @@ export interface ContentNode {
     viewCount?: number;
     rating?: number;
   };
-}
-
-// Define content metadata interface for admin views
-export interface ContentMetadata {
-  id: string;
-  title: string;
-  type: 'course' | 'exercise' | 'module';
-  status: 'published' | 'draft' | 'archived';
-  author: string;
-  createdAt: Date;
-  updatedAt: Date;
-  viewCount: number;
-  completionCount: number;
-  averageRating: number;
 }
 
 // Define the Category interface
@@ -72,6 +72,9 @@ let exerciseIdCache: Record<string, ContentNode> = {};
 // Cache for content data by slug
 let courseSlugCache: Record<string, ContentNode> = {};
 let exerciseSlugCache: Record<string, ContentNode> = {};
+
+// Cache for content data by contentPath
+let contentPathCache: Record<string, ContentNode> = {};
 
 /**
  * Fetches content from the specified path
@@ -177,50 +180,112 @@ export async function fetchContentById(type: 'courses' | 'exercises', id: string
 }
 
 /**
+ * Fetches a specific content item by its full contentPath.
+ * @param contentPath The exact content path (e.g., 'exercises/maths/mpsi-maths/calculus-basics' or 'courses/physics/intro_index').
+ * @returns A ContentNode or null if not found.
+ */
+export async function fetchContentByContentPath(contentPath: string): Promise<ContentNode | null> {
+  if (!contentPath) return null;
+
+  const normalizedPath = ('/' + contentPath).replace(/\/+/g, '/').replace(/^\//, ''); // Ensure no leading slash for API call
+
+  if (contentPathCache[normalizedPath]) {
+    return contentPathCache[normalizedPath];
+  }
+
+  try {
+    // The API endpoint is /api/content/[...segments]
+    // segments should not start with a slash, e.g., 'exercises/maths/mpsi-maths/calculs-algebriques'
+    const response = await fetch(`/api/content/${normalizedPath}`);
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.warn(`[client/contentService] Content not found via API for path: ${normalizedPath}`);
+        return null;
+      }
+      throw new Error(`[client/contentService] Failed to fetch content by path: ${normalizedPath}, Status: ${response.statusText}`);
+    }
+
+    const data = await response.json() as ContentNode;
+    
+    if (data) {
+      contentPathCache[normalizedPath] = data; // Cache with the normalized path used for fetching
+      // Also cache by slug if available, to keep caches consistent
+      if (data.slug) {
+        if (data.contentType === 'courses') {
+          courseSlugCache[data.slug] = data;
+        } else if (data.contentType === 'exercises') {
+          exerciseSlugCache[data.slug] = data;
+        }
+      }
+      return data;
+    } else {
+      // Should be caught by !response.ok, but as a fallback
+      console.warn(`[client/contentService] No data returned for path: ${normalizedPath}`);
+      return null;
+    }
+
+  } catch (error) {
+    console.error(`[client/contentService] Error fetching content by path (${normalizedPath}):`, error);
+    return null; 
+  }
+}
+
+/**
  * Fetches a specific content item by slug
  */
 export async function fetchContentBySlug(type: 'courses' | 'exercises', slug: string): Promise<ContentNode | null> {
-  // Check cache first
+  console.warn(`[client/contentService] fetchContentBySlug: This function is being deprecated. Consider using contentPath-based fetching. Slug: ${slug}, Type: ${type}`);
+  
+  // Try to map slug to a contentPath
+  const potentialContentPath = `/${type}/${slug}`.replace(/\/+/g, '/'); // Corrected regex
+
+  // Check cache first (using slug for slugCache, contentPath for contentPathCache)
   if (type === 'courses' && courseSlugCache[slug]) {
     return courseSlugCache[slug];
   }
   if (type === 'exercises' && exerciseSlugCache[slug]) {
     return exerciseSlugCache[slug];
   }
+  if (contentPathCache[potentialContentPath]) {
+    return contentPathCache[potentialContentPath];
+  }
+
+  // Attempt to use the new fetchContentByContentPath
+  const contentFromPath = await fetchContentByContentPath(potentialContentPath);
+  if (contentFromPath) {
+    contentPathCache[potentialContentPath] = contentFromPath;
+    if (type === 'courses') courseSlugCache[slug] = contentFromPath;
+    else exerciseSlugCache[slug] = contentFromPath;
+    return contentFromPath;
+  }
+  
+  console.log(`[client/contentService] fetchContentBySlug: Falling back to old slug fetching logic for slug '${slug}' as contentPath fetch failed or is not implemented.`);
 
   try {
-    // Try fetching directly by slug first
     const directResponse = await fetch(`/content/${type}/by-slug/${slug}.json`);
     if (directResponse.ok) {
       const data = await directResponse.json() as ContentNode;
-      // Cache the result
-      if (type === 'courses') {
-        courseSlugCache[slug] = data;
-      } else {
-        exerciseSlugCache[slug] = data;
-      }
+      if (type === 'courses') courseSlugCache[slug] = data;
+      else exerciseSlugCache[slug] = data;
+      if (data.contentPath) contentPathCache[data.contentPath] = data;
       return data;
     }
 
-    // If direct fetch fails (e.g., 404), fall back to fetching all items
     const items = await fetchContent(type);
     const item = items.find(item => item.slug === slug);
 
     if (item) {
-      // Cache the result
-      if (type === 'courses') {
-        courseSlugCache[slug] = item;
-      } else {
-        exerciseSlugCache[slug] = item;
-      }
+      if (type === 'courses') courseSlugCache[slug] = item;
+      else exerciseSlugCache[slug] = item;
+      if (item.contentPath) contentPathCache[item.contentPath] = item;
       return item;
     }
     
-    // If not found after all attempts
     return null; 
   } catch (error) {
-    console.error(`Error fetching ${type} by slug (${slug}):`, error);
-    throw error; 
+    console.error(`[client/contentService] Error fetching ${type} by slug (${slug}):`, error);
+    return null; // Return null on error
   }
 }
 
@@ -235,32 +300,29 @@ export function clearContentCache() {
   exerciseIdCache = {};
   courseSlugCache = {};
   exerciseSlugCache = {};
+  contentPathCache = {};
 }
 
 /**
  * Lists content based on type and optional category identifier
  */
-export async function listContent(type: string, categoryIdentifier?: string): Promise<ContentMetadata[]> {
-  // Implementation based on type and optional categoryIdentifier
-  // Return properly typed content metadata
-  return []; // Placeholder
+export async function listContent(_type: string, _categoryIdentifier?: string): Promise<ContentMetadata[]> {
+  return [];
 }
 
 /**
  * Fetches content by slug
  */
-export async function getContent(slug: string): Promise<ContentManifestItem | null> {
+export async function getContent(slug: string): Promise<CMItem | null> {
   if (!slug) return null;
-  // Implementation to fetch content by slug
   return null; // Placeholder
 }
 
 /**
  * Fetches course structure by slug
  */
-export async function getCourseStructure(slug: string): Promise<CourseStructure | null> {
+export async function getCourseStructure(slug: string): Promise<CStruct | null> {
   if (!slug) return null;
-  // Implementation to fetch course structure
   return null; // Placeholder
 }
 
@@ -285,7 +347,7 @@ export function getCourseGradient(difficulty?: string): string {
 /**
  * Finds the next lesson in a course structure
  */
-export function findNextLesson(course: CourseStructure, currentLessonSlug: string): ContentManifestItem | null {
+export function findNextLesson(course: CStruct, currentLessonSlug: string): CMItem | null {
   if (!course?.sections) return null;
   
   let foundCurrent = false;

@@ -1,3 +1,5 @@
+import type { UserProfile as AppUserProfile } from '$lib/types/shared'; // Import the new UserProfile type
+
 export interface UserPreferences {
   enrollments?: Array<{
     courseId: string;
@@ -27,19 +29,6 @@ export interface UserPreferences {
   };
 }
 
-export interface UserProfile {
-  uid: string;
-  email: string;
-  displayName?: string;
-  createdAt: number;
-  updatedAt?: number;
-  photoURL?: string;
-  bio?: string;
-  location?: string;
-  website?: string;
-  preferences?: UserPreferences;
-}
-
 /**
  * Error class for user service operations
  */
@@ -53,7 +42,7 @@ export class UserServiceError extends Error {
 /**
  * Load the user profile from Firestore. Returns null if not found.
  */
-export async function getUserProfile(uid: string): Promise<UserProfile | null> {
+export async function getUserProfile(uid: string): Promise<AppUserProfile | null> {
   try {
     if (!uid) {
       throw new UserServiceError('User ID is required', 'invalid-argument');
@@ -68,7 +57,16 @@ export async function getUserProfile(uid: string): Promise<UserProfile | null> {
     
     const snap = await getDoc(ref);
     if (snap.exists()) {
-      return snap.data() as UserProfile;
+      // Ensure the fetched data conforms to AppUserProfile, especially the isPremium field
+      const data = snap.data();
+      return {
+        uid: data.uid,
+        email: data.email,
+        displayName: data.displayName,
+        photoURL: data.photoURL,
+        isPremium: data.isPremium ?? false, // Default to false if not present
+        // Map other fields from data to AppUserProfile as needed
+      } as AppUserProfile;
     }
     return null;
   } catch (err: any) {
@@ -85,7 +83,7 @@ export async function getUserProfile(uid: string): Promise<UserProfile | null> {
 /**
  * Create a new user profile document in Firestore.
  */
-export async function createUserProfile(profile: UserProfile): Promise<void> {
+export async function createUserProfile(profile: AppUserProfile): Promise<void> {
   try {
     if (!profile || !profile.uid) {
       throw new UserServiceError('Valid user profile with UID is required', 'invalid-argument');
@@ -98,7 +96,13 @@ export async function createUserProfile(profile: UserProfile): Promise<void> {
     const db = getFirestore(app);
     const ref = doc(db, 'users', profile.uid);
     
-    await setDoc(ref, profile);
+    // Ensure isPremium is explicitly set, defaulting to false if not provided
+    const profileToSave = {
+      ...profile,
+      isPremium: profile.isPremium ?? false,
+    };
+    
+    await setDoc(ref, profileToSave);
     console.log(`User profile created: ${profile.uid}`);
   } catch (err: any) {
     console.error('Error creating user profile:', err);
@@ -114,7 +118,7 @@ export async function createUserProfile(profile: UserProfile): Promise<void> {
 /**
  * Update existing user profile fields.
  */
-export async function updateUserProfile(uid: string, data: Partial<UserProfile>): Promise<void> {
+export async function updateUserProfile(uid: string, data: Partial<AppUserProfile>): Promise<void> {
   try {
     if (!uid) {
       throw new UserServiceError('User ID is required', 'invalid-argument');

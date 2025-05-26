@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_URL } from '../config';
+import { API_URL } from '$env/dynamic/public';
 import { Topic, Category } from '../types/forum';
 
 export async function getTopics() {
@@ -33,15 +33,19 @@ export async function getCategories() {
 }
 
 export async function createCategory(/* params */) {
-    // ...implementation...
+    console.warn('createCategory not implemented');
+    throw new Error('createCategory not implemented');
 }
 
 export async function updateCategory(/* params */) {
-    // ...implementation...
+    console.warn('updateCategory not implemented');
+    throw new Error('updateCategory not implemented');
 }
 
 export async function getPostsByTopicId(topicId: string) {
-    // ...implementation...
+    console.warn('getPostsByTopicId called with', topicId);
+    throw new Error('getPostsByTopicId not implemented');
 }
 
+// Note: re-export if needed
 export type { Topic, Category };

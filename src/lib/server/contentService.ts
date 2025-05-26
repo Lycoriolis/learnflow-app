@@ -3,7 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 
 // --- Type Definitions ---
-interface FrontmatterChildNode {
+export interface FrontmatterChildNode {
     id: string;
     title?: string;
     description?: string;
@@ -23,6 +23,7 @@ export interface ServerContentNode {
     difficulty?: string;
     estimatedTime?: string;
     category?: string;
+    categoryPath?: string; // Added to ensure it's part of the type
     featured?: boolean;
     rawMdxContent: string;
     filePath: string;
@@ -58,8 +59,8 @@ function parseMdxFile(filePath: string, typeHint: 'exercise' | 'course' | 'lesso
         const { data, content: rawMdxContent } = matter(fileContent);
 
         let itemId = data.id;
+        const baseName = path.basename(filePath, '.mdx');
         if (!itemId) {
-            const baseName = path.basename(filePath, '.mdx');
             if (baseName === '_index') {
                 const parentDirName = path.basename(path.dirname(filePath));
                 itemId = `${parentDirName}_index`;
@@ -93,10 +94,28 @@ function parseMdxFile(filePath: string, typeHint: 'exercise' | 'course' | 'lesso
             finalItemType = 'exercise';
         }
 
+        // Calculate categoryPath
+        let categoryPathValue = '';
+        let pathSegmentForCategoryDerivation = '';
+
+        if (contentPathValue.startsWith('/exercises/')) {
+            pathSegmentForCategoryDerivation = contentPathValue.substring('/exercises/'.length);
+        } else if (contentPathValue.startsWith('/courses/')) {
+            pathSegmentForCategoryDerivation = contentPathValue.substring('/courses/'.length);
+        }
+        // For an item like 'maths/calculus/limits', its category is 'maths/calculus'.
+        // For a category _index like 'maths/calculus' (contentPath), its category is 'maths'.
+        categoryPathValue = path.dirname(pathSegmentForCategoryDerivation);
+        if (categoryPathValue === '.' || categoryPathValue === '/') {
+            categoryPathValue = '';
+        }
+        categoryPathValue = categoryPathValue.replace(/^\.\//, '').replace(/^\.$/, '');
+
         return {
             ...data,
             id: itemId,
             contentPath: contentPathValue,
+            categoryPath: categoryPathValue, // Added categoryPath
             filePath: filePath,
             rawMdxContent: rawMdxContent,
             itemType: finalItemType,
@@ -118,14 +137,12 @@ function findMdxFiles(dir: string): string[] {
         }
 
         const files = fs.readdirSync(dir);
-        console.log(`[contentService] findMdxFiles: Files in ${dir}:`, files);
         for (const file of files) {
             const filePath = path.join(dir, file);
             const stat = fs.statSync(filePath);
             if (stat.isDirectory()) {
                 mdxFiles = mdxFiles.concat(findMdxFiles(filePath));
             } else if (path.extname(file) === '.mdx') {
-                console.log(`[contentService] findMdxFiles: Found .mdx file: ${filePath}`);
                 mdxFiles.push(filePath);
             }
         }
@@ -133,7 +150,6 @@ function findMdxFiles(dir: string): string[] {
         console.error(`[contentService] findMdxFiles: Error processing directory ${dir}:`, error);
         return mdxFiles;
     }
-    console.log(`[contentService] findMdxFiles: Returning ${mdxFiles.length} files from ${dir} scan.`);
     return mdxFiles;
 }
 
@@ -161,6 +177,7 @@ function findAllIndexFilesRecursive(dir: string): string[] {
 }
 
 // --- Exercises ---
+export type Exercise = ServerContentNode; // Exporting ServerContentNode as Exercise
 export async function getAllExercises(): Promise<ServerContentNode[]> {
     const now = Date.now();
     if (exercisesCache.data && (now - exercisesCache.timestamp < exercisesCache.expiry)) {
@@ -191,52 +208,47 @@ export async function getExerciseById(id: string): Promise<ServerContentNode | n
     return exercises.find(ex => ex.id === id) || null;
 }
 
-export async function getExerciseBySlug(slug: string): Promise<ServerContentNode | null> {
-    console.log(`[contentService] getExerciseBySlug: Attempting to find exercise with raw slug: '${slug}'`);
+/**
+ * Fetches a single exercise by its full content path.
+ * @param targetContentPath The exact content path (e.g., '/exercises/maths/mpsi-maths/calculus-basics').
+ * @returns A ServerContentNode or null if not found.
+ */
+export async function getExerciseByContentPath(targetContentPath: string): Promise<ServerContentNode | null> {
+    console.log(`[contentService] getExerciseByContentPath: Seeking exercise with contentPath: '${targetContentPath}'`);
     const exercises = await getAllExercises();
     if (!Array.isArray(exercises) || exercises.length === 0) {
-        console.warn(`[contentService] getExerciseBySlug: No exercises available from getAllExercises.`);
+        console.warn(`[contentService] getExerciseByContentPath: No exercises available.`);
         return null;
     }
 
-    // Normalize the incoming slug: remove leading/trailing slashes
-    const normalizedSlug = slug.replace(/^\/+/, '').replace(/\/+$/, '');
-    console.log(`[contentService] getExerciseBySlug: Normalized slug: '${normalizedSlug}'`);
-
-    const foundExercise = exercises.find(ex => {
-        if (ex && ex.contentPath) {
-            // Normalize ex.contentPath: remove /exercises prefix and leading/trailing slashes
-            const exerciseSpecificPath = ex.contentPath.replace(/^\/exercises\/?/, '').replace(/^\/+/, '').replace(/\/+$/, '');
-            
-            console.log(`[contentService] getExerciseBySlug: Comparing normalized slug '${normalizedSlug}' with exercise specific path '${exerciseSpecificPath}' (from contentPath '${ex.contentPath}')`);
-            
-            // Direct match of normalized paths
-            if (exerciseSpecificPath === normalizedSlug) {
-                return true;
-            }
-            // Match if the exercise ID is the slug (for non-nested exercises)
-            if (ex.id === normalizedSlug && !normalizedSlug.includes('/')) {
-                 console.log(`[contentService] getExerciseBySlug: Matched by ID: '${ex.id}' === '${normalizedSlug}'`);
-                 return true;
-            }
-        }
-        return false;
-    });
+    const foundExercise = exercises.find(ex => ex.contentPath === targetContentPath && !ex.id.endsWith('_index'));
 
     if (foundExercise) {
-        console.log(`[contentService] getExerciseBySlug: Found exercise: '${foundExercise.title}' for slug: '${slug}' with contentPath: '${foundExercise.contentPath}'`);
+        console.log(`[contentService] getExerciseByContentPath: Found exercise '${foundExercise.title || foundExercise.id}' for contentPath '${targetContentPath}'`);
+        return foundExercise;
     } else {
-        console.warn(`[contentService] getExerciseBySlug: Exercise with slug: '${slug}' (normalized: '${normalizedSlug}') NOT FOUND.`);
-        // Fallback: try to find by ID if slug doesn't contain '/' (might be a direct ID)
-        if (!normalizedSlug.includes('/')) {
-            const byId = exercises.find(ex => ex.id === normalizedSlug);
-            if (byId) {
-                console.log(`[contentService] getExerciseBySlug: Found exercise by ID fallback: '${byId.title}' for slug/ID: '${normalizedSlug}'`);
-                return byId;
-            }
-        }
+        console.warn(`[contentService] getExerciseByContentPath: Exercise NOT FOUND with contentPath: '${targetContentPath}'`);
+        return null;
     }
-    return foundExercise || null;
+}
+
+// Remove or refactor getExerciseBySlug if it's fully replaced by getExerciseByContentPath
+// For now, let's keep it but log a deprecation warning if used, or adapt it to use contentPath logic.
+export async function getExerciseBySlug(slug: string): Promise<ServerContentNode | null> {
+    console.warn(`[contentService] getExerciseBySlug: This function is being deprecated. Use getExerciseByContentPath or getNodeByContentPath instead. Attempting to map slug '${slug}' to a contentPath.`);
+    
+    // Attempt to treat the slug as a relative content path (without /exercises/ prefix)
+    const potentialContentPath = slug.startsWith('/') ? `/exercises${slug}` : `/exercises/${slug}`;
+    
+    let exercise = await getExerciseByContentPath(potentialContentPath);
+    if (exercise) return exercise;
+
+    // If not found, try finding it as a category node (if slug might represent an _index file)
+    const categoryNode = await getNodeByContentPath('exercises', potentialContentPath);
+    if (categoryNode) return categoryNode; 
+
+    console.error(`[contentService] getExerciseBySlug: Could not resolve slug '${slug}' to a valid exercise or category node via contentPath '${potentialContentPath}'.`);
+    return null;
 }
 
 export async function getExerciseCategories(): Promise<any[]> {
@@ -276,9 +288,25 @@ export async function getExerciseCategories(): Promise<any[]> {
 export async function getExercisesByCategory(categorySlug: string): Promise<ServerContentNode[]> {
     const allExercises = await getAllExercises();
     if (!categorySlug) {
-        return allExercises;
+        return allExercises; // Should ideally not happen if a category slug is expected
     }
-    return allExercises.filter(ex => ex.category && String(ex.category).toLowerCase().replace(/\s+/g, '-') === categorySlug.toLowerCase());
+    // This function assumes categorySlug matches the 'category' frontmatter field, 
+    // or a segment of the categoryPath.
+    // For path-based category listing, use getChildNodesList.
+    return allExercises.filter(ex => {
+        // Match against the 'category' frontmatter field (if it exists)
+        if (ex.category && String(ex.category).toLowerCase().replace(/\s+/g, '-') === categorySlug.toLowerCase()) {
+            return true;
+        }
+        // Match if the categorySlug is part of the exercise's categoryPath
+        // e.g. categorySlug "maths", ex.categoryPath "maths/calculus"
+        if (ex.categoryPath && ex.categoryPath.toLowerCase().startsWith(categorySlug.toLowerCase())) {
+            // Ensure it's not an _index file of the categorySlug itself, but an item within or a sub-category.
+            // This logic might be too broad here. getChildNodesList is more precise for directory children.
+            return true; 
+        }
+        return false;
+    });
 }
 
 // --- Courses ---
@@ -313,13 +341,13 @@ export async function getCourseById(id: string): Promise<ServerContentNode | nul
         console.warn(`[contentService] getCourseById: No courses available from getAllCourses (cache might be empty or stale).`);
         return null;
     }
-    const foundCourse = courses.find(course => course && course.id === id);
+    const foundCourse = courses.find(course => course && course.id === id) || null;
     if (foundCourse) {
         console.log(`[contentService] getCourseById: Found course: '${foundCourse.title}' for id: '${id}'`);
     } else {
         console.warn(`[contentService] getCourseById: Course with id: '${id}' NOT FOUND in cached courses. Cached IDs:`, courses.map(c => c.id));
     }
-    return foundCourse || null;
+    return foundCourse;
 }
 
 export async function getCourseCategories(): Promise<any[]> {
@@ -417,12 +445,49 @@ export async function getFeaturedExercises(): Promise<ServerContentNode[]> {
     return exercises.filter(ex => ex.featured === true);
 }
 
-export async function getSuggestedContentItems(userId?: string, preferences?: any): Promise<any> {
-    const featuredEx = await getFeaturedExercises();
-    const suggested = {
-        featuredExercises: featuredEx.slice(0, 3),
-    };
-    return suggested;
+// --- Generic Content Fetching ---
+// Unified function to get either featured content (if no user) or suggested content (if user)
+export async function getFeaturedOrSuggestedContent(userId?: string): Promise<{ featuredExercises: ServerContentNode[], featuredCourses: ServerContentNode[] }> {
+    console.log(`[contentService] getFeaturedOrSuggestedContent: Called with userId: ${userId}`);
+    const allExercises = await getAllExercises();
+    const allCourses = await getAllCourses();
+
+    let featuredExercises: ServerContentNode[] = [];
+    let featuredCourses: ServerContentNode[] = [];
+
+    if (userId) {
+        // Placeholder for suggestion logic - for now, return a mix of featured and recent
+        // This would be where you'd integrate with a recommendation engine or user history
+        console.log(`[contentService] getFeaturedOrSuggestedContent: User ID provided (${userId}), fetching suggested content (currently placeholder).`);
+        featuredExercises = allExercises.filter(ex => ex.featured).slice(0, 5); // Example: 5 featured exercises
+        featuredCourses = allCourses.filter(course => course.featured).slice(0, 3); // Example: 3 featured courses
+
+        // Add some non-featured ones to simulate variety for a "suggestion"
+        const recentExercises = allExercises.filter(ex => !ex.featured).sort((a, b) => (b.lastUpdated || 0) - (a.lastUpdated || 0)).slice(0, 3);
+        featuredExercises.push(...recentExercises);
+        const recentCourses = allCourses.filter(course => !course.featured).sort((a, b) => (b.lastUpdated || 0) - (a.lastUpdated || 0)).slice(0, 2);
+        featuredCourses.push(...recentCourses);
+
+    } else {
+        console.log('[contentService] getFeaturedOrSuggestedContent: No user ID, fetching general featured content.');
+        featuredExercises = allExercises.filter(ex => ex.featured);
+        featuredCourses = allCourses.filter(course => course.featured);
+    }
+
+    console.log(`[contentService] getFeaturedOrSuggestedContent: Returning ${featuredExercises.length} exercises and ${featuredCourses.length} courses.`);
+    return { featuredExercises, featuredCourses };
+}
+
+export async function getSuggestedContentItems(userId?: string): Promise<ServerContentNode[]> {
+    // This function is now effectively replaced by getFeaturedOrSuggestedContent for the dashboard.
+    // It can be kept if used elsewhere or refactored/removed.
+    // For now, let's make it return a mix of featured exercises and courses as a generic fallback.
+    console.warn("[contentService] getSuggestedContentItems: This function is being phased out for dashboard use in favor of getFeaturedOrSuggestedContent. Consider updating calls.");
+    const { featuredExercises, featuredCourses } = await getFeaturedOrSuggestedContent(userId);
+    
+    // Combine and limit for a generic "suggested" list
+    const combinedContent = [...featuredExercises, ...featuredCourses];
+    return combinedContent.sort(() => 0.5 - Math.random()).slice(0, 10); // Shuffle and take 10
 }
 
 export async function getContentByResolvedPath(resolvedSlug: string): Promise<ServerContentNode | null> {
@@ -492,9 +557,7 @@ async function loadManifest(contentType: 'courses' | 'exercises'): Promise<Serve
     }
 }
 
-export async function getAllContentItemsByType(contentType: 'courses' | 'exercises', itemType: string): Promise<ServerContentNode[]> {
-    const manifest = await loadManifest(contentType);
-
+export async function getAllContentItemsByType(contentType: 'courses' | 'exercises', _itemType: string): Promise<ServerContentNode[]> { // itemType seems unused, marked with _
     let allItems: ServerContentNode[] = [];
     if (contentType === 'courses') {
         const courses = await getAllCourses();
@@ -520,7 +583,7 @@ export async function getAllContentItemsByType(contentType: 'courses' | 'exercis
         allItems = await getAllExercises();
     }
 
-    return collectItemsByTypeRecursive(allItems, itemType);
+    return collectItemsByTypeRecursive(allItems, _itemType);
 }
 
 export async function getContentNodeByPath(contentType: 'courses' | 'exercises', identifier: string): Promise<ServerContentNode | null> {
@@ -664,3 +727,66 @@ export async function getContentListByCategory(contentType: 'courses' | 'exercis
 
     return [];
 }
+
+// --- New functions for path-based content retrieval ---
+
+/**
+ * Fetches a single content node (typically an _index.mdx file) by its exact contentPath.
+ * @param contentType The type of content ('exercises' or 'courses').
+ * @param targetContentPath The exact content path (e.g., '/exercises/maths/mpsi-maths').
+ * @returns A ServerContentNode or null if not found.
+ */
+export async function getNodeByContentPath(
+    contentType: 'exercises' | 'courses',
+    targetContentPath: string
+): Promise<ServerContentNode | null> {
+    console.log(`[contentService] getNodeByContentPath: Seeking ${contentType} node with contentPath: '${targetContentPath}'`);
+    const allNodes = contentType === 'exercises' ? await getAllExercises() : await getAllCourses();
+    
+    const foundNode = allNodes.find(node => node.contentPath === targetContentPath && node.id.endsWith('_index'));
+    
+    if (foundNode) {
+        console.log(`[contentService] getNodeByContentPath: Found node '${foundNode.id}' for contentPath '${targetContentPath}'`);
+    } else {
+        // If not found as an _index, try to find any node that matches the contentPath exactly
+        // This might be relevant if a path points to a direct file that isn't an _index.
+        const directMatch = allNodes.find(node => node.contentPath === targetContentPath);
+        if (directMatch) {
+            console.log(`[contentService] getNodeByContentPath: Found direct match node '${directMatch.id}' for contentPath '${targetContentPath}' (not an _index)`);
+            return directMatch;
+        }
+        console.warn(`[contentService] getNodeByContentPath: Node NOT FOUND for ${contentType} with contentPath: '${targetContentPath}'`);
+    }
+    return foundNode || null;
+}
+
+/**
+ * Fetches all direct child nodes (items or subcategory _index.mdx files) under a given parent content path.
+ * @param contentType The type of content ('exercises' or 'courses').
+ * @param parentNodeContentPath The content path of the parent directory (e.g., '/exercises/maths/mpsi-maths').
+ * @returns An array of ServerContentNode.
+ */
+export async function getChildNodesList(
+    contentType: 'exercises' | 'courses',
+    parentNodeContentPath: string
+): Promise<ServerContentNode[]> {
+    console.log(`[contentService] getChildNodesList: Seeking children for ${contentType} under parent path: '${parentNodeContentPath}'`);
+    const allNodes = contentType === 'exercises' ? await getAllExercises() : await getAllCourses();
+
+    const normalizedParentPath = parentNodeContentPath.endsWith('/') ? parentNodeContentPath : parentNodeContentPath + '/';
+    
+    const children = allNodes.filter(node => {
+        if (!node.contentPath || !node.contentPath.startsWith(normalizedParentPath)) {
+            return false; // Not under the parent path
+        }
+        // Ensure it's a direct child: the path segment after parentNodeContentPath should not contain further slashes.
+        // e.g. parent /exercises/maths, child /exercises/maths/calculus -> segment "calculus" (OK)
+        // e.g. parent /exercises/maths, child /exercises/maths/calculus/limits -> segment "calculus/limits" (NOT a direct child for listing)
+        const subPath = node.contentPath.substring(normalizedParentPath.length);
+        return subPath.length > 0 && !subPath.includes('/');
+    });
+
+    console.log(`[contentService] getChildNodesList: Found ${children.length} children for parent path '${parentNodeContentPath}'`);
+    return children.sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || (a.title ?? '').localeCompare(b.title ?? ''));
+}
+// --- End of new functions ---

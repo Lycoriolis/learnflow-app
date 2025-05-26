@@ -15,7 +15,7 @@ export const load: PageServerLoad = async () => {
         const stats = {
             totalUsers: adminUsers.length,
             totalCourses: courses.length,
-            totalLessons: courses.reduce((acc, course) => acc + (course.lessons?.length || 0), 0),
+            totalLessons: 0, // Placeholder - needs proper calculation
             totalExercises: 0 // You might need to fetch this separately
         };
         

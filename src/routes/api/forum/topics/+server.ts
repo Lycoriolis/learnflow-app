@@ -8,7 +8,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     topics = await getTopics();
     if (categoryId) {
-      topics = topics.filter(t => t.categoryId === categoryId);
+      topics = topics.filter(t => t.category_id === categoryId);
     }
     return new Response(JSON.stringify(topics), { status: 200 });
   } catch (error) {
@@ -23,14 +23,20 @@ export const POST: RequestHandler = async ({ request }) => {
   if (!title || !categoryId || !authorId || !content) {
     const missing = [];
     if (!title) missing.push('title');
-    if (!categoryId) missing.push('categoryId');
-    if (!authorId) missing.push('authorId');
+    if (!categoryId) missing.push('category_id');
+    if (!authorId) missing.push('author_id');
     if (!content) missing.push('content');
     return new Response(`Missing required fields: ${missing.join(', ')}`, { status: 400 });
   }
 
   try {
-    const newTopic = await createForumTopic({ title, categoryId, authorId, content });
+    const newTopic = await createForumTopic({ 
+      title,
+      category_id: categoryId,
+      author_id: authorId, // Still need this for the type, but service will override with auth info
+      views: 0,
+      post_count: 0
+    });
     return new Response(JSON.stringify(newTopic), { status: 201 });
   } catch (error) {
     console.error('Error creating topic:', error);
@@ -66,11 +72,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   }
 
   try {
-    const result = await deleteTopic(id);
-    // Explicitly check for false as deleteTopic returns a boolean
-    if (result === false) {
-      return new Response('Topic not found', { status: 404 });
-    }
+    await deleteTopic(id);
     return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (error) {
     console.error('Error deleting topic:', error);

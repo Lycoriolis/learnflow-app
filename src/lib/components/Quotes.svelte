@@ -49,7 +49,19 @@
   });
 </script>
 
-<div class="workspace-tool mb-6">
-  <h2 class="text-xl font-semibold mb-2">Motivational Quote</h2>
-  <blockquote class="italic text-gray-700 dark:text-gray-300">“{currentQuote}”</blockquote>
+<div class="workspace-tool mb-6 border-2 border-transparent rounded-xl bg-gradient-to-br from-purple-600 via-indigo-500 to-blue-400 p-1">
+  <div class="bg-[#0D1117] p-6 rounded-lg text-white shadow-lg transition-shadow duration-300 hover:shadow-2xl">
+    <h2 class="text-xl font-semibold mb-4">Motivational Quote</h2>
+    <blockquote class="italic text-lg leading-relaxed opacity-0 quote-transition">“{currentQuote}”</blockquote>
+  </div>
 </div>
+
+<style>
+  .quote-transition {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>

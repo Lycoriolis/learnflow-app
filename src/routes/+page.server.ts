@@ -1,23 +1,23 @@
 import type { PageServerLoad } from './$types';
-// Ensure this path is correct and the function is properly exported from contentService
-import { getSuggestedContentItems } from '$lib/server/contentService';
+import { getFeaturedOrSuggestedContent } from '$lib/server/contentService';
 
 export const load: PageServerLoad = async ({ locals }) => {
     try {
-        const userId = locals.user?.id; 
-        // The error "TypeError: (0 , __vite_ssr_import_0__.getSuggestedContentItems) is not a function"
-        // suggests an issue with how getSuggestedContentItems is being resolved.
-        // Let's ensure the call is direct and the import is solid.
-        const suggestedContent = await getSuggestedContentItems(userId);
+        const userId = locals.user?.uid;
+        // Use the new unified function
+        const content = await getFeaturedOrSuggestedContent(userId);
 
         return {
-            suggestedContent,
+            // Adapt the return structure to what the page expects
+            // Assuming the page expects suggestedContent.featuredExercises and suggestedContent.featuredCourses
+            suggestedContent: content, 
         };
     } catch (error) {
         console.error('Error loading dashboard data in /+page.server.ts:', error);
         return {
             suggestedContent: {
                 featuredExercises: [],
+                featuredCourses: [], // Ensure this is also initialized if expected
             },
             error: 'Failed to load dashboard content. Please try again later.'
         };

@@ -1,3 +1,9 @@
+<!-- 
+  @deprecated This component has been superseded by EnhancedMarkdownRenderer and EnhancedMathContent.
+  Please migrate to EnhancedMarkdownRenderer for improved markdown rendering with enhanced math support.
+  This component will be removed in a future version.
+-->
+
 <script lang="ts">
   import { onMount, afterUpdate } from 'svelte';
   import DOMPurify from 'dompurify';

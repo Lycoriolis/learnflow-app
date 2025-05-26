@@ -1,4 +1,4 @@
-import { CSRF_HEADER, type CsrfResponse } from './csrfTypes';
+import { CSRF_HEADER } from './csrfTypes';
 
 /**
  * Retrieves the CSRF token from the page's meta tags

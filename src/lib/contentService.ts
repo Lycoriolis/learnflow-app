@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 // gray-matter is still useful for quickly reading frontmatter for navigation hierarchy without full module import
 import matter from 'gray-matter'; 
+import { browser } from '$app/environment';
+import { userProgressStore } from './stores/userProgress';
 
 // NOTE: The 'process.cwd()' approach for 'contentDirectory' might behave differently
 // when Vite processes files in `src/lib`. 
@@ -248,19 +250,152 @@ export function getNavigationHierarchy(themeSlug: string): NavItem[] {
     return generateNavigationForTheme(themeContentDiskDir, themeSlug, []);
 }
 
-function resolveChildrenPaths(currentDir: string, children: any[]): string[] {
-  return children.map(child => {
-    if (child.id.endsWith('_index')) {
-      // Subdirectory overview
-      const dirName = child.id.replace('_index', '');
-      return path.join(currentDir, dirName, '_index.mdx');
-    } else {
-      // Lesson/content file
-      return path.join(currentDir, `${child.id}.mdx`);
+// Example usage in navigation or lesson discovery:
+// Use these paths to load or list content at each layer.
+
+// ---- Client-side content service functions ----
+
+// Create a client-side content service class with methods needed by the lesson page
+class ContentService {
+  /**
+   * Tracks when a user views a lesson
+   * @param courseId The course ID
+   * @param lessonId The lesson ID being viewed
+   */
+  async trackLessonView(courseId: string, lessonId: string): Promise<void> {
+    if (!browser) return;
+    
+    try {
+      // Update user progress store to track viewed lesson
+      userProgressStore.trackLessonView(courseId, lessonId);
+      
+      // Send analytics to server if needed
+      await fetch('/api/progress/track-view', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ courseId, lessonId })
+      });
+    } catch (error) {
+      console.error('Failed to track lesson view:', error);
     }
-  });
+  }
+
+  /**
+   * Marks a lesson as complete
+   * @param courseId The course ID
+   * @param lessonId The lesson ID to mark as complete
+   */
+  async markLessonComplete(courseId: string, lessonId: string): Promise<void> {
+    if (!browser) return;
+    
+    try {
+      // Update local progress store
+      userProgressStore.completeLessonInCourse(courseId, lessonId);
+      
+      // Send completion status to server
+      await fetch('/api/progress/complete-lesson', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ courseId, lessonId })
+      });
+      
+      return Promise.resolve();
+    } catch (error) {
+      console.error('Failed to mark lesson complete:', error);
+      return Promise.reject(error);
+    }
+  }
+
+  /**
+   * Gets course data from the server 
+   * @param courseId The ID of the course to retrieve
+   */
+  async getCourse(courseId: string) {
+    try {
+      const response = await fetch(`/api/courses/${courseId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch course data');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching course:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Gets lesson content from the server
+   * @param lessonId The ID of the lesson to retrieve
+   */
+  async getLessonById(lessonId: string) {
+    try {
+      const response = await fetch(`/api/lessons/${lessonId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch lesson data');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching lesson:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Gets all lessons for a specific course
+   * @param courseId The course ID
+   */
+  async getLessonsForCourse(courseId: string) {
+    try {
+      const response = await fetch(`/api/courses/${courseId}/lessons`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch course lessons');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching course lessons:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Gets user progress for a course
+   * @param userId The user ID
+   * @param courseId The course ID
+   */
+  async getUserProgress(userId: string, courseId: string) {
+    try {
+      const response = await fetch(`/api/users/${userId}/progress/${courseId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch user progress');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching user progress:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Gets exercises related to a lesson
+   * @param lessonId The lesson ID
+   */
+  async getExercisesForLesson(lessonId: string) {
+    try {
+      const response = await fetch(`/api/lessons/${lessonId}/exercises`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch lesson exercises');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching lesson exercises:', error);
+      throw error;
+    }
+  }
 }
 
-// Example usage in navigation or lesson discovery:
-// const childrenPaths = resolveChildrenPaths(currentDir, children);
-// Use these paths to load or list content at each layer.
+// Export singleton instance
+export const contentService = new ContentService();

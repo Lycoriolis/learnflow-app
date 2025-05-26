@@ -1,6 +1,8 @@
 // Admin authentication service - client-side only
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { getDocument, queryDocuments } from '$lib/firebase/databaseUtils';
+import { queryDocuments } from '$lib/firebase/databaseUtils'; // Removed getDocument
+import { doc, getDoc } from 'firebase/firestore'; // Added doc, getDoc
+import { db } from '$lib/firebase'; // Added db
 
 /**
  * Checks if a user is an admin
@@ -9,12 +11,14 @@ import { getDocument, queryDocuments } from '$lib/firebase/databaseUtils';
  */
 export async function isUserAdmin(userId: string): Promise<boolean> {
   try {
-    // First check if the user exists in the users collection
-    const userDoc = await getDocument('users', userId);
-    if (!userDoc) return false;
-    
-    // Check if the user has admin role
-    return userDoc.role === 'admin';
+    const userDocRef = doc(db, 'users', userId);
+    const userDocSnap = await getDoc(userDocRef);
+    if (userDocSnap.exists()) {
+      const userData = userDocSnap.data();
+      // Check if the user has admin role
+      return userData.role === 'admin';
+    }
+    return false;
   } catch (error) {
     console.error('Error checking admin status:', error);
     return false;

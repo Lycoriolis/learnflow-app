@@ -1,16 +1,15 @@
 import { writable } from 'svelte/store';
-import type { User } from 'firebase/auth';
-import type { UserProfile } from '../services/userService.js';
+import type { UserProfile as AppUserProfile } from '$lib/types/shared';
 import { getUserProfile, createUserProfile, updateUserProfile as updateUserProfileService } from '../services/userService.js';
 
-export const userProfile = writable<UserProfile | null>(null);
+export const userProfile = writable<AppUserProfile | null>(null);
 export const userProfileLoading = writable<boolean>(false);
 export const userProfileError = writable<string | null>(null);
 
 /**
  * Load or create the user profile for the given UID and email/displayName.
  */
-export async function loadUserProfile(uid: string, email: string, displayName?: string): Promise<void> {
+export async function loadUserProfile(uid: string, email: string | null, displayName?: string | null): Promise<void> {
   userProfileLoading.set(true);
   userProfileError.set(null);
 
@@ -18,18 +17,11 @@ export async function loadUserProfile(uid: string, email: string, displayName?: 
     let profile = await getUserProfile(uid);
     if (!profile) {
       // create new profile
-      const now = Date.now();
       profile = {
         uid,
-        email,
-        displayName,
-        createdAt: now,
-        preferences: {
-          enrollments: [],
-          focusSessions: [],
-          tasks: [],
-          notes: ''
-        }
+        email: email ?? undefined,
+        displayName: displayName ?? undefined,
+        isPremium: false
       };
       await createUserProfile(profile);
     }

@@ -8,18 +8,12 @@ import { getAuth } from 'firebase/auth';
 import { 
   doc, 
   getDoc, 
-  getFirestore, 
   setDoc, 
-  collection, 
-  query, 
-  where, 
-  getDocs,
   serverTimestamp,
-  updateDoc,
   arrayUnion,
-  increment,
   Timestamp,
-  FieldValue
+  getFirestore, // Added getFirestore
+  increment // Added increment
 } from 'firebase/firestore';
 
 /**

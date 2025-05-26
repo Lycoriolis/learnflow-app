@@ -253,4 +253,17 @@ export interface UserPreferences {
   metadata?: {
     lastUpdated: Timestamp;
   };
-} 
+}
+
+export interface UserProfile {
+  uid: string;
+  email?: string | null;
+  displayName?: string | null;
+  photoURL?: string | null;
+  isPremium?: boolean;
+  // Add other profile fields as needed
+  // For example:
+  // lastLogin?: Timestamp;
+  // preferences?: Record<string, any>;
+  // progress?: Record<string, any>;
+}

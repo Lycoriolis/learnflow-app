@@ -33,7 +33,8 @@
     }
 
     if (selectedDifficulty !== 'all') {
-      result = result.filter(ex => ex.difficulty === selectedDifficulty);
+      // Compare with lowercase version of exercise difficulty
+      result = result.filter(ex => ex.difficulty?.toLowerCase() === selectedDifficulty);
     }
 
     if (selectedTags.length > 0) {
@@ -51,7 +52,9 @@
     isLoading = true;
     error = null;
     try {
-      const all = await fetchExercises(categoryId);
+      // Pass an options object, including categoryId if it exists
+      const options = categoryId ? { category: categoryId } : {};
+      const all = await fetchExercises(options);
       exercises = all;
     } catch (err) {
       console.error(err);
@@ -106,7 +109,11 @@
   {:else}
     <div class="exercises-grid">
       {#each filteredExercises as exercise (exercise.id)}
-        <ExerciseCard {...exercise} on:click={() => onExerciseClick(exercise)} />
+        <ExerciseCard 
+          {...exercise} 
+          difficulty={exercise.difficulty?.toLowerCase() as ('beginner' | 'intermediate' | 'advanced' | undefined)} 
+          on:click={() => onExerciseClick(exercise)} 
+        />
       {/each}
     </div>
   {/if}

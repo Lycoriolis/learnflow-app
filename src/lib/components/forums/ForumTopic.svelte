@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { currentTopic, posts, loadTopic, isLoading, error } from '$lib/stores/forumStore';
   import Icon from '@iconify/svelte';
-  import MarkdownRenderer from '$lib/components/shared/MarkdownRenderer.svelte';
+  import EnhancedMarkdownRenderer from '$lib/components/EnhancedMarkdownRenderer.svelte';
   import type { ForumPost } from '$lib/types/forumTypes';
   import { createForumPost } from '$lib/services/forums/forumService';
   import { getAuth } from 'firebase/auth';
@@ -110,7 +110,7 @@
       <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-4">
         <span class="flex items-center">
           <Icon icon="mdi:account" class="w-4 h-4 mr-1" />
-          {$currentTopic.author_name || 'Unknown'}
+          {$currentTopic.author?.name || 'Unknown'}
         </span>
         <span class="mx-2">•</span>
         <span>{formatDate($currentTopic.created_at)}</span>
@@ -136,11 +136,12 @@
         </div>
       {/if}
       
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 mb-6">
+      <!-- TODO: Forum topic content should be displayed from the first post -->
+      <!-- <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 mb-6">
         <div class="prose dark:prose-invert max-w-none">
-          <MarkdownRenderer content={$currentTopic.content} />
+          <EnhancedMarkdownRenderer content={$currentTopic.content} />
         </div>
-      </div>
+      </div> -->
       
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
         Replies ({$posts.length})
@@ -158,15 +159,12 @@
               <div class="p-5">
                 <div class="flex items-start">
                   <div class="flex-shrink-0 mr-4">
-                    {#if post.authorAvatar}
-                      <img src={post.authorAvatar} alt={post.author_name} class="w-10 h-10 rounded-full" />
-                    {:else}
-                      <div class="w-10 h-10 rounded-full bg-cherry-100 dark:bg-cherry-900/30 flex items-center justify-center">
-                        <span class="text-cherry-600 dark:text-cherry-400 text-lg font-medium">
-                          {post.author_name?.charAt(0) || 'A'}
-                        </span>
-                      </div>
-                    {/if}
+                    <!-- Forum posts don't have avatars in current schema -->
+                    <div class="w-10 h-10 rounded-full bg-cherry-100 dark:bg-cherry-900/30 flex items-center justify-center">
+                      <span class="text-cherry-600 dark:text-cherry-400 text-lg font-medium">
+                        {post.author_name?.charAt(0) || 'A'}
+                      </span>
+                    </div>
                   </div>
                   
                   <div class="flex-1">
@@ -176,7 +174,7 @@
                     </div>
                     
                     <div class="prose dark:prose-invert max-w-none">
-                      <MarkdownRenderer content={post.content} />
+                      <EnhancedMarkdownRenderer content={post.content} />
                     </div>
                     
                     {#if post.is_answer}

@@ -1,4 +1,5 @@
 /// <reference types="@sveltejs/kit" />
+/// <reference types="svelte" />
 
 import type { User } from 'firebase/auth';
 
@@ -15,6 +16,12 @@ declare global {
     interface Window {
         Splide: any; // Use 'any' for simplicity, or install @splidejs/splide types
     }
+}
+
+// Fix issue with Svelte's import
+declare module 'svelte' {
+    export { SvelteComponent } from 'svelte/internal';
+    export { onMount, createEventDispatcher } from 'svelte/internal';
 }
 
 // Custom type declarations for modules without @types packages

@@ -3,7 +3,7 @@
  * 
  * Generates a new CSRF token and returns it in the response headers
  */
-import { json } from '@sveltejs/kit';
+
 import type { RequestHandler } from '@sveltejs/kit';
 import { setupCsrfToken } from '$lib/utils/csrf.server.js';
 import { CSRF_HEADER } from '$lib/utils/csrf.types.js';

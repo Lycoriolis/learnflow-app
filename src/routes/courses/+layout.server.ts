@@ -17,11 +17,13 @@ export const load: LayoutServerLoad = async ({ params, route }) => {
     if (route.id === '/courses/[slug]') {
         // This is an overview page (theme or course)
         currentCourseId = params.slug || null; // The slug itself is the ID of the overview
-        currentCourseOverview = await getCourseById(currentCourseId);
-        if (currentCourseOverview?.contentType === 'course_overview') {
-            // If it's a course overview, its lessons are its siblings for this context
-            const courseDirName = currentCourseOverview.filePath ? path.basename(path.dirname(currentCourseOverview.filePath)) : currentCourseId.replace(/_index$/, '');
-            siblingLessons = await getLessonsForCourse(courseDirName, currentCourseOverview);
+        if (currentCourseId) {
+            currentCourseOverview = await getCourseById(currentCourseId);
+            if (currentCourseOverview?.contentType === 'course_overview') {
+                // If it's a course overview, its lessons are its siblings for this context
+                const courseDirName = currentCourseOverview.filePath ? path.basename(path.dirname(currentCourseOverview.filePath)) : (currentCourseId || '').replace(/_index$/, '');
+                siblingLessons = await getLessonsForCourse(courseDirName, currentCourseOverview);
+            }
         }
     } else if (route.id === '/courses/[...slug]') {
         // This is a lesson page or a deeply nested overview page

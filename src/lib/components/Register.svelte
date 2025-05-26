@@ -103,7 +103,7 @@
     return isDisplayNameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid;
   }
   
-  async function handleRegister(e: SubmitEvent) {
+  async function handleRegister(e: CustomEvent<SubmitEvent>) {
     if (!browser) return;
     
     e.preventDefault();

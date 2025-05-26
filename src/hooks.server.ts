@@ -8,7 +8,9 @@ import { authMiddleware, requireAuth } from './routes/api/authMiddleware.server.
 const authRequiredPaths = [
   '/api/score',
   '/api/recommendations',
-  '/api/activities'
+  '/api/activities',
+  '/api/progress',
+  '/api/users'
 ];
 
 // Chain middleware functions based on route

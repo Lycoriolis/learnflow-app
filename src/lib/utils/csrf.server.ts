@@ -2,7 +2,7 @@
  * Server-side CSRF protection utilities
  * This file should never be imported on the client
  */
-import { CSRF_HEADER, CSRF_COOKIE } from './csrf.types.js';
+import { CSRF_COOKIE } from './csrf.types.js';
 import { env } from '$env/dynamic/private';
 import type { Cookies } from '@sveltejs/kit';
 import crypto from 'crypto';

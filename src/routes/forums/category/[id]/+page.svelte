@@ -13,10 +13,10 @@
   
   $: {
     // Filter topics based on search query
+    // TODO: Add content search when content property is available in ForumTopic
     filteredTopics = searchQuery ? 
       $topics.filter(topic => 
-        topic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        topic.content.toLowerCase().includes(searchQuery.toLowerCase())
+        topic.title.toLowerCase().includes(searchQuery.toLowerCase())
       ) : 
       $topics;
   }
@@ -98,10 +98,10 @@
     <div class="space-y-4">
       {#each filteredTopics as topic}
         <a href="/forums/topic/{topic.id}" class="block">
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow {topic.isPinned ? 'border-l-4 border-cherry-500 dark:border-cherry-400' : ''}">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow {topic.is_pinned ? 'border-l-4 border-cherry-500 dark:border-cherry-400' : ''}">
             <div class="p-4">
               <div class="flex items-start">
-                {#if topic.isPinned}
+                {#if topic.is_pinned}
                   <div class="flex-shrink-0 mr-3">
                     <Icon icon="mdi:pin" class="w-5 h-5 text-cherry-600 dark:text-cherry-400" />
                   </div>
@@ -111,18 +111,18 @@
                   <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-1">{topic.title}</h4>
                   
                   <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-2">
-                    <span>{topic.authorName || 'Unknown'}</span>
+                    <span>{topic.author?.name || 'Unknown'}</span>
                     <span class="mx-2">•</span>
-                    <span>{new Date(topic.createdAt).toLocaleDateString()}</span>
+                    <span>{new Date(topic.created_at || Date.now()).toLocaleDateString()}</span>
                     <span class="mx-2">•</span>
                     <span class="flex items-center">
                       <Icon icon="mdi:eye-outline" class="w-4 h-4 mr-1" />
-                      {topic.viewCount}
+                      {topic.views || 0}
                     </span>
                     <span class="mx-2">•</span>
                     <span class="flex items-center">
                       <Icon icon="mdi:comment-outline" class="w-4 h-4 mr-1" />
-                      {topic.replyCount}
+                      {topic.post_count || 0}
                     </span>
                   </div>
                   

@@ -4,12 +4,18 @@ import { getTopic, createPost } from '$lib/services/forums/topicService';
 
 export const PUT: RequestHandler = async ({ request, params }) => {
   const topicId = params.id;
+  if (!topicId) {
+    return new Response(JSON.stringify({ message: 'Topic ID is required' }), { 
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  
   const data = await request.json();
   
   try {
     const updatedTopic = await updateTopic(topicId, {
       title: data.title,
-      content: data.content,
       category_id: data.category_id,
       is_pinned: data.is_pinned,
       is_locked: data.is_locked
@@ -37,16 +43,15 @@ export const PUT: RequestHandler = async ({ request, params }) => {
 
 export const DELETE: RequestHandler = async ({ params }) => {
   const topicId = params.id;
+  if (!topicId) {
+    return new Response(JSON.stringify({ message: 'Topic ID is required' }), { 
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
   
   try {
-    const success = await deleteTopic(topicId);
-    
-    if (success === false) {
-      return new Response(JSON.stringify({ message: 'Topic not found' }), { 
-        status: 404,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
+    await deleteTopic(topicId);
     
     return new Response(JSON.stringify({ message: 'Topic deleted successfully' }), { 
       status: 200,
@@ -61,12 +66,12 @@ export const DELETE: RequestHandler = async ({ params }) => {
   }
 };
 
-export async function GET({ params }) {
+export async function GET({ params }: { params: { id: string } }) {
   const topic = await getTopic(params.id);
   return new Response(JSON.stringify(topic));
 }
 
-export async function POST({ params, request }) {
+export async function POST({ params, request }: { params: { id: string }, request: Request }) {
   const data = await request.json();
   const newPost = await createPost(params.id, data);
   return new Response(JSON.stringify(newPost));

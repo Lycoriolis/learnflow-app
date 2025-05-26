@@ -10,10 +10,7 @@ import {
 	setPersistence,
 	browserLocalPersistence,
 	browserSessionPersistence,
-	type User,
-	type UserCredential,
-	type AuthError,
-	type Auth
+	type User
 } from 'firebase/auth';
 import { auth } from './firebase.js';
 import { isAuthenticated, user, loading, authError } from './stores/authStore.js';
@@ -94,6 +91,31 @@ function cleanupAuth() {
 		unsubscribeAuth = null;
 		authInitialized = false;
 		console.log('Auth listener cleaned up');
+	}
+}
+
+// Sign out the current user
+async function signOutUser(): Promise<void> {
+	if (!browser) return Promise.reject(new Error('Cannot sign out in server context'));
+
+	loading.set(true);
+	authError.set('');
+	console.log('Attempting to sign out user');
+
+	try {
+		await firebaseSignOut(auth);
+		console.log('User signed out successfully');
+		// The onAuthStateChanged listener in initAuth will handle updating stores
+		// Optionally, navigate to home or login page after sign out
+		// import { goto } from '$app/navigation';
+		// goto('/'); 
+	} catch (error: any) {
+		console.error('Sign out error:', error);
+		const formattedError = formatAuthError(error);
+		authError.set(formattedError.message);
+		throw error; // Re-throw to allow component to handle if needed
+	} finally {
+		loading.set(false);
 	}
 }
 
@@ -305,5 +327,6 @@ export {
 	logout,
 	resetPassword,
 	getCurrentUser,
-	updateProfile
+	updateProfile,
+	signOutUser
 };

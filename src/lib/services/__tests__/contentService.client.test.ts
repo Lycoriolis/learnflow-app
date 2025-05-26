@@ -1,4 +1,4 @@
-import { vi, describe, it, expect, beforeEach, afterEach, SpyInstance } from 'vitest';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest'; // Removed SpyInstance
 import { 
   fetchContentById, 
   fetchContentBySlug, 
@@ -18,7 +18,7 @@ const mockExercise1: ContentNode = { id: 'ex1', slug: 'exercise-one', title: 'Te
 describe('contentService (Client-side)', () => {
   beforeEach(() => {
     clearContentCache();
-    (global.fetch as SpyInstance).mockClear();
+    (global.fetch as any).mockClear();
   });
 
   afterEach(() => {
@@ -27,7 +27,7 @@ describe('contentService (Client-side)', () => {
 
   describe('fetchContentById', () => {
     it('should fetch content by ID and cache it for courses', async () => {
-      (global.fetch as SpyInstance).mockResolvedValueOnce({
+      (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => mockCourse1,
       });
@@ -44,7 +44,7 @@ describe('contentService (Client-side)', () => {
     });
 
     it('should fetch content by ID and cache it for exercises', async () => {
-      (global.fetch as SpyInstance).mockResolvedValueOnce({
+      (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => mockExercise1,
       });
@@ -61,7 +61,7 @@ describe('contentService (Client-side)', () => {
     });
 
     it('should re-fetch content after cache is cleared', async () => {
-      (global.fetch as SpyInstance).mockResolvedValueOnce({
+      (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => mockCourse1,
       });
@@ -70,7 +70,7 @@ describe('contentService (Client-side)', () => {
       expect(global.fetch).toHaveBeenCalledTimes(1);
 
       clearContentCache();
-      (global.fetch as SpyInstance).mockResolvedValueOnce({ // Mock again for the second call
+      (global.fetch as any).mockResolvedValueOnce({ // Mock again for the second call
         ok: true,
         json: async () => mockCourse1,
       });
@@ -80,14 +80,14 @@ describe('contentService (Client-side)', () => {
     });
 
     it('should throw an error if fetch fails for fetchContentById', async () => {
-      (global.fetch as SpyInstance).mockResolvedValueOnce({ ok: false, statusText: 'Not Found' });
+      (global.fetch as any).mockResolvedValueOnce({ ok: false, statusText: 'Not Found' });
       await expect(fetchContentById('courses', 'nonexistent')).rejects.toThrow('Failed to fetch content by ID: nonexistent, Status: Not Found');
     });
   });
 
   describe('fetchContentBySlug', () => {
     it('should fetch content by slug directly and cache it', async () => {
-      (global.fetch as SpyInstance).mockResolvedValueOnce({
+      (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => mockCourse1,
       });
@@ -104,7 +104,7 @@ describe('contentService (Client-side)', () => {
     });
 
     it('should attempt direct slug fetch first, and not call fetchContent if successful', async () => {
-      (global.fetch as SpyInstance).mockResolvedValueOnce({
+      (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => mockCourse1,
       });
@@ -113,18 +113,18 @@ describe('contentService (Client-side)', () => {
       expect(global.fetch).toHaveBeenCalledTimes(1);
       expect(global.fetch).toHaveBeenCalledWith('/content/courses/by-slug/course-one.json');
       // Ensure fetchContent (index fetch) was NOT called
-      expect((global.fetch as SpyInstance).mock.calls.some(call => call[0] === '/content/courses/index.json')).toBe(false);
+      expect(((global.fetch as any).mock as any).calls.some((call: any[]) => call[0] === '/content/courses/index.json')).toBe(false);
     });
     
     it('should fallback to fetchContent and search if direct slug fetch fails (404)', async () => {
       // Mock direct slug fetch (404)
-      (global.fetch as SpyInstance).mockResolvedValueOnce({
+      (global.fetch as any).mockResolvedValueOnce({
         ok: false,
         status: 404, 
         statusText: 'Not Found'
       });
       // Mock fetchContent (index fetch)
-      (global.fetch as SpyInstance).mockResolvedValueOnce({
+      (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => [mockCourse1, mockCourse2],
       });
@@ -136,15 +136,15 @@ describe('contentService (Client-side)', () => {
       expect(content).toEqual(mockCourse1);
 
       // Call again, should use cache (should be cached from the fallback)
-      (global.fetch as SpyInstance).mockClear(); // Clear history for the next check
+      (global.fetch as any).mockClear(); // Clear history for the next check
       const cachedContent = await fetchContentBySlug('courses', 'course-one');
       expect(global.fetch).toHaveBeenCalledTimes(0); // Not called again
       expect(cachedContent).toEqual(mockCourse1);
     });
 
     it('should return null if direct slug fetch fails and item not in fallback', async () => {
-      (global.fetch as SpyInstance).mockResolvedValueOnce({ ok: false, status: 404 }); // Direct slug fails
-      (global.fetch as SpyInstance).mockResolvedValueOnce({ ok: true, json: async () => [mockCourse2] }); // Fallback data
+      (global.fetch as any).mockResolvedValueOnce({ ok: false, status: 404 }); // Direct slug fails
+      (global.fetch as any).mockResolvedValueOnce({ ok: true, json: async () => [mockCourse2] }); // Fallback data
 
       const content = await fetchContentBySlug('courses', 'nonexistent-slug');
       expect(global.fetch).toHaveBeenCalledTimes(2);
@@ -152,7 +152,7 @@ describe('contentService (Client-side)', () => {
     });
     
     it('should re-fetch content by slug after cache is cleared', async () => {
-      (global.fetch as SpyInstance).mockResolvedValueOnce({
+      (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => mockCourse1,
       });
@@ -160,7 +160,7 @@ describe('contentService (Client-side)', () => {
       expect(global.fetch).toHaveBeenCalledTimes(1);
 
       clearContentCache();
-      (global.fetch as SpyInstance).mockResolvedValueOnce({ // Mock again for the second call
+      (global.fetch as any).mockResolvedValueOnce({ // Mock again for the second call
         ok: true,
         json: async () => mockCourse1,
       });
@@ -169,8 +169,8 @@ describe('contentService (Client-side)', () => {
     });
 
     it('should throw an error if fetch fails for fetchContentBySlug (and fallback also fails)', async () => {
-      (global.fetch as SpyInstance).mockResolvedValueOnce({ ok: false, status: 500, statusText: 'Server Error (direct)' }); // Direct slug fetch fails
-      (global.fetch as SpyInstance).mockResolvedValueOnce({ ok: false, status: 500, statusText: 'Server Error (index)' }); // Fallback fetchContent also fails
+      (global.fetch as any).mockResolvedValueOnce({ ok: false, status: 500, statusText: 'Server Error (direct)' }); // Direct slug fetch fails
+      (global.fetch as any).mockResolvedValueOnce({ ok: false, status: 500, statusText: 'Server Error (index)' }); // Fallback fetchContent also fails
       
       await expect(fetchContentBySlug('courses', 'any-slug')).rejects.toThrow(); // Error comes from fetchContent
     });
@@ -178,12 +178,12 @@ describe('contentService (Client-side)', () => {
 
   describe('Error Handling for fetchContent and fetchCategories', () => {
     it('should throw an error if fetch fails for fetchContent', async () => {
-      (global.fetch as SpyInstance).mockResolvedValueOnce({ ok: false, statusText: 'Server Error' });
+      (global.fetch as any).mockResolvedValueOnce({ ok: false, statusText: 'Server Error' });
       await expect(fetchContent('courses')).rejects.toThrow('Failed to fetch content: Server Error');
     });
 
     it('should throw an error if fetch fails for fetchCategories', async () => {
-      (global.fetch as SpyInstance).mockResolvedValueOnce({ ok: false, statusText: 'Server Error' });
+      (global.fetch as any).mockResolvedValueOnce({ ok: false, statusText: 'Server Error' });
       await expect(fetchCategories('courses')).rejects.toThrow('Failed to fetch categories: Server Error');
     });
   });

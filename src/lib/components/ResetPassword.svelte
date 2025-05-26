@@ -37,7 +37,7 @@
     return isValid;
   }
   
-  async function handleResetPassword(e: SubmitEvent) {
+  async function handleResetPassword(e: CustomEvent<SubmitEvent>) {
     if (!browser) return;
     
     e.preventDefault();

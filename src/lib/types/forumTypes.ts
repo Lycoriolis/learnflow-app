@@ -5,6 +5,9 @@ export interface ForumCategory {
   description?: string;
   order?: number;
   icon?: string;
+  imageUrl?: string;
+  color?: string;
+  last_activity_at?: Date;
   created_at?: Date;
   updated_at?: Date;
   topic_count?: number;
@@ -17,14 +20,32 @@ export interface ForumTopic {
   author_id: string;
   is_pinned?: boolean;
   is_locked?: boolean;
+  is_resolved?: boolean;
+  has_code_examples?: boolean;
+  difficulty?: 'beginner' | 'intermediate' | 'advanced';
   views?: number;
   votes?: number;
+  upvotes?: number;
+  downvotes?: number;
   created_at?: Date;
   updated_at?: Date;
   tags?: string[];
+  resource_links?: { url: string; title: string }[];
   category_name?: string; // Joined from categories table
   post_count?: number;    // Count of related posts
-  author_name?: string;   // Joined from users table
+  author?: {
+    id: string;
+    name: string;
+    avatar?: string;
+  };
+  last_post?: {
+    author: {
+      id: string;
+      name: string;
+      avatar?: string;
+    };
+    date: Date;
+  };
 }
 
 export interface ForumPost {

@@ -1,99 +1,176 @@
-import { initializeApp, cert } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
+import admin from 'firebase-admin';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
-import { CourseStructure, Exercise } from '../src/lib/types/shared';
+import matter from 'gray-matter';
+import { v4 as uuidv4 } from 'uuid';
+import type { Course, Module, Lesson, Exercise, Category } from '../src/lib/types/content';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Initialize Firebase Admin SDK
+admin.initializeApp();
 
-// Initialize Firebase Admin
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}');
-const app = initializeApp({
-  credential: cert(serviceAccount)
-});
-const db = getFirestore(app);
+const db = admin.firestore();
 
-async function migrateCourses() {
-  const coursesDir = path.join(__dirname, '../static/content/courses');
-  const courseFiles = fs.readdirSync(coursesDir);
+// Define content directories
+const contentDir = path.resolve(process.cwd(), 'static/content');
+const coursesDir = path.join(contentDir, 'courses');
+const exercisesDir = path.join(contentDir, 'exercises');
 
-  for (const file of courseFiles) {
-    if (file.endsWith('.json')) {
-      const coursePath = path.join(coursesDir, file);
-      const courseData = JSON.parse(fs.readFileSync(coursePath, 'utf-8')) as CourseStructure;
+// Define interfaces for content metadata
+interface ContentMetadata {
+  id: string;
+  title: string;
+  description: string;
+  order: number;
+  metadata: {
+    createdAt: Date;
+    updatedAt: Date;
+    author: string;
+  };
+}
 
-      // Add metadata
-      const courseWithMetadata = {
-        ...courseData,
+// Function to migrate content to Firestore
+async function migrateContentToFirebase() {
+  console.log('Starting migration...');
+  const batch = db.batch();
+
+  // Process courses, modules, and lessons
+  const courseDirs = fs.readdirSync(coursesDir);
+  for (const courseDir of courseDirs) {
+    const coursePath = path.join(coursesDir, courseDir);
+    if (!fs.statSync(coursePath).isDirectory()) continue;
+
+    const courseIndexPath = path.join(coursePath, '_index.mdx');
+    let courseId = uuidv4(); // Default courseId
+
+    if (fs.existsSync(courseIndexPath)) {
+      const courseContent = fs.readFileSync(courseIndexPath, 'utf8');
+      const { data: courseMetadata } = matter(courseContent);
+      courseId = courseMetadata.id || courseId; // Use ID from frontmatter if available
+      const courseRef = db.collection('courses').doc(courseId);
+      batch.set(courseRef, {
+        ...courseMetadata,
+        id: courseId,
+        slug: courseDir, // Assuming directory name is the slug
         metadata: {
-          ...courseData.metadata,
           createdAt: new Date(),
           updatedAt: new Date(),
-          isPublished: true
+          author: 'Admin',
+          ...(courseMetadata.metadata || {})
         }
-      };
-
-      // Store in Firestore
-      await db.collection('courses').doc(courseData.id).set(courseWithMetadata);
-      console.log(`Migrated course: ${courseData.title}`);
-    }
-  }
-}
-
-async function migrateExercises() {
-  const exercisesDir = path.join(__dirname, '../static/content/exercises');
-  const exerciseFiles = fs.readdirSync(exercisesDir);
-
-  for (const file of exerciseFiles) {
-    if (file.endsWith('.json')) {
-      const exercisePath = path.join(exercisesDir, file);
-      const exerciseData = JSON.parse(fs.readFileSync(exercisePath, 'utf-8')) as Exercise;
-
-      // Add metadata
-      const exerciseWithMetadata = {
-        ...exerciseData,
+      });
+    } else {
+      // Create a course entry even if _index.mdx is missing, using the folder name
+      const courseRef = db.collection('courses').doc(courseId);
+      batch.set(courseRef, {
+        id: courseId,
+        title: courseDir.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), // Convert slug to title
+        slug: courseDir,
+        description: `Course: ${courseDir}`,
+        order: 0, // Default order
+        category: '', // Default category
+        tags: [], // Default tags
         metadata: {
-          ...exerciseData.metadata,
           createdAt: new Date(),
           updatedAt: new Date(),
-          isPublished: true
+          author: 'Admin'
         }
-      };
+      });
+    }
 
-      // Store in Firestore
-      await db.collection('exercises').doc(exerciseData.id).set(exerciseWithMetadata);
-      console.log(`Migrated exercise: ${exerciseData.title}`);
+    const moduleDirs = fs.readdirSync(coursePath).filter(f => fs.statSync(path.join(coursePath, f)).isDirectory());
+    for (const moduleDir of moduleDirs) {
+      const modulePath = path.join(coursePath, moduleDir);
+      const moduleIndexPath = path.join(modulePath, '_index.mdx');
+      let moduleId = uuidv4(); // Default moduleId
+
+      if (fs.existsSync(moduleIndexPath)) {
+        const moduleContent = fs.readFileSync(moduleIndexPath, 'utf8');
+        const { data: moduleMetadata } = matter(moduleContent);
+        moduleId = moduleMetadata.id || moduleId; // Use ID from frontmatter if available
+        const moduleRef = db.collection('modules').doc(moduleId);
+        batch.set(moduleRef, {
+          ...moduleMetadata,
+          id: moduleId,
+          courseId: courseId,
+          slug: moduleDir, // Assuming directory name is the slug
+          metadata: {
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            author: 'Admin',
+            ...(moduleMetadata.metadata || {})
+          }
+        });
+      } else {
+        // Create a module entry even if _index.mdx is missing
+        const moduleRef = db.collection('modules').doc(moduleId);
+        batch.set(moduleRef, {
+          id: moduleId,
+          courseId: courseId,
+          title: moduleDir.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+          slug: moduleDir,
+          description: `Module: ${moduleDir}`,
+          order: 0, // Default order
+          metadata: {
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            author: 'Admin'
+          }
+        });
+      }
+
+      const lessonFiles = fs.readdirSync(modulePath).filter(f => f.endsWith('.mdx') && f !== '_index.mdx');
+      for (const lessonFile of lessonFiles) {
+        const lessonFilePath = path.join(modulePath, lessonFile);
+        const lessonContent = fs.readFileSync(lessonFilePath, 'utf8');
+        const { data: lessonMetadata } = matter(lessonContent);
+        const lessonId = lessonMetadata.id || uuidv4(); // Use ID from frontmatter or generate new
+        const lessonRef = db.collection('lessons').doc(lessonId);
+        batch.set(lessonRef, {
+          ...lessonMetadata,
+          id: lessonId,
+          moduleId: moduleId,
+          slug: lessonFile.replace('.mdx', ''), // Assuming filename (without .mdx) is the slug
+          metadata: {
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            author: 'Admin',
+            ...(lessonMetadata.metadata || {})
+          }
+        });
+      }
     }
   }
-}
 
-async function main() {
-  try {
-    console.log('Starting content migration...');
-    
-    // Clear existing data
-    console.log('Clearing existing data...');
-    const coursesSnapshot = await db.collection('courses').get();
-    const exercisesSnapshot = await db.collection('exercises').get();
-    
-    const batch = db.batch();
-    coursesSnapshot.docs.forEach(doc => batch.delete(doc.ref));
-    exercisesSnapshot.docs.forEach(doc => batch.delete(doc.ref));
-    await batch.commit();
-    
-    // Migrate new data
-    await migrateCourses();
-    await migrateExercises();
-    
-    console.log('Content migration completed successfully!');
-  } catch (error) {
-    console.error('Error during migration:', error);
-    process.exit(1);
-  } finally {
-    process.exit(0);
+  // Process exercises (assuming exercises are in top-level category folders under exercisesDir)
+  const exerciseCategoryDirs = fs.readdirSync(exercisesDir).filter(f => fs.statSync(path.join(exercisesDir, f)).isDirectory());
+  for (const categoryDir of exerciseCategoryDirs) {
+    const categoryPath = path.join(exercisesDir, categoryDir);
+    const exerciseFiles = fs.readdirSync(categoryPath).filter(f => f.endsWith('.mdx') && f !== '_index.mdx');
+
+    for (const exerciseFile of exerciseFiles) {
+      const exerciseFilePath = path.join(categoryPath, exerciseFile);
+      const exerciseContent = fs.readFileSync(exerciseFilePath, 'utf8');
+      const { data: exerciseMetadata } = matter(exerciseContent);
+      const exerciseId = exerciseMetadata.id || uuidv4(); // Use ID from frontmatter or generate new
+      const exerciseRef = db.collection('exercises').doc(exerciseId);
+      batch.set(exerciseRef, {
+        ...exerciseMetadata,
+        id: exerciseId,
+        slug: exerciseFile.replace('.mdx', ''), // Assuming filename (without .mdx) is the slug
+        category: categoryDir, // Assuming parent folder is the category
+        metadata: {
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          author: 'Admin',
+          ...(exerciseMetadata.metadata || {})
+        }
+      });
+    }
   }
+
+  // Commit the batch
+  await batch.commit();
+  console.log('Migration completed successfully.');
 }
 
-main(); 
+migrateContentToFirebase().catch(console.error);

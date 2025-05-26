@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { getCourseGradient, findNextLesson } from '../contentService';
-import type { CourseStructure, ContentManifestItem } from '$lib/types/contentTypes';
+import type { CourseStructure } from '$lib/types/contentTypes';
 
 describe('getCourseGradient', () => {
   it('returns correct gradient for beginner difficulty', () => {
@@ -79,8 +79,7 @@ describe('findNextLesson', () => {
   });
 
   it('handles null course gracefully', () => {
-    // @ts-expect-error - Testing null handling
-    const result = findNextLesson(null, 'lesson-1');
+    const result = findNextLesson(null as any, 'lesson-1');
     expect(result).toBeNull();
   });
 });

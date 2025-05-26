@@ -1,0 +1,195 @@
+<script lang="ts">
+  import { page } from '$app/stores';
+  import { onMount } from 'svelte';
+  import { userProfile as currentUserProfile } from '$lib/stores/userProfileStore';
+  import type { UserProfile } from '$lib/types/shared';
+  import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
+  
+  // Extended UserProfile type with additional fields for display
+  interface PublicUserProfile extends UserProfile {
+    bio?: string;
+    joinDate?: string;
+    publicStats?: {
+      coursesCompleted: number;
+      exercisesSolved: number;
+    };
+  }
+  
+  // User ID from route parameter
+  const userId = $page.params.userId;
+  
+  let loading = true;
+  let error: string | null = null;
+  let profileData: PublicUserProfile | null = null;
+  let isCurrentUser = false;
+  
+  onMount(async () => {
+    try {
+      loading = true;
+      error = null;
+      
+      // If this is the current user, use the store data
+      if ($currentUserProfile && $currentUserProfile.uid === userId) {
+        profileData = $currentUserProfile;
+        isCurrentUser = true;
+      } else {
+        // This would be a call to get another user's public profile
+        // For now, simulate an API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Mock data for demonstration
+        profileData = {
+          uid: userId,
+          displayName: "Another User",
+          photoURL: null,
+          bio: "Math enthusiast and lifelong learner",
+          joinDate: "January 2023",
+          // Only show limited public data for other users
+          publicStats: {
+            coursesCompleted: 5,
+            exercisesSolved: 42
+          }
+        };
+        
+        isCurrentUser = false;
+      }
+    } catch (err: any) {
+      console.error('Error loading user profile:', err);
+      error = err.message || 'Failed to load user profile';
+    } finally {
+      loading = false;
+    }
+  });
+</script>
+
+<svelte:head>
+  <title>{isCurrentUser ? 'My Profile' : (profileData?.displayName || 'User')} | LearnFlow</title>
+</svelte:head>
+
+<div class="container mx-auto px-4 py-8">
+  {#if loading}
+    <div class="flex justify-center items-center h-64">
+      <LoadingSpinner />
+    </div>
+  {:else if error}
+    <div class="bg-red-500 text-white p-4 rounded-lg mb-6">
+      <p>Error: {error}</p>
+    </div>
+  {:else if profileData}
+    <div class="bg-gray-800 rounded-xl p-6 shadow-md">
+      <div class="flex flex-col md:flex-row gap-6 items-start">
+        <!-- Profile picture -->
+        <div class="flex-shrink-0">
+          <div class="w-32 h-32 rounded-full bg-gray-700 overflow-hidden border-4 border-orange-500">
+            {#if profileData.photoURL}
+              <img 
+                src={profileData.photoURL} 
+                alt="Profile" 
+                class="w-full h-full object-cover"
+                on:error={(event) => { 
+                  const img = event.currentTarget as HTMLImageElement;
+                  img.src = '/images/default-avatar.png';
+                }}
+              />
+            {:else}
+              <div class="w-full h-full flex items-center justify-center bg-gray-700 text-gray-400">
+                <span class="text-4xl font-bold">
+                  {profileData.displayName ? profileData.displayName.charAt(0).toUpperCase() : 'U'}
+                </span>
+              </div>
+            {/if}
+          </div>
+        </div>
+        
+        <!-- Profile info -->
+        <div class="flex-grow">
+          <h1 class="text-2xl font-bold text-white mb-2">
+            {profileData.displayName || 'User'}
+            {#if isCurrentUser}
+              <span class="text-sm font-normal text-gray-400 ml-2">(You)</span>
+            {/if}
+          </h1>
+          
+          {#if profileData.bio}
+            <p class="text-gray-300 mb-4">{profileData.bio}</p>
+          {/if}
+          
+          <div class="flex flex-wrap gap-4 mt-4">
+            {#if isCurrentUser}
+              <a href="/profile" class="inline-flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Edit Profile
+              </a>
+            {:else}
+              <button class="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+                Follow
+              </button>
+              <button class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                Message
+              </button>
+            {/if}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Stats section -->
+      <div class="mt-8 border-t border-gray-700 pt-6">
+        <h2 class="text-xl font-semibold text-white mb-4">Stats</h2>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {#if isCurrentUser}
+            <div class="bg-gray-700 p-4 rounded-lg text-center">
+              <p class="text-2xl font-bold text-blue-400">12</p>
+              <p class="text-sm text-gray-400">Courses Completed</p>
+            </div>
+            <div class="bg-gray-700 p-4 rounded-lg text-center">
+              <p class="text-2xl font-bold text-green-400">87</p>
+              <p class="text-sm text-gray-400">Exercises Solved</p>
+            </div>
+            <div class="bg-gray-700 p-4 rounded-lg text-center">
+              <p class="text-2xl font-bold text-purple-400">45</p>
+              <p class="text-sm text-gray-400">Forum Posts</p>
+            </div>
+            <div class="bg-gray-700 p-4 rounded-lg text-center">
+              <p class="text-2xl font-bold text-orange-400">163</p>
+              <p class="text-sm text-gray-400">Hours Spent</p>
+            </div>
+          {:else}
+            <div class="bg-gray-700 p-4 rounded-lg text-center">
+              <p class="text-2xl font-bold text-blue-400">{profileData.publicStats?.coursesCompleted || 0}</p>
+              <p class="text-sm text-gray-400">Courses Completed</p>
+            </div>
+            <div class="bg-gray-700 p-4 rounded-lg text-center">
+              <p class="text-2xl font-bold text-green-400">{profileData.publicStats?.exercisesSolved || 0}</p>
+              <p class="text-sm text-gray-400">Exercises Solved</p>
+            </div>
+          {/if}
+        </div>
+      </div>
+      
+      {#if isCurrentUser}
+        <div class="mt-6">
+          <a href="/profile" class="text-blue-400 hover:text-blue-300 inline-flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Go to full profile
+          </a>
+        </div>
+      {/if}
+    </div>
+  {:else}
+    <div class="bg-yellow-500 text-white p-4 rounded-lg">
+      <p>User not found.</p>
+    </div>
+  {/if}
+</div>

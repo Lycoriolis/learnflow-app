@@ -180,9 +180,9 @@
       const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
       
       if (daysDiff < 0) {
-        return 'overdue';
+        return 'border-l-4 border-l-red-500 dark:border-l-red-400';
       } else if (daysDiff <= 1) {
-        return 'due-soon';
+        return 'border-l-4 border-l-yellow-500 dark:border-l-yellow-400';
       }
     }
     
@@ -483,7 +483,7 @@
               />
               <datalist id="tag-options">
                 {#each uniqueTags as tag}
-                  <option value={tag} />
+                  <option value={tag}></option>
                 {/each}
               </datalist>
               <i class="fas fa-tag absolute right-4 top-3 text-gray-400"></i>
@@ -601,7 +601,7 @@
                 />
                 <datalist id="edit-tag-options">
                   {#each uniqueTags as tag}
-                    <option value={tag} />
+                    <option value={tag}></option>
                   {/each}
                 </datalist>
                 <i class="fas fa-tag absolute right-4 top-3 text-gray-400"></i>

@@ -76,13 +76,8 @@
     }
     
     try {
-      const result = await deleteCategory(categoryId);
-      
-      if (result) {
-        await loadCategories();
-      } else {
-        alert('Failed to delete category. Please try again.');
-      }
+      await deleteCategory(categoryId);
+      await loadCategories();
     } catch (err) {
       console.error('Error deleting category:', err);
       alert('An error occurred while deleting the category.');
@@ -223,7 +218,7 @@
                 {category.description}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
-                {category.topicCount || 0}
+                {category.topic_count || 0}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
                 {category.order ?? 'N/A'}

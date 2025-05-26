@@ -62,10 +62,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   }
 
   try {
-    const result = await deletePost(id);
-    if (result === false) {
-      return new Response('Post not found', { status: 404 });
-    }
+    await deletePost(id);
     return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (error) {
     console.error('Error deleting post:', error);

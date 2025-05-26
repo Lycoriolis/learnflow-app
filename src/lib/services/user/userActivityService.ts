@@ -1,6 +1,7 @@
 import { db } from '$lib/firebase';
-import { doc, updateDoc, increment, arrayUnion, Timestamp, getDoc } from 'firebase/firestore';
-import type { ServiceResponse } from '$lib/types/service';
+import { doc, updateDoc, increment, arrayUnion, Timestamp, getDoc, serverTimestamp } from 'firebase/firestore';
+import type { ServiceResponse } from "$lib/types/shared";
+import type { UserProgressMetrics } from "$lib/types/user"; // Corrected import path
 
 export class UserActivityService {
   private static instance: UserActivityService;
@@ -31,10 +32,10 @@ export class UserActivityService {
         'metrics.totalCoursesCompleted': increment(progress === 100 ? 1 : 0)
       });
 
-      return { success: true };
+      return { data: undefined, error: null }; // Adjusted to ServiceResponse
     } catch (error) {
       console.error('Error tracking course progress:', error);
-      return { success: false, error: error instanceof Error ? error : new Error('Failed to update course progress') };
+      return { data: null, error: error instanceof Error ? error : new Error('Failed to update course progress') }; // Adjusted
     }
   }
 
@@ -42,68 +43,64 @@ export class UserActivityService {
     userId: string,
     exerciseId: string,
     score: number,
-    timeSpent: number
+    completed: boolean
   ): Promise<ServiceResponse<void>> {
+    const userProgressRef = doc(db, 'userProgress', userId);
     try {
-      const userProgressRef = doc(db, 'userProgress', userId);
-      const completed = score >= 80; // Assuming 80% is passing
-
-      await updateDoc(userProgressRef, {
-        [`exercises.${exerciseId}.attempts`]: increment(1),
-        [`exercises.${exerciseId}.completed`]: completed,
-        [`exercises.${exerciseId}.lastAttempt`]: Timestamp.now(),
-        [`exercises.${exerciseId}.bestScore`]: score,
-        [`exercises.${exerciseId}.timeSpent`]: increment(timeSpent),
-        'metrics.totalExercisesAttempted': increment(1),
-        'metrics.totalExercisesCompleted': increment(completed ? 1 : 0),
-        'metrics.totalLearningTime': increment(timeSpent)
-      });
-
-      // Update average score
       const userProgress = await this.getUserProgress(userId);
-      if (userProgress.data) {
-        const { totalExercisesAttempted, totalExercisesCompleted } = userProgress.data.metrics;
-        const newAverage = (totalExercisesCompleted * 80 + score) / (totalExercisesCompleted + 1);
-        
-        await updateDoc(userProgressRef, {
-          'metrics.averageExerciseScore': newAverage
-        });
+      let newAverage = score;
+      let totalCompleted = completed ? 1 : 0;
+
+      if (userProgress.error === null && userProgress.data) { // Adjusted to check error property
+        const metrics = userProgress.data.metrics as UserProgressMetrics;
+        const totalExercisesCompleted = metrics.totalExercisesCompleted || 0;
+        // Ensure division by zero is handled if totalExercisesCompleted + (completed ? 1:0) is 0
+        const divisor = totalExercisesCompleted + (completed ? 1 : 0);
+        newAverage = divisor === 0 ? 0 : (totalExercisesCompleted * (metrics.averageExerciseScore || 0) + score) / divisor;
+        totalCompleted = totalExercisesCompleted + (completed ? 1 : 0);
       }
 
-      return { success: true };
+      await updateDoc(userProgressRef, {
+        [`exercises.${exerciseId}.lastAttempted`]: serverTimestamp(),
+        [`exercises.${exerciseId}.score`]: score,
+        [`exercises.${exerciseId}.completed`]: completed,
+        'metrics.totalExercisesAttempted': increment(1),
+        'metrics.totalExercisesCompleted': totalCompleted,
+        'metrics.averageExerciseScore': newAverage
+      });
+
+      return { data: undefined, error: null }; // Adjusted
     } catch (error) {
       console.error('Error tracking exercise attempt:', error);
-      return { success: false, error: error instanceof Error ? error : new Error('Failed to update exercise progress') };
+      return { data: null, error: error instanceof Error ? error : new Error('Failed to update exercise progress') }; // Adjusted
     }
   }
 
   async getUserProgress(userId: string): Promise<ServiceResponse<any>> {
+    const userProgressRef = doc(db, 'userProgress', userId);
     try {
-      const userProgressRef = doc(db, 'userProgress', userId);
       const snapshot = await getDoc(userProgressRef);
-      
       if (!snapshot.exists()) {
-        return { success: false, error: new Error('User progress not found') };
+        return { data: null, error: new Error('User progress not found') }; // Adjusted
       }
 
-      return { success: true, data: snapshot.data() };
+      return { data: snapshot.data(), error: null }; // Adjusted
     } catch (error) {
       console.error('Error getting user progress:', error);
-      return { success: false, error: error instanceof Error ? error : new Error('Failed to get user progress') };
+      return { data: null, error: error instanceof Error ? error : new Error('Failed to get user progress') }; // Adjusted
     }
   }
 
-  async updateLearningTime(userId: string, minutes: number): Promise<ServiceResponse<void>> {
+  async updateTotalLearningTime(userId: string, timeToAdd: number): Promise<ServiceResponse<void>> {
+    const userProgressRef = doc(db, 'userProgress', userId);
     try {
-      const userProgressRef = doc(db, 'userProgress', userId);
       await updateDoc(userProgressRef, {
-        'metrics.totalLearningTime': increment(minutes)
+        'metrics.totalLearningTime': increment(timeToAdd)
       });
-
-      return { success: true };
+      return { data: undefined, error: null }; // Adjusted
     } catch (error) {
       console.error('Error updating learning time:', error);
-      return { success: false, error: error instanceof Error ? error : new Error('Failed to update learning time') };
+      return { data: null, error: error instanceof Error ? error : new Error('Failed to update learning time') }; // Adjusted
     }
   }
-} 
+}

@@ -1,12 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	// import CourseCard from '$lib/components/courses/CourseCard.svelte'; 
-	import { marked } from 'marked'; 
 	import UnifiedRenderer from '$lib/components/UnifiedRenderer.svelte';
 
 	export let data: PageData;
-
-	// $: console.log('Course [slug] page data:', data); 
 </script>
 
 {#if data.type === 'category'}
@@ -65,7 +61,7 @@
 			
 			<section class="main-content prose lg:prose-xl">
 				{#if data.courseData.rawMdxContent}
-					<UnifiedRenderer content={data.courseData.rawMdxContent} type="course" />
+					<UnifiedRenderer content={data.courseData.rawMdxContent} type="markdown" />
 				{:else}
 					<p>Course overview content could not be loaded.</p>
 				{/if}

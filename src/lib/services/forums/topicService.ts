@@ -1,5 +1,5 @@
 // src/lib/services/forums/topicService.ts
-import type { ForumTopic, TopicVote } from '../../types/forumTypes';
+import type { ForumTopic } from '../../types/forumTypes'; // Removed unused TopicVote
 import { pool } from '../userService.server';
 
 /**
@@ -165,8 +165,6 @@ export async function handleTopicVote(
       [topicId, userId]
     );
     
-    let result;
-    
     if (existingVote.rows.length > 0) {
       // User already voted, update their vote
       if (existingVote.rows[0].vote_type === voteType) {
@@ -217,7 +215,8 @@ export async function handleTopicVote(
   }
 }
 
-export const createPost = async (topicId: string, postData: any) => {
+export const createPost = async (_topicId: string, postData: any) => {
   // Add post logic
+  // _topicId is marked as unused
   return { ...postData, createdAt: new Date() };
 };

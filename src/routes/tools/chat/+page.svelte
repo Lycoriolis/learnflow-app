@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount, onDestroy, afterUpdate } from 'svelte';
-  import { writable } from 'svelte/store';
   import MarkdownIt from 'markdown-it';
   import markdownItKatex from 'markdown-it-katex';
   // Set up Markdown-It with KaTeX for math rendering
@@ -9,7 +8,7 @@
 
   const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
   const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
-  const SITE_URL = import.meta.env.VITE_SITE_URL || location.origin;
+  const SITE_URL = import.meta.env.VITE_SITE_URL || (typeof location !== 'undefined' ? location.origin : '');
   const SITE_NAME = import.meta.env.VITE_SITE_NAME || 'LearnFlow';
 
   type Role = 'user' | 'assistant';
@@ -47,11 +46,17 @@
     await logEvent('send_message', 'chat', { content: input });
     // add user message
     messages = [...messages, { role: 'user', text: input }];
-    const userContent = input;
     input = '';
     loading = true;
     error = '';
     const selected = modes.find(m => m.id === mode);
+
+    if (!selected) { // Add check for undefined selected
+      error = 'Invalid mode selected.';
+      loading = false;
+      return;
+    }
+
     try {
       // Build request with full chat history for context (memory)
       // Include full history and enable streaming
@@ -71,9 +76,14 @@
         body: JSON.stringify(body)
       });
       if (!res.ok) throw new Error(await res.text());
+      
       // Prepare streaming of assistant reply
       messages = [...messages, { role: 'assistant', text: '' }];
       const assistantIndex = messages.length - 1;
+
+      if (!res.body) { // Add check for null res.body
+        throw new Error('Response body is null.');
+      }
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
@@ -96,7 +106,7 @@
               const content = delta.content || delta.text || '';
               if (content) {
                 messages[assistantIndex].text += content;
-                messages = messages.slice();
+                messages = messages.slice(); // Trigger Svelte reactivity
               }
             } catch {
               // skip invalid JSON
@@ -158,7 +168,13 @@
       rows="2"
       bind:value={input}
       placeholder="Type your question..."
-      on:keydown={e => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), send())}
+      on:keydown={e => {
+        const event = e as KeyboardEvent;
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
+          send();
+        }
+      }}
     ></textarea>
     <button
       class="ml-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow transition disabled:opacity-50"

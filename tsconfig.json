@@ -12,6 +12,10 @@
 			"strict": true,
 			"module": "ESNext",
 			"moduleResolution": "Node",
-			"target": "ESNext"
-	}
+			"target": "ES2015",
+			"types": ["svelte"],
+			"verbatimModuleSyntax": false
+	},
+	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
+	"exclude": ["node_modules"]
 }

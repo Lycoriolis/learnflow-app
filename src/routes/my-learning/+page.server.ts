@@ -1,20 +1,18 @@
 import type { PageServerLoad } from './$types';
-import { getAllContentItemsByType } from '$lib/server/contentService';
-import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ parent }) => {
-  // Get parent data and handle case where userProfile might be undefined
+  // Get parent data 
   const parentData = await parent();
-  const userProfile = parentData.userProfile;
+  // Parent data only has csrfToken, not userProfile
+  // TODO: Add proper user authentication and profile loading
+  
+  // For now, return empty enrollment list
+  return { 
+    enrolledCourses: [],
+    csrfToken: parentData.csrfToken
+  };
 
-  if (!userProfile) {
-    // This case might be handled by the layout guard, but good to be safe
-    return { enrolledCourses: [] }; 
-  }
-
-  // Safely access enrollment IDs with proper typings
-  const enrolledIds = userProfile.preferences?.enrollments?.map((e: { id: string }) => e.id) || [];
-
+  /* TODO: Implement when user profile loading is added
   if (enrolledIds.length === 0) {
     return { enrolledCourses: [] };
   }
@@ -42,4 +40,5 @@ export const load: PageServerLoad = async ({ parent }) => {
     // Use SvelteKit's error helper for server-side errors
     throw error(500, 'Failed to load enrolled courses.'); 
   }
+  */
 };

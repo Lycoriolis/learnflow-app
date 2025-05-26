@@ -1,4 +1,4 @@
-import type { ForumCategory, ForumTopic, ForumPost, ForumLike } from '$lib/types/forumTypes';
+import type { ForumCategory, ForumTopic, ForumPost } from '$lib/types/forumTypes'; // Removed unused ForumLike
 import { error } from '@sveltejs/kit';
 import { db } from '$lib/firebase';
 import { 
@@ -6,7 +6,6 @@ import {
   doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc,
   increment, serverTimestamp
 } from 'firebase/firestore';
-import type { DocumentData } from 'firebase/firestore';
 
 // Category operations
 export const getCategories = async (): Promise<ForumCategory[]> => {
@@ -102,10 +101,10 @@ export const getTopics = async (categoryId?: string): Promise<ForumTopic[]> => {
     
     const snapshot = await getDocs(q);
     
-    return snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    } as ForumTopic));
+    return snapshot.docs.map(doc => {
+      const data = doc.data() as Omit<ForumTopic, 'id'>;
+      return { id: doc.id, ...data }; // returns ForumTopic
+    });
   } catch (err) {
     console.error('Error getting forum topics:', err);
     throw error(500, 'Failed to fetch forum topics');

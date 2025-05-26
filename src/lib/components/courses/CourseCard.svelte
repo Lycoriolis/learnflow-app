@@ -1,166 +1,93 @@
 <script lang="ts">
 	export let course: any; // Replace 'any' with a specific Course type/interface later
 
-	// Fallback for missing images, or you can use a placeholder service
-	const placeholderImage = "https://via.placeholder.com/300x180.png?text=Course+Preview";
+	const placeholderImage = "https://via.placeholder.com/400x225.png?text=Course+Preview";
+
+	// Helper function to determine difficulty badge styling
+	function calculateDifficultyClasses(difficulty: string | undefined): string {
+		const lowerDifficulty = String(difficulty).toLowerCase();
+		switch (lowerDifficulty) {
+			case 'beginner':
+				return 'bg-green-700/50 text-green-300 border-green-600/70';
+			case 'intermediate':
+				return 'bg-yellow-700/50 text-yellow-300 border-yellow-600/70';
+			case 'advanced':
+				return 'bg-red-700/50 text-red-300 border-red-600/70';
+			default:
+				return 'bg-slate-600/50 text-slate-300 border-slate-500/70';
+		}
+	}
+	$: difficultyClasses = calculateDifficultyClasses(course.difficulty);
 </script>
 
-<a href={course.contentPath || '#'} class="course-card-link">
-	<article class="course-card">
-		<div class="card-image-container">
-			<img src={course.thumbnail || placeholderImage} alt={course.title || 'Course image'} class="card-image" />
-		</div>
-		<div class="card-content">
-			<h3 class="card-title">{course.title || 'Untitled Course'}</h3>
-			<p class="card-description">{course.description || 'No description available.'}</p>
-			<div class="card-meta">
-				{#if course.category}
-					<span class="meta-item category-tag">{course.category}</span>
-				{/if}
-				{#if course.difficulty}
-					<span class="meta-item difficulty-tag difficulty-{String(course.difficulty).toLowerCase()}">
-						{course.difficulty}
-					</span>
-				{/if}
-				{#if course.estimatedTime}
-					<span class="meta-item time-tag">
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="icon"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd" /></svg>
-						{course.estimatedTime}
-					</span>
-				{/if}
-			</div>
+<a
+	href={course.contentPath || '#'}
+	class="group block rounded-xl overflow-hidden bg-slate-800 border border-slate-700/70 shadow-lg hover:shadow-cyan-500/20 hover:border-slate-600/80 transition-all duration-300 ease-in-out h-full flex flex-col"
+>
+	<div class="relative w-full aspect-[16/9] overflow-hidden bg-slate-700">
+		<img
+			src={course.thumbnail || placeholderImage}
+			alt={course.title || 'Course image'}
+			class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+		/>
+		{#if course.category}
+			<span
+				class="absolute top-2 right-2 px-2.5 py-1 text-xs font-semibold rounded-full bg-cyan-600/80 text-cyan-100 backdrop-blur-sm border border-cyan-500/50 shadow-md"
+			>
+				{course.category}
+			</span>
+		{/if}
+	</div>
+
+	<div class="p-5 flex flex-col flex-grow">
+		<h3 class="text-lg sm:text-xl font-semibold text-slate-100 mb-2 leading-tight group-hover:text-cyan-400 transition-colors duration-200">
+			{course.title || 'Untitled Course'}
+		</h3>
+		<p class="text-sm text-slate-400 mb-4 line-clamp-3 flex-grow">
+			{course.description || 'No description available.'}
+		</p>
+
+		<div class="mt-auto space-y-3">
+			{#if course.difficulty || course.estimatedTime}
+				<div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-slate-400">
+					{#if course.difficulty}
+						<span
+							class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium border {difficultyClasses}"
+						>
+							{course.difficulty}
+						</span>
+					{/if}
+					{#if course.estimatedTime}
+						<span class="inline-flex items-center">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								class="w-4 h-4 mr-1.5 text-slate-500"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+							{course.estimatedTime}
+						</span>
+					{/if}
+				</div>
+			{/if}
+
 			{#if course.tags && course.tags.length > 0}
-				<div class="card-tags">
-					{#each course.tags as tag}
-						<span class="tag">{tag}</span>
+				<div class="flex flex-wrap gap-1.5">
+					{#each course.tags as tag (tag)}
+						<span
+							class="px-2 py-0.5 text-xs rounded-full bg-slate-700 text-slate-300 group-hover:bg-slate-600 transition-colors duration-200"
+						>
+							{tag}
+						</span>
 					{/each}
 				</div>
 			{/if}
 		</div>
-	</article>
+	</div>
 </a>
-
-<style>
-	:root {
-		--card-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-		--card-title-font-family: 'Lexend Deca', var(--card-font-family);
-		--card-bg: #ffffff;
-		--card-border-color: #e2e8f0;
-		--card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-		--card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-		--card-title-color: #1a202c;
-		--card-text-color: #4a5568;
-		--card-meta-color: #718096;
-		--tag-bg: #edf2f7;
-		--tag-text-color: #4a5568;
-		--primary-color: #4299e1; /* Example primary color */
-	}
-
-	.course-card-link {
-		text-decoration: none;
-		color: inherit;
-		display: block;
-		border-radius: 0.75rem; /* 12px */
-		overflow: hidden;
-		transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-	}
-
-	.course-card-link:hover {
-		transform: translateY(-4px);
-		box-shadow: var(--card-hover-shadow);
-	}
-
-	.course-card {
-		background-color: var(--card-bg);
-		border: 1px solid var(--card-border-color);
-		box-shadow: var(--card-shadow);
-		display: flex;
-		flex-direction: column;
-		height: 100%; /* Ensure cards in a grid take same height if needed */
-	}
-	
-	.card-image-container {
-		width: 100%;
-		aspect-ratio: 16 / 9; /* Maintain aspect ratio for images */
-		overflow: hidden;
-		background-color: #f0f0f0; /* Placeholder bg */
-	}
-
-	.card-image {
-		width: 100%;
-		height: 100%;
-		object-fit: cover; /* Cover the container, might crop */
-		transition: transform 0.3s ease;
-	}
-
-	.course-card-link:hover .card-image {
-		transform: scale(1.05);
-	}
-
-	.card-content {
-		padding: 1rem 1.25rem; /* 16px 20px */
-		font-family: var(--card-font-family);
-		flex-grow: 1; /* Allows content to fill space if card heights are matched */
-		display: flex;
-		flex-direction: column;
-	}
-
-	.card-title {
-		font-family: var(--card-title-font-family);
-		font-size: 1.25rem; /* 20px */
-		font-weight: 600;
-		color: var(--card-title-color);
-		margin: 0 0 0.5rem;
-		line-height: 1.3;
-	}
-
-	.card-description {
-		font-size: 0.9rem; /* 14.4px */
-		color: var(--card-text-color);
-		line-height: 1.6;
-		margin-bottom: 0.75rem;
-		flex-grow: 1; /* Pushes meta and tags down */
-	}
-
-	.card-meta {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.75rem;
-		font-size: 0.8rem; /* 12.8px */
-		color: var(--card-meta-color);
-		margin-bottom: 0.75rem;
-		align-items: center;
-	}
-	.meta-item {
-		display: flex;
-		align-items: center;
-		gap: 0.25rem; /* Space between icon and text */
-		padding: 0.2rem 0.5rem;
-		border-radius: 0.25rem; /* 4px */
-		background-color: var(--tag-bg);
-	}
-	.icon {
-		width: 0.9em; /* 14.4px */
-		height: 0.9em;
-	}
-	.difficulty-beginner { background-color: #c6f6d5; color: #2f855a; }
-	.difficulty-intermediate { background-color: #faf089; color: #b7791f; }
-	.difficulty-advanced { background-color: #fed7d7; color: #c53030; }
-
-
-	.card-tags {
-		margin-top: auto; /* Pushes tags to the bottom if description doesn't fill space */
-		padding-top: 0.5rem;
-	}
-	.tag {
-		display: inline-block;
-		background-color: var(--tag-bg);
-		color: var(--tag-text-color);
-		padding: 0.25rem 0.6rem;
-		border-radius: 9999px; /* Pill shape */
-		font-size: 0.75rem; /* 12px */
-		margin-right: 0.3rem;
-		margin-bottom: 0.3rem;
-		font-weight: 500;
-	}
-</style>

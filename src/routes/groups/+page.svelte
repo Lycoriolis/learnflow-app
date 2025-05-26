@@ -131,6 +131,7 @@
               class="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="Search groups by name or description..."
               bind:value={searchQuery}
+              aria-label="Search groups"
             />
             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <i class="fas fa-search text-gray-400"></i>
@@ -141,6 +142,7 @@
             <select
               class="appearance-none pl-4 pr-10 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 min-w-[180px]"
               bind:value={selectedTopic}
+              aria-label="Filter groups by topic"
             >
               {#each groupTopics as topic}
                 <option value={topic}>{topic === 'all' ? 'All Topics' : topic}</option>

@@ -14,7 +14,7 @@
     if (minutesSpent > 0) {
       const userId = $user?.uid;
       if (userId) {
-        activityService.updateLearningTime(userId, minutesSpent);
+        activityService.updateTotalLearningTime(userId, minutesSpent);
       }
     }
     

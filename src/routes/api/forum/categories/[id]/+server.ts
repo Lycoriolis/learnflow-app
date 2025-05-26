@@ -54,14 +54,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
   }
   
   try {
-    const success = await deleteCategory(categoryId);
-    
-    if (!success) {
-      return new Response(JSON.stringify({ message: 'Category not found' }), { 
-        status: 404,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
+    await deleteCategory(categoryId);
     
     return new Response(JSON.stringify({ message: 'Category deleted successfully' }), { 
       status: 200,

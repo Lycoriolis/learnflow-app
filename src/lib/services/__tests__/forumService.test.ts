@@ -8,7 +8,6 @@ import {
   updatePost, 
   toggleLike 
 } from '../forumService'; // Adjust path as needed
-import { serverTimestamp as mockServerTimestamp } from 'firebase/firestore';
 
 // Mock Firestore functions
 vi.mock('firebase/firestore', async (importOriginal) => {
@@ -29,17 +28,26 @@ vi.mock('firebase/firestore', async (importOriginal) => {
 });
 
 // Helper to get the mocked functions with correct types
-const mockAddDoc = vi.mocked((await import('firebase/firestore')).addDoc);
-const mockUpdateDoc = vi.mocked((await import('firebase/firestore')).updateDoc);
-const mockSetDoc = vi.mocked((await import('firebase/firestore')).setDoc);
-const mockGetDoc = vi.mocked((await import('firebase/firestore')).getDoc);
-const mockDeleteDoc = vi.mocked((await import('firebase/firestore')).deleteDoc);
+let mockAddDoc: any;
+let mockUpdateDoc: any;
+let mockSetDoc: any;
+let mockGetDoc: any;
+let mockDeleteDoc: any;
 
 describe('forumService', () => {
   beforeEach(async () => { // Make beforeEach async
     vi.clearAllMocks();
+    
+    // Initialize mocked functions
+    const firestoreModule = await import('firebase/firestore');
+    mockAddDoc = vi.mocked(firestoreModule.addDoc);
+    mockUpdateDoc = vi.mocked(firestoreModule.updateDoc);
+    mockSetDoc = vi.mocked(firestoreModule.setDoc);
+    mockGetDoc = vi.mocked(firestoreModule.getDoc);
+    mockDeleteDoc = vi.mocked(firestoreModule.deleteDoc);
+    
     // Setup default mock implementations if needed, e.g., for doc() or collection()
-    vi.mocked((await import('firebase/firestore')).doc).mockReturnValue({ id: 'mockDocRef' } as any);
+    vi.mocked(firestoreModule.doc).mockReturnValue({ id: 'mockDocRef' } as any);
     vi.mocked((await import('firebase/firestore')).collection).mockReturnValue({ id: 'mockCollectionRef' } as any);
 
   });

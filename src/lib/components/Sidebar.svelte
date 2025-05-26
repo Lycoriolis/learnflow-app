@@ -4,9 +4,11 @@
   import { slide } from 'svelte/transition';
   import type { SlideParams } from 'svelte/transition';
   import { isAuthenticated, user, loading } from '$lib/stores/authStore.js';
-  import { sidebarCollapsed } from '$lib/stores/sidebarStore.js';
+  import { userProfile } from '$lib/stores/userProfileStore.js'; // Import userProfile store
+  import { signOutUser } from '$lib/authService.js'; // Import signOutUser
   import { browser } from '$app/environment';
   import { navigateToLogin } from '$lib/utils/navigation';
+  import { pipVisible } from '$lib/stores/pipStores.js'; // Import pipVisible
   
   type NavItem = {
     name: string;
@@ -62,15 +64,12 @@
   let path = '';
   let expanded: Record<string, boolean> = {};
   let pageUnsubscribe: () => void;
+  let userProfileUnsubscribe: () => void; // Declare userProfileUnsubscribe
   
-  // Close mobile menu when clicking outside
   let handleOutsideClick: ((event: MouseEvent) => void) | null = null;
   
-  // Handle keyboard navigation
   function handleKeyDown(event: KeyboardEvent): void {
     if (!browser) return;
-    
-    // Escape key closes mobile menu
     if (event.key === 'Escape' && mobileMenuOpen) {
       toggleMobileMenu();
     }
@@ -78,139 +77,159 @@
   
   onMount(() => {
     if (browser) {
-      // Set initial expanded state based on current path
-      navigation.forEach(category => {
-        if (category.items.some(item => path.startsWith(item.href))) {
-          expanded[category.title] = true;
-        } else {
-          expanded[category.title] = false;
-        }
+      pageUnsubscribe = page.subscribe(value => {
+        path = value.url.pathname;
+        // Initialize expanded state after path is set
+        navigation.forEach(category => {
+          expanded[category.title] = category.items.some(item => isActive(item.href));
+        });
+        mobileMenuOpen = false; // Close mobile menu on navigation
       });
       
-      // Set up event listeners
+      userProfileUnsubscribe = userProfile.subscribe(profile => {
+        if (profile) {
+          console.log('User premium status in Sidebar:', profile.isPremium);
+        }
+      });
+
       handleOutsideClick = (event: MouseEvent) => {
-        const sidebar = document.getElementById('sidebar');
+        const sidebarEl = document.getElementById('sidebar');
+        const mobileToggleBtn = document.getElementById('mobile-menu-toggle');
         const target = event.target as Node;
-        
-        if (mobileMenuOpen && sidebar && !sidebar.contains(target)) {
+        if (mobileMenuOpen && sidebarEl && !sidebarEl.contains(target) && mobileToggleBtn && !mobileToggleBtn.contains(target)) {
           mobileMenuOpen = false;
         }
       };
       
-      document.addEventListener('click', handleOutsideClick);
+      document.addEventListener('click', handleOutsideClick, true); // Use capture phase
       document.addEventListener('keydown', handleKeyDown);
-      
-      // Subscribe to page changes
-      pageUnsubscribe = page.subscribe(value => {
-        path = value.url.pathname;
-        // Close mobile menu on navigation
-        mobileMenuOpen = false;
-      });
     }
   });
   
   onDestroy(() => {
     if (browser) {
-      // Clean up event listeners
       if (handleOutsideClick) {
-        document.removeEventListener('click', handleOutsideClick);
+        document.removeEventListener('click', handleOutsideClick, true);
       }
       document.removeEventListener('keydown', handleKeyDown);
-      
-      // Unsubscribe from page store
       if (pageUnsubscribe) {
         pageUnsubscribe();
+      }
+      if (userProfileUnsubscribe) {
+        userProfileUnsubscribe();
       }
     }
   });
 
   function toggleMobileMenu() {
     mobileMenuOpen = !mobileMenuOpen;
+    if (mobileMenuOpen) {
+      document.body.classList.add('sidebar-open');
+    } else {
+      document.body.classList.remove('sidebar-open');
+    }
+  }
+  
+  function toggleCategory(categoryTitle: string) {
+    expanded = { ...expanded, [categoryTitle]: !expanded[categoryTitle] };
+  }
+  
+  function isActive(href: string): boolean {
+    if (href === '/') {
+      return path === '/'; // Exact match for homepage
+    }
+    return path === href || path.startsWith(href + '/');
   }
 
-  function toggleCollapse() {
-    sidebarCollapsed.update(v => !v);
+  async function handleLogout() {
+    try {
+      await signOutUser();
+      // Optionally navigate to home or login page after sign out
+      // import { goto } from '$app/navigation';
+      // goto('/');
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Handle logout error (e.g., show a notification to the user)
+    }
   }
-  
-  function toggleCategory(category: string) {
-    expanded = { ...expanded, [category]: !expanded[category] };
-  }
-  
-  // Determine if a navigation item is active
-  function isActive(href: string): boolean {
-    return path === href || path.startsWith(href + '/');
+
+  // Toggle Pip widget visibility
+  function togglePip() {
+    pipVisible.update(v => !v);
   }
 </script>
 
 <!-- Mobile Menu Button -->
 <div class="lg:hidden fixed top-4 left-4 z-50">
   <button 
+    id="mobile-menu-toggle" 
     on:click={toggleMobileMenu} 
-    class="p-2 rounded-full bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-200 shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+    class="p-2 rounded-full bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-200 shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
     aria-label="Toggle menu"
     aria-expanded={mobileMenuOpen}
+    aria-controls="sidebar"
   >
     <i class="fas fa-bars"></i>
   </button>
 </div>
 
-<!-- External Expand Button (visible when collapsed) -->
-{#if $sidebarCollapsed}
-  <div class="fixed top-4 left-4 z-50 hidden lg:block">
-    <button
-      on:click={toggleCollapse}
-      class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 shadow focus:outline-none focus:ring"
-      aria-label="Expand sidebar"
-    >
-      <i class="fas fa-angle-right"></i>
-    </button>
-  </div>
-{/if}
-
 <!-- Overlay for mobile -->
 {#if mobileMenuOpen}
   <div 
-    class="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden" 
+    class="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden" 
     aria-hidden="true"
+    on:click={toggleMobileMenu}
   ></div>
 {/if}
 
 <!-- Sidebar -->
-<nav id="sidebar"
-     class="sidebar w-64 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 fixed h-full z-30 flex flex-col transform transition-transform duration-300 ease-in-out -translate-x-full"
-     class:translate-x-0={mobileMenuOpen}
-     class:lg:translate-x-0={!$sidebarCollapsed}
-     class:lg:-translate-x-full={$sidebarCollapsed}
-     aria-label="Main navigation">
-  <!-- Internal Collapse Toggle Button -->
-  <button
-    on:click={toggleCollapse}
-    class="absolute top-4 right-4 hidden lg:block p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring"
-    aria-label={$sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-  >
-    <i class={`fas ${$sidebarCollapsed ? 'fa-angle-right' : 'fa-angle-left'}`}></i>
-  </button>
-
+<nav 
+  id="sidebar"
+  class="peer sidebar fixed left-0 top-0 h-full bg-[#0F172A] text-slate-200 flex flex-col justify-between z-40 group/sidebar transition-transform lg:transition-all duration-300 ease-in-out transform -translate-x-full lg:translate-x-0 w-72 lg:w-[80px] lg:hover:w-[280px] shadow-xl border-r border-slate-700/50"
+  class:translate-x-0={mobileMenuOpen}
+  aria-label="Main navigation"
+>
   <!-- Logo/Header -->
-  <div class="p-4 flex items-center">
-    <div class="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center mr-3">
-      <i class="fas fa-graduation-cap text-white"></i>
+  <div class="p-4 flex items-center shrink-0 h-[68px] 
+              lg:px-0 lg:group-hover/sidebar:px-4 
+              lg:justify-center lg:group-hover/sidebar:justify-start 
+              transition-all duration-300 ease-in-out border-b border-slate-700/50">
+    <div class="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center 
+                lg:w-9 lg:h-9 lg:group-hover/sidebar:w-10 lg:group-hover/sidebar:h-10 
+                transition-all duration-300 ease-in-out shrink-0
+                lg:mx-0 lg:group-hover/sidebar:mr-3">
+      <i class="fas fa-graduation-cap text-white text-xl lg:text-lg lg:group-hover/sidebar:text-xl transition-all duration-300 ease-in-out"></i>
     </div>
-    <h1 class="text-xl font-bold text-gray-800 dark:text-indigo-300">LearnFlow</h1>
+    <h1 class="text-xl font-bold text-indigo-300 ml-3 
+               lg:hidden lg:group-hover/sidebar:inline-block lg:group-hover/sidebar:opacity-100
+               transition-all duration-200 lg:delay-100 ease-in-out whitespace-nowrap overflow-hidden">
+      LearnFlow
+    </h1>
   </div>
 
   <!-- Scrollable Navigation -->
-  <div class="flex-1 overflow-y-auto px-2">
-    {#each navigation as category}
-      <div class="mb-4">
+  <div class="flex-1 overflow-y-auto overflow-x-hidden pt-2 lg:pt-3">
+    {#each navigation as category (category.title)}
+      <div class="mb-2 lg:mb-1 px-2 lg:px-0 lg:group-hover/sidebar:px-2 transition-all duration-300 ease-in-out">
         <button
-          class="w-full flex justify-between items-center px-3 py-2 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 tracking-wider focus:outline-none focus:ring-1 focus:ring-indigo-500 rounded-md"
+          class="w-full flex items-center 
+                 px-3 py-2.5 lg:px-0 lg:group-hover/sidebar:px-3 
+                 lg:justify-center lg:group-hover/sidebar:justify-between
+                 text-xs font-semibold uppercase text-slate-400 hover:text-slate-200 tracking-wider 
+                 focus:outline-none focus:ring-1 focus:ring-indigo-500 rounded-md
+                 transition-all duration-150 ease-in-out"
           on:click={() => toggleCategory(category.title)}
           aria-expanded={expanded[category.title] || false}
           aria-controls={`category-${category.title.toLowerCase().replace(/\s+/g, '-')}`}
         >
-          <span>{category.title}</span>
-          <i class={`fas ${expanded[category.title] ? 'fa-chevron-down text-gray-400' : 'fa-chevron-right text-gray-600'}`}></i>
+          <span class="whitespace-nowrap overflow-hidden transition-opacity duration-200 lg:delay-100 
+                       lg:hidden lg:group-hover/sidebar:inline-block lg:group-hover/sidebar:opacity-100">
+            {category.title}
+          </span>
+          <i class={`fas ${expanded[category.title] ? 'fa-chevron-down' : 'fa-chevron-right'} 
+                     text-slate-500 
+                     lg:mx-0 lg:group-hover/sidebar:mx-0 
+                     transition-all duration-300 ease-in-out category-chevron-icon`}></i>
         </button>
         
         {#if expanded[category.title]}
@@ -218,25 +237,36 @@
             id={`category-${category.title.toLowerCase().replace(/\s+/g, '-')}`}
             in:slide={{ duration: 200 } as SlideParams} 
             out:slide={{ duration: 200 } as SlideParams}
-            class="mt-2 space-y-1"
+            class="mt-1 space-y-1 lg:group-hover/sidebar:pl-0 lg:pl-0"
             role="menu"
           >
-            {#each category.items as item}
+            {#each category.items as item (item.href)}
               {#if !item.authRequired || $isAuthenticated}
-                <li role="none">
+                <li role="none" class="relative">
                   <a
                     href={item.href}
                     data-sveltekit-preload-data="hover"
                     aria-current={isActive(item.href) ? 'page' : undefined}
-                    class={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out ${
-                      isActive(item.href) 
-                        ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-700 dark:text-indigo-100' 
-                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-                    }`}
+                    class={`flex items-center px-3 py-2.5 lg:py-3 rounded-md text-sm font-medium transition-all duration-150 ease-in-out overflow-hidden whitespace-nowrap
+                            lg:w-full lg:justify-center lg:group-hover/sidebar:justify-start lg:px-0 lg:group-hover/sidebar:px-3
+                            ${isActive(item.href) 
+                              ? 'bg-indigo-600/30 text-indigo-200 dark:bg-indigo-500/40 dark:text-indigo-100' 
+                              : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/50 dark:text-slate-300 dark:hover:bg-slate-700/80'
+                            }`}
                     role="menuitem"
+                    title={item.name} 
                   >
-                    <i class={`fas ${item.icon} mr-3 w-5 text-center`} aria-hidden="true"></i>
-                    <span>{item.name}</span>
+                    <i 
+                      class={`fas ${item.icon} w-5 h-5 flex items-center justify-center shrink-0 
+                              lg:mx-0 lg:group-hover/sidebar:mr-3 
+                              transition-all duration-300 ease-in-out text-lg
+                              ${isActive(item.href) ? 'text-indigo-300' : 'text-slate-500 group-hover:text-slate-300'}`} 
+                      aria-hidden="true"
+                    ></i>
+                    <span class="whitespace-nowrap overflow-hidden transition-opacity duration-200 lg:delay-100 
+                                 lg:hidden lg:group-hover/sidebar:inline-block lg:group-hover/sidebar:opacity-100">
+                      {item.name}
+                    </span>
                   </a>
                 </li>
               {/if}
@@ -247,43 +277,75 @@
     {/each}
   </div>
 
+  <!-- Quick Tools Button -->
+  <div class="p-3 lg:px-0 lg:group-hover/sidebar:px-3">
+    <button on:click={togglePip}
+      class="w-full flex items-center justify-center px-3 py-2 bg-gradient-to-r from-indigo-500 to-pink-500 text-white rounded-md hover:from-indigo-400 hover:to-pink-400 transition duration-200">
+      <i class="fas fa-magic mr-2"></i>
+      <span>Quick Tools</span>
+    </button>
+  </div>
+
   <!-- Account Section -->
-  <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+  <div class="p-3 border-t border-slate-700/50 shrink-0 
+              lg:px-0 lg:group-hover/sidebar:px-3 
+              transition-all duration-300 ease-in-out">
     {#if browser && $loading}
-      <div class="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg animate-pulse">
-        <div class="flex items-center mb-2">
-          <div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 mr-2"></div>
-          <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+      <div class="p-2 lg:h-[60px] lg:group-hover/sidebar:h-auto lg:p-0 lg:group-hover/sidebar:p-2 bg-slate-700/30 rounded-lg animate-pulse flex items-center 
+                  lg:w-full lg:justify-center lg:group-hover/sidebar:justify-start">
+        <div class="w-8 h-8 rounded-full bg-slate-600/50 shrink-0 lg:mx-0 lg:group-hover/sidebar:mr-2"></div>
+        <div class="w-full ml-2 
+                    lg:hidden lg:group-hover/sidebar:block">
+          <div class="h-3 bg-slate-600/50 rounded w-3/4 mb-1.5"></div>
+          <div class="h-3 bg-slate-600/50 rounded w-1/2"></div>
         </div>
-        <div class="h-8 bg-gray-300 dark:bg-gray-600 rounded w-full"></div>
       </div>
     {:else if browser && $isAuthenticated && $user}
-      <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-        <div class="flex items-center mb-3">
-          <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center mr-2 text-white text-sm font-medium">
-            {$user.displayName?.charAt(0).toUpperCase() ?? $user.email?.charAt(0).toUpperCase() ?? 'U'}
-          </div>
-          <span class="font-medium text-sm text-gray-800 dark:text-gray-100 truncate">
-            {$user.displayName ?? $user.email ?? 'User'}
-          </span>
+      <div class="p-2 lg:p-0 lg:group-hover/sidebar:p-2 bg-slate-700/40 rounded-lg flex 
+                  lg:w-full lg:justify-center lg:group-hover/sidebar:justify-start">
+        <div class="flex items-center lg:justify-center lg:group-hover/sidebar:justify-start w-full">
+          <a href="/profile" class="flex items-center grow group/profilelink 
+                                    lg:w-full lg:justify-center lg:group-hover/sidebar:justify-start">
+            <div class="w-9 h-9 rounded-full bg-indigo-500 flex items-center justify-center text-white text-base font-medium shrink-0 ring-2 ring-slate-600/50 group-hover/profilelink:ring-indigo-400 transition-all
+                                lg:mx-0 lg:group-hover/sidebar:mr-2.5">
+              {$user.displayName?.charAt(0).toUpperCase() ?? $user.email?.charAt(0).toUpperCase() ?? 'U'}
+            </div>
+            <div class="overflow-hidden grow ml-2.5 
+                        lg:hidden lg:group-hover/sidebar:block">
+              <span class="font-medium text-sm text-slate-100 truncate block group-hover/profilelink:text-indigo-300 transition-colors">
+                {$user.displayName ?? $user.email ?? 'User'}
+              </span>
+              {#if $userProfile && $userProfile.isPremium}
+                <span class="text-xs bg-yellow-400 text-yellow-800 px-1.5 py-0.5 rounded-full font-semibold">Premium</span>
+              {/if}
+              <span class="text-xs text-slate-400 block group-hover/profilelink:text-slate-300 transition-colors">View Profile</span>
+            </div>
+          </a>
+          <button 
+            on:click={handleLogout}
+            title="Logout"
+            aria-label="Logout"
+            class="ml-2 p-2 rounded-md text-slate-400 hover:text-indigo-300 hover:bg-slate-600/50 transition-all duration-150 shrink-0 lg:hidden lg:group-hover/sidebar:inline-flex items-center justify-center"
+          >
+            <i class="fas fa-sign-out-alt text-lg"></i>
+          </button>
         </div>
-        <a 
-          href="/settings" 
-          class="w-full py-2 px-3 bg-gray-200 dark:bg-gray-700 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 block text-center transition duration-150"
-          aria-label="Go to account settings"
-        >
-          Account Settings
-        </a>
       </div>
-    {:else}
-      <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg text-center">
-        <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">Log in to track your progress and access personalized features.</p>
+    {:else if browser && !$isAuthenticated}
+      <div class="p-2 lg:p-0 lg:group-hover/sidebar:p-2 flex flex-col items-stretch">
         <button 
-          class="w-full py-2 px-3 bg-indigo-600 hover:bg-indigo-700 rounded-md text-sm font-medium text-white transition duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          on:click={navigateToLogin}
-          aria-label="Log in or sign up"
+          on:click={() => navigateToLogin()} 
+          class="w-full flex items-center justify-center lg:group-hover/sidebar:justify-start px-3 py-2.5 mb-1.5 rounded-md text-sm font-medium bg-indigo-600 hover:bg-indigo-500 text-white transition-colors duration-150 ease-in-out whitespace-nowrap"
         >
-          Log In / Sign Up
+          <i class="fas fa-sign-in-alt w-5 h-5 shrink-0 lg:mx-0 lg:group-hover/sidebar:mr-2.5 transition-all duration-300 ease-in-out"></i>
+          <span class="lg:hidden lg:group-hover/sidebar:inline-block transition-opacity duration-200 lg:delay-100">Login</span>
+        </button>
+        <button 
+          on:click={() => navigateToLogin('/auth/register')} 
+          class="w-full flex items-center justify-center lg:group-hover/sidebar:justify-start px-3 py-2 rounded-md text-sm font-medium bg-slate-600 hover:bg-slate-500 text-white transition-colors duration-150 ease-in-out whitespace-nowrap"
+        >
+          <i class="fas fa-user-plus w-5 h-5 shrink-0 lg:mx-0 lg:group-hover/sidebar:mr-2.5 transition-all duration-300 ease-in-out"></i>
+          <span class="lg:hidden lg:group-hover/sidebar:inline-block transition-opacity duration-200 lg:delay-100">Sign Up</span>
         </button>
       </div>
     {/if}
@@ -291,33 +353,39 @@
 </nav>
 
 <style>
-  /* Prevent scrolling when mobile menu is open */
   :global(body.sidebar-open) {
     overflow: hidden;
   }
-  
-  /* Improve focus states for keyboard navigation */
-  :global(a:focus), :global(button:focus) {
-    outline: 2px solid #818cf8;
-    outline-offset: 2px;
+
+  /* Custom scrollbar for webkit browsers */
+  #sidebar div::-webkit-scrollbar {
+    width: 5px;
   }
-  
-  /* Animation for mobile menu */
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  #sidebar div::-webkit-scrollbar-track {
+    background: transparent;
   }
-  
-  /* Screen reader utilities */
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
+  #sidebar div::-webkit-scrollbar-thumb {
+    background: #374151; /* Tailwind gray-700 */
+    border-radius: 10px;
+  }
+  #sidebar div::-webkit-scrollbar-thumb:hover {
+    background: #4b5563; /* Tailwind gray-600 */
+  }
+
+  @media (min-width: 1024px) { /* lg breakpoint */
+    .group\/sidebar:not(:hover) .lg\:hidden {
+      /* When sidebar is collapsed (not hovered) and on large screens, truly hide elements meant to be hidden */
+      display: none !important; 
+    }
+    .group\/sidebar:hover .lg\:hidden {
+      /* When sidebar is expanded (hovered) and on large screens, revert to original display */
+      display: inline-block !important; 
+    }
+
+    /* Specific adjustments for category chevrons in collapsed state */
+    .group\/sidebar:not(:hover) .category-chevron-icon {
+      margin-left: auto; 
+      margin-right: auto; 
+    }
   }
 </style>

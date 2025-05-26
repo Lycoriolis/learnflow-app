@@ -1,5 +1,4 @@
 import { writable } from 'svelte/store';
-import { persistentStore } from './persistentStore.js';
 
 // UI State
 export const sidebarOpen = writable(false);

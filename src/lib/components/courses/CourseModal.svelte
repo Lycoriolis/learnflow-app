@@ -127,10 +127,16 @@ The balance should be private and only accessible through these methods.
           </div>
           
           <div class="border-t border-gray-700 pt-4 flex justify-between">
-            <button class="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600">
+            <button 
+              class="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600"
+              aria-label="Previous lesson"
+            >
               Previous
             </button>
-            <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+            <button 
+              class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+              aria-label="Next lesson"
+            >
               Next Lesson
             </button>
           </div>

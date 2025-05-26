@@ -89,6 +89,7 @@
             on:click={() => handleRatingClick(i + 1)}
             class="text-2xl focus:outline-none" 
             disabled={isSubmitted}
+            aria-label={`Rate ${i + 1} star${i === 0 ? '' : 's'}`}
           >
             <Icon 
               icon={userRating && i < userRating ? "mdi:star" : "mdi:star-outline"} 
@@ -114,6 +115,7 @@
               bind:value={feedbackText}
               class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-surface dark:bg-surface-dark text-text dark:text-text-light focus:ring-cherry-500 focus:border-cherry-500 min-h-[80px]"
               placeholder="What did you think about this exercise?"
+              aria-label="Exercise feedback"
             ></textarea>
           </div>
         {/if}

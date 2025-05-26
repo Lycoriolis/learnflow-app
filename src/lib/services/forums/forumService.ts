@@ -1,21 +1,40 @@
 // src/lib/services/forums/forumService.ts
-import { collection, query, where, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, Timestamp } from 'firebase/firestore';
+import { collection, query, where, orderBy, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
 import { BaseService, ServiceError } from '../baseService';
-import type { ServiceResponse, ForumCategory, ForumTopic, ForumPost } from '../../types/shared';
-import { db, auth } from '../../../lib/firebase'; // Import the initialized Firebase instances
+import type { ServiceResponse } from '../../types/service';
+import type { 
+  ForumCategory as SharedForumCategory, 
+  ForumTopic as SharedForumTopic, 
+  ForumPost as SharedForumPost 
+} from '../../types/shared';
+import type { 
+  ForumCategory, 
+  ForumTopic, 
+  ForumPost 
+} from '../../types/forumTypes';
+import { db, auth } from '../../../lib/firebase';
+import { 
+  convertSharedCategoryToForumCategory, 
+  convertSharedTopicToForumTopic,
+  convertSharedPostToForumPost
+} from './forumUtils';
 
 export class ForumService extends BaseService {
-  private db = db; // Use the already initialized Firestore instance
-  private auth = auth; // Use the already initialized Auth instance
+  private db = db;
+  private auth = auth;
 
   async getForumCategories(): Promise<ServiceResponse<ForumCategory[]>> {
     return this.handleRequest(async () => {
       const categoriesRef = collection(this.db, 'forumCategories');
-      const snapshot = await getDocs(categoriesRef);
-      return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as ForumCategory[];
+      const q = query(categoriesRef, orderBy('order', 'asc'));
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => {
+        const data = doc.data() as Omit<SharedForumCategory, 'id'>;
+        return convertSharedCategoryToForumCategory({
+          ...data,
+          id: doc.id
+        });
+      });
     });
   }
 
@@ -56,21 +75,24 @@ export class ForumService extends BaseService {
 
       const postsRef = collection(this.db, 'forumPosts');
       const newPost = {
-        ...post,
+        topicId: post.topic_id,
+        content: post.content,
         authorId: user.uid,
         authorName: user.displayName || 'Anonymous',
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
+        isAnswer: false,
         upvotes: 0,
         downvotes: 0,
-        isAnswer: false
-      };
+        metadata: {
+          createdAt: Timestamp.now(),
+          updatedAt: Timestamp.now()
+        }
+      } satisfies Omit<SharedForumPost, 'id'>;
 
       const docRef = await addDoc(postsRef, newPost);
-      return {
-        id: docRef.id,
-        ...newPost
-      } as ForumPost;
+      return convertSharedPostToForumPost({
+        ...newPost,
+        id: docRef.id
+      });
     });
   }
 
@@ -109,10 +131,11 @@ export class ForumService extends BaseService {
         throw new ServiceError('Category not found', 'NOT_FOUND', 404);
       }
 
-      return {
-        id: docSnap.id,
-        ...docSnap.data()
-      } as ForumCategory;
+      const data = docSnap.data() as Omit<SharedForumCategory, 'id'>;
+      return convertSharedCategoryToForumCategory({
+        ...data,
+        id: docSnap.id
+      });
     });
   }
 
@@ -186,11 +209,25 @@ export class ForumService extends BaseService {
         q = query(q, where('categoryId', '==', categoryId));
       }
 
-      const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as ForumTopic[];
+      const [snapshot, categoriesSnapshot] = await Promise.all([
+        getDocs(q),
+        getDocs(collection(this.db, 'forumCategories'))
+      ]);
+
+      // Create a map of category IDs to names
+      const categoryMap = new Map<string, string>();
+      categoriesSnapshot.docs.forEach(doc => {
+        const data = doc.data() as SharedForumCategory;
+        categoryMap.set(doc.id, data.title);
+      });
+
+      return snapshot.docs.map(doc => {
+        const data = doc.data() as Omit<SharedForumTopic, 'id'>;
+        return convertSharedTopicToForumTopic({
+          ...data,
+          id: doc.id
+        }, categoryMap.get(data.categoryId));
+      });
     });
   }
 
@@ -236,14 +273,28 @@ export const createForumTopic = async (topic: Omit<ForumTopic, 'id'>): Promise<F
   return response.data!;
 };
 
-export const getForumCategories = async (): Promise<ForumCategory[]> => {
+export const getCategories = async (): Promise<ForumCategory[]> => {
   const service = new ForumService();
   const response = await service.getForumCategories();
   if (response.error) throw response.error;
   return response.data || [];
 };
 
-export const createForumPost = async (post: Omit<ForumPost, 'id'>): Promise<ForumPost> => {
+export const getCategory = async (categoryId: string): Promise<ForumCategory> => {
+  const service = new ForumService();
+  const response = await service.getCategory(categoryId);
+  if (response.error) throw response.error;
+  return response.data!;
+};
+
+export const getTopics = async (categoryId?: string): Promise<ForumTopic[]> => {
+  const service = new ForumService();
+  const response = await service.getTopics(categoryId);
+  if (response.error) throw response.error;
+  return response.data || [];
+};
+
+export const createPost = async (post: Omit<ForumPost, 'id'>): Promise<ForumPost> => {
   const service = new ForumService();
   const response = await service.createForumPost(post);
   if (response.error) throw response.error;
@@ -261,13 +312,6 @@ export const deleteCategory = async (categoryId: string): Promise<void> => {
   const service = new ForumService();
   const response = await service.deleteCategory(categoryId);
   if (response.error) throw response.error;
-};
-
-export const getCategory = async (categoryId: string): Promise<ForumCategory> => {
-  const service = new ForumService();
-  const response = await service.getCategory(categoryId);
-  if (response.error) throw response.error;
-  return response.data!;
 };
 
 export const updateCategory = async (categoryId: string, updates: Partial<ForumCategory>): Promise<ForumCategory> => {
@@ -297,20 +341,6 @@ export const deleteTopic = async (topicId: string): Promise<void> => {
   if (response.error) throw response.error;
 };
 
-export const getCategories = async (): Promise<ForumCategory[]> => {
-  const service = new ForumService();
-  const response = await service.getCategories();
-  if (response.error) throw response.error;
-  return response.data || [];
-};
-
-export const getTopics = async (categoryId?: string): Promise<ForumTopic[]> => {
-  const service = new ForumService();
-  const response = await service.getTopics(categoryId);
-  if (response.error) throw response.error;
-  return response.data || [];
-};
-
 export const getTopic = async (topicId: string): Promise<ForumTopic> => {
   const service = new ForumService();
   const response = await service.getTopic(topicId);
@@ -325,13 +355,6 @@ export const getPostsByTopicId = async (topicId: string): Promise<ForumPost[]> =
   return response.data || [];
 };
 
-export const createPost = async (post: Omit<ForumPost, 'id'>): Promise<ForumPost> => {
-  const service = new ForumService();
-  const response = await service.createForumPost(post);
-  if (response.error) throw response.error;
-  return response.data!;
-};
-
 export const updatePost = async (postId: string, updates: Partial<ForumPost>): Promise<ForumPost> => {
   const service = new ForumService();
   const response = await service.updatePost(postId, updates);
@@ -344,3 +367,9 @@ export const deletePost = async (postId: string): Promise<void> => {
   const response = await service.deletePost(postId);
   if (response.error) throw response.error;
 };
+
+// Export aliases for compatibility with existing code
+export const getForumCategories = getCategories;
+export const getForumCategory = getCategory;
+export const getAllCategories = getCategories;
+export const createForumPost = createPost;

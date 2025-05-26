@@ -1,13 +1,7 @@
 // src/lib/services/scoreService.ts
 import { pool } from './userService.server.js';
 // Import the new server-side content service and necessary types
-import { getAllContentItemsByType } from '$lib/server/contentService';
-import type { ContentManifestItem } from '$lib/server/contentService'; 
-
-// Define a type similar to the old CourseStructure based on ContentManifestItem
-interface CourseStructureLike extends ContentManifestItem {
-  modules: ContentManifestItem[]; // Assuming modules are children of type 'module'
-}
+import { getAllContentItemsByType, type ServerContentNode, type FrontmatterChildNode } from '$lib/server/contentService';
 
 /**
  * Calculates a user score on a 0–5 scale.
@@ -49,15 +43,15 @@ export async function calculateUserScore(userId: string): Promise<number> {
 
     // Extract and calculate course ratio
     const viewedLessons = Number(lessonResults.rows[0]?.viewed || 0);
-    const courses = Object.values(courseStructures) as CourseStructureLike[];
+    const courses = Object.values(courseStructures) as ServerContentNode[];
 
     // Calculate total lessons based on the new structure (assuming lessons are children of modules)
     const totalLessons = courses.reduce((courseSum, course) => {
         // Find module children
-        const modules = course.children?.filter(child => child.type === 'module') || [];
+        const modules = (course as ServerContentNode).children?.filter((child: FrontmatterChildNode) => child.type === 'module') || [];
         // Sum lessons within each module
-        const lessonsInCourse = modules.reduce((moduleSum, module) => {
-            const lessons = module.children?.filter(child => child.type === 'lesson') || [];
+        const lessonsInCourse = modules.reduce((moduleSum, moduleNode) => {
+            const lessons = (moduleNode as FrontmatterChildNode).children?.filter((child: FrontmatterChildNode) => child.type === 'lesson') || [];
             return moduleSum + lessons.length;
         }, 0);
         return courseSum + lessonsInCourse;
@@ -93,25 +87,25 @@ export async function calculateUserScore(userId: string): Promise<number> {
 
 // Create namespace for the function to allow for caching
 interface GetAllCourseStructuresLike {
-  (this: void): Promise<Record<string, CourseStructureLike>>;
-  cache?: Record<string, CourseStructureLike>;
+  (this: void): Promise<Record<string, ServerContentNode>>;
+  cache?: Record<string, ServerContentNode>;
 }
 
 /**
  * Helper: load all course structures using the new contentService.
  */
-const getAllCourseStructuresLike: GetAllCourseStructuresLike = async function(): Promise<Record<string, CourseStructureLike>> {
+const getAllCourseStructuresLike: GetAllCourseStructuresLike = async function(): Promise<Record<string, ServerContentNode>> {
   // Use memoization to cache course structures
   if (!getAllCourseStructuresLike.cache) {
       try {
           // Fetch all items of type 'course' from the 'courses' manifest
           const courses = await getAllContentItemsByType('courses', 'course');
 
-          // Transform ContentManifestItem[] to the required Record<string, CourseStructureLike>
-          getAllCourseStructuresLike.cache = courses.reduce<Record<string, CourseStructureLike>>((acc, course) => {
+          // Transform ServerContentNode[] to the required Record<string, ServerContentNode>
+          getAllCourseStructuresLike.cache = courses.reduce<Record<string, ServerContentNode>>((acc, course) => {
               acc[course.id] = {
                   ...course,
-                  modules: course.children?.filter(child => child.type === 'module') || []
+                  modules: (course as ServerContentNode).children?.filter((child: FrontmatterChildNode) => child.type === 'module') || []
               };
               return acc;
           }, {});

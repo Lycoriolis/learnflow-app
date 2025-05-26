@@ -187,14 +187,11 @@
     </div>
   </a>
 {:else}
-  <article
-    class="exercise-card relative bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-full"
+  <button
+    class="exercise-card relative bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-full text-left w-full"
     on:click={handleClick}
     on:keydown={handleKeyDown}
-    tabindex="0"
-    role="button"
     aria-label={`Exercise: ${title}`}
-    aria-pressed="false"
   >
     <div class="card-content">
       {#if isCompleted}
@@ -269,7 +266,7 @@
         {/if}
       </div>
     </div>
-  </article>
+  </button>
 {/if}
 
 <style>

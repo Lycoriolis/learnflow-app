@@ -62,6 +62,7 @@
          placeholder="Start typing your note..."
          rows="3"
          class="w-full text-sm bg-gray-600 text-gray-100 border border-gray-500 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 mb-1"
+         aria-label="Note content"
        ></textarea>
         <div class="flex justify-end space-x-2">
            <button

@@ -55,11 +55,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   }
 
   try {
-    const result = await deleteCategory(id);
-    // Explicitly check for boolean value
-    if (result === false) {
-      return new Response('Category not found', { status: 404 });
-    }
+    await deleteCategory(id);
     return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (error) {
     if (error instanceof Error && error.message === 'Cannot delete category with topics') {

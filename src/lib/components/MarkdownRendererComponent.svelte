@@ -1,3 +1,9 @@
+<!-- 
+  @deprecated This component has been superseded by EnhancedMarkdownRenderer.
+  Please migrate to EnhancedMarkdownRenderer for improved math support, better error handling, and enhanced features.
+  This component will be removed in a future version.
+-->
+
 <script lang="ts">
   import MarkdownRenderer from './MarkdownRenderer.svelte';
   

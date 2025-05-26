@@ -96,32 +96,41 @@
   export function getElapsedTime(): number { return elapsed; }
 </script>
 
-<div class="workspace-tool mb-6">
-  <h2 class="text-xl font-semibold mb-2">Timer</h2>
-  <div class="text-2xl font-mono mb-4">{formatTime(elapsed)}</div>
-  <div class="space-x-2">
-    <button 
-      on:click={start} 
-      class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50"
-      disabled={isRunning}
-      aria-label="Start timer"
-    >
-      Start
-    </button>
-    <button 
-      on:click={stop} 
-      class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50"
-      disabled={!isRunning}
-      aria-label="Stop timer"
-    >
-      Stop
-    </button>
-    <button 
-      on:click={reset} 
-      class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-      aria-label="Reset timer"
-    >
-      Reset
-    </button>
+<div class="workspace-tool mb-6 border-2 border-transparent rounded-xl bg-gradient-to-br from-indigo-600 to-blue-500 p-1">
+  <div class="bg-[#0D1117] p-6 rounded-lg text-white transition-shadow hover:shadow-xl">
+    <h2 class="text-xl font-semibold mb-2">Timer</h2>
+    <div class="text-2xl font-mono mb-4" class:is-running={isRunning} style="color: {isRunning ? '#60EFFF' : '#dce6f3'}">{formatTime(elapsed)}</div>
+    <div class="space-x-2">
+      <button 
+        on:click={start} 
+        class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50"
+        disabled={isRunning}
+        aria-label="Start timer"
+      >
+        Start
+      </button>
+      <button 
+        on:click={stop} 
+        class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50"
+        disabled={!isRunning}
+        aria-label="Stop timer"
+      >
+        Stop
+      </button>
+      <button 
+        on:click={reset} 
+        class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+        aria-label="Reset timer"
+      >
+        Reset
+      </button>
+    </div>
   </div>
 </div>
+
+<style>
+  .is-running {
+    /* neon glow effect */
+    text-shadow: 0 0 8px rgba(96, 239, 255, 0.7), 0 0 16px rgba(96,239,255,0.5);
+  }
+</style>

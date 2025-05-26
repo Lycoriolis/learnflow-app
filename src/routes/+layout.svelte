@@ -1,9 +1,7 @@
 <script lang="ts">
-  import { sidebarCollapsed } from '$lib/stores/sidebarStore.js';
-  let collapsed = false;
-  sidebarCollapsed.subscribe(v => collapsed = v);
-  import '../app.css'; // Re-enabled CSS import
+  import '../app.css';
   import '@splidejs/splide/dist/css/splide.min.css';
+  import 'katex/dist/katex.min.css';
   import { onMount, onDestroy } from 'svelte';
   import Sidebar from '$lib/components/Sidebar.svelte';
   import PipWidget from '$lib/components/PipWidget.svelte';
@@ -16,19 +14,16 @@
 
   export let data;
 
-  onMount(async () => {
+  onMount(() => {
     console.log('Root layout mounted - initializing authentication and CSRF protection');
     
-    // Store CSRF token from server
     if (data.csrfToken) {
       storeCsrfToken(data.csrfToken);
     }
     
     try {
-      // Initialize Firebase authentication with error handling
       initAuth();
       
-      // Set up subscription to auth state for debugging
       const unsubAuth = isAuthenticated.subscribe(value => {
         console.log('Auth state changed in root layout:', value ? 'Authenticated' : 'Not authenticated');
       });
@@ -47,7 +42,6 @@
   });
   
   onDestroy(() => {
-    // Clean up auth listener when component is destroyed
     cleanupAuth();
   });
 
@@ -59,7 +53,6 @@
 <svelte:head>
   <meta name="csrf-token" content={data.csrfToken}>
   
-  <!-- Preload commonly used Font Awesome fonts with correct MIME type -->
   <link 
     rel="preload" 
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-solid-900.woff2" 
@@ -75,7 +68,6 @@
     crossorigin="anonymous"
   />
   
-  <!-- Font Awesome with font-display swap -->
   <link 
     rel="stylesheet" 
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" 
@@ -84,7 +76,6 @@
     referrerpolicy="no-referrer"
   />
   
-  <!-- Inter Font with font-display swap -->
   <link 
     rel="preconnect" 
     href="https://fonts.googleapis.com"
@@ -100,10 +91,10 @@
   />
 </svelte:head>
 
-<div class="app-container">
-  <div class="main-app-content">
-    <Sidebar />
-    <div class={`flex-1 transition-all duration-300 ${collapsed ? 'lg:ml-0' : 'lg:ml-64'}`}>
+<div class="app-container bg-[#0D1117] dark" style='font-family: "Spline Sans", "Noto Sans", sans-serif;'>
+  <div class="main-app-content flex">
+    <Sidebar class="peer" />
+    <div class="flex-1 transition-all duration-300 ease-in-out ml-0 md:ml-[80px] md:peer-hover:ml-[280px]">
       <main>
         <ActivityTracker />
         <slot />
@@ -124,48 +115,16 @@
 
   .main-app-content {
     flex-grow: 1;
-    /* This area will contain the content from nested layouts/pages */
-    /* The body background is set in app.html, so this can be transparent or have its own */
   }
 
-  /* Optional: Global styles can go here or in a separate app.css */
   :global(body) {
-    background-color: #f4f6f8; /* Ensure this is set from previous step or here */
-    color: #333;
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     line-height: 1.6;
   }
-
-  :global(a) {
-    /* color: #007bff; */ /* Example global link color, can be overridden */
-    /* text-decoration: none; */
-  }
-
-  :global(a:hover) {
-    /* text-decoration: underline; */
-  }
-
-  /* Basic styles to ensure things are working */
-  :global(body) {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    margin: 0;
-    padding: 0;
-  }
   
-  /* Improve Font Awesome rendering */
   :global(.fas), :global(.fa), :global(.fa-solid), :global(.fa-regular), :global(.fa-brands) {
     font-display: swap !important;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-  }
-  
-  :global(.card-hover) {
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  }
-  
-  :global(.card-hover:hover) {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   }
 </style>

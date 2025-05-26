@@ -1,11 +1,15 @@
 import { writable } from 'svelte/store';
 import { isUserAdmin } from '$lib/services/adminService';
 import { browser } from '$app/environment';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, type User } from 'firebase/auth'; // Added User type import
 
 // Create admin store
 function createAdminStore() {
-  const { subscribe, set, update } = writable({
+  const { subscribe, set, update } = writable<{
+    isAdmin: boolean;
+    checkingStatus: boolean;
+    user: User | null; // Added User type
+  }>({
     isAdmin: false,
     checkingStatus: true,
     user: null
@@ -30,7 +34,7 @@ function createAdminStore() {
             ...state,
             isAdmin: adminStatus,
             checkingStatus: false,
-            user: adminStatus ? user : null
+            user: adminStatus && user ? user : null // Ensure user is not null before assigning
           }));
         } else {
           // No user is signed in

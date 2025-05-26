@@ -130,17 +130,19 @@
     </div>
     
     <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+      <label for="tags-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
         Tags
       </label>
       <div class="flex">
         <input
+          id="tags-input"
           type="text"
           bind:value={newTag}
           on:keydown={handleKeydown}
           placeholder="Add tags (press Enter to add)"
           class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-l-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-cherry-500 focus:border-cherry-500 dark:focus:ring-cherry-400 dark:focus:border-cherry-400"
           disabled={isSubmitting}
+          aria-label="Add new tag"
         />
         <button
           on:click={addTag}
@@ -162,6 +164,7 @@
                 type="button"
                 class="ml-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                 disabled={isSubmitting}
+                aria-label={`Remove tag ${tag}`}
               >
                 <Icon icon="mdi:close" class="w-4 h-4" />
               </button>
