@@ -4,8 +4,9 @@ import {
     getChildNodesList, 
     getExerciseByContentPath 
 } from '$lib/server/contentService';
+import { ExerciseContentService } from '$lib/services/exercises/exerciseContentService';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, url }) => {
     const contentPath = params.contentPath; // e.g., "maths/mpsi-maths" or "maths/mpsi-maths/calculs-algebriques"
     
     if (!contentPath) {
@@ -31,11 +32,19 @@ export const load: PageServerLoad = async ({ params }) => {
                 ...exercise,
                 content: exercise.rawMdxContent
             };
+
+            // Get related exercises
+            const relatedExercises = await getRelatedExercises(exercise);
             
             return {
                 type: 'exercise',
                 exercise: exerciseWithContent,
-                breadcrumbs: generateBreadcrumbs(contentPath)
+                relatedExercises,
+                breadcrumbs: generateBreadcrumbs(contentPath),
+                analytics: {
+                    viewTime: Date.now(),
+                    contentPath: fullContentPath
+                }
             };
         }
 
@@ -54,11 +63,19 @@ export const load: PageServerLoad = async ({ params }) => {
         // Fetch child items for this category
         const items = await getChildNodesList('exercises', fullContentPath);
 
+        // Get category statistics
+        const statistics = await getCategoryStatistics(items);
+        
         return {
             type: 'category',
             categoryNode: categoryNodeWithContent,
             items,
-            breadcrumbs: generateBreadcrumbs(contentPath)
+            statistics,
+            breadcrumbs: generateBreadcrumbs(contentPath),
+            analytics: {
+                viewTime: Date.now(),
+                contentPath: fullContentPath
+            }
         };
 
     } catch (error) {
@@ -66,6 +83,71 @@ export const load: PageServerLoad = async ({ params }) => {
         throw error;
     }
 };
+
+async function getRelatedExercises(exercise: any): Promise<any[]> {
+    try {
+        const exerciseService = new ExerciseContentService();
+        const allExercises = await exerciseService.getAllExercises('exercises');
+        
+        // Find related exercises based on tags, category, and difficulty
+        const related = allExercises
+            .filter(ex => 
+                ex.href !== exercise.href && // Not the same exercise
+                (
+                    // Same category
+                    ex.category === exercise.category ||
+                    // Similar difficulty
+                    ex.difficulty === exercise.difficulty ||
+                    // Overlapping tags
+                    (exercise.tags && ex.tags && 
+                     exercise.tags.some((tag: string) => ex.tags?.includes(tag)))
+                )
+            )
+            .slice(0, 4); // Limit to 4 related exercises
+            
+        return related;
+    } catch (error) {
+        console.error('Error getting related exercises:', error);
+        return [];
+    }
+}
+
+async function getCategoryStatistics(items: any[]): Promise<any> {
+    if (!items || items.length === 0) {
+        return {
+            totalExercises: 0,
+            difficultyDistribution: {},
+            estimatedDuration: 0
+        };
+    }
+
+    const exercises = items.filter(item => item.type === 'exercise');
+    const totalExercises = exercises.length;
+    
+    // Calculate difficulty distribution
+    const difficultyDistribution = exercises.reduce((acc: any, exercise: any) => {
+        const difficulty = exercise.difficulty || 'Unknown';
+        acc[difficulty] = (acc[difficulty] || 0) + 1;
+        return acc;
+    }, {});
+
+    // Estimate total duration (simple heuristic)
+    const estimatedDuration = exercises.reduce((total: number, exercise: any) => {
+        if (exercise.duration) {
+            const match = exercise.duration.match(/(\d+)/);
+            if (match) {
+                return total + parseInt(match[1], 10);
+            }
+        }
+        return total + 15; // Default 15 minutes per exercise
+    }, 0);
+
+    return {
+        totalExercises,
+        difficultyDistribution,
+        estimatedDuration
+    };
+}
 
 function generateBreadcrumbs(contentPath: string) {
     const segments = contentPath.split('/').filter(Boolean);
