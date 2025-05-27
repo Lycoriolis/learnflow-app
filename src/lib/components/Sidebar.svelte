@@ -11,8 +11,7 @@
   import { pipVisible } from '$lib/stores/pipStores.js'; // Import pipVisible
   
   // Accept class prop from parent
-  let className = '';
-  export { className as class };
+  export const className = '';
   
   type NavItem = {
     name: string;

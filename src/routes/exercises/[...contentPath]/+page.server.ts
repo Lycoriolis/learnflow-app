@@ -21,8 +21,17 @@ export const load: PageServerLoad = async ({ params, url }) => {
         let exercise = null;
         try {
             exercise = await getExerciseByContentPath(fullContentPath);
+            console.log('🐛 Server debug - getExerciseByContentPath result:', {
+                fullContentPath,
+                hasExercise: !!exercise,
+                exerciseId: exercise?.id,
+                exerciseTitle: exercise?.title,
+                hasRawMdxContent: !!exercise?.rawMdxContent,
+                rawMdxContentLength: exercise?.rawMdxContent?.length || 0,
+                rawMdxContentPreview: exercise?.rawMdxContent?.substring(0, 100) || 'NO RAW CONTENT'
+            });
         } catch (error) {
-            // Not an individual exercise, continue
+            console.error('🐛 Server debug - Error getting exercise:', error);
         }
 
         if (exercise) {

@@ -3,6 +3,21 @@
     import { onMount, afterUpdate } from 'svelte';
     import { browser } from '$app/environment';
     import { optimizeExerciseMarkdown } from '$lib/utils/markdownOptimizer';
+
+    // KaTeX auto-render type is declared globally in a .d.ts file.
+    // Ensure `renderMathInElement` and `katex` are declared on the `Window` interface.
+    // Example for a .d.ts file (e.g., src/app.d.ts or src/types/katex.d.ts):
+    //
+    // declare global {
+    //   interface Window {
+    //     katex?: any; // Replace 'any' with specific KaTeX types if available
+    //     renderMathInElement?: (
+    //       element: HTMLElement,
+    //       options?: { /* KaTeX auto-render options */ }
+    //     ) => void;
+    //   }
+    // }
+    // export {}; // If it's a module
     
     export let content: string = '';
     export let className: string = '';
@@ -14,7 +29,9 @@
     let isLoading = true;
     let error: string | null = null;
     let isKaTeXLoaded = false;
-    
+    let lastRenderedContentSource: string | undefined = undefined; // Track the source of current renderedHtml
+    let isFullyRendered = false; // NEW: Tracks if post-processing like KaTeX is done
+
     // Load KaTeX dynamically for math rendering
     async function loadKaTeX() {
         if (typeof window !== 'undefined' && !window.katex && enableMathRendering) {
@@ -63,7 +80,17 @@
             .replace(/^\d+\.\s+(.*)$/gm, '<div class="exercise-item"><span class="item-number">$&</span></div>')
             
             // Handle math blocks with better formatting
-            .replace(/\$\$([\s\S]*?)\$\$/g, '<div class="math-block">$$1$$</div>')
+            // Display math $$...$$
+            .replace(/\$\$([\s\S]*?)\$\$/g, (match, content) => {
+                // Check if the content is a 'cases' environment
+                if (content.trim().startsWith('\\begin{cases}') && content.trim().endsWith('\\end{cases}')) {
+                    // If it is, wrap with math-block and equation-system classes
+                    return `<div class="math-block equation-system">$$${content}$$</div>`;
+                }
+                // Otherwise, just wrap with math-block
+                return `<div class="math-block">$$${content}$$</div>`;
+            })
+            // Inline math $...$
             .replace(/\$(.*?)\$/g, '<span class="math-inline">$1</span>')
             
             // Handle code blocks
@@ -77,8 +104,8 @@
             // Handle links
             .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="exercise-link" target="_blank" rel="noopener noreferrer">$1</a>')
             
-            // Handle system of equations
-            .replace(/\\begin\{cases\}([\s\S]*?)\\end\{cases\}/g, '<div class="equation-system">\\begin{cases}$1\\end{cases}</div>')
+            // REMOVE the separate \begin{cases\} replacement, as it's now handled above
+            // .replace(/\\begin\{cases\}([\s\S]*?)\\end\{cases\}/g, '<div class="equation-system">\\begin{cases}$1\\end{cases}</div>')
             
             // Handle paragraphs with proper spacing
             .replace(/\n\n/g, '</p><p class="exercise-paragraph">')
@@ -90,46 +117,71 @@
     }
     
     async function renderContent() {
-        if (!content.trim()) {
-            renderedHtml = '';
-            isLoading = false;
+        const contentAtCallTime = content; // Capture content at the moment of the call
+
+        if (!contentAtCallTime.trim()) {
+            // If this call was for empty content, and the global content is still this empty content
+            if (content === contentAtCallTime) {
+                renderedHtml = '';
+                isLoading = false;
+                error = null;
+                lastRenderedContentSource = contentAtCallTime;
+                isFullyRendered = false; // RESET
+            }
             return;
         }
-        
+
+        // Indicate that a render operation for this specific content has started.
+        isLoading = true;
+        error = null; 
+        isFullyRendered = false; // RESET: New render cycle starting
+        const currentProcessingTarget = contentAtCallTime;
+
+        // Yield to allow Svelte's reactivity to settle if `content` prop changes rapidly.
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        // If the global `content` prop has changed since this function call began,
+        // and it's different from what this function instance is processing, then this instance is stale.
+        if (content !== currentProcessingTarget) {
+            // This render call is stale. The new state of `content` will trigger another appropriate action
+            // (either a new renderContent call or clearing by the reactive block).
+            // This stale call should not proceed. If it set isLoading = true, the authoritative call will manage it.
+            return;
+        }
+
         try {
-            isLoading = true;
-            error = null;
-            
-            // First optimize the content to fix spacing and formatting issues
-            const optimizedContent = optimizeExerciseMarkdown(content, {
+            const optimizedContent = optimizeExerciseMarkdown(currentProcessingTarget, {
                 fixSpacing: true,
                 optimizeHeaders: true,
                 enhanceMath: true,
                 improveCodeBlocks: true,
                 structureExercises: true
             });
-            
-            // Then render markdown
-            renderedHtml = renderMarkdown(optimizedContent);
-            
-            // Process exercise items after markdown rendering
-            renderedHtml = processExerciseItems(renderedHtml);
-            
-            isLoading = false;
-            
-            // Render math after DOM update
-            if (enableMathRendering && isKaTeXLoaded && browser) {
-                await new Promise(resolve => setTimeout(resolve, 100));
-                renderMath();
+            const newRenderedHtml = renderMarkdown(optimizedContent);
+            const finalNewRenderedHtml = processExerciseItems(newRenderedHtml);
+
+            // Critical check: Only update renderedHtml if the global `content` prop
+            // is still the one this function instance was tasked to render.
+            if (content === currentProcessingTarget) {
+                renderedHtml = finalNewRenderedHtml;
+                isLoading = false;
+                lastRenderedContentSource = currentProcessingTarget;
+                // isFullyRendered will be set to true in afterUpdate
             }
+            // If content changed during processing, do nothing; new state handled by reactivity.
         } catch (err) {
             console.error('Content rendering error:', err);
-            error = err instanceof Error ? err.message : 'Unknown rendering error';
-            renderedHtml = `<div class="error-message">
-                <p><strong>Error rendering content:</strong></p>
-                <pre>${error}</pre>
-            </div>`;
-            isLoading = false;
+            // Only display error if this render call is still relevant to the current content
+            if (content === currentProcessingTarget) {
+                error = err instanceof Error ? err.message : 'Unknown rendering error';
+                renderedHtml = `<div class="error-message">
+                    <p><strong>Error rendering content:</strong></p>
+                    <pre>${error}</pre>
+                </div>`;
+                isLoading = false;
+                lastRenderedContentSource = undefined;
+                isFullyRendered = false; // RESET on error
+            }
         }
     }
     
@@ -157,14 +209,9 @@
                 strict: false,
                 trust: true,
                 macros: {
-                    "\\mathbb": "\\mathbb",
-                    "\\llbracket": "\\llbracket",
-                    "\\rrbracket": "\\rrbracket",
-                    "\\pmod": "\\pmod",
-                    "\\equiv": "\\equiv",
-                    "\\begin": "\\begin",
-                    "\\end": "\\end",
-                    "\\cases": "\\cases"
+                    // All previous entries removed as they are standard 
+                    // or structural and handled by KaTeX by default.
+                    // If custom macros are needed in the future, they can be added here.
                 }
             });
         } catch (err) {
@@ -231,26 +278,93 @@
     
     onMount(() => {
         if (browser) {
-            loadKaTeX();
+            loadKaTeX(); // This will call renderContent internally if needed
+        } else {
+            // Handle non-browser environment if necessary, e.g. SSR
+            if (!content || !content.trim()) {
+                isLoading = false;
+                lastRenderedContentSource = content;
+                isFullyRendered = false; 
+            }
+            // No explicit call to renderContent here for SSR if content exists,
+            // as loadKaTeX -> renderContent handles client-side hydration.
         }
     });
     
     afterUpdate(() => {
-        if (browser && containerElement && renderedHtml) {
+        // Guard conditions: browser, element exists, HTML is present, not loading, no error, AND not already fully rendered.
+        if (browser && containerElement && renderedHtml.trim() && !isLoading && !error && !isFullyRendered) {
+            // Capture the state that led to this renderedHtml.
+            // lastRenderedContentSource is the actual string that was processed to create renderedHtml.
+            // content is the current reactive prop value.
+            const sourceOfCurrentHtml = lastRenderedContentSource;
+            const currentReactiveContent = content; // Current value of the content prop at the time of scheduling
+
             setTimeout(() => {
-                renderMath();
-                setupInteractivity();
-            }, 100);
+                // Re-check all critical conditions before DOM manipulation.
+                // Ensure:
+                // 1. Still not loading/error.
+                // 2. The HTML we are about to process is still the one in renderedHtml.
+                // 3. The content prop hasn't changed to something else entirely (currentReactiveContent vs content now).
+                // 4. This specific render cycle (identified by sourceOfCurrentHtml) hasn't been superseded.
+                // 5. No other process has already marked this as fully rendered.
+                if (
+                    !isLoading && !error &&
+                    renderedHtml.trim() && // Ensure renderedHtml is still populated
+                    containerElement &&
+                    !isFullyRendered && // Crucial: only proceed if not already done by another concurrent process
+                    lastRenderedContentSource === sourceOfCurrentHtml && // Ensure renderedHtml is still from the same source
+                    content === currentReactiveContent // Ensure the main content prop hasn't changed again during the timeout
+                ) {
+                    if (enableMathRendering && isKaTeXLoaded) {
+                        renderMath();
+                    }
+                    if (enableInteractivity) {
+                        setupInteractivity();
+                    }
+
+                    // Final check: after DOM manipulations, is the state still consistent for this render?
+                    if (
+                        !isLoading && !error && // Still no loading/error state
+                        lastRenderedContentSource === sourceOfCurrentHtml && // Still the same source for renderedHtml
+                        content === currentReactiveContent // Content prop still matches what we started this timeout with
+                    ) {
+                        isFullyRendered = true;
+                    } else {
+                        // State changed during/after KaTeX/interactivity, or content prop changed again.
+                        // isFullyRendered remains false (its incoming value from the outer scope).
+                        // A new render cycle, if triggered by content change, will handle resetting isFullyRendered.
+                    }
+                }
+            }, 50); // A small delay for DOM to settle.
         }
     });
     
     // Watch for content changes
-    $: if (content && browser) {
-        renderContent();
+    $: {
+        if (browser) {
+            if (content && content.trim()) {
+                // Re-render if content has changed OR if the same content previously resulted in an error
+                // OR if it's different from what's currently considered rendered (e.g. initial undefined lastRenderedContentSource)
+                if (content !== lastRenderedContentSource || (content === lastRenderedContentSource && error) || lastRenderedContentSource === undefined) {
+                     isFullyRendered = false; // RESET before new render cycle
+                     renderContent();
+                }
+            } else { // Content is empty or only whitespace
+                // Update to empty state if not already reflecting empty, or if there was an error/loading
+                if (lastRenderedContentSource !== content || isLoading || error) {
+                    renderedHtml = '';
+                    isLoading = false;
+                    error = null;
+                    lastRenderedContentSource = content; 
+                    isFullyRendered = false; // RESET
+                }
+            }
+        }
     }
 </script>
 
-<div 
+<div
     bind:this={containerElement}
     class="optimized-exercise-renderer {className}"
     class:loading={isLoading}
@@ -269,7 +383,7 @@
             </div>
         </div>
     {:else}
-        <div class="exercise-content">
+        <div class="exercise-content" class:fully-rendered={isFullyRendered}>
             {@html renderedHtml}
         </div>
     {/if}
@@ -291,6 +405,12 @@
         width: 100%;
         max-width: none;
         line-height: 1.7;
+        opacity: 0; /* Initially hidden */
+        transition: opacity 0.2s ease-out; /* Smoother fade-in, adjust timing if needed */
+    }
+
+    .exercise-content.fully-rendered {
+        opacity: 1; /* Fade in when fully processed */
     }
     
     .optimized-exercise-renderer.loading {

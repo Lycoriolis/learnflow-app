@@ -177,30 +177,23 @@
 
 <a 
   {href} 
-  class="block bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 {className} group transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 relative"
+  class="group block bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 ease-in-out border border-gray-200 dark:border-gray-700 hover:border-transparent transform hover:-translate-y-2 relative overflow-hidden group/card {className}"
   aria-label="View exercise: {exercise.title || 'Untitled Exercise'}"
   on:click={handleCardClick}
+  style="transform-style: preserve-3d;"
 >
-  <!-- Bookmark Button -->
-  {#if showBookmark}
-    <button
-      on:click={handleBookmark}
-      disabled={loading}
-      class="absolute top-3 right-3 z-10 p-2 rounded-full bg-white dark:bg-gray-700 shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-      aria-label={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
-    >
-      <Icon 
-        icon={loading ? 'mdi:loading' : (isBookmarked ? 'mdi:bookmark' : 'mdi:bookmark-outline')} 
-        class="h-4 w-4 {isBookmarked ? 'text-indigo-600' : 'text-gray-400'} {loading ? 'animate-spin' : ''}"
-      />
-    </button>
-  {/if}
+  <!-- Gradient background on hover -->
+  <span class="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-teal-500 opacity-0 group-hover/card:opacity-75 transition-opacity duration-500 blur-sm group-hover/card:blur-md"></span>
+  <span class="absolute inset-0 rounded-xl bg-white dark:bg-gray-800"></span>
+  
+  <!-- Content overlay with 3D effect -->
+  <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/5 via-purple-600/5 to-teal-600/5 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 ease-in-out"></div>
 
   <!-- Progress Bar -->
   {#if showProgress && progress > 0}
-    <div class="absolute top-0 left-0 right-0 h-1 bg-gray-200 dark:bg-gray-700">
+    <div class="absolute top-0 left-0 right-0 h-1 bg-gray-200 dark:bg-gray-700 rounded-t-xl overflow-hidden">
       <div 
-        class="h-full bg-indigo-600 transition-all duration-300" 
+        class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-300" 
         style="width: {progress}%"
         role="progressbar"
         aria-valuenow={progress}
@@ -211,68 +204,138 @@
     </div>
   {/if}
 
-  <!-- Completion Badge -->
-  {#if isCompleted}
-    <div class="absolute top-3 left-3 z-10">
-      <div class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
-        <Icon icon="mdi:check-circle" class="h-3 w-3 mr-1" />
-        Completed
+  <div class="p-6 relative z-10 transform transition-transform duration-500 ease-in-out group-hover/card:scale-[1.02] flex flex-col h-full">
+    <!-- Header Section -->
+    <div class="flex items-start space-x-4 mb-4">
+      <!-- Icon -->
+      <div class="flex-shrink-0">
+        <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg group-hover/card:shadow-indigo-400/60 transition-all duration-500 transform group-hover/card:scale-110 group-hover/card:rotate-3">
+          <Icon 
+            icon={exercise.itemType === 'course' || exercise.id?.endsWith('_index') ? 'mdi:book-open-page-variant' : 'mdi:pencil-box'} 
+            class="w-6 h-6 text-white transition-transform duration-300 group-hover/card:scale-110" 
+          />
+        </div>
       </div>
-    </div>
-  {/if}
 
-  <div class="p-4 flex flex-col h-full">
-    <div class="flex-grow">
-      <div class="flex items-start justify-between mb-3">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
-          {exercise.title || 'Untitled Exercise'}
-        </h3>
+      <!-- Title and Status -->
+      <div class="flex-1 min-w-0">
+        <div class="flex items-start justify-between mb-2">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white group-hover/card:text-indigo-600 dark:group-hover/card:text-indigo-400 transition-colors duration-300 line-clamp-2 leading-tight">
+            {exercise.title || 'Untitled Exercise'}
+          </h3>
+          
+          <!-- Status indicators in top right -->
+          <div class="flex items-center gap-2 ml-2 flex-shrink-0">
+            <!-- Bookmark Button -->
+            {#if showBookmark}
+              <button
+                on:click={handleBookmark}
+                disabled={loading}
+                class="p-1.5 rounded-full bg-white dark:bg-gray-700 shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed group-hover/card:scale-110"
+                aria-label={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
+              >
+                <Icon 
+                  icon={loading ? 'mdi:loading' : (isBookmarked ? 'mdi:bookmark' : 'mdi:bookmark-outline')} 
+                  class="h-3.5 w-3.5 {isBookmarked ? 'text-indigo-600' : 'text-gray-400'} {loading ? 'animate-spin' : ''}"
+                />
+              </button>
+            {/if}
+
+            <!-- Completion Status -->
+            {#if isCompleted}
+              <div class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                <Icon icon="mdi:check-circle" class="h-3 w-3 mr-1" />
+                Done
+              </div>
+            {:else if progress > 0}
+              <div class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                <Icon icon="mdi:play-circle" class="h-3 w-3 mr-1" />
+                {Math.round(progress)}%
+              </div>
+            {/if}
+          </div>
+        </div>
+
+        <!-- Difficulty Badge -->
         {#if exercise.difficulty}
-          <div class="flex items-center gap-1 ml-2 flex-shrink-0">
-            <Icon icon={getDifficultyIcon(exercise.difficulty)} class="h-4 w-4" />
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {getDifficultyColor(exercise.difficulty)}">
+          <div class="flex items-center gap-1 mb-3">
+            <Icon icon={getDifficultyIcon(exercise.difficulty)} class="h-4 w-4 text-gray-500 dark:text-gray-400" />
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {getDifficultyColor(exercise.difficulty)} opacity-90">
               {exercise.difficulty}
             </span>
           </div>
         {/if}
       </div>
-      
-      {#if exercise.description}
-        <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-3 leading-relaxed">
+    </div>
+
+    <!-- Description with expandable content -->
+    {#if exercise.description}
+      <div class="relative mb-4">
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-3 leading-relaxed 
+                  group-hover/card:line-clamp-none group-hover/card:text-gray-700 dark:group-hover/card:text-gray-300 
+                  transition-colors duration-300">
           {exercise.description}
         </p>
+        <!-- Subtle fade effect for clamped text -->
+        <div class="absolute bottom-0 left-0 w-full h-6 bg-gradient-to-t from-white dark:from-gray-800 to-transparent 
+                    opacity-100 group-hover/card:opacity-0 transition-opacity duration-300 pointer-events-none"></div>
+      </div>
+    {/if}
+    
+    <!-- Tags and Category Section -->
+    <div class="flex flex-wrap gap-1.5 mb-4 min-h-[24px]">
+      <!-- Category -->
+      {#if exercise.category && exercise.itemType !== 'course' && exercise.itemType !== 'theme' && !(exercise.id && exercise.id.endsWith('_index'))}
+        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700/50">
+          <Icon icon="mdi:folder-outline" class="w-3 h-3 mr-1" />
+          {exercise.category}
+        </span>
       {/if}
-      
-      <!-- Tags and Category -->
-      <div class="flex flex-wrap gap-2 mb-4">
-        {#if exercise.category && exercise.itemType !== 'course' && exercise.itemType !== 'theme' && !(exercise.id && exercise.id.endsWith('_index'))}
-          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
-            <Icon icon="mdi:folder" class="h-3 w-3 mr-1" />
-            {exercise.category}
-          </span>
-        {/if}
-        {#if exercise.tags && exercise.tags.length > 0}
+
+      <!-- Tags with progressive disclosure -->
+      {#if exercise.tags && exercise.tags.length > 0}
+        <!-- Default state: show limited tags -->
+        <div class="contents group-hover/card:hidden">
           {#each exercise.tags.slice(0, 2) as tag}
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">
-              <Icon icon="mdi:tag" class="h-3 w-3 mr-1" />
+            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium 
+                         bg-gray-100 dark:bg-gray-700/60 text-gray-700 dark:text-gray-300 
+                         border border-gray-200 dark:border-gray-600/50">
+              <Icon icon="mdi:tag-outline" class="w-3 h-3 mr-1" />
               {tag}
             </span>
           {/each}
           {#if exercise.tags.length > 2}
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium 
+                         bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 
+                         border border-indigo-200 dark:border-indigo-700/50 cursor-help" 
+                  title="Hover to see all tags">
               +{exercise.tags.length - 2} more
             </span>
           {/if}
-        {/if}
-      </div>
+        </div>
+
+        <!-- Hover state: show all tags with enhanced styling -->
+        <div class="hidden group-hover/card:contents">
+          {#each exercise.tags as tag}
+            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium 
+                         bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 
+                         border border-indigo-200 dark:border-indigo-700/60 
+                         transform transition-all duration-200 hover:scale-105">
+              <Icon icon="mdi:tag" class="w-3 h-3 mr-1" />
+              {tag}
+            </span>
+          {/each}
+        </div>
+      {/if}
     </div>
     
     <!-- Footer with metadata and action -->
     <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
+      <!-- Left side: metadata -->
       <div class="flex items-center space-x-3 text-sm text-gray-500 dark:text-gray-400">
         {#if (exercise.itemType === 'exercise' || (exercise.id && exercise.id.endsWith('_index'))) && exercise.estimatedTime}
           <div class="flex items-center gap-1">
-            <Icon icon="mdi:clock-outline" class="h-4 w-4" />
+            <Icon icon="mdi:clock-outline" class="w-4 h-4" />
             <span>
               {exercise.estimatedTime}{typeof exercise.estimatedTime === 'number' || (typeof exercise.estimatedTime === 'string' && !isNaN(parseInt(exercise.estimatedTime))) ? ' min' : ''}
             </span>
@@ -280,28 +343,23 @@
         {/if}
         
         {#if showStatistics && timeSpent > 0}
-          <div class="flex items-center gap-1" title="Time spent on this exercise">
-            <Icon icon="mdi:timer" class="h-4 w-4" />
+          <div class="flex items-center gap-1" title="Time spent">
+            <Icon icon="mdi:timer" class="w-4 h-4" />
             <span>{formatTimeSpent(timeSpent)}</span>
           </div>
         {/if}
         
         {#if showStatistics && lastAccessed}
           <div class="flex items-center gap-1" title="Last accessed">
-            <Icon icon="mdi:calendar-clock" class="h-4 w-4" />
+            <Icon icon="mdi:calendar-clock" class="w-4 h-4" />
             <span>{formatLastAccessed(lastAccessed)}</span>
-          </div>
-        {/if}
-        
-        {#if exercise.difficulty}
-          <div class="flex items-center gap-1">
-            <Icon icon="mdi:speedometer" class="h-4 w-4" />
-            <span class="capitalize">{exercise.difficulty}</span>
           </div>
         {/if}
       </div>
       
-      <div class="flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-700 dark:group-hover:text-indigo-300 transition-colors">
+      <!-- Right side: action button -->
+      <div class="flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-400 
+                  group-hover/card:text-indigo-700 dark:group-hover/card:text-indigo-300 transition-colors">
         <span>
           {#if exercise.id && exercise.id.endsWith('_index')}
             View Overview
@@ -313,7 +371,7 @@
             Start Exercise
           {/if}
         </span>
-        <Icon icon="mdi:arrow-right" class="h-4 w-4 ml-1 transform group-hover:translate-x-1 transition-transform" />
+        <Icon icon="mdi:arrow-right" class="w-4 h-4 ml-1 transform group-hover/card:translate-x-1 transition-transform" />
       </div>
     </div>
   </div>
