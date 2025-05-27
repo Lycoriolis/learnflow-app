@@ -230,7 +230,7 @@ export function validateMarkdownStructure(content: string): {
         suggestions.push('Add proper header structure for better organization');
     }
 
-    const mathBlocks = content.match(/\$\$[\s\S]*?\$\$/g) || [];
+    const mathBlocks: string[] = content.match(/\$\$[\s\S]*?\$\$/g) || [];
     const malformedMath = mathBlocks.filter(block => !block.includes('\n'));
     if (malformedMath.length > 0) {
         issues.push('Inline display math found');

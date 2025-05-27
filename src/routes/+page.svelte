@@ -3,7 +3,7 @@
   import WelcomeBanner from '$lib/components/WelcomeBanner.svelte';
   import ProgressMetrics from '$lib/components/ProgressMetrics.svelte';
   import CourseCarousel from '$lib/components/courses/CourseCarousel.svelte';
-  import ExercisesSection from '$lib/components/courses/exercise/ExercisesSection.svelte';
+  import ExercisesSection from '$lib/components/ExercisesSection.svelte';
   import RecentActivity from '$lib/components/RecentActivity.svelte';
   import { isAuthenticated, user, loading as authLoading } from '$lib/stores/authStore.js';
   import GeneralWelcome from '$lib/components/GeneralWelcome.svelte';
@@ -25,11 +25,20 @@
   let metrics: Metric[] = [];
   let dashboardEventId: string | null = null;
 
-  onMount(async () => {
-    dashboardEventId = await logStart('view_dashboard', 'dashboard');
+  onMount(() => {
+    let dashboardEventId: string | null = null;
+    
+    // Initialize dashboard event logging asynchronously
+    logStart('view_dashboard', 'dashboard').then((id) => {
+      dashboardEventId = id;
+    }).catch((error) => {
+      console.error('Failed to log dashboard start:', error);
+    });
+
     const updateMetrics = () => {
       if ($isAuthenticated && $userProfile) {
-        const enrollments: any[] = $userProfile.preferences?.enrollments || [];
+        const preferences = ($userProfile as any).preferences;
+        const enrollments: any[] = preferences?.enrollments || [];
         const inProgress = enrollments.filter((e: any) => e.progress > 0 && e.progress < 100).length;
         const completed = enrollments.filter((e: any) => e.progress === 100).length;
         const sessions = $focusSessions;

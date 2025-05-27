@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import UnifiedRenderer from '$lib/components/UnifiedRenderer.svelte';
+	import EnhancedMarkdownRenderer from '$lib/components/EnhancedMarkdownRenderer.svelte';
 
 	export let data: PageData;
 </script>
@@ -61,7 +61,7 @@
 			
 			<section class="main-content prose lg:prose-xl">
 				{#if data.courseData.rawMdxContent}
-					<UnifiedRenderer content={data.courseData.rawMdxContent} type="markdown" />
+					<EnhancedMarkdownRenderer content={data.courseData.rawMdxContent} />
 				{:else}
 					<p>Course overview content could not be loaded.</p>
 				{/if}

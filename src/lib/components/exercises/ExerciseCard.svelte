@@ -36,10 +36,10 @@
       // Load progress data
       exerciseProgress = await exerciseProgressService.getProgress(exercise.id);
       if (exerciseProgress) {
-        progress = exerciseProgress.completionPercentage;
+        progress = exerciseProgress.readingProgress; // Changed completionPercentage to readingProgress
         isCompleted = exerciseProgress.isCompleted;
         timeSpent = exerciseProgress.timeSpent;
-        lastAccessed = exerciseProgress.lastAccessed;
+        lastAccessed = new Date(exerciseProgress.lastAccessedAt); // Changed lastAccessed to lastAccessedAt and ensured it's a Date
       }
 
       // Load bookmark status
@@ -53,10 +53,10 @@
 
   // Update progress when it changes externally
   $: if (browser && exerciseProgress) {
-    progress = exerciseProgress.completionPercentage;
+    progress = exerciseProgress.readingProgress; // Changed completionPercentage to readingProgress
     isCompleted = exerciseProgress.isCompleted;
     timeSpent = exerciseProgress.timeSpent;
-    lastAccessed = exerciseProgress.lastAccessed;
+    lastAccessed = new Date(exerciseProgress.lastAccessedAt); // Changed lastAccessed to lastAccessedAt and ensured it's a Date
   }
   
   // Use a reactive block to update href if exercise changes
@@ -90,20 +90,14 @@
     if (!browser) return;
     
     try {
-      if (isBookmarked) {
-        await exerciseBookmarkService.removeBookmark(exercise.id);
-        isBookmarked = false;
-      } else {
-        await exerciseBookmarkService.addBookmark({
-          exerciseId: exercise.id,
-          title: exercise.title || 'Untitled Exercise',
-          category: exercise.category || 'uncategorized',
-          difficulty: exercise.difficulty,
-          tags: exercise.tags || [],
-          url: href
-        });
-        isBookmarked = true;
-      }
+      // Use toggleBookmark from exerciseBookmarkService
+      isBookmarked = await exerciseBookmarkService.toggleBookmark(exercise.id, {
+        href: href, // href is already defined in the component
+        title: exercise.title || 'Untitled Exercise',
+        category: exercise.category || 'uncategorized',
+        difficulty: exercise.difficulty,
+        tags: exercise.tags || []
+      });
       
       dispatch('bookmark', { exerciseId: exercise.id, bookmarked: isBookmarked });
     } catch (error) {
@@ -113,19 +107,25 @@
 
   function handleCardClick() {
     if (browser) {
-      // Track exercise access
-      exerciseProgressService.startSession(exercise.id, {
+      // Track exercise access using startExercise
+      exerciseProgressService.startExercise(exercise.id, {
+        href: href, // href is already defined in the component
         title: exercise.title || 'Untitled Exercise',
         category: exercise.category || 'uncategorized',
         difficulty: exercise.difficulty,
-        estimatedTime: exercise.estimatedTime
+        tags: exercise.tags || []
+        // estimatedTime is not a parameter for startExercise, so it's removed
       });
     }
     
     dispatch('click', { exercise });
   }
 
-  function formatTimeSpent(minutes: number): string {
+  function formatTimeSpent(milliseconds: number): string { // Assuming timeSpent is in milliseconds from the service
+    const minutes = milliseconds / (1000 * 60);
+    if (minutes < 1) {
+      return '<1m';
+    }
     if (minutes < 60) {
       return `${Math.round(minutes)}m`;
     }

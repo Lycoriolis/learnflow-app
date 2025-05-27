@@ -1,7 +1,11 @@
-import { FirebaseApp, getApps, initializeApp } from 'firebase/app';
-import { Auth, getAuth } from 'firebase/auth';
-import { Firestore, getFirestore } from 'firebase/firestore';
-import { Analytics, getAnalytics, isSupported } from 'firebase/analytics';
+import type { FirebaseApp } from 'firebase/app';
+import { getApps, initializeApp } from 'firebase/app';
+import type { Auth } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
+import type { Firestore } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
+import type { Analytics } from 'firebase/analytics';
+import { getAnalytics, isSupported } from 'firebase/analytics';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,

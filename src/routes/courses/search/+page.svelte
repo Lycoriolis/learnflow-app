@@ -3,7 +3,7 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import CourseCard from '$lib/components/courses/CourseCard.svelte';
+	import CourseCard from '$lib/components/CourseCard.svelte';
 
 	export let data: PageData;
 

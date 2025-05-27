@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import CourseCard from '$lib/components/courses/CourseCard.svelte';
+	import CourseCard from '$lib/components/CourseCard.svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 

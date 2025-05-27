@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_URL } from '$env/dynamic/public';
-import { Topic, Category } from '../types/forum';
+import type { Topic, Category } from '../types/forum';
 
 export async function getTopics() {
     const response = await axios.get(`${API_URL}/topics`);

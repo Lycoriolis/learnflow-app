@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import CourseCard from './CourseCard.svelte';
+  import CourseCard from '../CourseCard.svelte';
   import type { ContentNode } from '$lib/services/courses/courseService';
   import Icon from '@iconify/svelte';
 

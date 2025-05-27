@@ -1,8 +1,8 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
   import { onMount } from 'svelte';
-  import UnifiedRenderer from '../UnifiedRenderer.svelte';
-  import ExerciseRating from '../courses/exercise/ExerciseRating.svelte';
+  import EnhancedMarkdownRenderer from '../EnhancedMarkdownRenderer.svelte';
+  import ExerciseRating from '../ExerciseRating.svelte';
   import type { ContentNode } from '$lib/services/courses/courseService';
   import { getAuth } from 'firebase/auth';
   import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
@@ -305,7 +305,7 @@
 
     <div class="flex-grow overflow-y-auto prose dark:prose-invert prose-cherry lg:prose-lg scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent pr-2 -mr-2">
       {#if type === 'exercise'}
-        <UnifiedRenderer content={sections.content || sections.main} type="exercise" isNested={true} />
+        <EnhancedMarkdownRenderer content={sections.content || sections.main} className="exercise-content" enableInteractivity={true} />
         
         {#if hintsArray && hintsArray.length > 0}
           <div class="mt-6 border-t border-gray-200 dark:border-gray-700 pt-4">
@@ -323,7 +323,7 @@
                   
                   {#if checkedHints.includes(`hint-${i}`)}
                     <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-md mt-1" transition:slide>
-                      <UnifiedRenderer content={hint} />
+                      <EnhancedMarkdownRenderer content={hint} />
                     </div>
                   {/if}
                 </div>
@@ -352,19 +352,19 @@
             
             {#if showSolution}
               <div transition:slide>
-                <UnifiedRenderer content={sections.solution} type="markdown" />
+                <EnhancedMarkdownRenderer content={sections.solution} enableMathRendering={true} />
               </div>
             {:else if solutionRevealProgress > 0}
               <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-md" style="filter: blur({solutionBlurLevel - (solutionBlurLevel * solutionRevealProgress / 100)}px);">
-                <UnifiedRenderer content={sections.solution} type="markdown" />
+                <EnhancedMarkdownRenderer content={sections.solution} enableMathRendering={true} />
               </div>
             {/if}
           </div>
         {/if}
       {:else if type === 'course'}
-        <UnifiedRenderer content={sections.content || sections.main} type="markdown" />
+        <EnhancedMarkdownRenderer content={sections.content || sections.main} enableMathRendering={true} />
       {:else}
-        <UnifiedRenderer content={sections.content || sections.main} type="markdown" />
+        <EnhancedMarkdownRenderer content={sections.content || sections.main} enableMathRendering={true} />
       {/if}
     </div>
 
@@ -421,7 +421,7 @@
           {:else}
             <div class="mt-2 p-3 border border-gray-200 dark:border-gray-700 rounded-md min-h-[50px] bg-gray-50 dark:bg-gray-800">
               {#if userNotes}
-                <UnifiedRenderer content={userNotes} type="markdown" />
+                <EnhancedMarkdownRenderer content={userNotes} enableMathRendering={true} />
               {:else}
                 <p class="text-gray-500 dark:text-gray-400 italic">No notes yet. Click "Edit" to add notes.</p>
               {/if}
