@@ -79,19 +79,13 @@
             // Handle numbered lists with proper spacing
             .replace(/^\d+\.\s+(.*)$/gm, '<div class="exercise-item"><span class="item-number">$&</span></div>')
             
-            // Handle math blocks with better formatting
-            // Display math $$...$$
+            // Don't modify math expressions at all - let KaTeX handle them directly
+            // Just ensure they're in their own containers for spacing
             .replace(/\$\$([\s\S]*?)\$\$/g, (match, content) => {
-                // Check if the content is a 'cases' environment
-                if (content.trim().startsWith('\\begin{cases}') && content.trim().endsWith('\\end{cases}')) {
-                    // If it is, wrap with math-block and equation-system classes
-                    return `<div class="math-block equation-system">$$${content}$$</div>`;
-                }
-                // Otherwise, just wrap with math-block
-                return `<div class="math-block">$$${content}$$</div>`;
+                // Trim whitespace from the content but preserve the math
+                const trimmedContent = content.trim();
+                return `<div class="math-display">$$${trimmedContent}$$</div>`;
             })
-            // Inline math $...$
-            .replace(/\$(.*?)\$/g, '<span class="math-inline">$1</span>')
             
             // Handle code blocks
             .replace(/```(\w*)\n([\s\S]*?)```/gm, '<pre class="code-block language-$1"><code>$2</code></pre>')
@@ -103,9 +97,6 @@
             
             // Handle links
             .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="exercise-link" target="_blank" rel="noopener noreferrer">$1</a>')
-            
-            // REMOVE the separate \begin{cases\} replacement, as it's now handled above
-            // .replace(/\\begin\{cases\}([\s\S]*?)\\end\{cases\}/g, '<div class="equation-system">\\begin{cases}$1\\end{cases}</div>')
             
             // Handle paragraphs with proper spacing
             .replace(/\n\n/g, '</p><p class="exercise-paragraph">')
@@ -153,7 +144,7 @@
             const optimizedContent = optimizeExerciseMarkdown(currentProcessingTarget, {
                 fixSpacing: true,
                 optimizeHeaders: true,
-                enhanceMath: true,
+                enhanceMath: false, // Disable math enhancement to prevent interference
                 improveCodeBlocks: true,
                 structureExercises: true
             });
@@ -200,19 +191,13 @@
             window.renderMathInElement(containerElement, {
                 delimiters: [
                     {left: '$$', right: '$$', display: true},
-                    {left: '$', right: '$', display: false},
-                    {left: '\\(', right: '\\)', display: false},
-                    {left: '\\[', right: '\\]', display: true}
+                    {left: '$', right: '$', display: false}
                 ],
                 throwOnError: false,
                 errorColor: '#cc0000',
                 strict: false,
                 trust: true,
-                macros: {
-                    // All previous entries removed as they are standard 
-                    // or structural and handled by KaTeX by default.
-                    // If custom macros are needed in the future, they can be added here.
-                }
+                ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
             });
         } catch (err) {
             console.error('Math rendering error:', err);
@@ -578,46 +563,20 @@
         color: #2d3748;
     }
     
-    /* Math content styling */
-    .exercise-content :global(.math-block) {
+    /* Math content styling - simplified */
+    .exercise-content :global(.math-display) {
         margin: 1.5rem 0;
-        padding: 1rem;
-        background-color: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 0.5rem;
         text-align: center;
         overflow-x: auto;
     }
     
-    .exercise-content :global(.math-inline) {
-        background-color: rgba(226, 232, 240, 0.3);
-        padding: 0.125rem 0.25rem;
-        border-radius: 0.25rem;
-        font-family: 'KaTeX_Math', 'Times New Roman', serif;
+    /* Remove complex math styling - let KaTeX handle it */
+    .exercise-content :global(.katex-display) {
+        margin: 1rem 0;
     }
     
-    .exercise-content :global(.equation-system) {
-        margin: 1.5rem 0;
-        padding: 1.5rem;
-        background-color: #f8fafc;
-        border: 2px solid #e2e8f0;
-        border-radius: 0.75rem;
-        text-align: center;
-        position: relative;
-    }
-    
-    .exercise-content :global(.equation-system::before) {
-        content: 'System of Equations';
-        position: absolute;
-        top: -0.5rem;
-        left: 1rem;
-        background-color: white;
-        padding: 0 0.5rem;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: #4a5568;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
+    .exercise-content :global(.katex) {
+        font-size: 1em;
     }
     
     /* Code styling */

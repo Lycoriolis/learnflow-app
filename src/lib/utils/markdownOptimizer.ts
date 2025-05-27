@@ -121,29 +121,14 @@ function optimizeHeaders(content: string): string {
  */
 function enhanceMathExpressions(content: string): string {
     return content
-        // Ensure proper spacing around inline math
-        .replace(/([^\s\$])\$([^\$\s])/g, '$1 $$$2')
-        .replace(/([^\$\s])\$([^\s\$])/g, '$1$ $2')
+        // Only fix basic spacing around display math blocks
+        .replace(/([^\n])\n(\$\$)/g, '$1\n\n$2')
+        .replace(/(\$\$)\n([^\n$])/g, '$1\n\n$2')
         
-        // Fix display math blocks
-        .replace(/\$\$\s*\n/g, '$$\n')
-        .replace(/\n\s*\$\$/g, '\n$$')
-        
-        // Wrap system of equations properly
-        .replace(/\\begin\{cases\}([\s\S]*?)\\end\{cases\}/g, (match, content) => {
-            const cleanContent = content.trim();
-            return `\n$$\\begin{cases}\n${cleanContent}\n\\end{cases}$$\n`;
-        })
-        
-        // Fix common math symbols
-        .replace(/\\mathbb\{([A-Z])\}/g, '\\mathbb{$1}')
-        .replace(/\\llbracket/g, '\\llbracket')
-        .replace(/\\rrbracket/g, '\\rrbracket')
-        
-        // Ensure proper spacing in math environments
+        // Don't modify the content of math expressions at all
+        // Just ensure display math has proper line breaks
         .replace(/\$\$([^$]+?)\$\$/g, (match, expr) => {
-            const cleanExpr = expr.trim();
-            return `\n$$${cleanExpr}$$\n`;
+            return `\n$$${expr}$$\n`;
         });
 }
 
@@ -181,20 +166,26 @@ function structureExerciseContent(content: string): string {
             return `## Exercice ${exerciseNum}: ${title}`;
         })
         
-        // Structure numbered items within exercises
+        // Improve numbered items structure for better rendering
+        .replace(/^(\d+)\.\s+\*\*(.*?)\*\*\s*:\s*(.+)$/gm, '$1. **$2**: $3')
+        
+        // Handle simple numbered items
         .replace(/^(\d+)\.\s+(.+)$/gm, (match, num, content) => {
-            // Add proper spacing and structure
+            // Don't modify if it's already well structured
+            if (content.includes('**') || content.includes('$')) {
+                return match;
+            }
             return `${num}. ${content}`;
         })
         
         // Add solution sections where appropriate
-        .replace(/^## (Solution|Réponse|Answer)\s*$/gm, '### $1')
+        .replace(/^## (Solution|Reponse|Answer)\s*$/gm, '### $1')
         
-        // Group related content
-        .replace(/^(Soit|Soient|Montrer que|Calculer|Résoudre)\s+(.+)$/gm, '**$1** $2')
+        // Group related mathematical content
+        .replace(/^(Soit|Soient|Montrer que|Calculer|Resoudre|Determiner|Trouver)\s+(.+)$/gm, '**$1** $2')
         
-        // Enhance question formatting
-        .replace(/^(\d+)\.\s+(Montrer que|Calculer|Résoudre|Soit|Soient)\s+(.+)$/gm, 
+        // Enhance question formatting with math preservation
+        .replace(/^(\d+)\.\s+(Montrer que|Calculer|Resoudre|Soit|Soient|Determiner|Trouver)\s+(.+)$/gm, 
             '$1. **$2** $3');
 }
 
@@ -271,14 +262,43 @@ export function generateOptimizationReport(
 }
 
 /**
- * Quick fix function for common exercise markdown issues
+ * Exercise-specific optimization for better renderer compatibility
+ */
+export function optimizeForExerciseRenderer(content: string): string {
+    return content
+        // Preserve all math expressions as-is
+        .replace(/\$([^$]+)\$/g, (match) => match)
+        .replace(/\$\$([\s\S]*?)\$\$/g, (match) => match)
+        
+        // Ensure proper paragraph breaks before exercise items
+        .replace(/([^\n])\n(\d+\.\s+)/g, '$1\n\n$2')
+        
+        // Clean up excessive whitespace but preserve structure
+        .replace(/\n{3,}/g, '\n\n')
+        
+        // Ensure headers have proper spacing
+        .replace(/([^\n])\n(#{1,3}\s)/g, '$1\n\n$2')
+        .replace(/(#{1,3}[^\n]*)\n([^\n#])/g, '$1\n\n$2')
+        
+        // Preserve bold formatting in exercise items
+        .replace(/^(\d+)\.\s+(.+)$/gm, (match, num, content) => {
+            // If content starts with a bold term, preserve it
+            if (content.match(/^\*\*[^*]+\*\*/)) {
+                return match;
+            }
+            return match;
+        });
+}
+
+/**
+ * Quick fix function optimized for the exercise renderer
  */
 export function quickFixExerciseMarkdown(content: string): string {
     return optimizeExerciseMarkdown(content, {
         fixSpacing: true,
         optimizeHeaders: true,
-        enhanceMath: true,
-        improveCodeBlocks: false,
+        enhanceMath: false, // Completely disable math enhancement
+        improveCodeBlocks: true,
         structureExercises: true
     });
 }
