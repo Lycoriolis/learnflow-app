@@ -631,7 +631,7 @@
     /* Text styling */
     .exercise-content :global(.exercise-strong) {
         font-weight: 600;
-        color: #1a202c;
+        color: #eff0f3;
     }
     
     .exercise-content :global(.exercise-em) {
