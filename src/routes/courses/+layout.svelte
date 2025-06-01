@@ -1,130 +1,127 @@
 <script lang="ts">
-	import type { LayoutData } from './$types';
+<script lang="ts">
+	import type { LayoutData, ServerContentNode } from './$types'; // Assuming ServerContentNode is exported or defined in $types
 	import { page } from '$app/stores';
+	import Icon from '@iconify/svelte';
 
 	export let data: LayoutData;
 
-	// $: console.log('[courses/+layout.svelte] Layout Data:', data);
-	// $: console.log('[courses/+layout.svelte] Current page path:', $page.url.pathname);
+	// Helper to generate breadcrumb items
+	type BreadcrumbItem = { title: string; href?: string };
+	$: breadcrumbs = (() => {
+		const items: BreadcrumbItem[] = [
+			{ title: 'Home', href: '/' },
+			{ title: 'Courses', href: '/courses' }
+		];
+		if (data.currentPathSlug) {
+			const slugParts = data.currentPathSlug.split('/');
+			let currentPath = '/courses';
 
-	function isActiveLesson(lessonPath: string) {
-		// Ensure paths are consistently formatted (e.g., leading slash, no trailing slash)
+			// Attempt to use titles from loaded nodes (parentTheme, currentCourseOverview, currentContentNode)
+			// This logic assumes specific data shapes from layout.server.ts
+
+			if (slugParts.length > 0 && data.parentTheme && data.parentTheme.contentPath?.endsWith(slugParts[0])) {
+				items.push({ title: data.parentTheme.title || formatSlug(slugParts[0]), href: data.parentTheme.contentPath });
+			} else if (slugParts.length > 0) {
+				currentPath += `/${slugParts[0]}`;
+				items.push({ title: formatSlug(slugParts[0]), href: currentPath });
+			}
+
+			if (slugParts.length > 1 && data.currentCourseOverview && data.currentCourseOverview.contentPath?.endsWith(slugParts.slice(0,2).join('/'))) {
+				items.push({ title: data.currentCourseOverview.title || formatSlug(slugParts[1]), href: data.currentCourseOverview.contentPath });
+			} else if (slugParts.length > 1) {
+				currentPath += `/${slugParts[1]}`;
+				items.push({ title: formatSlug(slugParts[1]), href: currentPath });
+			}
+
+			if (slugParts.length > 2 && data.currentContentNode && data.currentContentNode.contentType?.startsWith('lesson_')) {
+				items.push({ title: data.currentContentNode.title || formatSlug(slugParts[2]) }); // Last item is current page, no href
+			} else if (slugParts.length > 2) {
+				// Fallback if currentContentNode is not the lesson (e.g. if layout didn't load it)
+				items.push({ title: formatSlug(slugParts[2]) });
+			}
+		}
+		return items;
+	})();
+
+	function formatSlug(slug: string): string {
+		return slug.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+	}
+
+	function isActiveLesson(lessonPath?: string): boolean {
+		if (!lessonPath) return false;
 		const currentPagePath = $page.url.pathname.endsWith('/') ? $page.url.pathname.slice(0, -1) : $page.url.pathname;
 		const targetPath = lessonPath.endsWith('/') ? lessonPath.slice(0, -1) : lessonPath;
 		return currentPagePath === targetPath;
 	}
 </script>
 
-<div class="course-layout-container">
+<div class="course-layout-container flex flex-col md:flex-row min-h-screen bg-white dark:bg-gray-900">
+	<!-- Sidebar: Only shown if there's a course overview and lessons -->
 	{#if data.currentCourseOverview && data.siblingLessons && data.siblingLessons.length > 0}
-		<aside class="course-sidebar">
-			<div class="sidebar-header">
-				<a href={data.currentCourseOverview.contentPath || `/courses/${data.currentCourseId}`} class="course-title-link">
-					{data.currentCourseOverview.title || 'Course Menu'}
+		<aside class="course-sidebar w-full md:w-72 lg:w-80 flex-shrink-0 bg-slate-50 dark:bg-gray-800/50 border-r border-slate-200 dark:border-gray-700/60 md:sticky md:top-0 md:h-screen md:overflow-y-auto">
+			<div class="p-4 sm:p-6 sticky top-0 bg-slate-50 dark:bg-gray-800/80 backdrop-blur-sm z-10 border-b border-slate-200 dark:border-gray-700/60">
+				<a href={data.currentCourseOverview.contentPath || `/courses/${data.currentCourseOverview.id?.replace('_index','')}`} class="block">
+					<h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
+						{data.currentCourseOverview.title || 'Course Menu'}
+					</h2>
 				</a>
+				{#if data.currentCourseOverview.description}
+					<p class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">{data.currentCourseOverview.description}</p>
+				{/if}
 			</div>
-			<nav class="lessons-nav">
-				<ul>
-					{#each data.siblingLessons as lesson (lesson.id)}
-						<li>
-							<a 
-								href={lesson.contentPath} 
-								class:active={isActiveLesson(lesson.contentPath)}
-								aria-current={isActiveLesson(lesson.contentPath) ? 'page' : undefined}
-							>
-								{lesson.title || 'Untitled Lesson'}
-							</a>
-						</li>
-					{/each}
-				</ul>
+			<nav class="lessons-nav p-4 sm:p-6 space-y-1">
+				{#each data.siblingLessons as lesson (lesson.id)}
+					{@const isActive = isActiveLesson(lesson.contentPath)}
+					<a
+						href={lesson.contentPath}
+						class="flex items-center px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-150 ease-in-out group"
+						class:bg-teal-500={isActive}
+						class:text-white={isActive}
+						class:hover:bg-teal-500={isActive}
+						class:hover:text-white={isActive}
+						class:text-gray-700={!isActive}
+						class:dark:text-gray-300={!isActive}
+						class:hover:bg-slate-200={!isActive}
+						class:dark:hover:bg-gray-700={!isActive}
+						aria-current={isActive ? 'page' : undefined}
+					>
+						<Icon icon={lesson.contentType?.includes('quiz') ? 'mdi:help-circle-outline' : 'mdi:book-open-variant-outline'} class="w-5 h-5 mr-3 flex-shrink-0 {isActive ? 'text-white' : 'text-gray-400 dark:text-gray-500 group-hover:text-teal-600 dark:group-hover:text-teal-500'}" />
+						<span class="truncate">{lesson.title || 'Untitled Lesson'}</span>
+					</a>
+				{/each}
 			</nav>
 		</aside>
 	{/if}
 
-	<main class="course-main-content" class:with-sidebar={data.currentCourseOverview && data.siblingLessons && data.siblingLessons.length > 0}>
-		<slot /> <!-- Page content (lesson, course overview, etc.) goes here -->
+	<!-- Main Content Area -->
+	<main class="course-main-content flex-grow p-4 sm:p-6 md:p-8 min-w-0" class:md:ml-0={!(data.currentCourseOverview && data.siblingLessons && data.siblingLessons.length > 0)}>
+		<!-- Breadcrumbs -->
+		{#if breadcrumbs.length > 0}
+			<nav aria-label="Breadcrumb" class="mb-6 sm:mb-8">
+				<ol class="flex items-center space-x-1.5 text-sm text-gray-500 dark:text-gray-400">
+					{#each breadcrumbs as item, i (item.href || item.title)}
+						<li>
+							{#if item.href && i < breadcrumbs.length - 1}
+								<a href={item.href} class="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
+									{item.title}
+								</a>
+							{:else}
+								<span class="font-medium text-gray-700 dark:text-gray-200">{item.title}</span>
+							{/if}
+						</li>
+						{#if i < breadcrumbs.length - 1}
+							<li aria-hidden="true">
+								<Icon icon="mdi:chevron-right" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
+							</li>
+						{/if}
+					{/each}
+				</ol>
+			</nav>
+		{/if}
+
+		<slot /> <!-- Page content (theme overview, course overview, lesson content) -->
 	</main>
 </div>
 
-<style>
-	/* Ensure global :root variables are available */
-	.course-layout-container {
-		display: flex;
-		max-width: 1400px; /* Wider for layout with sidebar */
-		margin: 0 auto;
-		font-family: var(--page-font-family, 'Inter', sans-serif);
-	}
-
-	.course-sidebar {
-		width: 280px; /* Fixed width sidebar */
-		flex-shrink: 0;
-		background-color: var(--bg-color-light, #F9FAFB);
-		border-right: 1px solid var(--border-color-soft, #E5E7EB);
-		padding: 1.5rem 0; /* Vertical padding */
-		height: calc(100vh - 60px); /* Adjust 60px if you have a fixed header */
-		position: sticky;
-		top: 60px; /* Adjust if you have a fixed header */
-		overflow-y: auto;
-	}
-
-	.sidebar-header {
-		padding: 0 1.5rem 1rem; /* Padding for header */
-		margin-bottom: 1rem;
-		border-bottom: 1px solid var(--border-color-soft, #E5E7EB);
-	}
-	.course-title-link {
-		font-family: var(--heading-font-family, 'Lexend Deca', sans-serif);
-		font-size: 1.25rem;
-		font-weight: 600;
-		color: var(--text-color-primary, #111827);
-		text-decoration: none;
-	}
-	.course-title-link:hover {
-		color: var(--primary-color, #3B82F6);
-	}
-
-	.lessons-nav ul {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
-	.lessons-nav li a {
-		display: block;
-		padding: 0.6rem 1.5rem; /* Padding for links */
-		text-decoration: none;
-		color: var(--text-color-secondary, #4B5563);
-		font-size: 0.95rem;
-		border-left: 3px solid transparent;
-		transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
-	}
-	.lessons-nav li a:hover {
-		background-color: #EBF4FF; /* Light primary color tint */
-		color: var(--primary-color-hover, #2563EB);
-	}
-	.lessons-nav li a.active {
-		background-color: var(--primary-color-hover, #2563EB); /* Primary color for active */
-		color: white;
-		font-weight: 500;
-		border-left-color: var(--primary-color, #3B82F6);
-	}
-
-	.course-main-content {
-		flex-grow: 1;
-		padding: 2rem;
-		min-width: 0; /* Prevents content from overflowing flex container */
-	}
-	.course-main-content.with-sidebar {
-		/* padding-left: 2rem; /* Adjust if sidebar has different padding */
-	}
-
-	/* Responsive: On smaller screens, you might want to hide sidebar or make it a drawer */
-	@media (max-width: 768px) {
-		.course-sidebar {
-			display: none; /* Example: hide sidebar on small screens */
-			/* Or implement a toggle mechanism */
-		}
-		.course-main-content.with-sidebar {
-			padding-left: 2rem; /* Reset padding if sidebar is hidden */
-		}
-	}
-</style>
+<!-- Removed old <style> block as styles are now using Tailwind utility classes -->

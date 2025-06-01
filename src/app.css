@@ -176,35 +176,12 @@
   border-radius: 50%;
 }
 
-/* Markdown content styling with better typography */
-.markdown-content {
-  @apply text-gray-300 leading-relaxed;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-}
-
-.markdown-content h1 {
-  @apply text-2xl font-bold my-6 text-gray-100;
-}
-
-.markdown-content h2 {
-  @apply text-xl font-bold my-4 text-gray-100;
-}
-
-.markdown-content h3 {
-  @apply text-lg font-medium my-3 text-gray-100;
-}
-
-.markdown-content p {
-  @apply my-4 text-gray-300;
-}
-
-.markdown-content pre {
-  @apply bg-gray-900 p-4 rounded-xl my-4 overflow-x-auto border border-gray-700;
-}
-
-.markdown-content code {
-  @apply font-mono text-sm bg-gray-700 text-gray-200 px-1.5 py-0.5 rounded border border-gray-600;
-}
+/*
+  Removed general .markdown-content styles from app.css to allow Tailwind Prose
+  to take precedence in specific components like course lessons.
+  Styling for markdown should be handled by Tailwind's @tailwindcss/typography plugin (prose classes)
+  or scoped within components if custom styling beyond prose is needed.
+*/
 
 /* Enhanced scrollbar */
 ::-webkit-scrollbar {

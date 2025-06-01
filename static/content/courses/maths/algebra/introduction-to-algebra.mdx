@@ -1,0 +1,165 @@
+---
+title: "Comprehensive Markdown Test for Algebra Introduction"
+id: "intro_algebra_lesson_markdown_test"
+order: 1
+contentType: "lesson_content"
+description: "A test file to verify all markdown elements, KaTeX, and callouts render correctly."
+tags: ["algebra", "test", "markdown", "katex"]
+difficulty: "beginner"
+estimatedTime: "30 mins review"
+learningObjectives:
+  - "Verify H1 rendering."
+  - "Verify H2-H6 rendering."
+  - "Verify text formatting: paragraphs, bold, italic, strikethrough."
+  - "Verify unordered and ordered lists, including nesting."
+  - "Verify code blocks with syntax highlighting."
+  - "Verify inline code."
+  - "Verify blockquotes."
+  - "Verify images (with placeholder)."
+  - "Verify links."
+  - "Verify tables."
+  - "Verify horizontal rules."
+  - "Verify KaTeX for inline and block math."
+  - "Verify custom callouts: definition, theorem, example, note, remark."
+---
+
+# Heading 1: The Grand Overview
+
+This is a standard paragraph. It should have normal spacing and font size.
+The quick **brown fox** jumps over the *lazy dog*. ~~This text is struck through.~~
+This paragraph is followed by a horizontal rule.
+
+---
+
+## Heading 2: Lists and More Lists
+
+Here's an unordered list:
+* Item 1
+  * Nested Item 1.1
+  * Nested Item 1.2
+    * Deeper Nested Item 1.2.1
+* Item 2
+* Item 3
+
+And an ordered list:
+1. First item
+2. Second item
+   1. Sub-item A
+   2. Sub-item B
+3. Third item
+
+### Heading 3: Code Presentation
+
+This is an `inline code` snippet.
+
+```javascript
+// Javascript code block
+function greet(name) {
+  console.log(`Hello, ${name}!`);
+}
+greet('Markdown Tester');
+```
+
+```python
+# Python code block
+def add(a, b):
+  return a + b
+print(add(5, 3))
+```
+
+```text
+This is a plain text code block.
+No syntax highlighting should be applied, but it should still be formatted as a code block.
+Line 1
+Line 2
+Line 3
+```
+
+#### Heading 4: Quotes and Links
+
+Here's a blockquote:
+> To be, or not to be, that is the question:
+> Whether 'tis nobler in the mind to suffer
+> The slings and arrows of outrageous fortune,
+> Or to take arms against a sea of troubles
+> And by opposing end them.
+
+A link to [Google](https://www.google.com) and an internal link to [Browse Courses](/courses).
+
+##### Heading 5: Tables and Images
+
+A simple table:
+
+| Header 1 | Header 2 | Header 3 |
+|----------|----------|----------|
+| Cell 1A  | Cell 2A  | Cell 3A  |
+| Cell 1B  | Cell 2B  | Cell 3B  |
+| Cell 1C  | Cell 2C  | Cell 3C  |
+
+An image (using a placeholder for now, ensure it's responsive):
+![Placeholder Image](https://via.placeholder.com/600x300.png?text=Responsive+Image)
+
+###### Heading 6: Mathematical Notations with KaTeX
+
+Inline math: The equation for a line is $y = mx + b$.
+The famous Pythagorean theorem: $a^2 + b^2 = c^2$.
+
+Block math (display mode):
+$$
+\int_a^b f(x) \, dx = F(b) - F(a)
+$$
+
+Another complex expression:
+$$
+\sum_{i=1}^{n} i^2 = \frac{n(n+1)(2n+1)}{6}
+$$
+
+Fraction:
+$$
+\frac{2}{3}
+$$
+
+Matrix:
+$$
+\begin{pmatrix}
+a & b \\
+c & d
+\end{pmatrix}
+$$
+
+---
+
+## Custom Callouts Test
+
+:::definition[Algebraic Expression]
+An algebraic expression is a combination of constants, variables, and algebraic operations (addition, subtraction, multiplication, division, exponentiation by an exponent that is a rational number).
+For example, $3x^2 - 2xy + c$ is an algebraic expression.
+:::
+
+:::theorem[Fundamental Theorem of Algebra]
+Every non-constant single-variable polynomial with complex coefficients has at least one complex root.
+This is a cornerstone of algebra.
+:::
+
+:::example[Solving a Linear Equation]
+Consider the equation $2x + 3 = 11$.
+To solve for $x$:
+1. Subtract 3 from both sides: $2x = 11 - 3 \implies 2x = 8$.
+2. Divide by 2: $x = \frac{8}{2} \implies x = 4$.
+Thus, the solution is $x=4$.
+:::
+
+:::note
+Remember that variables are often represented by letters such as $x, y, z$.
+Constants are fixed values like $2, \pi, -5$.
+:::
+
+:::remark[Historical Context]
+The study of algebra dates back to ancient civilizations, including the Babylonians and Egyptians, who used algebraic methods to solve practical problems. The word "algebra" itself comes from the Arabic word "al-jabr".
+:::
+
+:::generic-emphasis[Key Takeaway]
+Algebra provides the tools to model and solve a wide variety of real-world problems. Understanding its fundamental concepts is crucial for further studies in mathematics and science.
+:::
+
+This concludes the Markdown rendering test.

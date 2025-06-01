@@ -1,248 +1,156 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import CourseCard from '$lib/components/CourseCard.svelte';
-	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
+	import { fade, fly } from 'svelte/transition';
+	import Icon from '@iconify/svelte';
 
 	export let data: PageData;
 
-	// Search and filter state
-	let searchQuery = '';
-	let selectedCategory = 'all';
-	let selectedDifficulty = 'all';
-	let sortBy = 'popularity';
+	// $: console.log('Page data in courses/+page.svelte:', data);
 
-	// Filtered and sorted courses
-	$: filteredCourses = filterAndSortCourses(data.courses || [], searchQuery, selectedCategory, selectedDifficulty, sortBy);
-
-	function filterAndSortCourses(courses: any[], query: string, category: string, difficulty: string, sort: string) {
-		let filtered = courses;
-
-		// Apply search filter
-		if (query.trim()) {
-			const q = query.toLowerCase();
-			filtered = filtered.filter(course => 
-				course.title?.toLowerCase().includes(q) ||
-				course.description?.toLowerCase().includes(q) ||
-				course.tags?.some((tag: string) => tag.toLowerCase().includes(q))
-			);
-		}
-
-		// Apply category filter
-		if (category !== 'all') {
-			filtered = filtered.filter(course => course.category === category);
-		}
-
-		// Apply difficulty filter
-		if (difficulty !== 'all') {
-			filtered = filtered.filter(course => course.difficulty === difficulty);
-		}
-
-		// Apply sorting
-		switch (sort) {
-			case 'title':
-				filtered.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
-				break;
-			case 'difficulty':
-				const difficultyOrder = { 'beginner': 1, 'intermediate': 2, 'advanced': 3 };
-				filtered.sort((a, b) => (difficultyOrder[a.difficulty] || 0) - (difficultyOrder[b.difficulty] || 0));
-				break;
-			case 'newest':
-				filtered.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
-				break;
-			default: // popularity
-				filtered.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
-		}
-
-		return filtered;
-	}
-
-	function navigateToAdvancedBrowse() {
-		goto('/courses/browse');
-	}
-
-	function navigateToSearch() {
-		goto('/courses/search');
+	// Helper function to get a placeholder icon if a theme doesn't have one
+	// You can expand this with actual theme-specific icons if available in frontmatter
+	function getThemeIcon(themeId: string) {
+		// Example: you could have a map or logic based on theme.id or title
+		if (themeId.includes('math')) return 'mdi:calculator-variant-outline';
+		if (themeId.includes('science')) return 'mdi:flask-outline';
+		if (themeId.includes('programming')) return 'mdi:code-braces';
+		return 'mdi:bookshelf'; // Default icon
 	}
 </script>
 
 <svelte:head>
-	<title>Courses | LearnFlow</title>
-	<meta name="description" content="Discover and explore our comprehensive range of courses designed for all skill levels." />
+	<title>Course Themes | LearnFlow</title>
+	<meta name="description" content="Explore various themes offering a structured collection of courses on LearnFlow." />
+	<meta name="keywords" content="courses, themes, learning, education, online courses" />
 </svelte:head>
 
-<div class="courses-discovery-hub min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-50 p-6 sm:p-8 md:p-10">
-	<!-- Header Section -->
-	<header class="mb-12 text-center">
-		<h1 class="text-5xl sm:text-6xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-cyan-400 to-sky-500 mb-4">
-			Discover Courses
-		</h1>
-		<p class="text-xl sm:text-2xl text-slate-400 max-w-3xl mx-auto mb-8">
-			Explore our comprehensive library of courses designed to accelerate your learning journey
-		</p>
-		
-		<!-- Quick Actions -->
-		<div class="flex flex-wrap justify-center gap-4 mb-8">
-			<button 
-				on:click={navigateToAdvancedBrowse}
-				class="px-6 py-3 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
-			>
-				📁 Browse All Courses
-			</button>
-			<button 
-				on:click={navigateToSearch}
-				class="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
-			>
-				🔍 Advanced Search
-			</button>
-		</div>
-	</header>
-
-	<!-- Search and Filter Section -->
-	<section class="mb-12 max-w-6xl mx-auto">
-		<div class="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
-			<!-- Search Bar -->
+<div class="min-h-screen bg-gradient-to-br from-sky-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-900 dark:text-white">
+	<div class="container mx-auto px-4 py-8 sm:py-12">
+		<!-- Header Section -->
+		<header class="mb-12 md:mb-16 text-center" in:fade={{ duration: 600 }}>
 			<div class="mb-6">
-				<div class="relative">
-					<input
-						type="text"
-						bind:value={searchQuery}
-						placeholder="Search courses, topics, or skills..."
-						class="w-full px-6 py-4 pl-12 bg-slate-700/50 border border-slate-600 rounded-xl text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
-					>
-					<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-						<svg class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-						</svg>
+				<h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-sky-600 via-teal-500 to-green-600 bg-clip-text text-transparent mb-4 py-2">
+					Explore Course Themes
+				</h1>
+				<p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+					Discover our curated themes, each offering a collection of courses designed to guide your learning journey in specific areas of knowledge.
+				</p>
+			</div>
+
+			<!-- Statistics/Highlights (Optional, can be added if relevant data is available) -->
+			{#if data.themes && data.themes.length > 0}
+			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-8" in:fly={{ y: 20, duration: 500, delay: 200 }}>
+				<div class="bg-white dark:bg-gray-800/50 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700/60 p-5 text-left">
+					<div class="flex items-center">
+						<Icon icon="mdi:format-list-bulleted-type" class="h-10 w-10 text-sky-600 dark:text-sky-400 mr-4" />
+						<div>
+							<p class="text-3xl font-bold">{data.themes.length}</p>
+							<p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Themes</p>
+						</div>
+					</div>
+				</div>
+				<!-- Placeholder for more stats if available, e.g., total courses across all themes -->
+				<div class="bg-white dark:bg-gray-800/50 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700/60 p-5 text-left">
+					<div class="flex items-center">
+						<Icon icon="mdi:book-open-page-variant-outline" class="h-10 w-10 text-teal-600 dark:text-teal-400 mr-4" />
+						<div>
+							<!-- Sum of children courses - this requires children count on theme objects -->
+							<p class="text-3xl font-bold">{(data.themes || []).reduce((acc, theme) => acc + (theme.children?.length || 0), 0)}</p>
+							<p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Courses</p>
+						</div>
+					</div>
+				</div>
+				<div class="bg-white dark:bg-gray-800/50 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700/60 p-5 text-left">
+					<div class="flex items-center">
+						<Icon icon="mdi:star-circle-outline" class="h-10 w-10 text-green-600 dark:text-green-400 mr-4" />
+						<div>
+							<p class="text-3xl font-bold">New!</p> <!-- Placeholder -->
+							<p class="text-sm font-medium text-gray-500 dark:text-gray-400">Featured Content</p>
+						</div>
 					</div>
 				</div>
 			</div>
-
-			<!-- Filter Controls -->
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-				<!-- Category Filter -->
-				<div>
-					<label class="block text-sm font-medium text-slate-300 mb-2">Category</label>
-					<select 
-						bind:value={selectedCategory}
-						class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-					>
-						<option value="all">All Categories</option>
-						{#each data.categories || [] as category}
-							<option value={category.id}>{category.title}</option>
-						{/each}
-					</select>
-				</div>
-
-				<!-- Difficulty Filter -->
-				<div>
-					<label class="block text-sm font-medium text-slate-300 mb-2">Difficulty</label>
-					<select 
-						bind:value={selectedDifficulty}
-						class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-					>
-						<option value="all">All Levels</option>
-						<option value="beginner">Beginner</option>
-						<option value="intermediate">Intermediate</option>
-						<option value="advanced">Advanced</option>
-					</select>
-				</div>
-
-				<!-- Sort Options -->
-				<div>
-					<label class="block text-sm font-medium text-slate-300 mb-2">Sort By</label>
-					<select 
-						bind:value={sortBy}
-						class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-					>
-						<option value="popularity">Most Popular</option>
-						<option value="title">Alphabetical</option>
-						<option value="difficulty">Difficulty</option>
-						<option value="newest">Newest First</option>
-					</select>
-				</div>
-			</div>
-		</div>
-	</section>
-
-	<!-- Results Summary -->
-	<section class="mb-8 max-w-6xl mx-auto">
-		<div class="flex justify-between items-center">
-			<p class="text-slate-400">
-				Showing {filteredCourses.length} of {data.courses?.length || 0} courses
-				{#if searchQuery}<span class="text-cyan-400">for "{searchQuery}"</span>{/if}
-			</p>
-			{#if searchQuery || selectedCategory !== 'all' || selectedDifficulty !== 'all'}
-				<button 
-					on:click={() => { searchQuery = ''; selectedCategory = 'all'; selectedDifficulty = 'all'; }}
-					class="text-cyan-400 hover:text-cyan-300 text-sm underline"
-				>
-					Clear filters
-				</button>
 			{/if}
-		</div>
-	</section>
+		</header>
 
-	<!-- Courses Grid -->
-	<section class="max-w-7xl mx-auto">
-		{#if data.error}
-			<div class="text-center py-12">
-				<div class="bg-red-900/30 border border-red-700 rounded-lg p-6 max-w-md mx-auto">
-					<p class="text-red-400">{data.error}</p>
-				</div>
-			</div>
-		{:else if filteredCourses.length === 0}
-			<div class="text-center py-20">
-				<div class="bg-slate-800/70 rounded-xl border border-slate-700 shadow-xl p-8 max-w-md mx-auto">
-					<svg class="mx-auto h-16 w-16 text-slate-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-					</svg>
-					<h3 class="text-xl font-medium text-slate-300 mb-2">No courses found</h3>
-					<p class="text-slate-400">
-						{#if searchQuery || selectedCategory !== 'all' || selectedDifficulty !== 'all'}
-							Try adjusting your search criteria or filters.
-						{:else}
-							No courses are available at the moment.
-						{/if}
-					</p>
-				</div>
-			</div>
-		{:else}
-			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
-				{#each filteredCourses as course (course.id)}
-					<CourseCard {course} />
-				{/each}
-			</div>
-		{/if}
-	</section>
-
-	<!-- Categories Section -->
-	{#if data.categories && data.categories.length > 0}
-		<section class="mt-16 max-w-6xl mx-auto">
-			<h2 class="text-3xl font-semibold text-slate-200 mb-8 text-center">Browse by Category</h2>
-			<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-				{#each data.categories as category (category.id)}
-					<a
-						href="/courses/category/{category.id}"
-						class="group p-6 bg-slate-800/40 border border-slate-700 rounded-xl hover:bg-slate-700/40 hover:border-slate-600 transition-all duration-200"
+		<!-- Themes Grid Section -->
+		<section class="max-w-7xl mx-auto" in:fly={{ y: 20, duration: 500, delay: 300 }}>
+			{#if data.error}
+				<div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700/80 rounded-lg p-6 text-center">
+					<Icon icon="mdi:alert-circle-outline" class="w-16 h-16 text-red-500 dark:text-red-400 mx-auto mb-4" />
+					<h3 class="text-xl font-medium text-red-700 dark:text-red-300 mb-2">Error Loading Themes</h3>
+					<p class="text-red-600 dark:text-red-400">{data.error}</p>
+					<button
+						on:click={() => window.location.reload()}
+						class="mt-6 px-5 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors"
 					>
-						<div class="text-center">
-							<h3 class="font-semibold text-slate-200 group-hover:text-cyan-400 transition-colors">
-								{category.title}
-							</h3>
-							<p class="text-sm text-slate-400 mt-1">
-								{category.courseCount || 0} courses
-							</p>
-						</div>
+						Try Again
+					</button>
+				</div>
+			{:else if data.themes && data.themes.length > 0}
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8 sm:gap-x-8 sm:gap-y-10">
+					{#each data.themes as theme, index (theme.id)}
+						<a
+							href={theme.contentPath}
+							class="group relative block bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl dark:hover:shadow-gray-700/60 transition-all duration-300 ease-in-out border border-gray-200 dark:border-gray-700 hover:border-transparent transform hover:-translate-y-1 overflow-hidden"
+							in:fly={{ y: 20, duration: 400, delay: 100 + index * 70 }}
+						>
+							<!-- Subtle gradient border effect on hover -->
+							<span class="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-sky-500 via-teal-500 to-green-500 opacity-0 group-hover:opacity-75 transition-opacity duration-300 blur-sm group-hover:blur-md"></span>
+							<span class="absolute inset-0 rounded-xl bg-white dark:bg-gray-800"></span>
+
+							<div class="relative p-6 z-10 min-h-[220px] flex flex-col">
+								<div class="flex-shrink-0 mb-4">
+									<div class="w-16 h-16 bg-gradient-to-br from-sky-500 via-teal-500 to-green-600 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:shadow-teal-500/50 transition-all duration-300 transform group-hover:scale-110">
+										<Icon icon={getThemeIcon(theme.id)} class="w-9 h-9 text-white transition-transform duration-300 group-hover:scale-105" />
+									</div>
+								</div>
+
+								<h3 class="text-xl lg:text-2xl font-semibold text-gray-800 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors duration-200 mb-2 leading-tight">
+									{theme.title || 'Untitled Theme'}
+								</h3>
+
+								<p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-3 leading-relaxed flex-grow">
+									{theme.description || 'No description available.'}
+								</p>
+
+								<div class="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700/60 flex items-center justify-between">
+									<div class="text-sm text-gray-500 dark:text-gray-400">
+										{#if theme.children && theme.children.length > 0}
+											<span>{theme.children.length} {theme.children.length === 1 ? 'Course' : 'Courses'}</span>
+										{:else}
+											<span>Coming Soon</span>
+										{/if}
+									</div>
+									<div class="flex items-center text-sm font-medium text-teal-600 dark:text-teal-400 group-hover:text-teal-700 dark:group-hover:text-teal-300 transition-colors">
+										<span>Explore Theme</span>
+										<Icon icon="mdi:arrow-right" class="w-4 h-4 ml-1.5 transform group-hover:translate-x-1 transition-transform" />
+									</div>
+								</div>
+							</div>
+						</a>
+					{/each}
+				</div>
+			{:else}
+				<div class="text-center py-16" in:fade={{ duration: 400 }}>
+					<Icon icon="mdi:bookshelf-remove" class="w-24 h-24 text-gray-400 dark:text-gray-500 mx-auto mb-6" />
+					<h3 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">No Course Themes Found</h3>
+					<p class="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">
+						It seems there are no course themes available at the moment. Please check back later or explore our exercises.
+					</p>
+					<a
+						href="/exercises"
+						class="inline-flex items-center px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors"
+					>
+						<Icon icon="mdi:weight-lifter" class="w-5 h-5 mr-2" />
+						Browse Exercises
 					</a>
-				{/each}
-			</div>
+				</div>
+			{/if}
 		</section>
-	{/if}
+	</div>
 </div>
 
 <style>
-	.courses-discovery-hub {
-		min-height: 100vh;
-	}
+	/* Additional global styles or component-specific overrides if needed */
 </style>

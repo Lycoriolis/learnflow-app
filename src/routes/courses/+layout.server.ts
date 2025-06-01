@@ -1,68 +1,81 @@
 import type { LayoutServerLoad } from './$types';
-import { getCourseById, getLessonsForCourse } from '$lib/server/contentService';
+import { getContentNodeByPath, getLessonsForCourse, ServerContentNode } from '$lib/server/contentService';
 import path from 'path';
 
-export const load: LayoutServerLoad = async ({ params, route }) => {
-    // params.slug will be either:
-    // - "courseOrThemeSlug" (from /courses/[slug])
-    // - "courseDir/subDir/lessonSlug" (from /courses/[...slug])
-    
-    let currentCourseId: string | null = null;
-    let currentCourseOverview: any | null = null;
-    let siblingLessons: any[] = [];
+export const load: LayoutServerLoad = async ({ params, url }) => {
+    // params.slug is the captured part from `[...slug]`.
+    // e.g., if URL is /courses/maths/algebra/intro, params.slug is "maths/algebra/intro"
+    const slug = params.slug;
+
+    let currentCourseOverview: ServerContentNode | null = null;
+    let siblingLessons: ServerContentNode[] = [];
     let currentLessonId: string | null = null;
+    let parentTheme: ServerContentNode | null = null;
+    let breadcrumbPathNodes: ServerContentNode[] = []; // For storing nodes used in breadcrumbs
 
-    const slugParts = params.slug?.split('/') || [];
+    if (!slug) {
+        // This case should ideally not be hit if all dynamic course routes are under [...slug]
+        // and this layout is specific to those.
+        // If on /courses root, this layout server load might not even run or slug would be undefined.
+        return {
+            currentCourseOverview: null,
+            siblingLessons: [],
+            currentLessonId: null,
+            currentPathSlug: slug,
+            parentTheme: null,
+            breadcrumbPathNodes: []
+        };
+    }
 
-    if (route.id === '/courses/[slug]') {
-        // This is an overview page (theme or course)
-        currentCourseId = params.slug || null; // The slug itself is the ID of the overview
-        if (currentCourseId) {
-            currentCourseOverview = await getCourseById(currentCourseId);
-            if (currentCourseOverview?.contentType === 'course_overview') {
-                // If it's a course overview, its lessons are its siblings for this context
-                const courseDirName = currentCourseOverview.filePath ? path.basename(path.dirname(currentCourseOverview.filePath)) : (currentCourseId || '').replace(/_index$/, '');
-                siblingLessons = await getLessonsForCourse(courseDirName, currentCourseOverview);
+    const slugParts = slug.split('/');
+    const fullContentPath = `/courses/${slug}`;
+
+    // Try to load the current node itself to determine its type
+    const currentNode = await getContentNodeByPath('courses', fullContentPath);
+
+    if (currentNode) {
+        breadcrumbPathNodes.push(currentNode); // Add current node to breadcrumbs path
+
+        if (currentNode.contentType && currentNode.contentType.startsWith('lesson_')) {
+            // Current page is a lesson. Need to find its parent course.
+            if (slugParts.length >= 2) {
+                const coursePath = `/courses/${slugParts.slice(0, -1).join('/')}`;
+                currentCourseOverview = await getContentNodeByPath('courses', coursePath);
+                currentLessonId = currentNode.id; // or slugParts[slugParts.length - 1];
             }
+        } else if (currentNode.contentType === 'course_overview') {
+            // Current page is a course overview.
+            currentCourseOverview = currentNode;
         }
-    } else if (route.id === '/courses/[...slug]') {
-        // This is a lesson page or a deeply nested overview page
-        if (slugParts.length > 0) {
-            // Assume the first part is the theme, second is the course directory
-            // e.g., maths/mpsi-maths/lesson-name
-            // We need to determine the ID of the parent course overview
-            let courseDirName = '';
-            if (slugParts.length >= 2) { // e.g. maths/mpsi-maths
-                courseDirName = slugParts[1]; // mpsi-maths
-                const courseOverviewId = `${courseDirName}_index`; // Standard ID for _index.mdx
-                currentCourseOverview = await getCourseById(courseOverviewId);
-                if (currentCourseOverview) {
-                    currentCourseId = currentCourseOverview.id;
-                    siblingLessons = await getLessonsForCourse(courseDirName, currentCourseOverview);
-                } else {
-                     // Fallback if _index.mdx doesn't follow pattern, try custom ID if courseDirName is the ID
-                     currentCourseOverview = await getCourseById(courseDirName);
-                     if (currentCourseOverview && currentCourseOverview.contentType === 'course_overview') {
-                        currentCourseId = currentCourseOverview.id;
-                        // If it's a single file course overview, its "directory" might be its own ID
-                        const dirContext = currentCourseOverview.filePath ? path.basename(path.dirname(currentCourseOverview.filePath)) : courseDirName;
-                        siblingLessons = await getLessonsForCourse(dirContext, currentCourseOverview);
-                     }
-                }
-            }
-            if (slugParts.length > 2) { // It's likely a lesson
-                currentLessonId = slugParts[slugParts.length -1];
-            }
-        }
+        // If it's a theme_overview, currentCourseOverview remains null, sidebar won't show lessons.
     }
     
-    // console.log('[courses/+layout.server.ts] Data:', { currentCourseId, currentCourseOverviewTitle: currentCourseOverview?.title, numSiblingLessons: siblingLessons.length, currentLessonId });
+    if (currentCourseOverview && currentCourseOverview.contentType === 'course_overview') {
+        // Fetch lessons for the current course
+        // getLessonsForCourse expects parentNodeData to have .filePath and .children
+        // currentCourseOverview from getContentNodeByPath should have these.
+        siblingLessons = await getLessonsForCourse(currentCourseOverview.contentPath, currentCourseOverview);
+
+        // Try to get the parent theme for breadcrumbs
+        if (slugParts.length > 1) {
+            const themePath = `/courses/${slugParts[0]}`;
+            parentTheme = await getContentNodeByPath('courses', themePath);
+            if (parentTheme) breadcrumbPathNodes.unshift(parentTheme);
+        }
+    } else if (currentNode?.contentType === 'theme_overview') {
+        parentTheme = currentNode; // The theme itself is the main "parent" here for breadcrumb start
+    }
+
+
+    // console.log(`[courses/+layout.server.ts] Slug: ${slug}, Current Course: ${currentCourseOverview?.title}, Lessons: ${siblingLessons.length}, Current Lesson: ${currentLessonId}, Theme: ${parentTheme?.title}`);
 
     return {
-        currentCourseId,
-        currentCourseOverview, // Contains title, etc. of the course
-        siblingLessons,        // List of all lessons in the current course
-        currentLessonId,       // ID of the currently viewed lesson, if applicable
-        currentPathSlug: params.slug // The full slug from the URL
+        currentCourseOverview, // Course whose lessons are in sidebar (null if on theme page)
+        siblingLessons,        // Lessons for the sidebar
+        currentLessonId,       // ID of the active lesson (null if on course/theme overview)
+        currentPathSlug: slug, // The dynamic part of the path (e.g., "maths/algebra/intro")
+        parentTheme,           // Parent theme of the current course/lesson
+        breadcrumbPathNodes,   // Nodes for breadcrumbs, might be incomplete, needs JS processing too
+        currentContentNode: currentNode // Pass the current node for breadcrumb construction
     };
 };
