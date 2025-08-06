@@ -130,3 +130,37 @@ $$\exists \varepsilon > 0, \forall \eta > 0, \exists x \in \mathbb{R}, |x - a| <
 6. **Exercice difficile** : Soit $E$ un ensemble infini. Montrer qu'il existe une injection de $E$ dans $E \times E$.
 7. **Exercice difficile** : Montrer que tout ordre total sur $\mathbb{N}$ est isomorphe à l'ordre usuel.
 
+## Exercices Corrigés
+
+### Exercice 1 : Négation d'une implication
+
+**Énoncé :** Montrer que la négation de $P \Rightarrow Q$ est logiquement équivalente à $P \wedge \neg Q$.
+
+**Solution :**
+La table de vérité pour $P \Rightarrow Q$ est :
+
+| P | Q | P ⇒ Q | ¬(P ⇒ Q) | P ∧ ¬Q |
+|---|---|-------|----------|--------|
+| V | V |   V   |     F    |    F   |
+| V | F |   F   |     V    |    V   |
+| F | V |   V   |     F    |    F   |
+| F | F |   V   |     F    |    F   |
+
+On observe que les colonnes ¬(P ⇒ Q) et P ∧ ¬Q sont identiques, ce qui prouve l'équivalence.
+
+### Exercice 2 : Raisonnement par l'absurde
+
+**Énoncé :** Montrer que $\sqrt{2}$ est irrationnel.
+
+**Solution :**
+Supposons par l'absurde que $\sqrt{2}$ est rationnel. Alors, il existe deux entiers $p$ et $q$ (avec $q \neq 0$) tels que $\sqrt{2} = \frac{p}{q}$, où la fraction est irréductible.
+En élevant au carré, on obtient $2 = \frac{p^2}{q^2}$, soit $p^2 = 2q^2$.
+Cela signifie que $p^2$ est pair, donc $p$ est aussi pair. On peut écrire $p = 2k$ pour un certain entier $k$.
+En substituant, on a $(2k)^2 = 2q^2$, soit $4k^2 = 2q^2$, ce qui donne $q^2 = 2k^2$.
+Cela signifie que $q^2$ est pair, donc $q$ est aussi pair.
+Si $p$ et $q$ sont tous les deux pairs, la fraction $\frac{p}{q}$ n'est pas irréductible, ce qui contredit notre hypothèse de départ.
+Donc, $\sqrt{2}$ est irrationnel.
+
+## Conclusion
+
+Ce chapitre a introduit les outils fondamentaux de la logique et du raisonnement mathématique. La maîtrise de ces concepts est essentielle pour aborder les domaines plus avancés des mathématiques. Assurez-vous de bien comprendre les connecteurs logiques, les quantificateurs, les différents types de raisonnement, ainsi que le vocabulaire de base de la théorie des ensembles.

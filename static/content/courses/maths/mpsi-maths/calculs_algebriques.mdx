@@ -183,3 +183,40 @@ $$
 - On trouve $z = 1/10$, $y = -11/5$, $x = 51/10$.
 
 ---
+
+## Exercices Corrigés
+
+### Exercice 1 : Somme des premiers entiers
+
+**Énoncé :** Calculer la somme $S_n = \sum_{k=1}^n k$.
+
+**Solution :**
+On utilise l'astuce de la somme télescopique :
+$$
+\sum_{k=1}^n ((k+1)^2 - k^2) = (n+1)^2 - 1^2 = n^2 + 2n.
+$$
+D'un autre côté, $(k+1)^2 - k^2 = 2k+1$.
+$$
+\sum_{k=1}^n (2k+1) = 2 \sum_{k=1}^n k + \sum_{k=1}^n 1 = 2S_n + n.
+$$
+En égalant les deux expressions, on a $2S_n + n = n^2 + 2n$, d'où $2S_n = n^2+n = n(n+1)$.
+Finalement, $S_n = \frac{n(n+1)}{2}$.
+
+### Exercice 2 : Formule du binôme
+
+**Énoncé :** Calculer la somme $\sum_{k=0}^n \binom{n}{k} 2^k$.
+
+**Solution :**
+On utilise la formule du binôme de Newton avec $a=2$ et $b=1$ :
+$$
+(a+b)^n = \sum_{k=0}^n \binom{n}{k} a^k b^{n-k}.
+$$
+Avec nos valeurs, on obtient :
+$$
+(2+1)^n = \sum_{k=0}^n \binom{n}{k} 2^k 1^{n-k} = \sum_{k=0}^n \binom{n}{k} 2^k.
+$$
+La somme est donc égale à $3^n$.
+
+## Conclusion
+
+Ce chapitre a couvert les techniques essentielles de calcul algébrique qui sont le fondement de nombreuses branches des mathématiques. Une bonne maîtrise des sommes, des produits et de la formule du binôme de Newton est cruciale. Les systèmes linéaires, bien qu'introduits ici, seront explorés plus en profondeur dans les chapitres ultérieurs.
