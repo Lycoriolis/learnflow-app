@@ -4,8 +4,8 @@ import { getAllCourses, getCourseCategories } from '$lib/server/contentService';
 export const load: PageServerLoad = async () => {
     try {
         const categories = await getCourseCategories();
-        // Fetch a sample of courses or featured ones for the overview page
-        const courses = (await getAllCourses()).slice(0, 10); // Example: show first 10
+        const allCourses = await getAllCourses();
+        const courses = allCourses.filter((course) => course.itemType === 'course');
 
         return {
             categories,

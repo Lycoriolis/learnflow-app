@@ -10,6 +10,45 @@
   let processedHtml = '';
   let error: string | null = null;
 
+  const htmlEntityMap: Record<string, string> = {
+    '&amp;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&quot;': '"',
+    '&#39;': "'",
+    '&nbsp;': ' '
+  };
+
+  function decodeHtmlEntities(value: string) {
+    return value.replace(/&(amp|lt|gt|quot|#39|nbsp);/g, (match) => htmlEntityMap[match] ?? match);
+  }
+
+  function sanitizeTexContent(tex: string, preserveLineBreaks = false) {
+    if (!tex) return '';
+
+    let normalized = tex
+      .replace(/<\/?p[^>]*>/gi, preserveLineBreaks ? '\n' : ' ')
+      .replace(/<\/?div[^>]*>/gi, ' ')
+      .replace(/<\/?span[^>]*>/gi, ' ')
+      .replace(/<br\s*\/?\s*>/gi, preserveLineBreaks ? '\n' : ' ');
+
+    if (preserveLineBreaks) {
+      normalized = normalized
+        .replace(/\r?\n\s*/g, '\n')
+        .replace(/\n{3,}/g, '\n\n');
+    } else {
+      normalized = normalized.replace(/\s+/g, ' ');
+    }
+
+    normalized = decodeHtmlEntities(normalized);
+
+    if (preserveLineBreaks) {
+      return normalized.trim();
+    }
+
+    return normalized.trim();
+  }
+
   // Enhanced math processing with better error handling
   async function processMathContent() {
     if (!html || isProcessing) return;
@@ -24,7 +63,7 @@
       
       // Process display math ($$...$$)
       workingHtml = workingHtml.replace(/\$\$([\s\S]*?)\$\$/g, (match, tex) => {
-        const cleanTex = tex.trim();
+        const cleanTex = sanitizeTexContent(tex, true);
         if (!cleanTex) return match;
         
         try {
@@ -57,7 +96,7 @@
       
       // Process inline math ($...$)
       workingHtml = workingHtml.replace(/\$([^$\n]+?)\$/g, (match, tex) => {
-        const cleanTex = tex.trim();
+        const cleanTex = sanitizeTexContent(tex);
         if (!cleanTex) return match;
         
         try {
@@ -86,6 +125,11 @@
         }
       });
       
+      // Remove empty paragraphs and unwrap block math injected inside paragraph tags
+      workingHtml = workingHtml
+        .replace(/<p>(\s*<div class="math-display">[\s\S]*?<\/div>)\s*<\/p>/g, '$1')
+        .replace(/<p>(?:\s|<br\s*\/?\s*>)*<\/p>/g, '');
+
       processedHtml = workingHtml;
     } catch (err) {
       console.error('Math processing error:', err);
@@ -103,6 +147,7 @@
     const mathElements = containerElement.querySelectorAll('.katex');
     mathElements.forEach((element) => {
       const htmlElement = element as HTMLElement;
+      const isInline = Boolean(htmlElement.closest('.math-inline'));
       
       // Add copy functionality
       htmlElement.addEventListener('click', async (e) => {
@@ -131,14 +176,47 @@
       // Add hover effect
       htmlElement.addEventListener('mouseenter', () => {
         htmlElement.style.cursor = 'pointer';
-        htmlElement.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
-        htmlElement.style.borderRadius = '4px';
         htmlElement.style.transition = 'all 0.2s ease';
+        if (!isInline) {
+          htmlElement.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
+          htmlElement.style.borderRadius = '4px';
+        }
       });
 
       htmlElement.addEventListener('mouseleave', () => {
-        htmlElement.style.backgroundColor = 'transparent';
+        if (!isInline) {
+          htmlElement.style.backgroundColor = 'transparent';
+        }
       });
+    });
+
+    // Remove stray block elements that KaTeX may emit inside the hidden HTML span
+    const katexHtmlFragments = containerElement.querySelectorAll('.katex-html');
+    katexHtmlFragments.forEach((fragment) => {
+      const breakRuns = fragment.querySelectorAll('p, br');
+      breakRuns.forEach((node) => {
+        if (node.nodeName === 'BR') {
+          node.remove();
+          return;
+        }
+        if (node instanceof HTMLParagraphElement) {
+          const isEmpty = !node.textContent?.trim() && node.children.length === 0;
+          if (isEmpty) {
+            node.remove();
+            return;
+          }
+        }
+      });
+
+      const paragraphs = fragment.querySelectorAll('p');
+      paragraphs.forEach((paragraph) => {
+        const replacement = document.createDocumentFragment();
+        while (paragraph.firstChild) {
+          replacement.appendChild(paragraph.firstChild);
+        }
+        paragraph.replaceWith(replacement);
+      });
+      fragment.normalize();
     });
 
     // Handle display math centering and spacing
@@ -289,10 +367,15 @@
   }
 
   /* Hover effects */
-  .enhanced-math-content :global(.katex:hover) {
+  .enhanced-math-content :global(.math-display .katex:hover) {
     background-color: rgba(59, 130, 246, 0.05);
     border-radius: 4px;
     transition: all 0.2s ease;
+  }
+
+  .enhanced-math-content :global(.math-inline .katex) {
+    background-color: transparent !important;
+    border-radius: 0;
   }
 
   /* Selection styling */
