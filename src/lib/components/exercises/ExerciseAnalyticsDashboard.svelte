@@ -284,11 +284,11 @@
         </div>
       </div>
 
-      <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-4 text-white">
+      <div class="bg-gradient-to-r from-red-500 to-red-600 rounded-lg p-4 text-white">
         <div class="flex items-center">
           <Icon icon="mdi:bookmark" class="h-8 w-8 opacity-80" />
           <div class="ml-3">
-            <p class="text-purple-100 text-sm">Bookmarks</p>
+            <p class="text-red-100 text-sm">Bookmarks</p>
             <p class="text-2xl font-bold">{analytics.bookmarkCount}</p>
           </div>
         </div>

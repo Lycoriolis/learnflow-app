@@ -18,7 +18,7 @@
     { id: 'timer', name: 'Timer', icon: 'fa-stopwatch', bgClass: 'bg-indigo-800', textClass: 'text-indigo-100', hoverClass: 'hover:bg-indigo-700' },
     { id: 'todo', name: 'Todo', icon: 'fa-list-check', bgClass: 'bg-green-800', textClass: 'text-green-100', hoverClass: 'hover:bg-green-700' },
     { id: 'notes', name: 'Notes', icon: 'fa-sticky-note', bgClass: 'bg-yellow-800', textClass: 'text-yellow-100', hoverClass: 'hover:bg-yellow-700' },
-    { id: 'calculator', name: 'Calculator', icon: 'fa-calculator', bgClass: 'bg-purple-800', textClass: 'text-purple-100', hoverClass: 'hover:bg-purple-700' },
+    { id: 'calculator', name: 'Calculator', icon: 'fa-calculator', bgClass: 'bg-red-800', textClass: 'text-red-100', hoverClass: 'hover:bg-red-700' },
     { id: 'flashcards', name: 'Flashcards', icon: 'fa-layer-group', bgClass: 'bg-orange-800', textClass: 'text-orange-100', hoverClass: 'hover:bg-orange-700' },
     { id: 'dictionary', name: 'Dictionary', icon: 'fa-book', bgClass: 'bg-cyan-800', textClass: 'text-cyan-100', hoverClass: 'hover:bg-cyan-700' }
   ];

@@ -183,17 +183,17 @@
   style="transform-style: preserve-3d;"
 >
   <!-- Gradient background on hover -->
-  <span class="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-teal-500 opacity-0 group-hover/card:opacity-75 transition-opacity duration-500 blur-sm group-hover/card:blur-md"></span>
+  <span class="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-indigo-500 via-red-500 to-teal-500 opacity-0 group-hover/card:opacity-75 transition-opacity duration-500 blur-sm group-hover/card:blur-md"></span>
   <span class="absolute inset-0 rounded-xl bg-white dark:bg-gray-800"></span>
   
   <!-- Content overlay with 3D effect -->
-  <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/5 via-purple-600/5 to-teal-600/5 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 ease-in-out"></div>
+  <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/5 via-red-600/5 to-teal-600/5 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 ease-in-out"></div>
 
   <!-- Progress Bar -->
   {#if showProgress && progress > 0}
     <div class="absolute top-0 left-0 right-0 h-1 bg-gray-200 dark:bg-gray-700 rounded-t-xl overflow-hidden">
       <div 
-        class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-300" 
+        class="h-full bg-gradient-to-r from-indigo-500 to-red-500 transition-all duration-300" 
         style="width: {progress}%"
         role="progressbar"
         aria-valuenow={progress}
@@ -209,7 +209,7 @@
     <div class="flex items-start space-x-4 mb-4">
       <!-- Icon -->
       <div class="flex-shrink-0">
-        <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg group-hover/card:shadow-indigo-400/60 transition-all duration-500 transform group-hover/card:scale-110 group-hover/card:rotate-3">
+        <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg group-hover/card:shadow-indigo-400/60 transition-all duration-500 transform group-hover/card:scale-110 group-hover/card:rotate-3">
           <Icon 
             icon={exercise.itemType === 'course' || exercise.id?.endsWith('_index') ? 'mdi:book-open-page-variant' : 'mdi:pencil-box'} 
             class="w-6 h-6 text-white transition-transform duration-300 group-hover/card:scale-110" 

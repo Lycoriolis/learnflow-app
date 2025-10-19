@@ -15,7 +15,7 @@
     blue: 'text-blue-500',
     orange: 'text-orange-500',
     green: 'text-green-500',
-    purple: 'text-purple-500',
+    purple: 'text-red-500',
     indigo: 'text-indigo-500',
     white: 'text-white'
   };

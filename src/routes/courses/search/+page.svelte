@@ -218,7 +218,7 @@
 <div class="advanced-search min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-50 p-6 sm:p-8">
 	<!-- Header -->
 	<header class="max-w-7xl mx-auto mb-8">
-		<h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400 mb-4">
+		<h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-indigo-400 mb-4">
 			Advanced Search
 		</h1>
 		<p class="text-slate-400 text-lg">
@@ -356,14 +356,14 @@
 						<input 
 							bind:value={query}
 							placeholder="Search courses, content, tags..."
-							class="w-full px-6 py-4 pl-14 bg-slate-800/50 border border-slate-600 rounded-xl text-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+							class="w-full px-6 py-4 pl-14 bg-slate-800/50 border border-slate-600 rounded-xl text-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
 						/>
 						<svg class="absolute left-5 top-1/2 transform -translate-y-1/2 h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
 						</svg>
 						{#if isSearching}
 							<div class="absolute right-4 top-1/2 transform -translate-y-1/2">
-								<div class="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div>
+								<div class="animate-spin rounded-full h-6 w-6 border-b-2 border-red-500"></div>
 							</div>
 						{/if}
 					</div>
@@ -420,7 +420,7 @@
 						<select 
 							bind:value={sortBy}
 							on:change={performSearch}
-							class="px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+							class="px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
 						>
 							<option value="relevance">Most Relevant</option>
 							<option value="title">Alphabetical</option>
@@ -474,7 +474,7 @@
 							</p>
 							<button 
 								on:click={clearFilters}
-								class="px-4 py-2 bg-purple-600 hover:bg-purple-500 rounded-lg font-medium transition-colors"
+								class="px-4 py-2 bg-red-600 hover:bg-red-500 rounded-lg font-medium transition-colors"
 							>
 								Clear Filters
 							</button>

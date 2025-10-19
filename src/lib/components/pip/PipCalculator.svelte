@@ -81,7 +81,7 @@
 </script>
 
 <div class="bg-gray-700 p-2 rounded-lg">
-  <h4 class="text-xs font-medium text-purple-300 uppercase mb-2">Calculator</h4>
+  <h4 class="text-xs font-medium text-red-300 uppercase mb-2">Calculator</h4>
   <input
     type="text"
     class="w-full text-right mb-2 px-2 py-1 border-0 focus:ring-0 text-xl font-mono bg-gray-800 text-gray-100 rounded-md"
@@ -104,7 +104,7 @@
         }}
         class="p-2 rounded text-sm font-medium transition duration-150 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-gray-700
                {isZero ? 'col-span-2' : ''}
-               {isOperator ? 'bg-purple-600 hover:bg-purple-700 text-white focus:ring-purple-400' : ''}
+               {isOperator ? 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-400' : ''}
                {isClear ? 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-400' : ''}
                {!isOperator && !isClear ? 'bg-gray-600 hover:bg-gray-500 text-gray-100 focus:ring-gray-400' : ''}"
       >

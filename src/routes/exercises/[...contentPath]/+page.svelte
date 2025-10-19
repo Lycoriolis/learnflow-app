@@ -436,7 +436,7 @@
 {#if type === 'exercise' && progress > 0}
     <div class="fixed top-0 left-0 w-full h-1 bg-gray-200 dark:bg-gray-700 z-50 transition-opacity duration-300" class:opacity-100={isScrolled} class:opacity-0={!isScrolled}>
         <div 
-            class="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-500 ease-out shadow-lg"
+            class="h-full bg-gradient-to-r from-blue-500 via-red-500 to-pink-500 transition-all duration-500 ease-out shadow-lg"
             style="width: {progress}%"
             aria-label="Reading progress: {progress}%"
         ></div>
@@ -593,10 +593,10 @@
                 <!-- Main Content -->
                 <main class="exercise-main-content">
                     <article class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
-                        <header class="relative p-8 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-50 via-white to-purple-50 dark:from-gray-800 dark:via-gray-800 dark:to-gray-800">
+                        <header class="relative p-8 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-50 via-white to-red-50 dark:from-gray-800 dark:via-gray-800 dark:to-gray-800">
                             <!-- Decorative Background Pattern -->
                             <div class="absolute inset-0 opacity-5">
-                                <div class="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-600"></div>
+                                <div class="absolute inset-0 bg-gradient-to-br from-blue-400 to-red-600"></div>
                                 <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
                                     <defs>
                                         <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
@@ -611,7 +611,7 @@
                                 <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-6">
                                     <div class="flex-1">
                                         <div class="flex items-center gap-3 mb-4">
-                                            <div class="w-3 h-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"></div>
+                                            <div class="w-3 h-3 bg-gradient-to-r from-blue-500 to-red-600 rounded-full"></div>
                                             <span class="text-sm font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wide">Exercise</span>
                                         </div>
                                         <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
@@ -668,7 +668,7 @@
                                                 on:click={() => showTableOfContents = !showTableOfContents}
                                                 aria-label="Toggle table of contents"
                                             >
-                                                <svg class="w-5 h-5 text-gray-400 group-hover:text-purple-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg class="w-5 h-5 text-gray-400 group-hover:text-red-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
                                                 </svg>
                                             </button>
@@ -695,7 +695,7 @@
                                         </span>
                                     {/if}
                                     {#if estimatedReadTime > 0}
-                                        <span class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800 text-purple-800 dark:text-purple-200 px-4 py-2 rounded-full font-medium transition-all duration-200 hover:shadow-md hover:scale-105">
+                                        <span class="inline-flex items-center gap-2 bg-gradient-to-r from-red-100 to-red-200 dark:from-red-900 dark:to-red-800 text-red-800 dark:text-red-200 px-4 py-2 rounded-full font-medium transition-all duration-200 hover:shadow-md hover:scale-105">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                                             </svg>
@@ -722,7 +722,7 @@
                                 
                                 <!-- Progress Section -->
                                 {#if progress > 0}
-                                    <div class="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+                                    <div class="mt-6 p-4 bg-gradient-to-r from-blue-50 to-red-50 dark:from-blue-900/20 dark:to-red-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
                                         <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-3">
                                             <div class="flex items-center gap-2">
                                                 <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -744,7 +744,7 @@
                                         </div>
                                         <div class="relative w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                                             <div 
-                                                class="absolute inset-y-0 left-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full transition-all duration-500 ease-out"
+                                                class="absolute inset-y-0 left-0 bg-gradient-to-r from-blue-500 via-red-500 to-pink-500 rounded-full transition-all duration-500 ease-out"
                                                 style="width: {progress}%"
                                             >
                                                 <div class="absolute inset-0 bg-white/20"></div>
@@ -875,8 +875,8 @@
                             <!-- Difficulty Distribution -->
                             <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                                 <div class="flex items-center mb-3">
-                                    <div class="p-3 rounded-lg bg-purple-100 dark:bg-purple-900">
-                                        <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="p-3 rounded-lg bg-red-100 dark:bg-red-900">
+                                        <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                                         </svg>
                                     </div>

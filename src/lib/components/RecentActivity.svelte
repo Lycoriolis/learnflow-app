@@ -51,7 +51,7 @@
       case 'view_course': return 'blue';
       case 'start_lesson': return 'yellow';
       case 'complete_lesson': return 'green';
-      case 'flashcard_review': return 'purple';
+      case 'flashcard_review': return 'red';
       default: return 'gray';
     }
   }

@@ -1,5 +1,5 @@
 <!-- src/lib/components/GeneralWelcome.svelte -->
-<div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-lg shadow-xl p-8 my-6">
+<div class="bg-gradient-to-r from-indigo-500 via-red-500 to-pink-500 text-white rounded-lg shadow-xl p-8 my-6">
   <h1 class="text-4xl font-bold mb-4">Welcome to LearnFlow!</h1>
   <p class="text-xl mb-6">Your personalized journey to knowledge starts here. Log in or sign up to track your progress, access exclusive content, and connect with fellow learners.</p>
   <p class="text-lg">Discover courses, tackle exercises, and watch your skills grow.</p>

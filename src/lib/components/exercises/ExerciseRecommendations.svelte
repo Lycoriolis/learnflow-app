@@ -108,7 +108,7 @@
   }
 
   function getReasonColor(reason: string): string {
-    if (reason.includes('Personalized')) return 'text-purple-600 dark:text-purple-400';
+    if (reason.includes('Personalized')) return 'text-red-600 dark:text-red-400';
     if (reason.includes('recently worked')) return 'text-blue-600 dark:text-blue-400';
     if (reason.includes('similar')) return 'text-green-600 dark:text-green-400';
     if (reason.includes('popular')) return 'text-orange-600 dark:text-orange-400';

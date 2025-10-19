@@ -2,7 +2,6 @@
   import { onMount, onDestroy } from 'svelte';
   import { tick } from 'svelte';
   import { logStart, logEnd, logEvent } from '$lib/services/activityService';
-  import ToolLayout from '$lib/components/tools/ToolLayout.svelte';
 
   // Pomodoro settings
   const WORK_MIN = 25;
@@ -100,142 +99,187 @@
   <title>Pomodoro Timer | LearnFlow</title>
 </svelte:head>
 
-<ToolLayout
-  title="Pomodoro Timer"
-  icon="fa-clock"
-  description="Stay focused with structured work and recovery intervals tailored for deep study time."
-  accent="from-rose-500 via-orange-500 to-amber-500"
-  sidebarLabel="Session overview and tips"
-  mainLabel="Pomodoro timer controls"
-  bodyClass="md:h-[75vh]"
-  sidebarClass="w-full md:w-1/3 bg-gradient-to-br from-rose-50/80 via-orange-50/60 to-white dark:from-rose-950/30 dark:via-orange-900/20 dark:to-gray-900 overflow-y-auto"
-  mainClass="bg-white dark:bg-gray-900 flex items-center justify-center"
->
-  <div slot="sidebar" class="h-full space-y-4 p-4 text-sm">
-    <div class="rounded-xl border border-rose-200/60 dark:border-rose-900/40 bg-white/65 dark:bg-gray-900/55 backdrop-blur px-4 py-3.5 shadow-sm">
-      <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-rose-600 dark:text-rose-300">Session Overview</h2>
-      <dl class="mt-3 space-y-1.5 text-xs text-gray-700 dark:text-gray-300">
-        <div class="flex justify-between"><dt>Focus Length</dt><dd>{WORK_MIN} min</dd></div>
-        <div class="flex justify-between"><dt>Short Break</dt><dd>{BREAK_MIN} min</dd></div>
-        <div class="flex justify-between"><dt>Long Break</dt><dd>{LONG_BREAK_MIN} min</dd></div>
-        <div class="flex justify-between"><dt>Cycles per Set</dt><dd>{CYCLES_BEFORE_LONG}</dd></div>
-      </dl>
-    </div>
-    <div class="rounded-xl bg-gradient-to-br from-rose-500 via-orange-500 to-amber-500 text-white px-4 py-3.5 shadow-md">
-      <h2 class="text-xs font-semibold uppercase tracking-[0.18em]">Live Progress</h2>
-      <div class="mt-3 grid grid-cols-2 gap-3 text-xs">
-        <div>
-          <p class="text-[0.65rem] uppercase text-white/70">Current Phase</p>
-          <p class="mt-1 text-base font-semibold">{phaseLabel}</p>
-        </div>
-        <div>
-          <p class="text-[0.65rem] uppercase text-white/70">Up Next</p>
-          <p class="mt-1 text-base font-semibold">{upcomingLabel}</p>
-        </div>
-        <div>
-          <p class="text-[0.65rem] uppercase text-white/70">Cycle</p>
-          <p class="mt-1 text-base font-semibold">{cycle}</p>
-        </div>
-        <div>
-          <p class="text-[0.65rem] uppercase text-white/70">Completed Sets</p>
-          <p class="mt-1 text-base font-semibold">{completedCycles}</p>
-        </div>
+<div class="flex flex-col h-[85vh] max-w-7xl mx-auto bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden mt-6 border border-gray-200 dark:border-gray-800">
+  <!-- Header -->
+  <div class="bg-gradient-to-br from-rose-50/80 via-orange-50/50 dark:from-rose-950/30 dark:via-orange-950/20 to-white dark:to-gray-900 p-6 border-b border-gray-200 dark:border-gray-800">
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-orange-600 dark:from-rose-400 dark:to-orange-400 flex items-center">
+        <i class="fas fa-clock mr-3"></i> Pomodoro Timer
+      </h1>
+      <div class="flex gap-2">
+        <button 
+          class="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-700 hover:to-orange-700 text-white shadow-md transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-opacity-50"
+          on:click={startTimer}
+          disabled={isRunning}
+          title="Start focus session"
+          aria-label="Start focus session"
+        >
+          <i class="fas fa-play"></i>
+        </button>
+        <button 
+          class="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white shadow-md transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
+          on:click={pauseTimer}
+          disabled={!isRunning}
+          title="Pause timer"
+          aria-label="Pause timer"
+        >
+          <i class="fas fa-pause"></i>
+        </button>
+        <button 
+          class="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white shadow-md transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50"
+          on:click={resetTimer}
+          title="Reset timer"
+          aria-label="Reset timer"
+        >
+          <i class="fas fa-rotate-right"></i>
+        </button>
       </div>
     </div>
-    <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white/70 dark:bg-gray-900/65 backdrop-blur px-4 py-3.5 text-xs text-gray-600 dark:text-gray-300 space-y-2.5">
-      <h2 class="text-sm font-semibold text-gray-800 dark:text-gray-200">Focus Tips</h2>
-      <p class="leading-relaxed">
-        Stack four focus runs back-to-back. Pause only during breaks to reinforce your focus rhythm.
-      </p>
-      <ul class="space-y-2">
-        <li class="flex items-start gap-2"><i class="fas fa-check-circle mt-0.5 text-rose-500"></i>Prep a single task per session.</li>
-        <li class="flex items-start gap-2"><i class="fas fa-check-circle mt-0.5 text-rose-500"></i>Stretch or hydrate on long breaks.</li>
-        <li class="flex items-start gap-2"><i class="fas fa-check-circle mt-0.5 text-rose-500"></i>Log completions to build momentum.</li>
-      </ul>
-    </div>
+    <p class="text-gray-600 dark:text-gray-300 mt-2">Stay focused with structured work and recovery intervals tailored for deep study time</p>
   </div>
 
-  <div class="timer-container">
-  <div class="timer-layout">
-      <div
-        class="timer-surface"
-        role="timer"
-        aria-live="polite"
-        aria-label={`${phaseLabel} remaining ${timeStr}`}
-      >
-        <div class="timer-ring" style={`--progress:${progressRatio}`}></div>
-        <div class="timer-inner">
-          <span class="timer-phase" data-state={isOnBreak ? 'break' : 'focus'}>{phaseLabel}</span>
-          <span class="timer-time">{timeStr}</span>
-          <span class="timer-next">Next • {upcomingLabel}</span>
-        </div>
-        {#if showConfetti}
-          <div class="timer-confetti" aria-hidden="true">
-            <span>✨</span>
-            <span>🎉</span>
-            <span>🌟</span>
+  <!-- Main Content -->
+  <div class="flex-1 overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-3 h-full gap-0">
+      <!-- Timer Section -->
+      <div class="lg:col-span-2 p-6 bg-gradient-to-br from-white via-rose-50/30 dark:from-gray-900 dark:via-rose-950/10 to-orange-50/20 dark:to-orange-950/5 flex items-center justify-center">
+        <div class="timer-container">
+          <div class="timer-layout">
+            <div
+              class="timer-surface"
+              role="timer"
+              aria-live="polite"
+              aria-label={`${phaseLabel} remaining ${timeStr}`}
+            >
+              <div class="timer-ring" style={`--progress:${progressRatio}`}></div>
+              <div class="timer-inner">
+                <span class="timer-phase" data-state={isOnBreak ? 'break' : 'focus'}>{phaseLabel}</span>
+                <span class="timer-time">{timeStr}</span>
+                <span class="timer-next">Next • {upcomingLabel}</span>
+              </div>
+              {#if showConfetti}
+                <div class="timer-confetti" aria-hidden="true">
+                  <span>✨</span>
+                  <span>🎉</span>
+                  <span>🌟</span>
+                </div>
+              {/if}
+            </div>
+
+            <div class="timer-details">
+              <h2 class="timer-details__title">Session snapshot</h2>
+              <div class="timer-details__grid">
+                <div class="timer-stat">
+                  <span class="timer-stat__label">Cycle</span>
+                  <span class="timer-stat__value">{cycle}</span>
+                  <span class="timer-stat__hint">Focus blocks completed</span>
+                </div>
+                <div class="timer-stat">
+                  <span class="timer-stat__label">Completed sets</span>
+                  <span class="timer-stat__value">{completedCycles}</span>
+                  <span class="timer-stat__hint">Full focus rounds</span>
+                </div>
+                <div class="timer-stat">
+                  <span class="timer-stat__label">Mode</span>
+                  <span class="timer-stat__value" data-state={isOnBreak ? 'break' : 'focus'}>{isOnBreak ? 'Recovery Break' : 'Deep Focus'}</span>
+                  <span class="timer-stat__hint">Current session type</span>
+                </div>
+                <div class="timer-stat">
+                  <span class="timer-stat__label">Status</span>
+                  <span class="timer-stat__value">{isRunning ? 'Running' : 'Paused'}</span>
+                  <span class="timer-stat__hint">Control state</span>
+                </div>
+              </div>
+            </div>
           </div>
-        {/if}
+
+          <div class="timer-footnote">
+            Stay focused! Every {CYCLES_BEFORE_LONG} focus runs unlock a longer recovery break. Take a moment to note what you accomplished before you switch contexts.
+          </div>
+        </div>
       </div>
 
-  <div class="timer-details">
-        <h2 class="timer-details__title">Session snapshot</h2>
-        <div class="timer-details__grid">
-          <div class="timer-stat">
-            <span class="timer-stat__label">Cycle</span>
-            <span class="timer-stat__value">{cycle}</span>
-            <span class="timer-stat__hint">Focus blocks completed</span>
+      <!-- Sidebar Section -->
+      <div class="lg:col-span-1 p-6 bg-gradient-to-br from-rose-50/50 via-orange-50/30 dark:from-rose-950/20 dark:via-orange-950/10 to-white dark:to-gray-900 border-l border-gray-200 dark:border-gray-800 overflow-y-auto">
+        <div class="space-y-6">
+          <!-- Session Overview -->
+          <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+            <h2 class="text-sm font-semibold uppercase tracking-[0.18em] text-rose-600 dark:text-rose-300 mb-4 flex items-center">
+              <i class="fas fa-info-circle mr-2"></i> Session Overview
+            </h2>
+            <dl class="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+              <div class="flex justify-between">
+                <dt>Focus Length</dt>
+                <dd class="font-semibold">{WORK_MIN} min</dd>
+              </div>
+              <div class="flex justify-between">
+                <dt>Short Break</dt>
+                <dd class="font-semibold">{BREAK_MIN} min</dd>
+              </div>
+              <div class="flex justify-between">
+                <dt>Long Break</dt>
+                <dd class="font-semibold">{LONG_BREAK_MIN} min</dd>
+              </div>
+              <div class="flex justify-between">
+                <dt>Cycles per Set</dt>
+                <dd class="font-semibold">{CYCLES_BEFORE_LONG}</dd>
+              </div>
+            </dl>
           </div>
-          <div class="timer-stat">
-            <span class="timer-stat__label">Completed sets</span>
-            <span class="timer-stat__value">{completedCycles}</span>
-            <span class="timer-stat__hint">Full focus rounds</span>
+
+          <!-- Live Progress -->
+          <div class="bg-gradient-to-br from-rose-500 via-orange-500 to-amber-500 text-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-sm font-semibold uppercase tracking-[0.18em] mb-4 flex items-center">
+              <i class="fas fa-chart-line mr-2"></i> Live Progress
+            </h2>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p class="text-xs uppercase text-white/70">Current Phase</p>
+                <p class="mt-1 text-base font-semibold">{phaseLabel}</p>
+              </div>
+              <div>
+                <p class="text-xs uppercase text-white/70">Up Next</p>
+                <p class="mt-1 text-base font-semibold">{upcomingLabel}</p>
+              </div>
+              <div>
+                <p class="text-xs uppercase text-white/70">Cycle</p>
+                <p class="mt-1 text-base font-semibold">{cycle}</p>
+              </div>
+              <div>
+                <p class="text-xs uppercase text-white/70">Completed Sets</p>
+                <p class="mt-1 text-base font-semibold">{completedCycles}</p>
+              </div>
+            </div>
           </div>
-          <div class="timer-stat">
-            <span class="timer-stat__label">Mode</span>
-            <span class="timer-stat__value" data-state={isOnBreak ? 'break' : 'focus'}>{isOnBreak ? 'Recovery Break' : 'Deep Focus'}</span>
-            <span class="timer-stat__hint">Current session type</span>
-          </div>
-          <div class="timer-stat">
-            <span class="timer-stat__label">Status</span>
-            <span class="timer-stat__value">{isRunning ? 'Running' : 'Paused'}</span>
-            <span class="timer-stat__hint">Control state</span>
+
+          <!-- Focus Tips -->
+          <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+              <i class="fas fa-lightbulb mr-2 text-yellow-500"></i> Focus Tips
+            </h2>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+              Stack four focus runs back-to-back. Pause only during breaks to reinforce your focus rhythm.
+            </p>
+            <ul class="space-y-3 text-sm">
+              <li class="flex items-start gap-3">
+                <i class="fas fa-check-circle mt-0.5 text-rose-500 flex-shrink-0"></i>
+                <span>Prep a single task per session.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i class="fas fa-check-circle mt-0.5 text-rose-500 flex-shrink-0"></i>
+                <span>Stretch or hydrate on long breaks.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <i class="fas fa-check-circle mt-0.5 text-rose-500 flex-shrink-0"></i>
+                <span>Log completions to build momentum.</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
-    </div>
-
-  <div class="timer-controls">
-      <button
-        class="timer-button timer-button--primary"
-        on:click={startTimer}
-        disabled={isRunning}
-      >
-        <i class="fas fa-play"></i>
-        Start focus
-      </button>
-      <button
-        class="timer-button timer-button--secondary"
-        on:click={pauseTimer}
-        disabled={!isRunning}
-      >
-        <i class="fas fa-pause"></i>
-        Pause
-      </button>
-      <button
-        class="timer-button"
-        on:click={resetTimer}
-      >
-        <i class="fas fa-rotate-right"></i>
-        Reset
-      </button>
-    </div>
-
-  <div class="timer-footnote">
-      Stay focused! Every {CYCLES_BEFORE_LONG} focus runs unlock a longer recovery break. Take a moment to note what you accomplished before you switch contexts.
     </div>
   </div>
-</ToolLayout>
+</div>
 
 <style>
   .timer-container {
@@ -439,40 +483,6 @@
 
   :global(.dark) .timer-stat__hint {
     color: rgba(148, 163, 184, 0.6);
-  }
-
-  .timer-controls {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.55rem;
-  }
-
-  .timer-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    border-radius: 999px;
-    border: 1px solid rgba(148, 163, 184, 0.3);
-    padding: 0.5rem 1.15rem;
-    font-weight: 600;
-    font-size: 0.85rem;
-    color: rgba(71, 85, 105, 0.92);
-    background: rgba(255, 255, 255, 0.78);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  }
-
-  .timer-button--primary {
-    background: linear-gradient(135deg, rgba(244, 63, 94, 0.92), rgba(249, 115, 22, 0.92));
-    color: #fff;
-    border-color: transparent;
-    box-shadow: 0 16px 42px -24px rgba(249, 115, 22, 0.58);
-  }
-
-  .timer-button--secondary {
-    background: rgba(253, 230, 138, 0.3);
-    border-color: rgba(251, 191, 36, 0.35);
-    color: rgba(180, 83, 9, 0.85);
   }
 
   .timer-footnote {

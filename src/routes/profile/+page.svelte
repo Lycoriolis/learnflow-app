@@ -204,7 +204,7 @@
   $: overviewStats = [
     { label: 'Completed Courses', value: progress.coursesCompleted, icon: 'fa-circle-check', accent: 'from-emerald-400 to-teal-500' },
     { label: 'Active Modules', value: progress.coursesInProgress, icon: 'fa-layer-group', accent: 'from-sky-400 to-indigo-500' },
-    { label: 'Exercises Solved', value: progress.exercisesCompleted, icon: 'fa-list-check', accent: 'from-violet-400 to-purple-500' },
+    { label: 'Exercises Solved', value: progress.exercisesCompleted, icon: 'fa-list-check', accent: 'from-red-400 to-pink-500' },
     { label: 'Learning Streak', value: `${progress.learningStreak} days`, icon: 'fa-fire-flame-curved', accent: 'from-amber-400 to-orange-500' }
   ];
   $: browser && refreshExerciseStats();
@@ -251,7 +251,7 @@
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.28),transparent_55%)]"></div>
             <div class="relative flex flex-col gap-6 p-8 lg:flex-row lg:items-center lg:justify-between">
               <div class="flex flex-1 items-center gap-6">
-                <div class="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-indigo-500 via-sky-500 to-purple-500 shadow-xl">
+                <div class="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-indigo-500 via-sky-500 to-red-500 shadow-xl">
                   {#if avatarUrl}
                     <img src={avatarUrl} alt={`${displayName} avatar`} class="h-full w-full object-cover" />
                   {:else}

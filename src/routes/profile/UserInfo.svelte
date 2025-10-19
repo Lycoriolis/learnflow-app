@@ -61,7 +61,7 @@
         <p class="text-xs text-gray-400">Courses In Progress</p>
       </div>
       <div class="text-center">
-        <p class="text-2xl font-bold text-purple-500">{progress.exercisesCompleted}</p>
+        <p class="text-2xl font-bold text-red-500">{progress.exercisesCompleted}</p>
         <p class="text-xs text-gray-400">Exercises Completed</p>
       </div>
       <div class="text-center">

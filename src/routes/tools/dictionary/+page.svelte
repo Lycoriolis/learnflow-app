@@ -111,106 +111,175 @@
   <title>Dictionary & Reference | LearnFlow</title>
 </svelte:head>
 
-<div class="max-w-4xl mx-auto px-4 py-10">
-  <div class="flex justify-between items-start mb-8">
-    <div>
-      <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center">
-        <i class="fas fa-book mr-3 text-cyan-500"></i> Dictionary & Reference
+<div class="flex flex-col h-[85vh] max-w-7xl mx-auto bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden mt-6 border border-gray-200 dark:border-gray-800">
+  <!-- Header -->
+  <div class="bg-gradient-to-br from-cyan-50/80 via-blue-50/50 dark:from-cyan-950/30 dark:via-blue-950/20 to-white dark:to-gray-900 p-6 border-b border-gray-200 dark:border-gray-800">
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600 dark:from-cyan-400 dark:to-blue-400 flex items-center">
+        <i class="fas fa-book mr-3"></i> Dictionary & Reference
       </h1>
-      <p class="text-gray-600 dark:text-gray-400">Look up definitions, pronunciations, and related words</p>
+      <div class="flex gap-2">
+        <button 
+          class="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white shadow-md transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-opacity-50"
+          on:click={handleSubmit}
+          title="Search word"
+          aria-label="Search word"
+        >
+          <i class="fas fa-search"></i>
+        </button>
+        {#if audioUrl}
+          <button 
+            class="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-md transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
+            on:click={playAudio}
+            title="Play pronunciation"
+            aria-label="Play pronunciation"
+          >
+            <i class="fas fa-volume-up"></i>
+          </button>
+        {/if}
+      </div>
     </div>
+    <p class="text-gray-600 dark:text-gray-300 mt-2">Look up definitions, pronunciations, and related words</p>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-    <!-- Main Search and Results -->
-    <div class="lg:col-span-3">
-      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg mb-6">
-        <form on:submit|preventDefault={handleSubmit}>
-          <div class="flex gap-2">
-            <div class="flex-1 relative">
-              <input
-                id="word-search"
-                type="text"
-                bind:value={searchTerm}
-                placeholder="Enter a word to look up..."
-                class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
-              >
-              <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none">
-                <kbd class="px-2 py-1 text-xs rounded border border-gray-300 dark:border-gray-600">Ctrl</kbd>
-                <span class="mx-1">+</span>
-                <kbd class="px-2 py-1 text-xs rounded border border-gray-300 dark:border-gray-600">/</kbd>
+  <!-- Main Content -->
+  <div class="flex-1 overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-3 h-full gap-0">
+      <!-- Main Search and Results -->
+      <div class="lg:col-span-2 p-6 bg-gradient-to-br from-white via-cyan-50/30 dark:from-gray-900 dark:via-cyan-950/10 to-blue-50/20 dark:to-blue-950/5">
+        <!-- Search Form -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 mb-6">
+          <form on:submit|preventDefault={handleSubmit}>
+            <div class="flex gap-3">
+              <div class="flex-1 relative">
+                <input
+                  id="word-search"
+                  type="text"
+                  bind:value={searchTerm}
+                  placeholder="Enter a word to look up..."
+                  class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition"
+                >
+                <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none">
+                  <kbd class="px-2 py-1 text-xs rounded border border-gray-300 dark:border-gray-600">Enter</kbd>
+                </div>
               </div>
+              <button
+                type="submit"
+                class="px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-lg font-semibold shadow-md transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-opacity-50 flex items-center disabled:opacity-50"
+                disabled={searching || !searchTerm.trim()}
+              >
+                {#if searching}
+                  <i class="fas fa-spinner fa-spin mr-2"></i> Searching...
+                {:else}
+                  <i class="fas fa-search mr-2"></i> Search
+                {/if}
+              </button>
             </div>
-            <button
-              type="submit"
-              class="px-6 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition flex items-center disabled:opacity-50"
-              disabled={searching || !searchTerm.trim()}
-            >
-              {#if searching}
-                <i class="fas fa-spinner fa-spin mr-2"></i> Searching...
-              {:else}
-                <i class="fas fa-search mr-2"></i> Search
-              {/if}
-            </button>
-          </div>
-        </form>
-      </div>
-
-      {#if error}
-        <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg text-center">
-          <i class="fas fa-exclamation-circle text-3xl text-red-500 mb-4"></i>
-          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Word Not Found</h3>
-          <p class="text-gray-600 dark:text-gray-400">{error}</p>
+          </form>
         </div>
-      {:else if result}
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-          <div class="flex items-baseline gap-4 mb-6">
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">{result.word}</h2>
-            {#if result.phonetic}
-              <div class="flex items-center gap-2">
-                <span class="text-lg text-gray-500 dark:text-gray-400">{result.phonetic}</span>
-                {#if audioUrl}
-                  <button
-                    on:click={playAudio}
-                    class="p-2 text-cyan-600 hover:text-cyan-700 transition"
-                    title="Listen to pronunciation"
-                  >
-                    <i class="fas fa-volume-up"></i>
-                  </button>
+
+        <!-- Results -->
+        {#if error}
+          <div class="bg-white dark:bg-gray-800 p-12 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 text-center">
+            <i class="fas fa-exclamation-circle text-4xl text-red-500 mb-6"></i>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Word Not Found</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-lg">{error}</p>
+          </div>
+        {:else if result}
+          <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+            <div class="flex items-baseline gap-4 mb-6">
+              <h2 class="text-3xl font-bold text-gray-900 dark:text-white">{result.word}</h2>
+              {#if result.phonetic}
+                <div class="flex items-center gap-2">
+                  <span class="text-lg text-gray-500 dark:text-gray-400">{result.phonetic}</span>
+                  {#if audioUrl}
+                    <button
+                      on:click={playAudio}
+                      class="p-2 text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 transition rounded-lg hover:bg-cyan-50 dark:hover:bg-cyan-950/50"
+                      title="Listen to pronunciation"
+                      aria-label="Listen to pronunciation"
+                    >
+                      <i class="fas fa-volume-up"></i>
+                    </button>
+                  {/if}
+                </div>
+              {/if}
+            </div>
+
+            {#if result.meanings?.length > 0}
+              <div class="space-y-6">
+                {#each result.meanings as meaning}
+                  <div class="border-l-4 border-cyan-500 pl-4">
+                    <h3 class="text-lg font-semibold text-cyan-600 dark:text-cyan-400 mb-3 capitalize">
+                      {meaning.partOfSpeech}
+                    </h3>
+                    <ul class="space-y-4">
+                      {#each meaning.definitions as def, i}
+                        <li class="flex gap-3">
+                          <span class="text-cyan-500 font-semibold shrink-0">{i + 1}.</span>
+                          <div class="flex-1">
+                            <p class="text-gray-900 dark:text-white mb-2">{def.definition}</p>
+                            {#if def.example}
+                              <p class="text-gray-600 dark:text-gray-400 italic text-sm pl-4 border-l-2 border-gray-200 dark:border-gray-700">
+                                "{def.example}"
+                              </p>
+                            {/if}
+                            {#if def.synonyms?.length > 0}
+                              <div class="mt-2">
+                                <span class="text-sm font-medium text-green-600 dark:text-green-400">Synonyms:</span>
+                                <div class="flex flex-wrap gap-1 mt-1">
+                                  {#each def.synonyms.slice(0, 3) as synonym}
+                                    <span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded text-xs">{synonym}</span>
+                                  {/each}
+                                </div>
+                              </div>
+                            {/if}
+                          </div>
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+                {/each}
+              </div>
+            {/if}
+
+            {#if synonyms.length > 0 || antonyms.length > 0}
+              <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                {#if synonyms.length > 0}
+                  <div class="mb-4">
+                    <h4 class="text-sm font-semibold text-green-600 dark:text-green-400 mb-2">Synonyms</h4>
+                    <div class="flex flex-wrap gap-2">
+                      {#each synonyms.slice(0, 8) as synonym}
+                        <button
+                          on:click={() => { searchTerm = synonym; handleSubmit(); }}
+                          class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full text-sm hover:bg-green-200 dark:hover:bg-green-800 transition"
+                        >
+                          {synonym}
+                        </button>
+                      {/each}
+                    </div>
+                  </div>
+                {/if}
+                {#if antonyms.length > 0}
+                  <div>
+                    <h4 class="text-sm font-semibold text-red-600 dark:text-red-400 mb-2">Antonyms</h4>
+                    <div class="flex flex-wrap gap-2">
+                      {#each antonyms.slice(0, 8) as antonym}
+                        <button
+                          on:click={() => { searchTerm = antonym; handleSubmit(); }}
+                          class="px-3 py-1 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-full text-sm hover:bg-red-200 dark:hover:bg-red-800 transition"
+                        >
+                          {antonym}
+                        </button>
+                      {/each}
+                    </div>
+                  </div>
                 {/if}
               </div>
             {/if}
           </div>
-
-          {#if result.meanings?.length > 0}
-            <div class="space-y-6">
-              {#each result.meanings as meaning}
-                <div>
-                  <h3 class="text-lg font-semibold text-cyan-600 dark:text-cyan-400 mb-3">
-                    {meaning.partOfSpeech}
-                  </h3>
-                  <ul class="space-y-4">
-                    {#each meaning.definitions as def, i}
-                      <li>
-                        <div class="flex gap-2">
-                          <span class="text-gray-400 shrink-0">{i + 1}.</span>
-                          <div>
-                            <p class="text-gray-900 dark:text-gray-100">{def.definition}</p>
-                            {#if def.example}
-                              <p class="text-gray-600 dark:text-gray-400 italic mt-1">"{def.example}"</p>
-                            {/if}
-                          </div>
-                        </div>
-                      </li>
-                    {/each}
-                  </ul>
-                </div>
-              {/each}
-            </div>
-          {/if}
-
-          {#if synonyms.length > 0 || antonyms.length > 0}
-            <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+        {/if}
+        </div>
               {#if synonyms.length > 0}
                 <div class="mb-4">
                   <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Synonyms</h3>
@@ -249,44 +318,39 @@
                 </div>
               {/if}
             </div>
-          {/if}
         </div>
-      {:else}
-        <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg text-center">
-          <i class="fas fa-search text-4xl text-gray-400 dark:text-gray-600 mb-4"></i>
-          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Ready to Look Up Words</h3>
-          <p class="text-gray-600 dark:text-gray-400">Enter a word in the search box above to get started</p>
-        </div>
-      {/if}
     </div>
 
-    <!-- Search History Sidebar -->
-    <div class="lg:col-span-1">
-      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg sticky top-4">
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Recent Searches</h3>
-        {#if $searchHistory.length === 0}
-          <p class="text-gray-500 dark:text-gray-400 text-sm">No recent searches</p>
-        {:else}
-          <div class="space-y-3">
-            {#each $searchHistory as entry}
-              <button
-                class="w-full text-left p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition group"
-                on:click={() => {
-                  searchTerm = entry.word;
-                  searchWord(entry.word);
-                }}
-              >
-                <div class="text-gray-900 dark:text-gray-100 font-medium group-hover:text-cyan-600 dark:group-hover:text-cyan-400">
-                  {entry.word}
-                </div>
-                <div class="text-xs text-gray-500 dark:text-gray-400">
-                  {formatDate(entry.timestamp)}
-                </div>
-              </button>
-            {/each}
-          </div>
-        {/if}
+      <!-- Search History Sidebar -->
+      <div class="lg:col-span-1 p-6 bg-gradient-to-br from-cyan-50/50 via-blue-50/30 dark:from-cyan-950/20 dark:via-blue-950/10 to-white dark:to-gray-900 border-l border-gray-200 dark:border-gray-800 overflow-y-auto">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+            <i class="fas fa-history mr-2 text-cyan-500"></i> Recent Searches
+          </h3>
+          {#if $searchHistory.length === 0}
+            <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+              <i class="fas fa-search text-2xl mb-2 text-gray-300 dark:text-gray-600"></i>
+              <p class="text-sm">No recent searches</p>
+            </div>
+          {:else}
+            <div class="space-y-2">
+              {#each $searchHistory as entry}
+                <button
+                  class="w-full text-left p-3 rounded-lg hover:bg-cyan-50 dark:hover:bg-cyan-950/50 transition group border border-transparent hover:border-cyan-200 dark:hover:border-cyan-800"
+                  on:click={() => {
+                    searchTerm = entry.word;
+                    searchWord(entry.word);
+                  }}
+                >
+                  <div class="text-gray-900 dark:text-white font-medium group-hover:text-cyan-600 dark:group-hover:text-cyan-400">
+                    {entry.word}
+                  </div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    {formatDate(entry.timestamp)}
+                  </div>
+                </button>
+              {/each}
+            </div>
+          {/if}
+        </div>
       </div>
-    </div>
-  </div>
-</div>

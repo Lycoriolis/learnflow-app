@@ -49,7 +49,7 @@
           { title: 'Courses In Progress', value: String(inProgress), icon: 'fa-book', color: 'indigo' },
           { title: 'Courses Completed', value: String(completed), icon: 'fa-award', color: 'green' },
           { title: 'Focus Sessions', value: String(sessionCount), icon: 'fa-stopwatch', color: 'yellow' },
-          { title: 'Total Focus Time (min)', value: totalFocus, icon: 'fa-clock', color: 'purple' },
+          { title: 'Total Focus Time (min)', value: totalFocus, icon: 'fa-clock', color: 'red' },
           { title: 'Tasks Completed', value: String(tasksDone), icon: 'fa-list-check', color: 'blue' }
         ];
       }

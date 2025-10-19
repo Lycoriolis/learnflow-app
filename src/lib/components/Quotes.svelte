@@ -49,7 +49,7 @@
   });
 </script>
 
-<div class="workspace-tool mb-6 border-2 border-transparent rounded-xl bg-gradient-to-br from-purple-600 via-indigo-500 to-blue-400 p-1">
+<div class="workspace-tool mb-6 border-2 border-transparent rounded-xl bg-gradient-to-br from-gray-500 to-gray-600 p-1">
   <div class="bg-[#0D1117] p-6 rounded-lg text-white shadow-lg transition-shadow duration-300 hover:shadow-2xl">
     <h2 class="text-xl font-semibold mb-4">Motivational Quote</h2>
     <blockquote class="italic text-lg leading-relaxed opacity-0 quote-transition">“{currentQuote}”</blockquote>

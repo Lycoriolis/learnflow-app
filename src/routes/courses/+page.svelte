@@ -415,7 +415,7 @@
 			</button>
 			<button 
 				on:click={navigateToSearch}
-				class="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+				class="px-6 py-3 bg-gradient-to-r from-red-600 to-indigo-600 hover:from-red-500 hover:to-indigo-500 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
 			>
 				🔍 Advanced Search
 			</button>

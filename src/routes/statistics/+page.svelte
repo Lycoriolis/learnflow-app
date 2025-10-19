@@ -58,7 +58,7 @@
     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Your Statistics</h1>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
       <StatCard title="Focus Sessions" value={String(sessionCount)} icon="fa-stopwatch" color="yellow" />
-      <StatCard title="Total Focus (min)" value={String(Math.round(totalFocus))} icon="fa-clock" color="purple" />
+      <StatCard title="Total Focus (min)" value={String(Math.round(totalFocus))} icon="fa-clock" color="red" />
       <StatCard title="Avg Session (min)" value={avgSession.toFixed(1)} icon="fa-chart-line" color="blue" />
       <StatCard title="Longest Session" value={longestSession.toFixed(1)} icon="fa-mountain" color="indigo" />
       <StatCard title="Tasks Completed" value={String(tasksDone)} icon="fa-list-check" color="green" />

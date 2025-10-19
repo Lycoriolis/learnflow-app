@@ -165,7 +165,7 @@
                 {#if group.image}
                   <img src={group.image} alt={group.name} class="w-full h-32 object-cover"/>
                 {:else}
-                  <div class="w-full h-32 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 flex items-center justify-center">
+                  <div class="w-full h-32 bg-gradient-to-r from-indigo-100 to-red-100 dark:from-indigo-900/30 dark:to-red-900/30 flex items-center justify-center">
                      <i class="fas fa-users text-4xl text-indigo-400 dark:text-indigo-600"></i>
                   </div>
                 {/if}
@@ -239,7 +239,7 @@
                  {#if group.image}
                   <img src={group.image} alt={group.name} class="w-full h-32 object-cover"/>
                 {:else}
-                  <div class="w-full h-32 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 flex items-center justify-center">
+                  <div class="w-full h-32 bg-gradient-to-r from-indigo-100 to-red-100 dark:from-indigo-900/30 dark:to-red-900/30 flex items-center justify-center">
                      <i class="fas fa-users text-4xl text-indigo-400 dark:text-indigo-600"></i>
                   </div>
                 {/if}

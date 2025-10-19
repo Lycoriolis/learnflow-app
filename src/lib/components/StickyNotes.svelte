@@ -64,7 +64,7 @@
 </script>
 
 <div class="workspace-tool relative">
-  <div class="border-2 border-transparent rounded-xl bg-gradient-to-br from-yellow-400 to-pink-500 p-1 transition-transform hover:scale-105">
+  <div class="border-2 border-transparent rounded-xl bg-gradient-to-br from-gray-600 to-gray-700 p-1 transition-transform hover:scale-105">
     <div class="bg-[#0D1117] p-4 rounded-lg shadow-lg">
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {#each notes as note, i (note.id)}

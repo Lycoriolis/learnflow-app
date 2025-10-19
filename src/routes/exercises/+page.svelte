@@ -87,7 +87,7 @@
     <!-- Hero Section -->
     <header class="mb-12 text-center" in:fade={{ duration: 600 }}>
       <div class="mb-6">
-        <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
+        <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-indigo-600 to-red-600 bg-clip-text text-transparent mb-4">
           Exercises
         </h1>
         <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
@@ -114,7 +114,7 @@
                 <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Categories</p>
                 <p class="text-2xl font-bold text-gray-900 dark:text-white">{data.stats.totalCategories}</p>
               </div>
-              <Icon icon="mdi:folder-multiple" class="h-8 w-8 text-purple-600" />
+              <Icon icon="mdi:folder-multiple" class="h-8 w-8 text-red-600" />
             </div>
           </div>
           
@@ -187,14 +187,14 @@
             style="transform-style: preserve-3d;"
           >
             
-            <span class="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 opacity-0 group-hover/card:opacity-75 transition-opacity duration-500 blur-sm group-hover/card:blur-md"></span>
+            <span class="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-pink-500 via-red-500 to-indigo-500 opacity-0 group-hover/card:opacity-75 transition-opacity duration-500 blur-sm group-hover/card:blur-md"></span>
             <span class="absolute inset-0 rounded-xl bg-white dark:bg-gray-800"></span> 
             
-            <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/10 via-purple-600/10 to-pink-600/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 ease-in-out transform group-hover/card:rotate-y-[-2deg] group-hover/card:rotate-x-[2deg]"></div> 
+            <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/10 via-red-600/10 to-pink-600/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 ease-in-out transform group-hover/card:rotate-y-[-2deg] group-hover/card:rotate-x-[2deg]"></div> 
             <div class="p-6 relative z-10 transform transition-transform duration-500 ease-in-out group-hover/card:scale-[1.02]"> 
               <div class="flex items-start space-x-4">
                 <div class="flex-shrink-0">
-                  <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg group-hover/card:shadow-indigo-400/60 transition-all duration-500 transform group-hover/card:scale-110 group-hover/card:rotate-6"> 
+                  <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg group-hover/card:shadow-indigo-400/60 transition-all duration-500 transform group-hover/card:scale-110 group-hover/card:rotate-6"> 
                     <Icon icon="mdi:book-open-page-variant-outline" class="w-8 h-8 text-white transition-transform duration-300 group-hover/card:scale-110" /> 
                   </div>
                 </div>

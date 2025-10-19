@@ -227,14 +227,14 @@
 
 <div class="flex flex-col md:flex-row h-[85vh] max-w-7xl mx-auto bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden mt-6 border border-gray-200 dark:border-gray-800">
   <!-- Left: Task List -->
-  <div class="w-full md:w-2/5 lg:w-1/3 border-r border-gray-200 dark:border-gray-800 bg-gradient-to-br from-indigo-50/80 via-purple-50/50 dark:from-indigo-950/30 dark:via-purple-950/20 to-white dark:to-gray-900 overflow-y-auto relative {isMobile && selectedTask && !showAddPanel ? 'hidden' : ''}">
+  <div class="w-full md:w-2/5 lg:w-1/3 border-r border-gray-200 dark:border-gray-800 bg-gradient-to-br from-indigo-50/80 via-red-50/50 dark:from-indigo-950/30 dark:via-red-950/20 to-white dark:to-gray-900 overflow-y-auto relative {isMobile && selectedTask && !showAddPanel ? 'hidden' : ''}">
     <div class="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-100 dark:border-gray-800 p-5 space-y-5">
       <div class="flex items-center justify-between">
-        <h2 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 flex items-center">
+        <h2 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-pink-600 dark:from-red-400 dark:to-pink-400 flex items-center">
           <i class="fas fa-tasks mr-3"></i> My Tasks
         </h2>
         <button 
-          class="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-md transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50"
+          class="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white shadow-md transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50"
           on:click={() => showAddPanel = !showAddPanel}
           aria-label={showAddPanel ? "Close add task panel" : "Open add task panel"}
         >
@@ -244,7 +244,7 @@
       
       <!-- Progress bar -->
       <div class="w-full h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-        <div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full relative overflow-hidden" 
+        <div class="bg-gradient-to-r from-red-500 to-pink-500 h-full rounded-full relative overflow-hidden" 
              style="width: {progressPercentage}%"
              transition:scale={{ duration: 300, easing: cubicOut }}
              >
@@ -412,7 +412,7 @@
         out:fly={{ x: 20, duration: 200, easing: cubicOut }}
       >
         <div class="flex justify-between items-center mb-6">
-          <h2 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">Add New Task</h2>
+          <h2 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-pink-600 dark:from-red-400 dark:to-pink-400">Add New Task</h2>
           <button 
             class="h-8 w-8 flex md:hidden items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
             on:click={() => showAddPanel = false}
@@ -492,7 +492,7 @@
           
           <div class="pt-4">
             <button 
-              class="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium shadow-md transition transform hover:translate-y-[-1px] disabled:opacity-70 disabled:cursor-not-allowed"
+              class="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-medium shadow-md transition transform hover:translate-y-[-1px] disabled:opacity-70 disabled:cursor-not-allowed"
               on:click={addTask}
               disabled={!newTask.text?.trim()}
             >
@@ -516,7 +516,7 @@
             >
               <i class="fas fa-arrow-left"></i>
             </button>
-            <h2 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">Task Details</h2>
+            <h2 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-pink-600 dark:from-red-400 dark:to-pink-400">Task Details</h2>
           </div>
           <div class="flex gap-2">
             <button 
@@ -616,7 +616,7 @@
                 Cancel
               </button>
               <button 
-                class="py-2.5 px-5 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium shadow-md transition"
+                class="py-2.5 px-5 rounded-lg bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-medium shadow-md transition"
                 on:click={saveEdit}
                 disabled={!editTask.text?.trim()}
               >
@@ -691,7 +691,7 @@
         <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">No Task Selected</h3>
         <p class="text-gray-500 dark:text-gray-400 max-w-md mb-6">Select a task from the list to view details or click the + button to create a new task.</p>
         <button 
-          class="py-2.5 px-5 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium shadow-md transition transform hover:translate-y-[-1px]"
+          class="py-2.5 px-5 rounded-lg bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-medium shadow-md transition transform hover:translate-y-[-1px]"
           on:click={() => showAddPanel = true}
         >
           <i class="fas fa-plus mr-2"></i>

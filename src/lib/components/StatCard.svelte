@@ -37,8 +37,8 @@
       text: 'text-indigo-600 dark:text-indigo-300'
     },
     purple: {
-      bg: 'bg-purple-100 dark:bg-purple-900',
-      text: 'text-purple-600 dark:text-purple-300'
+      bg: 'bg-red-100 dark:bg-red-900',
+      text: 'text-red-600 dark:text-red-300'
     },
     gray: {
       bg: 'bg-gray-100 dark:bg-gray-800',

@@ -96,7 +96,7 @@
   export function getElapsedTime(): number { return elapsed; }
 </script>
 
-<div class="workspace-tool mb-6 border-2 border-transparent rounded-xl bg-gradient-to-br from-indigo-600 to-blue-500 p-1">
+<div class="workspace-tool mb-6 border-2 border-transparent rounded-xl bg-gradient-to-br from-gray-700 to-gray-800 p-1">
   <div class="bg-[#0D1117] p-6 rounded-lg text-white transition-shadow hover:shadow-xl">
     <h2 class="text-xl font-semibold mb-2">Timer</h2>
     <div class="text-2xl font-mono mb-4" class:is-running={isRunning} style="color: {isRunning ? '#60EFFF' : '#dce6f3'}">{formatTime(elapsed)}</div>

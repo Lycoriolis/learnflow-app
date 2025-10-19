@@ -176,7 +176,7 @@
 
       <!-- Featured Event Section -->
       {#if featuredEvent}
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-800 dark:to-purple-800 rounded-xl shadow-lg p-6 md:p-8 mb-12 text-white">
+        <div class="bg-gradient-to-r from-indigo-600 to-red-600 dark:from-indigo-800 dark:to-red-800 rounded-xl shadow-lg p-6 md:p-8 mb-12 text-white">
           <div class="flex flex-col md:flex-row items-center">
             {#if featuredEvent.image}
               <div class="w-full md:w-1/3 mb-4 md:mb-0 md:mr-8 flex-shrink-0">
@@ -269,8 +269,8 @@
               {#if event.image}
                 <img src={event.image} alt={event.title} class="w-full h-40 object-cover"/>
               {:else}
-                 <div class="w-full h-40 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 flex items-center justify-center">
-                    <i class="fas fa-calendar-star text-4xl text-purple-400 dark:text-purple-600"></i>
+                 <div class="w-full h-40 bg-gradient-to-r from-red-100 to-pink-100 dark:from-red-900/30 dark:to-pink-900/30 flex items-center justify-center">
+                    <i class="fas fa-calendar-star text-4xl text-red-400 dark:text-red-600"></i>
                  </div>
               {/if}
               <div class="p-5 flex-1 flex flex-col">
